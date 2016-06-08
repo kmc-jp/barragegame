@@ -292,9 +292,10 @@ namespace barragegame {
         /// <summary>
         /// int（0 ~ 1065353216）から順序を逆にしたfloat(0 ~ 1)へ変換
         /// </summary>
-        static unsafe float ConvertInt(int d) {
+        static float ConvertInt(int d) {
             int c = 0x3f800000 - (int)d;
-            return *(float *)&c;
+            var bit = BitConverter.GetBytes(c);
+            return BitConverter.ToSingle(bit, 0);
         }
     }
     /// <summary>
