@@ -15,15 +15,17 @@ namespace Game1
         public int x;
         public int y;
         public int speed;
+        public int radius;
         public Texture2D texture;
         public SpriteBatch spriteBatch;
 
 
-        public Player(int _x,int _y,int _speed,Texture2D _texture,SpriteBatch _spriteBatch)
+        public Player(int _x,int _y,int _speed,int _radius,Texture2D _texture,SpriteBatch _spriteBatch)
         {
             x = _x;
             y = _y;
             speed = _speed;
+            radius = _radius;
             texture = _texture;
             spriteBatch = _spriteBatch;
         }
@@ -32,11 +34,16 @@ namespace Game1
         public void move()
         {
             keymanager.Update();
-            if (keymanager.IsKeyDown(KeyID.Up) == true) { y = y - speed; }//else { y = 100; }
-            if (keymanager.IsKeyDown(KeyID.Down) == true) { y = y + speed; }// else { y += 200; }
-            if (keymanager.IsKeyDown(KeyID.Right) == true) { x = x + speed; }//else { x = 100; }
-            if (keymanager.IsKeyDown(KeyID.Left) == true) { x = x - speed; }//else { x += 200; }
+            if (keymanager.IsKeyDown(KeyID.Up) == true) { y = y - speed; }
+            if (keymanager.IsKeyDown(KeyID.Down) == true) { y = y + speed; }
+            if (keymanager.IsKeyDown(KeyID.Right) == true) { x = x + speed; }
+            if (keymanager.IsKeyDown(KeyID.Left) == true) { x = x - speed; }
             if (keymanager.IsKeyDown(KeyID.Slow) == true) { speed = 2; }else { speed = 5; }//テスト用数値
+
+            if (x > 1280) { x = 1280; }
+            if (x < 0) { x = 0; }
+            if (y > 720) { y = 720; }
+            if (y < 0) { y = 0; }
 
             if (bulletexist > 0)
             {
@@ -44,7 +51,7 @@ namespace Game1
                 {
                     bullets[i].move();
                 }
-            }else { x = 100;y = 100; }
+            }//else { x = 100;y = 100; }
         }
 
         List<Bullet> bullets=new List<Bullet>();
@@ -54,7 +61,7 @@ namespace Game1
             keymanager.Update();
             if (keymanager.IsKeyDown(KeyID.Select) == true)
             {
-                bullets.Add( new Bullet(x, y, 0, 1, 1, _texture, spriteBatch));
+                bullets.Add( new Bullet(x, y, 0, 1, 1,1, _texture, spriteBatch));
                 bulletexist++;
             }
 

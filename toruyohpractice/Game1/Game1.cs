@@ -1,8 +1,14 @@
-﻿using Microsoft.Xna.Framework;
+﻿using cellgame;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
 
 namespace Game1
 {
@@ -16,16 +22,17 @@ namespace Game1
         Texture2D player_texture;
         Texture2D bullet_texture;
         List<Texture2D> enemy_textures;
-        List<SpriteBatch> enemyspriteBatchs = new List<SpriteBatch>();
-        List<SpriteBatch> bulletspriteBatchs = new List<SpriteBatch>();
         Random cRandom = new System.Random();
+        KeyManager keymanager = new KeyManager();
 
         Player player;
         public int bulletexist = 0;
         public int enemyexist = 0;
         List<Bullet> bullets = new List<Bullet>();
         List<Enemy> enemys = new List<Enemy>();
-        public int frame=0;
+        public int frame = 0;
+        public int scenenumber = 0;
+
 
         public Game1()
         {
@@ -54,15 +61,15 @@ namespace Game1
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            player_texture = Content.Load<Texture2D>("hex1.png");
-            player = new Player(0, 0, 6, player_texture, spriteBatch);
+            player_texture = Content.Load<Texture2D>("player0.png");
+            player = new Player(0, 0, 6 ,1, player_texture, spriteBatch);
 
-            bullet_texture = Content.Load<Texture2D>("hex1.png");
+            bullet_texture = Content.Load<Texture2D>("bullet0.png");
             //bullet = new Bullet(player.x,player.y,0,5,1,bullet_texture,spriteBatch);
             //bullets.Add(new Bullet(player.x, player.y, 0, 5, 1, bullet_texture, spriteBatch));
 
             enemy_textures=new List<Texture2D>();
-            enemy_textures.Add(Content.Load<Texture2D>("hex1.png")) ;
+            enemy_textures.Add(Content.Load<Texture2D>("enemy0.png")) ;
             // TODO: use this.Content to load your game content here
         }
 
@@ -92,42 +99,50 @@ namespace Game1
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            player.move();
-            player.shot(bullet_texture);
-           
+            keymanager.Update();
+            if (keymanager.IsKeyDown(KeyID.Select) == true) { scenenumber++; }
 
-           
-            int iRandom = cRandom.Next(600);
-            iRandom = cRandom.Next(600);
-            if (frame % 100 == 0)
+            if (scenenumber > 0)
             {
-                enemyspriteBatchs.Add(new SpriteBatch(GraphicsDevice));
-                enemys.Add(new Enemy(iRandom, 0, 0, 1, 1, enemy_textures[0], enemyspriteBatchs[frame/100]));
-                enemyexist++;
-            }
-            
-            if (enemyexist>0)
-            {
-                for (int i = 0; i < enemys.Count; i++)
+                player.move();
+                player.shot(bullet_texture);
+
+                int iRandom = cRandom.Next(600);
+                iRandom = cRandom.Next(600);
+                if (frame % 100 == 0)
                 {
-                    enemys[i].move();
+                    enemys.Add(new Enemy(iRandom, 0, 0, 1, 1,10, enemy_textures[0], spriteBatch));
+                    enemyexist++;
                 }
-            }
-            /*
-            if (bulletexist > 0)
-            {
-                for (int i = 0; i < bullets.Count; i++)
+
+                if (enemyexist > 0)
                 {
-                    bullets[i].move();
+                    for (int i = 0; i < enemys.Count; i++)
+                    {
+                        enemys[i].move();
+                    }
                 }
+                /*
+                if (bulletexist > 0)
+                {
+                    for (int i = 0; i < bullets.Count; i++)
+                    {
+                        bullets[i].move();
+                    }
+                }
+                else { player.x = 100;player.y = 100; }
+                */
+
+                //if (enemyexist>0) { for (int i = 0; i < enemys.Count; i++) { enemys[i].remove(i); } } //例外がでる
+
+                frame++;
+                // TODO: Add your update logic here
+
+
+                
+
+                base.Update(gameTime);
             }
-            else { player.x = 100;player.y = 100; }
-            */
-
-            frame++;
-            // TODO: Add your update logic here
-
-            base.Update(gameTime);
         }
 
         /// <summary>
@@ -141,32 +156,20 @@ namespace Game1
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin();
-            for (int i = 0;i < enemyspriteBatchs.Count;i++)
-            {
-                enemyspriteBatchs[i].Begin();
-            }
-            for (int i = 0; i < bulletspriteBatchs.Count; i++)
-            {
-                bulletspriteBatchs[i].Begin();
-            }
 
-            //if (bulletexist>0) {for(int i = 0; i < bullets.Count; i++){ bullets[i].draw();} }
-            if(enemyexist>0){ for (int i = 0; i < enemys.Count; i++) { enemys[i].draw(); } }
-            player.draw();
+            if (scenenumber > 0)
+            {
+                //if (bulletexist>0) {for(int i = 0; i < bullets.Count; i++){ bullets[i].draw();} }
+                if (enemyexist > 0) { for (int i = 0; i < enemys.Count; i++) { if (enemys.[i] != null) { enemys[i].draw(); } } }
+                player.draw();
+            }
 
             spriteBatch.End();
-            for (int i = 0; i < enemyspriteBatchs.Count; i++)
-            {
-                enemyspriteBatchs[i].End();
-            }
-            for (int i = 0; i < bulletspriteBatchs.Count; i++)
-            {
-                bulletspriteBatchs[i].End();
-            }
             // TODO: Add your drawing code here
 
             base.Draw(gameTime);
+                }
         }
     }
-}
+
 
