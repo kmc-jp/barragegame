@@ -19,7 +19,7 @@ namespace Game1
         public int radius;
         public Texture2D texture;
         public SpriteBatch spriteBatch;
-        public int bulletexist;
+        public int bulletexist;//　初期化はない
 
         public Bullet(int _x,int _y,int _speed_x,int _speed_y,int _life,int _radius,Texture2D _texture,SpriteBatch _spriteBatch)
         {
@@ -31,17 +31,19 @@ namespace Game1
             radius = _radius;
             texture = _texture;
             spriteBatch = _spriteBatch;
+            //　bulletexistの設定がない。実際すべてのプロパティが値をもつようにするのがコンストラクタの仕事でもある。
+            //　値がどうしてもわからないプロパティには、あらかじめ絶対に使用しない値やnullを代入させよう。
         }
 
-        public void move()
-        {
-            if (bulletexist > 0)
-            {
-                x = x + speed_x;
-                y = y - speed_y;
-            }
-            
-        }
+                public void move()
+                {
+                   // if (bulletexist > 0)// 初期化がないので,ここでは判定できなくてプログラムが終了します。
+                   // {
+                        x = x + speed_x;
+                        y = y - speed_y;
+                   // }
+
+                }
 
         public void draw()
         {
