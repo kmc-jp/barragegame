@@ -19,7 +19,6 @@ namespace Game1
         int radius;
         Texture2D texture;
         SpriteBatch spriteBatch;
-        Player player;
         List<Enemy> enemys = new List<Enemy>();
 
         

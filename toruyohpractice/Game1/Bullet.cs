@@ -19,7 +19,6 @@ namespace Game1
         public int radius;
         public Texture2D texture;
         public SpriteBatch spriteBatch;
-        public int bulletexist;
 
         public Bullet(int _x,int _y,int _speed_x,int _speed_y,int _life,int _radius,Texture2D _texture,SpriteBatch _spriteBatch)
         {
@@ -33,9 +32,9 @@ namespace Game1
             spriteBatch = _spriteBatch;
         }
 
-        public void move()
+        public void move(int _bulletexist)
         {
-            if (bulletexist > 0)
+            if (_bulletexist > 0)
             {
                 x = x + speed_x;
                 y = y - speed_y;
