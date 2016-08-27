@@ -66,7 +66,6 @@ namespace Game1
 
             bullet_texture = Content.Load<Texture2D>("18 20-bul1.png");
 
-            player = new Player(0, 0, 6 ,1, player_texture, spriteBatch);
 
             //bullet = new Bullet(player.x,player.y,0,5,1,bullet_texture,spriteBatch);
             //bullets.Add(new Bullet(player.x, player.y, 0, 5, 1, bullet_texture, spriteBatch));
@@ -126,7 +125,7 @@ namespace Game1
                 iRandom = cRandom.Next(600);
                 if (frame % 100 == 0)
                 {
-                    enemys.Add(new Enemy(iRandom, 0, 0, 1, 1,10, enemy_textures[0], spriteBatch));
+                    enemys.Add(new Enemy(iRandom, 0, 0, 1, 1,1, enemy_textures[0], spriteBatch));
                     enemyexist++;
                 }
 
@@ -159,7 +158,7 @@ namespace Game1
                 {
                     for (int i = 0; i < enemys.Count; i++)
                     {
-                        if (enemys[i] != null) { enemys[i].remove(i,player); }
+                        if (enemys[i] != null) { enemys[i].remove(player,enemys); }
                     }
                 } //例外がでる
                 

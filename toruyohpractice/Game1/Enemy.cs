@@ -19,7 +19,6 @@ namespace Game1
         int radius;
         Texture2D texture;
         SpriteBatch spriteBatch;
-        List<Enemy> enemys = new List<Enemy>();
 
         
         public Enemy(int _x,int _y,int _speed_x,int _speed_y,int _life,int _radius,Texture2D _texture,SpriteBatch _spriteBatch)
@@ -45,11 +44,11 @@ namespace Game1
             spriteBatch.Draw(texture, new Vector2(x, y));
         }
 
-        public void remove(int i,Player _player)
+        public void remove(Player _player,List<Enemy> enemys)
         {
-            if (Math.Sqrt((enemys[i].x - _player.x) ^ 2 + (enemys[i].y - _player.y) ^ 2) < enemys[i].radius + _player.radius || x > 1280 || x < 0 || y > 720 || y < 0)
+            if (Math.Sqrt((x - _player.x) ^ 2 + (y - _player.y) ^ 2) < radius + _player.radius || x > 1280 || x < 0 || y > 720 || y < 0)
             {
-                enemys.RemoveAt(i);
+                enemys.Remove(this);
             }
         }
     }
