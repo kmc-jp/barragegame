@@ -49,7 +49,7 @@ namespace Game1
             {
                 for (int i = 0; i < bullets.Count; i++)
                 {
-                    bullets[i].move();
+                    bullets[i].move(bulletexist);
                 }
             }//else { x = 100;y = 100; }
         }
