@@ -62,9 +62,9 @@ namespace Game1
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             player_texture = Content.Load<Texture2D>("36 40-hex1.png");
-            player = new Player(0, 0, 6, player_texture, spriteBatch);
+            player = new Player(0, 0, 6,1, player_texture, spriteBatch);
 
-            bullet_texture = Content.Load<Texture2D>("36 40-bul1.png");
+            bullet_texture = Content.Load<Texture2D>("18 20-bul1.png");
 
             player = new Player(0, 0, 6 ,1, player_texture, spriteBatch);
 
@@ -107,23 +107,11 @@ namespace Game1
             keymanager.Update();
             if (keymanager.IsKeyDown(KeyID.Select) == true) { scenenumber++; }
 
-
-           
-            int iRandom = cRandom.Next(600);
-            iRandom = cRandom.Next(600);
-
             /*spriteBatchは異なると描画の前後が必ず新しいspriteBatchの描画一番上になると思います。どのみちちょっと勿体無い感じです。
              * 
              * なので、どうするかを考えましょう。
            　*/
-            if (frame % 100 == 0)
-            {
-                enemyspriteBatchs.Add(new SpriteBatch(GraphicsDevice));
-                enemys.Add(new Enemy(iRandom, 0, 0, 1, 1, enemy_textures[0], enemyspriteBatchs[frame/100]));
-                enemyexist++;
-            }
             
-            if (enemyexist>0)
 
             if (scenenumber > 0)
 
