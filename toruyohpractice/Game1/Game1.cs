@@ -142,7 +142,7 @@ namespace Game1
                 {
                     for (int i = 0; i < enemys.Count; i++)
                     {
-                        if (enemys[i] != null) { enemys[i].remove(i); }
+                        if (enemys[i] != null) { enemys[i].remove(i,player); }
                     }
                 } //例外がでる
                 

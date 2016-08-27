@@ -45,9 +45,9 @@ namespace Game1
             spriteBatch.Draw(texture, new Vector2(x, y));
         }
 
-        public void remove(int i)
+        public void remove(int i,Player _player)
         {
-            if (Math.Sqrt((enemys[i].x - player.x) ^ 2 + (enemys[i].y - player.y) ^ 2) < enemys[i].radius + player.radius || x > 1280 || x < 0 || y > 720 || y < 0)
+            if (Math.Sqrt((enemys[i].x - _player.x) ^ 2 + (enemys[i].y - _player.y) ^ 2) < enemys[i].radius + _player.radius || x > 1280 || x < 0 || y > 720 || y < 0)
             {
                 enemys.RemoveAt(i);
             }
