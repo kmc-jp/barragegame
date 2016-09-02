@@ -53,5 +53,20 @@ namespace cellgame
             return list.OrderBy(_ => Guid.NewGuid());
         }
 
+        /// <summary>
+        /// 2乗の和
+        /// </summary>
+        public static double distance(double x1,double y1,double x2,double y2)
+        {
+            return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
+        }
+
+        /// <summary>
+        /// 2つの円の接触
+        /// </summary>
+        public static bool hitcircle(double x1, double y1,double radius1, double x2, double y2,double radius2)
+        {
+            return distance(x1, y1, x2, y2) < (radius1 + radius2) * (radius1 + radius2);
+        }
     }
 }

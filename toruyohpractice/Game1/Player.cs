@@ -12,20 +12,24 @@ namespace Game1
 {
     class Player
     {
-        public int x;
-        public int y;
-        public int speed;
-        public int radius;
+        public double x;
+        public double y;
+        public double speed;
+        public double radius;
+        public int life;
+        public int sword;
         public Texture2D texture;
         public SpriteBatch spriteBatch;
 
 
-        public Player(int _x,int _y,int _speed,int _radius,Texture2D _texture,SpriteBatch _spriteBatch)
+        public Player(double _x,double _y,double _speed,double _radius,int _life,int _sword, Texture2D _texture,SpriteBatch _spriteBatch)
         {
             x = _x;
             y = _y;
             speed = _speed;
             radius = _radius;
+            life = _life;
+            sword = _sword;
             texture = _texture;
             spriteBatch = _spriteBatch;
         }
@@ -38,39 +42,24 @@ namespace Game1
             if (keymanager.IsKeyDown(KeyID.Down) == true) { y = y + speed; }
             if (keymanager.IsKeyDown(KeyID.Right) == true) { x = x + speed; }
             if (keymanager.IsKeyDown(KeyID.Left) == true) { x = x - speed; }
-            if (keymanager.IsKeyDown(KeyID.Slow) == true) { speed = 2; }else { speed = 5; }//テスト用数値
+            if (keymanager.IsKeyDown(KeyID.Slow) == true) { speed = 2; }else { speed = 6; }//テスト用数値
 
-            if (x > 1280) { x = 1280; }
-            if (x < 0) { x = 0; }
+            if (x < 280) { x = 280; }
+            if (x > 1000) { x = 1000; }
             if (y > 720) { y = 720; }
             if (y < 0) { y = 0; }
-
-            if (bulletexist > 0)
-            {
-                for (int i = 0; i < bullets.Count; i++)
-                {
-                    bullets[i].move(bulletexist);
-                }
-            }//else { x = 100;y = 100; }
         }
 
-        List<Bullet> bullets=new List<Bullet>();
-        public int bulletexist;
-        public void shot(Texture2D _texture)
+       
+        public Bullet shot(Texture2D _texture)
         {
-            keymanager.Update();
-            if (keymanager.IsKeyDown(KeyID.Select) == true)
-            {
-                bullets.Add( new Bullet(x, y, 0, 1, 1,1, _texture, spriteBatch));
-                bulletexist++;
-            }
+            return new Bullet(x, y, 0, 10, 10,1,0, _texture, spriteBatch);
 
         }
 
-        public void draw()
+        public void draw(Texture2D texture)
         {
-            if(bulletexist > 0) { for (int i = 0; i < bullets.Count; i++) { bullets[i].draw();} }
-            spriteBatch.Draw(texture, new Vector2(x, y));
+            spriteBatch.Draw(texture, new Vector2((float)(x - texture.Width / 2), (float)(y - texture.Height / 2)));//良くなさそう
         }
     }
 }

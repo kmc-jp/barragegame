@@ -5,10 +5,10 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Runtime.InteropServices;
 
 namespace Game1
 {
@@ -24,6 +24,7 @@ namespace Game1
         List<Texture2D> enemy_textures;
         Random cRandom = new System.Random();
         KeyManager keymanager = new KeyManager();
+        SpriteFont font;
 
         Player player;
         public int bulletexist = 0;
@@ -32,12 +33,19 @@ namespace Game1
         List<Enemy> enemys = new List<Enemy>();
         public int frame = 0;
         public int scenenumber = 0;
+        public int enemyhit = 0;
+        public int score = 0;
 
-
+        [DllImport("kernel32")]
+        static extern bool AllocConsole();
         public Game1()
         {
+            this.Window.Title = "Barrage Game";
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            graphics.PreferredBackBufferWidth = 1280;
+            graphics.PreferredBackBufferHeight = 720;
+            graphics.ApplyChanges();
         }
 
         /// <summary>
@@ -48,6 +56,15 @@ namespace Game1
         /// </summary>
         protected override void Initialize()
         {
+            //AllocConsole();//コンソールモード
+
+            /*
+            Dictionary<string, int> scenmm = new Dictionary<string, int>();
+            scene.Add("title", new TS);
+            string x=Console.ReadLine();
+            x.Remove(x.Length - 1, 1);
+            Console.Write(scene[x]);
+            */
             // TODO: Add your initialization logic here
 
             base.Initialize();
@@ -62,18 +79,14 @@ namespace Game1
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             player_texture = Content.Load<Texture2D>("36 40-hex1.png");
-            player = new Player(0, 0, 6,1, player_texture, spriteBatch);
+            //player = new Player(0, 0, 6,10,5, player_texture, spriteBatch);
 
             bullet_texture = Content.Load<Texture2D>("18 20-bul1.png");
 
-
-            //bullet = new Bullet(player.x,player.y,0,5,1,bullet_texture,spriteBatch);
-            //bullets.Add(new Bullet(player.x, player.y, 0, 5, 1, bullet_texture, spriteBatch));
-
             enemy_textures=new List<Texture2D>();
-
             enemy_textures.Add(Content.Load<Texture2D>("36 40-ene1.png")) ;
 
+            //font = Content.Load<SpriteFont>("");
             // TODO: use this.Content to load your game content here
         }
 
@@ -104,32 +117,37 @@ namespace Game1
                 Exit();
 
             keymanager.Update();
-            if (keymanager.IsKeyDown(KeyID.Select) == true) { scenenumber++; }
-
-            /*spriteBatchは異なると描画の前後が必ず新しいspriteBatchの描画一番上になると思います。どのみちちょっと勿体無い感じです。
-             * 
-             * なので、どうするかを考えましょう。
-           　*/
-            
+            if (keymanager.IsKeyDown(KeyID.Select) == true && scenenumber == 0)
+            {
+                player = new Player(640, 720, 6,10,5,0, player_texture, spriteBatch);
+                scenenumber++;
+                
+            }
 
             if (scenenumber > 0)
-
             {
-
                 ///move
                 player.move();
-                player.shot(bullet_texture);
+                if (keymanager.IsKeyDown(KeyID.Select) == true)
+                {
+                    bullets.Add(player.shot(bullet_texture));
+                    bulletexist++;
+                }
 
                 //enemy生成
-                int iRandom = cRandom.Next(600);
-                iRandom = cRandom.Next(600);
+                /*
+                int iRandom = cRandom.Next(1280);
+                iRandom = cRandom.Next(1280);
+                */
+                double random = Function.GetRandomDouble(280, 1000);
+
                 if (frame % 100 == 0)
                 {
-                    enemys.Add(new Enemy(iRandom, 0, 0, 1, 1,1, enemy_textures[0], spriteBatch));
+                    enemys.Add(new Enemy(random, 0, 0, 1, 10, 10,100, enemy_textures[0], spriteBatch));
                     enemyexist++;
                 }
 
-            }
+
 
 
 
@@ -139,9 +157,13 @@ namespace Game1
                     for (int i = 0; i < enemys.Count; i++)
                     {
                         enemys[i].move();
+                        for (int j = 0; j < enemys[i].bullets.Count; j++)
+                        {
+                            enemys[i].bullets[j].move();
+                        }
                     }
                 }
-                /*これはBullet.csの方に書いています。
+
                 if (bulletexist > 0)
                 {
                     for (int i = 0; i < bullets.Count; i++)
@@ -149,20 +171,89 @@ namespace Game1
                         bullets[i].move();
                     }
                 }
-                else { player.x = 100;player.y = 100; }
-                */
 
-                ///remove
-                
-                if (enemyexist>0)
+                if (frame % 100 == 0)
                 {
                     for (int i = 0; i < enemys.Count; i++)
                     {
-                        if (enemys[i] != null) { enemys[i].remove(player,enemys); }
+                        enemys[i].shot1(player, bullet_texture);
                     }
-                } //例外がでる
-                
+                }
 
+                ///remove
+
+                if (enemyexist > 0)
+                {
+                    for (int j = 0; j < bullets.Count; j++)
+                    {
+                        if (bullets[j] != null)
+                        {
+                            bool hit = false;
+                            for (int i = 0; i < enemys.Count; i++)
+                            {
+
+                                if (enemys[i] != null)
+                                {
+                                    if (Function.hitcircle(enemys[i].x, enemys[i].y, enemys[i].radius, bullets[j].x, bullets[j].y, bullets[j].radius) || enemys[i].x > 1280 || enemys[i].x < 0 || enemys[i].y > 720 || enemys[i].y < 0)
+                                    {
+                                        hit = true;
+                                        enemys[i].life--;
+                                        if (enemys[i].life <= 0)
+                                        {
+                                            score = score + enemys[i].score;
+                                            player.sword = player.sword + enemys[i].bullets.Count * 3;
+                                            enemys[i].remove(enemys);
+                                            
+                                        }
+                                        enemyhit++;
+                                    }
+                                }
+                            }
+                            if (hit)
+                            {
+                                bullets[j].remove(bullets);
+                            }
+                        }
+                    }
+                }
+
+                /*
+                if (bulletexist > 0)
+                {
+                    for(int i=0;i<bullets.Count;i++)
+                    {
+                        for (int j = 0; j < enemys.Count; j++)
+                        {
+                            if (Function.hitcircle(bullets[i].x, bullets[i].y, bullets[i].radius, enemys[j].x, enemys[j].y, enemys[j].radius)&&(bullets[i]!=null))
+                                {
+                                    bullets[i].remove(bullets);
+                                }
+                        }
+                    }
+                }
+                */
+
+                for (int i = 0; i < enemys.Count; i++)
+                {
+                    for (int j = 0; j < enemys[i].bullets.Count; j++)
+                    {
+                        if (Function.hitcircle(player.x, player.y, player.radius, enemys[i].bullets[j].x, enemys[i].bullets[j].y, enemys[i].bullets[j].radius))
+                        {
+                            enemys[i].bullets[j].life--;
+                            player.life--;
+                            if (enemys[i].bullets[j].life <= 0)
+                            {
+                                enemys[i].bullets[j].remove(enemys[i].bullets);
+                            }
+                        }
+                    }
+                }
+
+                if (player.life <= 0)
+                {
+                    scenenumber = 0;
+                }
+            }
                 frame++;
                 // TODO: Add your update logic here
 
@@ -185,6 +276,11 @@ namespace Game1
             GraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin();
 
+            if (scenenumber == 0)
+            {
+                
+            }
+
             if (scenenumber > 0)
             {
                 //if (bulletexist>0) {for(int i = 0; i < bullets.Count; i++){ bullets[i].draw();} }
@@ -192,18 +288,33 @@ namespace Game1
                 {
                     for (int i = 0; i < enemys.Count; i++)
                     {
-                        if (enemys[i] != null) { enemys[i].draw(); }
+                        if (enemys[i] != null)
+                        {
+                            enemys[i].draw(enemys[i].texture);
+                        }
+                        for(int j = 0; j < enemys[i].bullets.Count; j++)
+                        {
+                            enemys[i].bullets[j].draw(enemys[i].bullets[j].texture);
+                        }
                     }
                 }
 
-                player.draw();
+                if (bulletexist > 0)
+                {
+                    for (int i = 0; i < bullets.Count; i++)
+                    {
+                        bullets[i].draw(bullets[i].texture);
+                    }
+                }
+
+                player.draw(player.texture);
             }
 
             spriteBatch.End();
             // TODO: Add your drawing code here
 
             base.Draw(gameTime);
-                }
+         }
         }
     }
 
