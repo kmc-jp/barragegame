@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using cellgame;
+using CommonPart;
 
-namespace Game1
+namespace CommonPart
 {
     class Enemy
     {
@@ -19,12 +19,13 @@ namespace Game1
         public double radius;
         public int life;
         public int score;
-        public Texture2D texture;
-        public SpriteBatch spriteBatch;
+        public string texture_name;
         public List<Bullet> bullets = new List<Bullet>();
+        public bool delete = false; 
+
 
         
-        public Enemy(double _x,double _y,double _speed_x,double _speed_y,double _radius, int _life,int _score, Texture2D _texture,SpriteBatch _spriteBatch)
+        public Enemy(double _x,double _y,double _speed_x,double _speed_y,double _radius, int _life,int _score,string _texture_name="36 40-enemy1.png")
         {
             x = _x;
             y = _y;
@@ -33,50 +34,52 @@ namespace Game1
             radius = _radius;
             life = _life;
             score = _score;
-            texture = _texture;
-            spriteBatch = _spriteBatch;
+            texture_name = _texture_name;
         }
 
-        public void move()
+        public void update()
         {
             x = x + speed_x;
             y = y + speed_y;
         }
 
-        public void draw(Texture2D texture)
+        public void draw(Drawing d)
         {
-            spriteBatch.Draw(texture, new Vector2((float)(x-texture.Width/2), (float)(y-texture.Height/2)));
+            d.Draw(new Vector((x- DataBase.getTex(texture_name).Width/2),(y- DataBase.getTex(texture_name).Height/2)), DataBase.getTex(texture_name),
+                DepthID.Enemy);
         }
 
-        public void shot1(Player player,Texture2D _texture)//自機狙い
+        public void shot1(Player player)//自機狙い
         {
             double e = Math.Sqrt(Function.distance(player.x,player.y,x,y));
             double speed = 6;
             double v = speed / e;
-            bullets.Add(new Bullet(x, y,(player.x-x)*v,-(player.y-y)*v,10,1,1,_texture,spriteBatch));
+            bullets.Add(new Bullet(x, y,(player.x-x)*v,-(player.y-y)*v,10,1,1));
         }
 
         public void remove(Player _player, List<Enemy> enemys)
         {
             if (Function.hitcircle(x, y, radius, _player.x, _player.y, _player.radius) || x > 1280 || x < 0 || y > 720 || y < 0)
             {
-                if (y < 720)
-                {
-                    /*
-                    Console.Write(x);
-                    Console.Write(",");
-                    Console.Write(y);
-                    Console.Write(",");
-                    Console.Write(Function.hitcircle(x, y, radius, _player.x, _player.y, _player.radius));
-                    Console.Write(",\n");
-                    */
-                }
                 enemys.Remove(this);
             }
         }
-        public void remove(List<Enemy> enemys)
+        public void remove(Unit_state unitstate)
         {
-            enemys.Remove(this);
+            switch (unitstate)
+            {
+                case Unit_state.dead:
+                    delete = true;
+                    break;
+                case Unit_state.out_of_window:
+                    delete = true;
+                    break;
+                case Unit_state.fadeout:
+                    //
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

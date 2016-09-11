@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using cellgame;
+using CommonPart;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace Game1
+namespace CommonPart
 {
     class Player
     {
@@ -17,25 +17,24 @@ namespace Game1
         public double speed;
         public double radius;
         public int life;
+        public int life_piece;
         public int sword;
-        public Texture2D texture;
-        public SpriteBatch spriteBatch;
+        public string texture_name;
 
 
-        public Player(double _x,double _y,double _speed,double _radius,int _life,int _sword, Texture2D _texture,SpriteBatch _spriteBatch)
+        public Player(double _x,double _y,double _speed,double _radius,int _life,int _life_piece,int _sword,string t_n= "36 40-hex1.png")
         {
             x = _x;
             y = _y;
             speed = _speed;
             radius = _radius;
             life = _life;
+            life_piece = _life_piece;
             sword = _sword;
-            texture = _texture;
-            spriteBatch = _spriteBatch;
+            texture_name = t_n;
         }
 
-        KeyManager keymanager = new KeyManager();
-        public void move()
+        public void update(InputManager keymanager)
         {
             keymanager.Update();
             if (keymanager.IsKeyDown(KeyID.Up) == true) { y = y - speed; }
@@ -51,15 +50,16 @@ namespace Game1
         }
 
        
-        public Bullet shot(Texture2D _texture)
+        public Bullet shot(string texture_name="18 20-tama1.png")
         {
-            return new Bullet(x, y, 0, 10, 10,1,0, _texture, spriteBatch);
+            return new Bullet(x, y, 0, 10, 10,1,0, texture_name);
 
         }
 
-        public void draw(Texture2D texture)
+        public void draw(Drawing d)
         {
-            spriteBatch.Draw(texture, new Vector2((float)(x - texture.Width / 2), (float)(y - texture.Height / 2)));//良くなさそう
+            d.Draw(new Vector(x - DataBase.getTex(texture_name).Width / 2,y - DataBase.getTex(texture_name).Height / 2) , DataBase.getTex(texture_name),
+                DepthID.Player);
         }
     }
 }
