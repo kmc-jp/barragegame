@@ -63,6 +63,14 @@ namespace CommonPart {
             if (step[0] > 600 && step[0] < 1200) { scroll_speed = 10; } else { scroll_speed = 1; }
             v1.Y += scroll_speed;//背景のmove
             v2.Y += scroll_speed;
+            if (v1.Y - v2.Y > DataBase.getTex(background_name).Height)
+            {
+                v2.Y = v1.Y + DataBase.getTex(background_name).Height;
+            }
+            if(v1.Y - v2.Y < -DataBase.getTex(background_name).Height)
+            {
+                v2.Y = v1.Y + DataBase.getTex(background_name).Height;
+            }
 
             player.update(input);
             
