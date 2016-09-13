@@ -19,7 +19,7 @@ namespace CommonPart {
 
 
         string music_title;
-        List<int> step = new List<int>();
+        public List<int> step = new List<int>();
         
         /// <summary>
         /// 背景画像の描画位置
@@ -169,7 +169,7 @@ namespace CommonPart {
             
             if (player.life <= 0)
             {
-
+                step[0] = -100;
             }
             #endregion
 

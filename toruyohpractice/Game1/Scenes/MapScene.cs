@@ -60,6 +60,7 @@ namespace CommonPart {
             base.SceneUpdate();
             
             nMap.update(Input);
+            if (nMap.step[0] < 0) { Delete = true; }
 
         }
         #endregion
