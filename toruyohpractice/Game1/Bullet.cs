@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace Game1
+namespace CommonPart
 {
     class Bullet
     {
@@ -19,10 +19,9 @@ namespace Game1
         public int life;
         public int score;
         public int sword;
-        public Texture2D texture;
-        public SpriteBatch spriteBatch;
+        public string texture_name;
 
-        public Bullet(double _x,double _y,double _speed_x,double _speed_y,double _radius, int _life,int _score, Texture2D _texture,SpriteBatch _spriteBatch)
+        public Bullet(double _x,double _y,double _speed_x,double _speed_y,double _radius, int _life,int _score, string _texture_name="18 20-tama1.png")
         {
             x = _x;
             y = _y;
@@ -31,19 +30,19 @@ namespace Game1
             radius = _radius;
             life = _life;
             score = _score;
-            texture = _texture;
-            spriteBatch = _spriteBatch;
+            texture_name = _texture_name;
         }
 
-        public void move()
+        public void update()
         {
             x = x + speed_x;
             y = y - speed_y;    
         }
 
-        public void draw(Texture2D texture)
+        public void draw(Drawing d)
         {
-            spriteBatch.Draw(texture, new Vector2((float)(x - texture.Width / 2), (float)(y - texture.Height / 2)));
+            d.Draw(new Vector((x - DataBase.getTex(texture_name).Width / 2),(y - DataBase.getTex(texture_name).Height / 2)),DataBase.getTex(texture_name),
+                DepthID.Effect);
         }
 
         public void remove(List<Bullet> bullets)

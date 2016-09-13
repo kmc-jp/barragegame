@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Diagnostics;
+using CommonPart;
 
-namespace cellgame
-{
+namespace CommonPart {
     /// <summary>
     /// 全体で使う関数などを扱うクラス
     /// </summary>
-    static class Function
-    {
+    static class Function {
         static RandomXS rand = new RandomXS();
         public static void SetRandomSeed(uint seed1, uint seed2, uint seed3, uint seed4) { rand = new RandomXS(seed1, seed2, seed3, seed4); }
         public static void SetRandomSeed(long l) { rand = new RandomXS(l); }
@@ -48,25 +47,27 @@ namespace cellgame
         /// <returns></returns>
         public static double AdjustAngle(double x) { return x - Math.Floor((x + 180) / 360) * 360; }
 
-        public static IOrderedEnumerable<T> GetRandomSort<T>(this IEnumerable<T> list)
-        {
+        public static IOrderedEnumerable<T> GetRandomSort<T>(this IEnumerable<T> list) {
             return list.OrderBy(_ => Guid.NewGuid());
         }
 
-        /// <summary>
-        /// 2乗の和
-        /// </summary>
-        public static double distance(double x1,double y1,double x2,double y2)
+        public static double distance(double x1, double y1, double x2, double y2)
         {
             return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
         }
 
-        /// <summary>
-        /// 2つの円の接触
-        /// </summary>
         public static bool hitcircle(double x1, double y1,double radius1, double x2, double y2,double radius2)
         {
-            return distance(x1, y1, x2, y2) < (radius1 + radius2) * (radius1 + radius2);
+            return distance(x1, y1, x2, y2) <= (radius1 + radius2) * (radius1 + radius2);
+        }
+
+    }//function.end
+    static class EnumExtension {
+        /// <summary>
+        /// Direction4の反転した方向を求める。
+        /// </summary>
+        public static Direction4 Reverse(this Direction4 d) {
+            return (Direction4)(((int)d + 2) % 4);
         }
     }
 }
