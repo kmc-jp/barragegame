@@ -22,15 +22,13 @@ namespace CommonPart
         public string texture_name;
 
 
-        public Player(double _x,double _y,double _speed,double _radius,int _life,int _life_piece,int _sword,string t_n= "36 40-hex1.png")
+        public Player(double _x,double _y,double _speed,double _radius,int _life,string t_n= "36 40-hex1.png")
         {
             x = _x;
             y = _y;
             speed = _speed;
             radius = _radius;
             life = _life;
-            life_piece = _life_piece;
-            sword = _sword;
             texture_name = t_n;
         }
 

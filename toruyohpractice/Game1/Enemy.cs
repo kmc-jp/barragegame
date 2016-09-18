@@ -41,6 +41,12 @@ namespace CommonPart
         {
             x = x + speed_x;
             y = y + speed_y;
+            
+            //bulletのupdate
+            for (int j = 0; j < bullets.Count; j++)
+            {
+                bullets[j].update();
+            }
         }
 
         public void draw(Drawing d)

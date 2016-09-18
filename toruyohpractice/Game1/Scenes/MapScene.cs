@@ -62,6 +62,8 @@ namespace CommonPart {
             nMap.update(Input);
             if (nMap.step[0] < 0) { Delete = true; }
 
+            if (Input.GetKeyPressed(KeyID.Select)) Delete = true;
+
         }
         #endregion
     }// class end
