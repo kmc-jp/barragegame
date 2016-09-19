@@ -8,11 +8,10 @@ using System.Threading.Tasks;
 
 namespace CommonPart {
     class Map {
-        Player player;
-        List<Bullet> bullets = new List<Bullet>();
-        List<Enemy> enemys = new List<Enemy>();
+        public Player player;
+        public List<Enemy> enemys = new List<Enemy>();
+        public List<Enemy> enemys_inside_window = new List<Enemy>();
         public int score = 0;
-        public int bulletexist = 0;
         public int enemyexist = 0;
         public Vector scroll_speed;
 
@@ -38,6 +37,7 @@ namespace CommonPart {
         /// 左側のバーの右端のx座標
         /// </summary>
         public static int leftside = 280;
+        public static int rightside = 1000;
 
         public Vector camera = new Vector(leftside, 0);
 
@@ -135,44 +135,46 @@ namespace CommonPart {
             Random cRandom = new System.Random();
             int iRandom = cRandom.Next(1280);
 
-            double random = Function.GetRandomDouble(280, 1000);
-
             if (step[0] % 100 == 0)
             {
-                enemys.Add(new Enemy(random, 0, 0, 1, 10, 10, 100));
-                enemyexist++;
+                for (int i = 0; i < 2; i++)
+                {
+                    double random = Function.GetRandomDouble(280, 1000);
+                    double random_y = Function.GetRandomDouble(100, 100);
+                    enemys.Add(new Enemy(random, random_y, 0, 1, 10, 10, 100));
+                    enemyexist++;
+                }
             }
             #endregion
+
+            for (int i = 0; i < enemys.Count; i++)
+            {
+                if (enemys[i].x > Map.leftside - DataBase.getTex(enemys[i].texture_name).Width / 2 ||
+                    enemys[i].x < Map.rightside + DataBase.getTex(enemys[i].texture_name).Width / 2 ||
+                    enemys[i].y < DataBase.WindowSlimSizeY + DataBase.getTex(enemys[i].texture_name).Height / 2 ||
+                    enemys[i].y > 0 - DataBase.getTex(enemys[i].texture_name).Height / 2
+                )
+                {
+                    enemys_inside_window.Add(enemys[i]);
+                }
+            }
 
             #region move
             input.Update();
 
-
             camera += scroll_speed;//カメラupdate
             update_scroll_speed();
 
-            player.update(input);
-            
-            if (input.IsKeyDown(KeyID.Select) == true)
-            {
-                bullets.Add(player.shot());
-                bulletexist++;
-            }
+            player.update(input,this);
+
             if (enemyexist > 0)
             {
                 for (int i = 0; i < enemys.Count; i++)
                 {
-                    enemys[i].update();
+                    enemys[i].update(player);
                 }
             }
 
-            if (bulletexist > 0)
-            {
-                for (int i = 0; i < bullets.Count; i++)
-                {
-                    bullets[i].update();
-                }
-            }
             #endregion
 
             if (step[0] % 100 == 0)
@@ -183,76 +185,21 @@ namespace CommonPart {
                 }
             }
 
-            #region あたり判定
-            if (enemyexist > 0)
-            {
-                for (int j = 0; j < bullets.Count; j++)
-                {
-                    if (bullets[j] != null)
-                    {
-                        bool hit = false;
-                        for (int i = 0; i < enemys.Count; i++)
-                        {
-
-                            if (enemys[i] != null)
-                            {
-                                if (Function.hitcircle(enemys[i].x, enemys[i].y, enemys[i].radius, bullets[j].x, bullets[j].y, bullets[j].radius))
-                                {
-                                    hit = true;
-                                    enemys[i].life--;
-                                    if (enemys[i].life <= 0)
-                                    {
-                                        score = score + enemys[i].score;
-                                        player.sword = player.sword + enemys[i].bullets.Count * 3;
-                                        enemys[i].remove(Unit_state.dead);
-                                    }
-                                 }
-                                if(enemys[i].x > 1280 || enemys[i].x < 0 || enemys[i].y > 720 || enemys[i].y < 0)
-                                {
-                                    enemys[i].remove(Unit_state.out_of_window);
-                                }
-
-                                if (enemys[i].delete == true)
-                                {
-                                    enemys.Remove(enemys[i]);
-                                }
-                            }
-                         }
-                         if (hit)
-                         {
-                             bullets[j].remove(bullets);
-                         }
-                     }
-                 }
-            }
-
-
-            for (int i = 0; i < enemys.Count; i++)
-            {
-                for (int j = 0; j < enemys[i].bullets.Count; j++)
-                {
-                    if (Function.hitcircle(player.x, player.y, player.radius, enemys[i].bullets[j].x, enemys[i].bullets[j].y, enemys[i].bullets[j].radius))
-                    {
-                        enemys[i].bullets[j].life--;
-                        player.life--;
-                        if (enemys[i].bullets[j].life <= 0|| enemys[i].bullets[j].x > 1000 || enemys[i].bullets[j].x < 280 || enemys[i].bullets[j].y > 720 || enemys[i].bullets[j].y < 0)
-                        {
-                            enemys[i].bullets[j].remove(enemys[i].bullets);
-                        }
-                    }
-                }
-            }
-
             if (input.GetKeyPressed(KeyID.Select) == true) { step[0] = -1000; }
             if (player.life <= 0)
             {
                 //step[0] = -100;
             }
-            #endregion
-
+            for (int i = 0; i < enemys_inside_window.Count; i++)
+            {
+                if (enemys_inside_window[i].delete == true)
+                {
+                    enemys.Remove(enemys_inside_window[i]);
+                    enemys_inside_window.Remove(enemys_inside_window[i]);
+                }
+            }
             step[0]++;
         }//update end
-
 
         public void Draw(Drawing d)
         {
@@ -278,21 +225,9 @@ namespace CommonPart {
                         {
                             enemys[i].draw(d);
                         }
-                        for (int j = 0; j < enemys[i].bullets.Count; j++)
-                        {
-                            enemys[i].bullets[j].draw(d);
-                        }
+                        
                     }
                 }
-
-                if (bulletexist > 0)
-                {
-                    for (int i = 0; i < bullets.Count; i++)
-                    {
-                        bullets[i].draw(d);
-                    }
-                }
-
                 player.draw(d);
             }
         }//draw end
