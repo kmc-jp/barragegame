@@ -37,16 +37,41 @@ namespace CommonPart
             texture_name = _texture_name;
         }
 
-        public void update()
+        public void update(Player player)
         {
             x = x + speed_x;
             y = y + speed_y;
+
+            if (x < Map.leftside - DataBase.getTex(texture_name).Width / 2|| x > Map.rightside + DataBase.getTex(texture_name).Width / 2||y > DataBase.WindowSlimSizeY + DataBase.getTex(texture_name).Height / 2||y < 0 - DataBase.getTex(texture_name).Height / 2)
+            {
+                remove(Unit_state.out_of_window);
+            }
+
+            if (Function.hitcircle(x, y, radius, player.x, player.y, player.radius))
+            {
+                player.damage(1);
+            }
+            
+            //bulletのupdate
+            for (int i = 0; i < bullets.Count; i++)
+            {
+                bullets[i].update(player);
+                if (x < Map.leftside - DataBase.getTex(texture_name).Width / 2 || x > Map.rightside + DataBase.getTex(texture_name).Width / 2 || y > DataBase.WindowSlimSizeY + DataBase.getTex(texture_name).Height / 2 || y < 0 - DataBase.getTex(texture_name).Height / 2)
+                {
+                    bullets[i].remove();
+                }
+                if (bullets[i].delete == true) { bullets.Remove(bullets[i]); }
+            }
         }
 
         public void draw(Drawing d)
         {
             d.Draw(new Vector((x- DataBase.getTex(texture_name).Width/2),(y- DataBase.getTex(texture_name).Height/2)), DataBase.getTex(texture_name),
                 DepthID.Enemy);
+            for (int i = 0; i < bullets.Count; i++)
+            {
+                bullets[i].draw(d);
+            }
         }
 
         public void shot1(Player player)//自機狙い
@@ -57,13 +82,15 @@ namespace CommonPart
             bullets.Add(new Bullet(x, y,(player.x-x)*v,-(player.y-y)*v,10,1,1));
         }
 
-        public void remove(Player _player, List<Enemy> enemys)
+        public void damage(int atk)
         {
-            if (Function.hitcircle(x, y, radius, _player.x, _player.y, _player.radius) || x > 1280 || x < 0 || y > 720 || y < 0)
+            life -= atk;
+            if (life <= 0)
             {
-                enemys.Remove(this);
+                remove(Unit_state.dead);
             }
         }
+
         public void remove(Unit_state unitstate)
         {
             switch (unitstate)
