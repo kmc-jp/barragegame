@@ -89,6 +89,7 @@ namespace barragegame {
                 draw.DrawEnd();
             }
             draw.DrawBegin();
+            new RichText("aaa").Draw(draw, new Vector(100, 100), DepthID.Message);
 #if DEBUG && SHOWTIME
             draw.SetDrawAbsolute();
             //new RichText(time.ToString("scene : 0.000ms")).Draw(draw, new Vector(380, 400), DepthID.Debug, 0.6f);

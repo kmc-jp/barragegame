@@ -7,52 +7,70 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace Game1
+namespace CommonPart
 {
     class Bullet
     {
-        public int x;
-        public int y;
-        public int speed_x;
-        public int speed_y;
+        public double x;
+        public double y;
+        public double speed_x;
+        public double speed_y;
+        public double radius;
         public int life;
-        public int radius;
-        public Texture2D texture;
-        public SpriteBatch spriteBatch;
-        public int bulletexist;//　初期化はない
+        public int score;
+        public int sword;
+        public string texture_name;
 
-        public Bullet(int _x,int _y,int _speed_x,int _speed_y,int _life,int _radius,Texture2D _texture,SpriteBatch _spriteBatch)
+        public bool delete = false;
+        public int atk = 1;
+
+        public Bullet(double _x,double _y,double _speed_x,double _speed_y,double _radius, int _life,int _score, string _texture_name="18 20-tama1.png")
         {
             x = _x;
             y = _y;
             speed_x = _speed_x;
             speed_y = _speed_y;
-            life = _life;
             radius = _radius;
-            texture = _texture;
-            spriteBatch = _spriteBatch;
-            //　bulletexistの設定がない。実際すべてのプロパティが値をもつようにするのがコンストラクタの仕事でもある。
-            //　値がどうしてもわからないプロパティには、あらかじめ絶対に使用しない値やnullを代入させよう。
+            life = _life;
+            score = _score;
+            texture_name = _texture_name;
         }
 
-                public void move()
-                {
-                   // if (bulletexist > 0)// 初期化がないので,ここでは判定できなくてプログラムが終了します。
-                   // {
-                        x = x + speed_x;
-                        y = y - speed_y;
-                   // }
-
-                }
-
-        public void draw()
+        public void update(Player player)
         {
-            spriteBatch.Draw(texture, new Vector2(x, y)); 
+            x = x + speed_x;
+            y = y - speed_y;
+
+            if (x < Map.leftside - DataBase.getTex(texture_name).Width / 2 || x > Map.rightside + DataBase.getTex(texture_name).Width / 2 || y > DataBase.WindowSlimSizeY + DataBase.getTex(texture_name).Height / 2 || y < 0 - DataBase.getTex(texture_name).Height / 2)
+            {
+                remove();
+            }
+
+            if (Function.hitcircle(x, y, radius, player.x, player.y, player.radius) == true)
+            {
+                life--;
+                player.damage(atk);
+            }
+            if (life <= 0)
+            {
+                remove();
+            }
         }
 
+
+        public void draw(Drawing d)
+        {
+            d.Draw(new Vector((x - DataBase.getTex(texture_name).Width / 2),(y - DataBase.getTex(texture_name).Height / 2)),DataBase.getTex(texture_name),
+                DepthID.Effect);
+        }
+
+        public void remove(List<Bullet> bullets)
+        {
+            bullets.Remove(this);
+        }
         public void remove()
         {
-            
+            delete = true;
         }
     }
 }
