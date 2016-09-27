@@ -26,6 +26,8 @@ namespace CommonPart
         public const int WindowSizeX = 1280;
         public const int WindowSizeY = 960;
         internal static readonly Vector WindowSize = new Vector(WindowSizeX, WindowSizeY);
+        public static int music_number = 15;
+        public static bool[] music_checker=new bool[music_number]; 
 
         //倍率込みのサイズ　ふつうは扱わなくてよい　staticなのは苦しまぎれ
         public static int _WindowSizeX;

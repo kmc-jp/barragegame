@@ -14,6 +14,9 @@ namespace CommonPart {
         public int score = 0;
         public int enemyexist = 0;
         public Vector scroll_speed;
+        public Vector bar_pos = new Vector(300,600);
+        public Vector life_pos = new Vector(1100, 95);
+        public Vector score_pos = new Vector(1100, 150);
 
         int total_height = 0;
         public int scroll_start;
@@ -141,7 +144,7 @@ namespace CommonPart {
                 {
                     double random = Function.GetRandomDouble(280, 1000);
                     double random_y = Function.GetRandomDouble(100, 100);
-                    enemys.Add(new Enemy(random, random_y, 0, 1, 10, 10, 100));
+                    enemys.Add(new Enemy(random, random_y, 0, 1, 10, 10, 100,10));
                     enemyexist++;
                 }
             }
@@ -155,7 +158,11 @@ namespace CommonPart {
                     enemys[i].y > 0 - DataBase.getTex(enemys[i].texture_name).Height / 2
                 )
                 {
-                    enemys_inside_window.Add(enemys[i]);
+                    if (enemys[i].exist == false)
+                    {
+                        enemys_inside_window.Add(enemys[i]);
+                        enemys[i].exist = true;
+                    }
                 }
             }
 
@@ -214,22 +221,32 @@ namespace CommonPart {
                 }
             }
 
-
-            if (true)
+            if (enemyexist > 0)
             {
-                if (enemyexist > 0)
+                for (int i = 0; i < enemys.Count; i++)
                 {
-                    for (int i = 0; i < enemys.Count; i++)
+                    if (enemys[i] != null)
                     {
-                        if (enemys[i] != null)
-                        {
-                            enemys[i].draw(d);
-                        }
-                        
+                        enemys[i].draw(d);
                     }
                 }
-                player.draw(d);
             }
+
+            player.draw(d);
+
+            for(int i = 0; i < player.life; i++)
+            {
+                d.Draw(new Vector(life_pos.X + DataBase.getTex(player.texture_name).Width * i + 5, life_pos.Y), DataBase.getTex(player.texture_name), DepthID.Item);
+            }
+
+            RichText scoreboard = new RichText(score.ToString());
+            scoreboard.Draw(d, score_pos, DepthID.Item);
+
+            d.Draw(new Vector(0, 0), DataBase.getTex("leftside1.jpg"), DepthID.BackGroundFloor);
+            d.Draw(new Vector(1000, 0), DataBase.getTex("rightside1.jpg"), DepthID.BackGroundFloor);
+
+            d.DrawLine(bar_pos, new Vector(bar_pos.X + player.sword * 5, bar_pos.Y), 20, Color.Gold, DepthID.Status);//剣ゲージ
+
         }//draw end
     }// class end
 

@@ -19,13 +19,15 @@ namespace CommonPart
         public double radius;
         public int life;
         public int score;
+        public int sword;
         public string texture_name;
         public List<Bullet> bullets = new List<Bullet>();
-        public bool delete = false; 
+        public bool delete = false;
+        public bool exist = false;
 
 
         
-        public Enemy(double _x,double _y,double _speed_x,double _speed_y,double _radius, int _life,int _score,string _texture_name="36 40-enemy1.png")
+        public Enemy(double _x,double _y,double _speed_x,double _speed_y,double _radius, int _life,int _score,int _sword,string _texture_name="36 40-enemy1.png")
         {
             x = _x;
             y = _y;
@@ -34,6 +36,7 @@ namespace CommonPart
             radius = _radius;
             life = _life;
             score = _score;
+            sword = _sword;
             texture_name = _texture_name;
         }
 
@@ -41,6 +44,8 @@ namespace CommonPart
         {
             x = x + speed_x;
             y = y + speed_y;
+
+            
 
             if (x < Map.leftside - DataBase.getTex(texture_name).Width / 2|| x > Map.rightside + DataBase.getTex(texture_name).Width / 2||y > DataBase.WindowSlimSizeY + DataBase.getTex(texture_name).Height / 2||y < 0 - DataBase.getTex(texture_name).Height / 2)
             {
@@ -76,10 +81,7 @@ namespace CommonPart
 
         public void shot1(Player player)//自機狙い
         {
-            double e = Math.Sqrt(Function.distance(player.x,player.y,x,y));
-            double speed = 6;
-            double v = speed / e;
-            bullets.Add(new Bullet(x, y,(player.x-x)*v,-(player.y-y)*v,10,1,1));
+            bullets.Add(new Bullet(x, y,MoveType.point_target,6,null,new Vector(player.x,player.y),100,10,1,1,5));
         }
 
         public void damage(int atk)
@@ -106,6 +108,18 @@ namespace CommonPart
                     break;
                 default:
                     break;
+            }
+        }
+
+        public bool selectable()
+        {
+            if (delete == true)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
             }
         }
     }
