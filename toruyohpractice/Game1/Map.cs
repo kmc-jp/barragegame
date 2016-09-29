@@ -167,7 +167,6 @@ namespace CommonPart {
             }
 
             #region move
-            input.Update();
 
             camera += scroll_speed;//カメラupdate
             update_scroll_speed();
@@ -191,8 +190,6 @@ namespace CommonPart {
                     enemys[i].shot1(player);
                 }
             }
-
-            if (input.GetKeyPressed(KeyID.Select) == true) { step[0] = -1000; }
             if (player.life <= 0)
             {
                 //step[0] = -100;
@@ -201,6 +198,7 @@ namespace CommonPart {
             {
                 if (enemys_inside_window[i].delete == true)
                 {
+                    score += enemys_inside_window[i].score;
                     enemys.Remove(enemys_inside_window[i]);
                     enemys_inside_window.Remove(enemys_inside_window[i]);
                 }

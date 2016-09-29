@@ -27,7 +27,7 @@ namespace CommonPart
         public const int WindowSizeY = 960;
         internal static readonly Vector WindowSize = new Vector(WindowSizeX, WindowSizeY);
         public static int music_number = 15;
-        public static bool[] music_checker=new bool[music_number]; 
+        public static bool[] music_checker = new bool[music_number];
 
         //倍率込みのサイズ　ふつうは扱わなくてよい　staticなのは苦しまぎれ
         public static int _WindowSizeX;
@@ -64,6 +64,7 @@ namespace CommonPart
             Settings.WindowStyle = 1;
             d = new Drawing(spriteBatch, new Drawing3D(GraphicsDevice), this);
             scenem = new SceneManager(d);
+            SetFPS(60);
         }
 
         /// <summary>
@@ -92,7 +93,7 @@ namespace CommonPart
         /// </summary>
         protected override void UnloadContent()
         {
-           
+
             // TODO: Unload any non ContentManager content here
 
             SoundManager.Music.Close();
@@ -144,7 +145,13 @@ namespace CommonPart
             graphics.PreferredBackBufferHeight = _WindowSizeY;
             graphics.ApplyChanges();
         }
+
+        void SetFPS(double value)
+        {
+            this.TargetElapsedTime = TimeSpan.FromSeconds(1.0 / value);
+
+        }
     }
-    }
+}
 
 

@@ -27,7 +27,10 @@ namespace CommonPart
         public int avoid_time;
         public int stop_time;
         public int sword = 100;
+        public bool acceralation_mode = true;
 
+        public int skill_stop = 6;
+        public int skill_speed = 20;
         public int shouhi_sword = 10;
         public int default_speed=6;
         public int atk = 100;
@@ -37,7 +40,8 @@ namespace CommonPart
         public int damage_percent = 2;
         public int bonus_damage = 1000;
         public int default_avoid_time = 6;
-        public int avoid_speed=24;
+        public int avoid_speed=13;
+        public int acceralation=3;
         public int avoid_stop=20;
         /// <summary>
         /// 回避時に敵弾を消せる半円の半径
@@ -58,8 +62,6 @@ namespace CommonPart
 
         public void update(InputManager keymanager,Map map)
         {
-            keymanager.Update();
-
             if (stop_time <= 0)
             {
                 if (attack_mode == false)
@@ -68,18 +70,23 @@ namespace CommonPart
                     if (keymanager.IsKeyDown(KeyID.Down) == true) { y = y + speed; }
                     if (keymanager.IsKeyDown(KeyID.Right) == true) { x = x + speed; }
                     if (keymanager.IsKeyDown(KeyID.Left) == true) { x = x - speed; }
-                    if (keymanager.IsKeyDown(KeyID.Slow) == true) { speed = 2; } else { speed = default_speed; }//テスト用数値
+                    if (avoid_mode == false)
+                    {
+                        if (keymanager.IsKeyDown(KeyID.Slow) == true) { speed = 2; } else { speed = default_speed; }//テスト用数値
+                    }
+                    avoid(keymanager, map);
                 }
 
                 if (avoid_mode == false)
                 {
                     skill(keymanager, map);
                 }
-
-                avoid(keymanager,map);
+            }else
+            {
+                stop_time--;
             }
 
-            stop_time--;
+            
 
             if (x < Map.leftside+DataBase.getTex(texture_name).Width/2) { x = Map.leftside+DataBase.getTex(texture_name).Width / 2; }
             if (x > Map.rightside-DataBase.getTex(texture_name).Width / 2) { x = Map.rightside- DataBase.getTex(texture_name).Width / 2; }
@@ -130,11 +137,14 @@ namespace CommonPart
         {
             if (attack_mode == false)
             {
-                
-                if (input.IsKeyDown(KeyID.Select) == true && sword >= 20)
+               
+                if (input.IsKeyDownOld(KeyID.Select) == false && input.IsKeyDown(KeyID.Select) == true && sword >= 20) 
                 {
+                    
                     cast_skill(map);
-                    Console.Write(sword + " " + attack_mode + " ");
+                }else
+                {
+
                 }
             }
 
@@ -143,7 +153,6 @@ namespace CommonPart
                 if (closest_enemy != null)
                 {
                     double e = Math.Sqrt(Function.distance(x, y, closest_enemy.x, closest_enemy.y + enemy_below));
-                    double skill_speed = 15;
                     double v = skill_speed / e;
                     x -= (x - closest_enemy.x) * v;
                     y -= (y - closest_enemy.y - enemy_below) * v;
@@ -163,11 +172,12 @@ namespace CommonPart
                         closest_enemy.damage(atk);
                         closest_enemy = null;
                         sword -= shouhi_sword;
+                        stop_time = skill_stop;
                     }
                 }else
                 {
                     attack_time--;
-                    if (input.IsKeyDown(KeyID.Select) == true || add_attack_mode == true || sword >= 10)
+                    if ((input.IsKeyDown(KeyID.Select) == true || add_attack_mode == true) && sword >= 10)
                     {
                         cast_skill(map);
                     }
@@ -277,7 +287,6 @@ namespace CommonPart
                             && map.enemys_inside_window[i].y <= y)
                         {
                             sword += map.enemys_inside_window[i].sword;
-                            map.score += map.enemys_inside_window[i].score;
                             map.enemys_inside_window[i].remove(Unit_state.dead);
                         }
                     }    
@@ -302,7 +311,6 @@ namespace CommonPart
                             && map.enemys_inside_window[i].y >= y)
                         {
                             sword += map.enemys_inside_window[i].sword;
-                            map.score += map.enemys_inside_window[i].score;
                             map.enemys_inside_window[i].remove(Unit_state.dead);
                         }
                     }
@@ -326,7 +334,6 @@ namespace CommonPart
                             && map.enemys_inside_window[i].x >= x)
                         {
                             sword += map.enemys_inside_window[i].sword;
-                            map.score += map.enemys_inside_window[i].score;
                             map.enemys_inside_window[i].remove(Unit_state.dead);
                         }
                     }
@@ -350,33 +357,54 @@ namespace CommonPart
                             && map.enemys_inside_window[i].x <= x)
                         {
                             sword += map.enemys_inside_window[i].sword;
-                            map.score += map.enemys_inside_window[i].score;
                             map.enemys_inside_window[i].remove(Unit_state.dead);
                         }
                     }
                 }
                 #endregion
-
                 avoid_mode = true;
-                avoid_time = default_avoid_time;
+                acceralation_mode = true;
+                speed = 0;
             }
 
             if (avoid_mode == true)
             {
-                speed = avoid_speed;
-                avoid_time--;
-                if (avoid_time <= 0)
+                if (acceralation_mode==true)
                 {
-                    speed = default_speed;
-                    stop_time = avoid_stop;
-                    avoid_mode = false;
+                    Console.Write(speed);
+                    speed +=acceralation ;
+                    if (speed >= avoid_speed)
+                    {
+                        Console.Write("b");
+                        acceralation_mode = false;
+                    }
                 }
+                else
+                {
+                    if (speed > default_speed)
+                    {
+                        Console.Write("c");
+                        speed -= (acceralation/2+1);
+                    }
+                    if (speed <= default_speed)
+                    {
+                        speed = default_speed;
+                        acceralation_mode = true;
+                        avoid_mode = false;
+                        stop_time = avoid_stop;
+                    }
+                }
+                
+    
             }
         }
 
         public void damage(int atk)
         {
-            life -= atk;
+            if (attack_mode == false && avoid_mode == false)
+            {
+                life -= atk;
+            }
         }
 
         public void draw(Drawing d)
