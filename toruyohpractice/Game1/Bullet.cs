@@ -9,45 +9,39 @@ using Microsoft.Xna.Framework.Input;
 
 namespace CommonPart
 {
-    class Bullet
+    class Bullet:Projection
     {
-        public double x;
-        public double y;
-        public double speed_x;
-        public double speed_y;
         public double radius;
         public int life;
         public int score;
         public int sword;
-        public string texture_name;
 
         public bool delete = false;
         public int atk = 1;
 
-        public Bullet(double _x,double _y,double _speed_x,double _speed_y,double _radius, int _life,int _score, string _texture_name="18 20-tama1.png")
+        public Bullet(double _x,double _y,MoveType _move_type,int _speed,Animation _anime,Vector _target_pos,int _zoom_rate
+            ,double _radius, int _life,int _score,int _sword)
+            :base(_x,_y,_move_type,_speed,_anime,_target_pos,_zoom_rate)
         {
-            x = _x;
-            y = _y;
-            speed_x = _speed_x;
-            speed_y = _speed_y;
             radius = _radius;
             life = _life;
             score = _score;
-            texture_name = _texture_name;
+            sword = _sword;
         }
 
         public void update(Player player)
         {
-            x = x + speed_x;
-            y = y - speed_y;
+            base.update();
 
-            if (x < Map.leftside - DataBase.getTex(texture_name).Width / 2 || x > Map.rightside + DataBase.getTex(texture_name).Width / 2 || y > DataBase.WindowSlimSizeY + DataBase.getTex(texture_name).Height / 2 || y < 0 - DataBase.getTex(texture_name).Height / 2)
+            if (x < Map.leftside - animation.X / 2 || x > Map.rightside + animation.X / 2
+                || y > DataBase.WindowSlimSizeY + animation.Y / 2 || y < 0 - animation.Y / 2)
             {
                 remove();
             }
 
             if (Function.hitcircle(x, y, radius, player.x, player.y, player.radius) == true)
             {
+                ////////
                 life--;
                 player.damage(atk);
             }
@@ -57,17 +51,6 @@ namespace CommonPart
             }
         }
 
-
-        public void draw(Drawing d)
-        {
-            d.Draw(new Vector((x - DataBase.getTex(texture_name).Width / 2),(y - DataBase.getTex(texture_name).Height / 2)),DataBase.getTex(texture_name),
-                DepthID.Effect);
-        }
-
-        public void remove(List<Bullet> bullets)
-        {
-            bullets.Remove(this);
-        }
         public void remove()
         {
             delete = true;

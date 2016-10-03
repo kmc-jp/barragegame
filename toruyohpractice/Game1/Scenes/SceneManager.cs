@@ -48,7 +48,12 @@ namespace CommonPart {
             //シーンがなかったら終わり
             if(scene.Count == 0) return false;
             //各種更新
+
             Input.Update();
+            if (Input.IsKeyDownOld(KeyID.Select) == false && Input.IsKeyDown(KeyID.Select) == true)
+            {
+                Console.WriteLine(Input.IsKeyDownOld(KeyID.Select) + " " + Input.IsKeyDown(KeyID.Select));
+            }
             JoyPadManager.Update();
             draw.Update();
             Scene ns = nowScene;

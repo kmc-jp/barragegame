@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework;
 namespace CommonPart {
 
     public enum Unit_state { fadeout=0,dead=1,out_of_window=2 };
+    public enum MoveType {non_target=0,point_target=1,object_target=2 };
     public enum Command { left_and_go_back = -101, nothing = -100, apply_int = 110, apply_string = 111, button_on = 112, button_off = 113, previousPage = 114, nextPage = 115 };
     /// <summary>
     /// 不変なデータをまとめたクラス
@@ -67,6 +68,9 @@ namespace CommonPart {
             tda("36 40-hex1.png");
             tda("18 20-tama1.png");
             tda("testbackground.png");
+            tda("16-16 tama1.png");
+            tda("leftside1.jpg");
+            tda("rightside1.jpg");
         }
         static public Texture2D getTex(string name)
         {

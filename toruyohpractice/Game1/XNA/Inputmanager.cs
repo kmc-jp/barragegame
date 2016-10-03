@@ -104,6 +104,7 @@ namespace CommonPart
         {
             old = now;
             now = Keyboard.GetState();
+            
             index++;
         }
         public override bool IsKeyDown(KeyID k) { return now.IsKeyDown(GetKey(k)); }
