@@ -17,7 +17,7 @@ namespace CommonPart
         public double speed;
         public double radius;
         public int life;
-        public int life_piece;
+        public int life_piece = 0;
         public string texture_name;
         public bool attack_mode = false;
         public bool add_attack_mode = false;
@@ -27,10 +27,18 @@ namespace CommonPart
         public int avoid_time;
         public int stop_time;
         public int sword = 100;
-        public bool acceralation_mode = true;
+        public bool acceleration_mode = true;
+        public bool dead_mode = false;
+        public int dead_time;
+        public int muteki_time=0;
 
+        public double speed_x;
+        public double speed_y;
+
+        public int default_x;
+        public int default_y;
         public int skill_stop = 6;
-        public int skill_speed = 20;
+        public int skill_speed = 15;
         public int shouhi_sword = 10;
         public int default_speed=6;
         public int atk = 100;
@@ -41,12 +49,14 @@ namespace CommonPart
         public int bonus_damage = 1000;
         public int default_avoid_time = 6;
         public int avoid_speed=13;
-        public int acceralation=3;
+        public int acceleration=3;
         public int avoid_stop=20;
         /// <summary>
         /// 回避時に敵弾を消せる半円の半径
         /// </summary>
         public int avoid_radius=100;
+        public int default_dead_time = 60;
+        public int default_muteki_time = 30;
         
 
 
@@ -62,31 +72,67 @@ namespace CommonPart
 
         public void update(InputManager keymanager,Map map)
         {
-            if (stop_time <= 0)
+            if (dead_mode == false)
             {
-                if (attack_mode == false)
+                if (muteki_time > 0)
                 {
-                    if (keymanager.IsKeyDown(KeyID.Up) == true) { y = y - speed; }
-                    if (keymanager.IsKeyDown(KeyID.Down) == true) { y = y + speed; }
-                    if (keymanager.IsKeyDown(KeyID.Right) == true) { x = x + speed; }
-                    if (keymanager.IsKeyDown(KeyID.Left) == true) { x = x - speed; }
-                    if (avoid_mode == false)
-                    {
-                        if (keymanager.IsKeyDown(KeyID.Slow) == true) { speed = 2; } else { speed = default_speed; }//テスト用数値
-                    }
-                    avoid(keymanager, map);
+                    muteki_time--;
                 }
 
-                if (avoid_mode == false)
+                if (stop_time <= 0)
                 {
-                    skill(keymanager, map);
+                    if (attack_mode == false)
+                    {
+                        if (keymanager.IsKeyDown(KeyID.Up) == true) { y = y - speed; }
+                        if (keymanager.IsKeyDown(KeyID.Down) == true) { y = y + speed; }
+                        if (keymanager.IsKeyDown(KeyID.Right) == true) { x = x + speed; }
+                        if (keymanager.IsKeyDown(KeyID.Left) == true) { x = x - speed; }
+                        if (avoid_mode == false)
+                        {
+                            if (keymanager.IsKeyDown(KeyID.Slow) == true) { speed = 2; } else { speed = default_speed; }//テスト用数値
+                        }
+                        avoid(keymanager, map);
+                    }
+
+                    if (avoid_mode == false)
+                    {
+                        skill(keymanager, map);
+                    }
+                }
+                else
+                {
+                    stop_time--;
                 }
             }else
             {
-                stop_time--;
+                /*dead_time--;
+                if (dead_time <= 0)
+                {
+                    x = DataBase.WindowDefaultSizeX / 2;
+                    y = 500;
+                    dead_mode = false;
+                    dead_time = default_dead_time;
+                    muteki_time = default_muteki_time;
+                }*/
+                double e = Math.Sqrt(Function.distance(x, y, DataBase.WindowDefaultSizeX / 2, 500));
+                if (e != 0)
+                {
+                    speed_x = (x - DataBase.WindowDefaultSizeX / 2) * speed / e;
+                    speed_y = (y - 500) * speed / e;
+                    x -= speed_x;
+                    y -= speed_y;
+                }
+                else
+                {
+                    dead_mode = false;
+                    muteki_time = default_muteki_time;
+                }
+                if (Function.hitcircle(x, y, 0, DataBase.WindowDefaultSizeX / 2, 500, speed/2))
+                {
+                    dead_mode = false;
+                    muteki_time = default_muteki_time;
+                }
             }
-
-            
 
             if (x < Map.leftside+DataBase.getTex(texture_name).Width/2) { x = Map.leftside+DataBase.getTex(texture_name).Width / 2; }
             if (x > Map.rightside-DataBase.getTex(texture_name).Width / 2) { x = Map.rightside- DataBase.getTex(texture_name).Width / 2; }
@@ -121,7 +167,6 @@ namespace CommonPart
                     }
                 }
             }
-            
         }
 
         public void cast_skill(Map map)
@@ -137,30 +182,25 @@ namespace CommonPart
         {
             if (attack_mode == false)
             {
-               
                 if (input.IsKeyDownOld(KeyID.Select) == false && input.IsKeyDown(KeyID.Select) == true && sword >= 20) 
                 {
-                    
                     cast_skill(map);
-                }else
-                {
-
                 }
             }
 
             if (attack_mode == true)
             {
+
+                if (closest_enemy != null && closest_enemy.selectable() == false)
+                {
+                    search_enemy(map);
+                }else
                 if (closest_enemy != null)
                 {
                     double e = Math.Sqrt(Function.distance(x, y, closest_enemy.x, closest_enemy.y + enemy_below));
                     double v = skill_speed / e;
                     x -= (x - closest_enemy.x) * v;
                     y -= (y - closest_enemy.y - enemy_below) * v;
-
-                    if (closest_enemy.selectable() == false)
-                    {
-                        search_enemy(map);
-                    }
 
                     if (input.IsKeyDown(KeyID.Select) == true)
                     {
@@ -177,9 +217,10 @@ namespace CommonPart
                 }else
                 {
                     attack_time--;
-                    if ((input.IsKeyDown(KeyID.Select) == true || add_attack_mode == true) && sword >= 10)
+                    if ((input.GetKeyPressed(KeyID.Select) == true || add_attack_mode == true) && sword >= 10)
                     {
                         cast_skill(map);
+                        add_attack_mode = false;
                     }
                     if(input.IsKeyDown(KeyID.Up)==true|| input.IsKeyDown(KeyID.Down) == true 
                         || input.IsKeyDown(KeyID.Right) == true || input.IsKeyDown(KeyID.Left) == true)
@@ -190,7 +231,6 @@ namespace CommonPart
 
                 if (attack_time <= 0||map.enemys_inside_window.Count<=0)
                 {
-                    
                     attack_mode = false;
                     add_attack_mode = false;
                 }
@@ -264,7 +304,7 @@ namespace CommonPart
 
         public void avoid(InputManager input,Map map)
         {
-            if (avoid_mode == false && input.IsKeyDown(KeyID.Cancel) == true && (input.IsKeyDown(KeyID.Up) == true || input.IsKeyDown(KeyID.Down) == true
+            if (avoid_mode == false && input.GetKeyPressed(KeyID.Cancel) == true && (input.IsKeyDown(KeyID.Up) == true || input.IsKeyDown(KeyID.Down) == true
                 || input.IsKeyDown(KeyID.Right) == true || input.IsKeyDown(KeyID.Left) == true)) 
             {
                 #region　上下左右の回避
@@ -277,7 +317,10 @@ namespace CommonPart
                             if (Function.hitcircle(x, y, avoid_radius, map.enemys_inside_window[i].bullets[j].x, map.enemys_inside_window[i].bullets[j].y, map.enemys_inside_window[i].bullets[j].radius)
                             && map.enemys_inside_window[i].bullets[j].y <= y)
                             {
-                                sword += map.enemys_inside_window[i].bullets[j].sword;
+                                map.pros.Add(new Projection(map.enemys_inside_window[i].bullets[j].x, map.enemys_inside_window[i].bullets[j].y,
+                                    MoveType.object_target, map.pro_speed,Map.pro_acceleration, new Animation(new SingleTextureAnimationData(10, TextureID.Score, 3, 1)), this, 100));
+                                map.pro_swords.Add(map.enemys_inside_window[i].bullets[j].sword);
+
                                 map.score += map.enemys_inside_window[i].bullets[j].score;
                                 map.enemys_inside_window[i].bullets[j].remove();
                             }
@@ -291,7 +334,7 @@ namespace CommonPart
                         }
                     }    
                 }
-                if (input.IsKeyDown(KeyID.Down) == true)
+                else if (input.IsKeyDown(KeyID.Down) == true)
                 {
                     for (int i = 0; i < map.enemys_inside_window.Count; i++)
                     {
@@ -300,8 +343,10 @@ namespace CommonPart
                             if (Function.hitcircle(x, y, avoid_radius, map.enemys_inside_window[i].bullets[j].x, map.enemys_inside_window[i].bullets[j].y, map.enemys_inside_window[i].bullets[j].radius)
                             && map.enemys_inside_window[i].bullets[j].y >= y)
                             {
-                                Console.Write(i+" ");
-                                sword += map.enemys_inside_window[i].bullets[j].sword;
+
+                                map.pros.Add(new Projection(map.enemys_inside_window[i].bullets[j].x, map.enemys_inside_window[i].bullets[j].y,
+                                    MoveType.object_target, map.pro_speed,Map.pro_acceleration ,new Animation(new SingleTextureAnimationData(10, TextureID.Score, 3, 1)), this, 100));
+                                map.pro_swords.Add(map.enemys_inside_window[i].bullets[j].sword);
                                 map.score += map.enemys_inside_window[i].bullets[j].score;
                                 map.enemys_inside_window[i].bullets[j].remove();
                             }
@@ -315,7 +360,7 @@ namespace CommonPart
                         }
                     }
                 }
-                if (input.IsKeyDown(KeyID.Right) == true)
+                else if (input.IsKeyDown(KeyID.Right) == true)
                 {
                     for (int i = 0; i < map.enemys_inside_window.Count; i++)
                     {
@@ -324,7 +369,9 @@ namespace CommonPart
                             if (Function.hitcircle(x, y, avoid_radius, map.enemys_inside_window[i].bullets[j].x, map.enemys_inside_window[i].bullets[j].y, map.enemys_inside_window[i].bullets[j].radius)
                             && map.enemys_inside_window[i].bullets[j].x >= x)
                             {
-                                sword += map.enemys_inside_window[i].bullets[j].sword;
+                                map.pros.Add(new Projection(map.enemys_inside_window[i].bullets[j].x, map.enemys_inside_window[i].bullets[j].y,
+                                    MoveType.object_target, map.pro_speed,Map.pro_acceleration, new Animation(new SingleTextureAnimationData(10, TextureID.Score, 3, 1)), this, 100));
+                                map.pro_swords.Add(map.enemys_inside_window[i].bullets[j].sword);
                                 map.score += map.enemys_inside_window[i].bullets[j].score;
                                 map.enemys_inside_window[i].bullets[j].remove();
                             }
@@ -338,7 +385,7 @@ namespace CommonPart
                         }
                     }
                 }
-                if (input.IsKeyDown(KeyID.Left) == true)
+                else if (input.IsKeyDown(KeyID.Left) == true)
                 {
                     for (int i = 0; i < map.enemys_inside_window.Count; i++)
                     {
@@ -347,7 +394,9 @@ namespace CommonPart
                             if (Function.hitcircle(x, y, avoid_radius, map.enemys_inside_window[i].bullets[j].x, map.enemys_inside_window[i].bullets[j].y, map.enemys_inside_window[i].bullets[j].radius)
                             && map.enemys_inside_window[i].bullets[j].x <= x)
                             {
-                                sword += map.enemys_inside_window[i].bullets[j].sword;
+                                map.pros.Add(new Projection(map.enemys_inside_window[i].bullets[j].x, map.enemys_inside_window[i].bullets[j].y,
+                                     MoveType.object_target, map.pro_speed,Map.pro_acceleration, new Animation(new SingleTextureAnimationData(10, TextureID.Score, 3, 1)), this, 100));
+                                map.pro_swords.Add(map.enemys_inside_window[i].bullets[j].sword);
                                 map.score += map.enemys_inside_window[i].bullets[j].score;
                                 map.enemys_inside_window[i].bullets[j].remove();
                             }
@@ -363,47 +412,44 @@ namespace CommonPart
                 }
                 #endregion
                 avoid_mode = true;
-                acceralation_mode = true;
+                acceleration_mode = true;
                 speed = 0;
             }
 
             if (avoid_mode == true)
             {
-                if (acceralation_mode==true)
+                if (acceleration_mode==true)
                 {
-                    Console.Write(speed);
-                    speed +=acceralation ;
+                    speed +=acceleration ;
                     if (speed >= avoid_speed)
                     {
-                        Console.Write("b");
-                        acceralation_mode = false;
+                        acceleration_mode = false;
                     }
                 }
                 else
                 {
                     if (speed > default_speed)
                     {
-                        Console.Write("c");
-                        speed -= (acceralation/2+1);
+                        speed -= (acceleration/2+1);
                     }
                     if (speed <= default_speed)
                     {
                         speed = default_speed;
-                        acceralation_mode = true;
+                        acceleration_mode = true;
                         avoid_mode = false;
                         stop_time = avoid_stop;
                     }
                 }
-                
-    
             }
         }
 
         public void damage(int atk)
         {
-            if (attack_mode == false && avoid_mode == false)
+            if (attack_mode == false && avoid_mode == false && dead_mode == false && muteki_time <= 0) 
             {
                 life -= atk;
+                dead_mode = true;
+                dead_time=default_dead_time;
             }
         }
 

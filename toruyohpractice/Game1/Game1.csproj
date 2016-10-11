@@ -46,6 +46,7 @@
     <Compile Include="Datas\MusicPlayer2.cs" />
     <Compile Include="Datas\RandomXS.cs" />
     <Compile Include="Datas\SEPlayer.cs" />
+    <Compile Include="Datas\SkillData.cs" />
     <Compile Include="Datas\TextureManager.cs" />
     <Compile Include="Enemy.cs" />
     <Compile Include="Map.cs" />
@@ -55,6 +56,8 @@
     <Compile Include="Projection.cs" />
     <Compile Include="Save.cs" />
     <Compile Include="Scenes\MapScene.cs" />
+    <Compile Include="Scenes\StageSelectScene.cs" />
+    <Compile Include="Skill.cs" />
     <Compile Include="Updater.cs" />
     <Compile Include="Workers\Worker.cs" />
     <Compile Include="Workers\WorkerManager.cs" />
@@ -99,6 +102,9 @@
     <Content Include="Content\16-16box_flame.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\16-16_tama2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\18 20-tama1.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -113,6 +119,12 @@
     </Content>
     <Content Include="Content\36-40 hex1.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\60 105-player.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\background3.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\KMC.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -129,11 +141,20 @@
     <Content Include="Content\scroll.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\Stage2_Boss.mp3">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\testbackground.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\white.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\testlife.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\140 220-enemy1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Icon.ico" />
     <Content Include="UpdateUnziper.exe" />

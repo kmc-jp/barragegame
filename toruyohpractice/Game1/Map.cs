@@ -14,9 +14,16 @@ namespace CommonPart {
         public int score = 0;
         public int enemyexist = 0;
         public Vector scroll_speed;
+        public int stage;
+
+        public List<Projection> pros = new List<Projection>();
+        public List<int> pro_swords = new List<int>();
+        public double pro_speed = -2;
+        public const double pro_acceleration = 1;
+
         public Vector bar_pos = new Vector(300,600);
-        public Vector life_pos = new Vector(1100, 95);
-        public Vector score_pos = new Vector(1100, 150);
+        public Vector life_pos = new Vector(1050, 95);
+        public Vector score_pos = new Vector(1100, 180);
 
         int total_height = 0;
         public int scroll_start;
@@ -28,7 +35,6 @@ namespace CommonPart {
 
 
         public List<string> background_names = new List<string>();
-        public string music_title;
         public List<int> step = new List<int>();
 
         /// <summary>
@@ -42,11 +48,14 @@ namespace CommonPart {
         public static int leftside = 280;
         public static int rightside = 1000;
 
+        public string life_tex_name = "testlife.png";
+
         public Vector camera = new Vector(leftside, 0);
 
-
-        public Map(string _background_name= "testbackground.png")//コンストラクタ
+        public Map(string _background_name,int _stage)//コンストラクタ
         {
+            stage = _stage;
+
             background_names.Add(_background_name);
             background_names.Add(_background_name);
             step.Add(0);
@@ -54,7 +63,7 @@ namespace CommonPart {
             v.Add(new Vector(leftside, v[0].Y - DataBase.getTex(background_names[1]).Height));
            
             scroll_speed = new Vector(defaultspeed_x, defaultspeed_y);
-            player = new Player(DataBase.WindowDefaultSizeX/2, 500, 6, 10, 5);
+            player = new Player(DataBase.WindowDefaultSizeX/2, 500, 6, 10, 5,"60 105-player.png");
 
             set_change_scroll(600,20,120);
 
@@ -62,6 +71,8 @@ namespace CommonPart {
             {
                 total_height += DataBase.getTex(background_names[i]).Height;
             }
+
+            SoundManager.Music.PlayBGM(BGMID.stage2, true);
         }
         public Map(string[] bns)
         {
@@ -138,13 +149,13 @@ namespace CommonPart {
             Random cRandom = new System.Random();
             int iRandom = cRandom.Next(1280);
 
-            if (step[0] % 100 == 0)
+            if (step[0] % 100 == 0 && step[0] > -1) 
             {
-                for (int i = 0; i < 2; i++)
+                for (int i = 0; i < 1; i++)
                 {
                     double random = Function.GetRandomDouble(280, 1000);
                     double random_y = Function.GetRandomDouble(100, 100);
-                    enemys.Add(new Enemy(random, random_y, 0, 1, 10, 10, 100,10));
+                    enemys.Add(new Enemy(random, random_y, 0, 1, 10, 10, 100,10,"140 220-enemy1.png"));
                     enemyexist++;
                 }
             }
@@ -181,34 +192,63 @@ namespace CommonPart {
                 }
             }
 
+            for(int i = 0;i < pros.Count; i++)
+            {
+                pros[i].update();
+                if (pros[i].speed >= 40)
+                {
+                    pros[i].speed = 40;
+                }
+            }
+
             #endregion
 
             if (step[0] % 100 == 0)
             {
                 for (int i = 0; i < enemys.Count; i++)
                 {
-                    enemys[i].shot1(player);
+                    enemys[i].shot(player);
                 }
             }
-            if (player.life <= 0)
-            {
-                //step[0] = -100;
-            }
+
             for (int i = 0; i < enemys_inside_window.Count; i++)
             {
                 if (enemys_inside_window[i].delete == true)
                 {
-                    score += enemys_inside_window[i].score;
+                    if (enemys_inside_window[i].fadeout == false)
+                    {
+                        enemys_inside_window[i].total_score += enemys_inside_window[i].score;
+                        for(int j = 0; j < enemys_inside_window[i].bullets.Count; j++)
+                        {
+                            enemys_inside_window[i].total_score += enemys_inside_window[i].bullets[j].score;
+
+                            pros.Add(new Projection(enemys_inside_window[i].bullets[j].x, enemys_inside_window[i].bullets[j].y,
+                                MoveType.object_target, pro_speed, pro_acceleration,new Animation(new SingleTextureAnimationData(10, TextureID.Score, 3, 1)), player, 100));
+                            pro_swords.Add(enemys_inside_window[i].bullets[j].sword);
+                        }
+                        score += enemys_inside_window[i].total_score;
+                    }
                     enemys.Remove(enemys_inside_window[i]);
                     enemys_inside_window.Remove(enemys_inside_window[i]);
                 }
             }
+
+            for (int i = 0; i < pros.Count; i++)
+            {
+                if (Function.hitcircle(pros[i].x, pros[i].y, 0, player.x, player.y, 20))
+                {
+                    player.sword += pro_swords[i];
+                    pros.Remove(pros[i]);
+                    pro_swords.Remove(pro_swords[i]);
+                }
+            }
+
             step[0]++;
+
         }//update end
 
         public void Draw(Drawing d)
         {
-            
             d.SetDrawAbsolute();
 
             for (int i = 0; i < v.Count; i++)
@@ -230,14 +270,22 @@ namespace CommonPart {
                 }
             }
 
-            player.draw(d);
+            for (int i = 0; i < pros.Count; i++)
+            {
+                pros[i].draw(d);
+            }
+
+            //if (player.dead_mode == false)
+            //{
+                player.draw(d);
+            //}
 
             for(int i = 0; i < player.life; i++)
             {
-                d.Draw(new Vector(life_pos.X + DataBase.getTex(player.texture_name).Width * i + 5, life_pos.Y), DataBase.getTex(player.texture_name), DepthID.Item);
+                d.Draw(new Vector(life_pos.X + DataBase.getTex(life_tex_name).Width * i , life_pos.Y), DataBase.getTex(life_tex_name), DepthID.Item);
             }
 
-            RichText scoreboard = new RichText(score.ToString());
+            RichText scoreboard=new RichText(score.ToString(), FontID.Medium,Color.White);
             scoreboard.Draw(d, score_pos, DepthID.Item);
 
             d.Draw(new Vector(0, 0), DataBase.getTex("leftside1.jpg"), DepthID.BackGroundFloor);

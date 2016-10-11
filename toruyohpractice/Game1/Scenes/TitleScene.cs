@@ -39,15 +39,14 @@ namespace CommonPart {
                 enabled[(int)TitleIndex.Save] = true;
             }
             cursor.Update();
-            SoundManager.Music.PlayBGM(BGMID.None, true);
             base.SceneUpdate();
         }
-        //kokoya-
+        
         protected override void Choosed(int i) {
             if(!enabled[i]) return;
             switch((TitleIndex)i) {
                 case TitleIndex.Start:
-                    new MapScene(scenem);
+                    new StageSelectScene(scenem);
                     break;
                 case TitleIndex.Load:
                     new SoundTest(scenem);

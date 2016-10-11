@@ -11,6 +11,10 @@ using CommonPart;
 // 上記の程度の内容をクレジットやマニュアルに記載したほうがよいでしょう。 
 
 namespace CommonPart {
+    enum BGMID
+    {
+        None = -1, stage1 = 1, stage2 = 2,
+    }
     /// <summary>
     /// BGMを再生するためのクラス（with WASAPI in NAudio）
     /// </summary>
@@ -19,13 +23,15 @@ namespace CommonPart {
         //このプロパティはゲージ用のプログラムを手抜きするためで、普通はいらないと思います
         public PlayerSet GetPlayingSet { get { return playingSet; } }
         public BGMID GetPlayingID { get { return playing; } }
-
+        /// <summary>
+        /// 配列の個数にlengthは使えません（原因不明）。直接数字を代入すれば大丈夫です。
+        /// </summary>
         static readonly int length = Enum.GetNames(typeof(BGMID)).Length - 1;
-        string[] fileNames = new string[length];
-        long[] loopPoint = new long[length];
-        long[] loopEnd = new long[length];
-        int[] volumes = new int[length];
-        BGMID playing = BGMID.None;
+        string[] fileNames = new string[20];
+        long[] loopPoint = new long[20];
+        long[] loopEnd = new long[20];
+        int[] volumes = new int[20];
+        BGMID playing= BGMID.None;
         BGMID interrupted = BGMID.None;
         PlayerSet playingSet;
         PlayerSet interruptedSet;
@@ -41,6 +47,9 @@ namespace CommonPart {
         }
         int _volume = 800;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public MusicPlayer2() {
             Load();
         }
@@ -53,6 +62,8 @@ namespace CommonPart {
         }
         void Load() {
             //SetBGM(BGMID.GrandGrass, "Content/Sounds/grand_glass2.mp3", 100, 1209600, 5594400);
+            SetBGM(BGMID.stage2, "Content/Stage2_Boss.mp3", 100);
+
         }
         /// <summary>
         /// 音楽の情報をセットする
@@ -297,8 +308,5 @@ namespace CommonPart {
     }
     static class WaveStreamExtension {
         public static int BytesPer1chSample(this WaveStream w) { return w.WaveFormat.BitsPerSample / 8 * w.WaveFormat.Channels; }
-    }
-    enum BGMID {
-        None = -1,
     }
 }

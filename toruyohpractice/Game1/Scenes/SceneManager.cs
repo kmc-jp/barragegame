@@ -52,7 +52,7 @@ namespace CommonPart {
             Input.Update();
             if (Input.IsKeyDownOld(KeyID.Select) == false && Input.IsKeyDown(KeyID.Select) == true)
             {
-                Console.WriteLine(Input.IsKeyDownOld(KeyID.Select) + " " + Input.IsKeyDown(KeyID.Select));
+
             }
             JoyPadManager.Update();
             draw.Update();
