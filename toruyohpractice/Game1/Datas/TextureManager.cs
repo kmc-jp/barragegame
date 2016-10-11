@@ -45,6 +45,7 @@ namespace CommonPart {
             SetTexture(TextureID.White, "white");
             SetTexture(TextureID.Scroll, "scroll");
             SetTexture(TextureID.Bullet, "16-16 tama1");
+            SetTexture(TextureID.Score, "16-16_tama2");
         }
 
         /// <summary>
@@ -75,7 +76,7 @@ namespace CommonPart {
     }
     enum FontID{ Medium }
     enum TextureID {
-        None, White, Scroll, MessageBack,Bullet
+        None, White, Scroll, MessageBack,Bullet,Score
     }
     /// <summary>
     /// 過去の遺産

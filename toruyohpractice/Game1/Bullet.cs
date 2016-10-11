@@ -19,9 +19,18 @@ namespace CommonPart
         public bool delete = false;
         public int atk = 1;
 
-        public Bullet(double _x,double _y,MoveType _move_type,int _speed,Animation _anime,Vector _target_pos,int _zoom_rate
+        public Bullet(double _x,double _y, MoveType _move_type,double _speed,double _acceleration,Animation _anime,Vector _target_pos,int _zoom_rate
             ,double _radius, int _life,int _score,int _sword)
-            :base(_x,_y,_move_type,_speed,_anime,_target_pos,_zoom_rate)
+            :base(_x,_y,_move_type,_speed,_acceleration,_anime,_target_pos,_zoom_rate)
+        {
+            radius = _radius;
+            life = _life;
+            score = _score;
+            sword = _sword;
+        }
+        public Bullet(double _x, double _y, MoveType _move_type, double _speed, double _acceleration, double _radian, Animation _anime, int _zoom_rate,
+            double _radius, int _life, int _score, int _sword)
+            : base(_x, _y, _move_type, _speed, _acceleration,_radian, _anime, _zoom_rate)
         {
             radius = _radius;
             life = _life;
@@ -32,7 +41,6 @@ namespace CommonPart
         public void update(Player player)
         {
             base.update();
-
             if (x < Map.leftside - animation.X / 2 || x > Map.rightside + animation.X / 2
                 || y > DataBase.WindowSlimSizeY + animation.Y / 2 || y < 0 - animation.Y / 2)
             {

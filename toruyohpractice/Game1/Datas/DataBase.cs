@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework;
 namespace CommonPart {
 
     public enum Unit_state { fadeout=0,dead=1,out_of_window=2 };
-    public enum MoveType {non_target=0,point_target=1,object_target=2 };
+    public enum MoveType {non_target=0,point_target=1,object_target=2,go_straight };
     public enum Command { left_and_go_back = -101, nothing = -100, apply_int = 110, apply_string = 111, button_on = 112, button_off = 113, previousPage = 114, nextPage = 115 };
     /// <summary>
     /// 不変なデータをまとめたクラス
@@ -33,7 +33,14 @@ namespace CommonPart {
         /// string is its path, maybe from "Content".  and also string key contains a size of texture's single unit
         /// </summary>
         public static  Dictionary<string, Texture2Ddata> TexturesDataDictionary = new Dictionary<string, Texture2Ddata>();
-
+        #region SkillData
+        public static Dictionary<string, SkillData> SkillDatasDictionary = new Dictionary<string, SkillData>();
+        public static void setupSkillData()
+        {
+            SkillDatasDictionary.Add("shot",new SingleShotSkillData("shot", 60, -1, 0.3, 0,5,0,1,50,10));
+            SkillDatasDictionary.Add("circle", new SingleShotSkillData("circle", 60, 5, 0, 2*Math.PI/*Math.PI/10*/, 5, 0, 1, 50, 10));
+        }
+        #endregion
         private static ContentManager Content;
 
         public static readonly int WindowDefaultSizeX = 1280;
@@ -71,6 +78,13 @@ namespace CommonPart {
             tda("16-16 tama1.png");
             tda("leftside1.jpg");
             tda("rightside1.jpg");
+            tda("60 105-player.png");
+            tda("background3.png");
+            tda("testlife.png");
+            tda("140 220-enemy1.png");
+            tda("16-16_tama2.png");
+
+            setupSkillData();
         }
         static public Texture2D getTex(string name)
         {
