@@ -1,16 +1,16 @@
-﻿using cellgame;
+﻿using CommonPart;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Runtime.InteropServices;
 
-namespace Game1
+namespace CommonPart
 {
     /// <summary>
     /// This is the main type for your game.
@@ -19,25 +19,30 @@ namespace Game1
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Texture2D player_texture;
-        Texture2D bullet_texture;
-        List<Texture2D> enemy_textures;
-        Random cRandom = new System.Random();
-        KeyManager keymanager = new KeyManager();
-
-        Player player;
-        public int bulletexist = 0;
-        public int enemyexist = 0;
-        List<Bullet> bullets = new List<Bullet>();
-        List<Enemy> enemys = new List<Enemy>();
-        public int frame = 0;
-        public int scenenumber = 0;
+        SceneManager scenem;
+        Drawing d;
 
 
+        public const int WindowSizeX = 1280;
+        public const int WindowSizeY = 960;
+        internal static readonly Vector WindowSize = new Vector(WindowSizeX, WindowSizeY);
+
+        //倍率込みのサイズ　ふつうは扱わなくてよい　staticなのは苦しまぎれ
+        public static int _WindowSizeX;
+        public static int _WindowSizeY;
+
+
+        [DllImport("kernel32")]
+        static extern bool AllocConsole();
         public Game1()
         {
+            this.Window.Title = "Barrage Game";
+            this.IsMouseVisible = true;
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            graphics.PreferredBackBufferWidth = 1280;
+            graphics.PreferredBackBufferHeight = 720;
+            graphics.ApplyChanges();
         }
 
         /// <summary>
@@ -48,9 +53,15 @@ namespace Game1
         /// </summary>
         protected override void Initialize()
         {
+            //コンソールモード
+            AllocConsole();
             // TODO: Add your initialization logic here
-
+            ChangeWindowSize(1);
             base.Initialize();
+            spriteBatch = new SpriteBatch(GraphicsDevice);
+            Settings.WindowStyle = 1;
+            d = new Drawing(spriteBatch, new Drawing3D(GraphicsDevice), this);
+            scenem = new SceneManager(d);
         }
 
         /// <summary>
@@ -60,22 +71,17 @@ namespace Game1
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            DataBase.Load_Contents(Content);
+            /*pl =Content.Load< Texture2D > ("18 20-bul1.png");
+            Texture2D[]
             player_texture = Content.Load<Texture2D>("36 40-hex1.png");
-            player = new Player(0, 0, 6, player_texture, spriteBatch);
-
-            bullet_texture = Content.Load<Texture2D>("36 40-bul1.png");
-
-            player = new Player(0, 0, 6 ,1, player_texture, spriteBatch);
-
-            //bullet = new Bullet(player.x,player.y,0,5,1,bullet_texture,spriteBatch);
-            //bullets.Add(new Bullet(player.x, player.y, 0, 5, 1, bullet_texture, spriteBatch));
-
-            enemy_textures=new List<Texture2D>();
-
+            bullet_textures.Add(Content.Load<Texture2D>("18 20-bul1.png"));
             enemy_textures.Add(Content.Load<Texture2D>("36 40-ene1.png")) ;
+            */
 
             // TODO: use this.Content to load your game content here
+
+            TextureManager.Load(Content);
         }
 
         /// <summary>
@@ -84,10 +90,10 @@ namespace Game1
         /// </summary>
         protected override void UnloadContent()
         {
-            player_texture.Dispose();
-            enemy_textures[0].Dispose();
-            bullet_texture.Dispose();
+           
             // TODO: Unload any non ContentManager content here
+
+            SoundManager.Music.Close();
         }
 
         /// <summary>
@@ -97,93 +103,18 @@ namespace Game1
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         /// 
 
-
+        bool exited;
 
         protected override void Update(GameTime gameTime)//mainloop
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            keymanager.Update();
-            if (keymanager.IsKeyDown(KeyID.Select) == true) { scenenumber++; }
 
-
-           
-            int iRandom = cRandom.Next(600);
-            iRandom = cRandom.Next(600);
-
-            /*spriteBatchは異なると描画の前後が必ず新しいspriteBatchの描画一番上になると思います。どのみちちょっと勿体無い感じです。
-             * 
-             * なので、どうするかを考えましょう。
-           　*/
-            if (frame % 100 == 0)
-            {
-                enemyspriteBatchs.Add(new SpriteBatch(GraphicsDevice));
-                enemys.Add(new Enemy(iRandom, 0, 0, 1, 1, enemy_textures[0], enemyspriteBatchs[frame/100]));
-                enemyexist++;
-            }
-            
-            if (enemyexist>0)
-
-            if (scenenumber > 0)
-
-            {
-
-                ///move
-                player.move();
-                player.shot(bullet_texture);
-
-                //enemy生成
-                int iRandom = cRandom.Next(600);
-                iRandom = cRandom.Next(600);
-                if (frame % 100 == 0)
-                {
-                    enemys.Add(new Enemy(iRandom, 0, 0, 1, 1,10, enemy_textures[0], spriteBatch));
-                    enemyexist++;
-                }
-
-            }
-
-
-
-
-                if (enemyexist > 0)
-                {
-                    for (int i = 0; i < enemys.Count; i++)
-                    {
-                        enemys[i].move();
-                    }
-                }
-                /*これはBullet.csの方に書いています。
-                if (bulletexist > 0)
-                {
-                    for (int i = 0; i < bullets.Count; i++)
-                    {
-                        bullets[i].move();
-                    }
-                }
-                else { player.x = 100;player.y = 100; }
-                */
-
-                ///remove
-                
-                if (enemyexist>0)
-                {
-                    for (int i = 0; i < enemys.Count; i++)
-                    {
-                        if (enemys[i] != null) { enemys[i].remove(i,player); }
-                    }
-                } //例外がでる
-                
-
-                frame++;
-                // TODO: Add your update logic here
-
-
-                
-
-                base.Update(gameTime);
-            
+            // TODO: Add your update logic here            
+            if (!scenem.Update() && !exited) { this.Exit(); SoundManager.Music.Close(); exited = true; }
+            base.Update(gameTime);
+            SoundManager.Update();
         }
 
         /// <summary>
@@ -192,32 +123,26 @@ namespace Game1
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         /// 
 
-
         protected override void Draw(GameTime gameTime)//render
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            spriteBatch.Begin();
-
-            if (scenenumber > 0)
-            {
-                //if (bulletexist>0) {for(int i = 0; i < bullets.Count; i++){ bullets[i].draw();} }
-                if (enemyexist > 0)
-                {
-                    for (int i = 0; i < enemys.Count; i++)
-                    {
-                        if (enemys[i] != null) { enemys[i].draw(); }
-                    }
-                }
-
-                player.draw();
-            }
-
-            spriteBatch.End();
             // TODO: Add your drawing code here
 
+            scenem.Draw();
+
             base.Draw(gameTime);
-                }
         }
+        public void ChangeWindowSize(int style)
+        {
+            _WindowSizeX = 1280;
+            if (style == 1) _WindowSizeY = 720;
+            else _WindowSizeY = 720;
+
+            graphics.PreferredBackBufferWidth = _WindowSizeX;
+            graphics.PreferredBackBufferHeight = _WindowSizeY;
+            graphics.ApplyChanges();
+        }
+    }
     }
 
 
