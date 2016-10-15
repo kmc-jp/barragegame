@@ -128,9 +128,12 @@ namespace Game1
             if (scenenumber > 0)
 
             {
+
+                ///move
                 player.move();
                 player.shot(bullet_texture);
 
+                //enemy生成
                 int iRandom = cRandom.Next(600);
                 iRandom = cRandom.Next(600);
                 if (frame % 100 == 0)
@@ -162,7 +165,16 @@ namespace Game1
                 else { player.x = 100;player.y = 100; }
                 */
 
-                //if (enemyexist>0) { for (int i = 0; i < enemys.Count; i++) { enemys[i].remove(i); } } //例外がでる
+                ///remove
+                
+                if (enemyexist>0)
+                {
+                    for (int i = 0; i < enemys.Count; i++)
+                    {
+                        if (enemys[i] != null) { enemys[i].remove(i,player); }
+                    }
+                } //例外がでる
+                
 
                 frame++;
                 // TODO: Add your update logic here
@@ -189,7 +201,14 @@ namespace Game1
             if (scenenumber > 0)
             {
                 //if (bulletexist>0) {for(int i = 0; i < bullets.Count; i++){ bullets[i].draw();} }
-                if (enemyexist > 0) { for (int i = 0; i < enemys.Count; i++) { if (enemys.[i] != null) { enemys[i].draw(); } } }
+                if (enemyexist > 0)
+                {
+                    for (int i = 0; i < enemys.Count; i++)
+                    {
+                        if (enemys[i] != null) { enemys[i].draw(); }
+                    }
+                }
+
                 player.draw();
             }
 
