@@ -8,7 +8,6 @@ namespace CommonPart
 {
     class Skill
     {
-        SkillData skillData;
         public int coolDown=0;
         public string skillName;
 
@@ -16,9 +15,18 @@ namespace CommonPart
         {
             skillName = _skillName;
         }
+
         public void update()
         {
             coolDown--;
+        }
+
+        public void used(int i = 0)
+        {
+            if (i == 0)
+            {
+                coolDown = DataBase.getSkillData(skillName).cooldownFps;
+            }
         }
     }
 }
