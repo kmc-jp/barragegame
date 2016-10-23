@@ -15,11 +15,12 @@ namespace CommonPart {
         public int enemyexist = 0;
         public Vector scroll_speed;
         public int stage;
+        protected Animation sword_animation;
 
         public List<Projection> pros = new List<Projection>();
         public List<int> pro_swords = new List<int>();
         public double pro_speed = -2;
-        public const double pro_acceleration = 1;
+        public double pro_acceleration = 1;
 
         public Vector bar_pos = new Vector(300,600);
         public Vector life_pos = new Vector(1050, 95);
@@ -48,7 +49,7 @@ namespace CommonPart {
         public static int leftside = 280;
         public static int rightside = 1000;
 
-        public string life_tex_name = "testlife.png";
+        public string life_tex_name = "testlife";
 
         public Vector camera = new Vector(leftside, 0);
 
@@ -60,10 +61,10 @@ namespace CommonPart {
             background_names.Add(_background_name);
             step.Add(0);
             v.Add(new Vector(leftside, DataBase.WindowSlimSizeY - DataBase.getTex(background_names[0]).Height));
-            v.Add(new Vector(leftside, v[0].Y - DataBase.getTex(background_names[1]).Height));
+            v.Add(new Vector(leftside, v[0].Y - DataBase.getTex(background_names[0]).Height));
            
             scroll_speed = new Vector(defaultspeed_x, defaultspeed_y);
-            player = new Player(DataBase.WindowDefaultSizeX/2, 500, 6, 10, 5,"60 105-player.png");
+            player = new Player(DataBase.WindowDefaultSizeX/2, 500, 6, 10, 5,"60 105-player");
 
             set_change_scroll(600,20,120);
 
@@ -145,17 +146,31 @@ namespace CommonPart {
 
         public void update(InputManager input)
         {
+            int bullets = 0;
+            for (int i = 0; i < enemys.Count; i++)
+            {
+                bullets += enemys[i].bullets.Count;
+            }
+
+
+           
             #region 生成
             Random cRandom = new System.Random();
             int iRandom = cRandom.Next(1280);
 
-            if (step[0] % 100 == 0 && step[0] > -1) 
+            if (step[0] % 10000 == 0 && step[0] > -1) 
             {
                 for (int i = 0; i < 1; i++)
                 {
                     double random = Function.GetRandomDouble(280, 1000);
-                    double random_y = Function.GetRandomDouble(100, 100);
-                    enemys.Add(new Enemy(random, random_y, 0, 1, 10, 10, 100,10,"140 220-enemy1.png"));
+                    double random_y = Function.GetRandomDouble(250, 300);
+                    if (step[0] % 200 == 1)
+                    {
+                        enemys.Add(new Enemy(random, random_y, "boss1"));
+                    }else
+                    {
+                        enemys.Add(new Enemy(random, random_y, "enemy2"));
+                    }
                     enemyexist++;
                 }
             }
@@ -163,11 +178,7 @@ namespace CommonPart {
 
             for (int i = 0; i < enemys.Count; i++)
             {
-                if (enemys[i].x > Map.leftside - DataBase.getTex(enemys[i].texture_name).Width / 2 ||
-                    enemys[i].x < Map.rightside + DataBase.getTex(enemys[i].texture_name).Width / 2 ||
-                    enemys[i].y < DataBase.WindowSlimSizeY + DataBase.getTex(enemys[i].texture_name).Height / 2 ||
-                    enemys[i].y > 0 - DataBase.getTex(enemys[i].texture_name).Height / 2
-                )
+                if (inside_window(enemys[i]))
                 {
                     if (enemys[i].exist == false)
                     {
@@ -203,12 +214,9 @@ namespace CommonPart {
 
             #endregion
 
-            if (step[0] % 100 == 0)
+            for (int i = 0; i < enemys.Count; i++)
             {
-                for (int i = 0; i < enemys.Count; i++)
-                {
-                    enemys[i].shot(player);
-                }
+                enemys[i].shot(player);
             }
 
             for (int i = 0; i < enemys_inside_window.Count; i++)
@@ -217,17 +225,9 @@ namespace CommonPart {
                 {
                     if (enemys_inside_window[i].fadeout == false)
                     {
-                        enemys_inside_window[i].total_score += enemys_inside_window[i].score;
-                        for(int j = 0; j < enemys_inside_window[i].bullets.Count; j++)
-                        {
-                            enemys_inside_window[i].total_score += enemys_inside_window[i].bullets[j].score;
-
-                            pros.Add(new Projection(enemys_inside_window[i].bullets[j].x, enemys_inside_window[i].bullets[j].y,
-                                MoveType.object_target, pro_speed, pro_acceleration,new Animation(new SingleTextureAnimationData(10, TextureID.Score, 3, 1)), player, 100));
-                            pro_swords.Add(enemys_inside_window[i].bullets[j].sword);
-                        }
-                        score += enemys_inside_window[i].total_score;
+                        score += enemys_inside_window[i].score(this);
                     }
+                    enemys[i].clear();
                     enemys.Remove(enemys_inside_window[i]);
                     enemys_inside_window.Remove(enemys_inside_window[i]);
                 }
@@ -282,18 +282,41 @@ namespace CommonPart {
 
             for(int i = 0; i < player.life; i++)
             {
-                d.Draw(new Vector(life_pos.X + DataBase.getTex(life_tex_name).Width * i , life_pos.Y), DataBase.getTex(life_tex_name), DepthID.Item);
+                d.Draw(new Vector(life_pos.X + DataBase.getTex(life_tex_name).Width * i , life_pos.Y), DataBase.getTex(life_tex_name), DepthID.Status);
             }
 
             RichText scoreboard=new RichText(score.ToString(), FontID.Medium,Color.White);
-            scoreboard.Draw(d, score_pos, DepthID.Item);
+            scoreboard.Draw(d, score_pos, DepthID.Status);
 
-            d.Draw(new Vector(0, 0), DataBase.getTex("leftside1.jpg"), DepthID.BackGroundFloor);
-            d.Draw(new Vector(1000, 0), DataBase.getTex("rightside1.jpg"), DepthID.BackGroundFloor);
+            d.Draw(new Vector(0, 0), DataBase.getTex("leftside1"), DepthID.StateFront);
+            d.Draw(new Vector(1000, 0), DataBase.getTex("rightside1"), DepthID.StateFront);
 
+            
+            if (player.sword < player.sword_max / 2)
+            {
+                
+            }else
+            {
+                if (player.sword < player.sword_max)
+                {
+
+                }else
+                {
+
+                }
+            }
             d.DrawLine(bar_pos, new Vector(bar_pos.X + player.sword * 5, bar_pos.Y), 20, Color.Gold, DepthID.Status);//剣ゲージ
 
         }//draw end
+
+        public bool inside_window(Enemy enemy)
+        {
+            return enemy.animation.X > Map.leftside - enemy.animation.X / 2 ||
+                    enemy.animation.X < Map.rightside + enemy.animation.X / 2 ||
+                    enemy.animation.Y < DataBase.WindowSlimSizeY + enemy.animation.Y / 2 ||
+                    enemy.animation.Y > 0 - enemy.animation.Y / 2;
+        }
+
     }// class end
 
 }// namespace end

@@ -38,6 +38,11 @@ namespace CommonPart
                 new MapScene(scenem,stage_select);
             }
 
+            if (Input.GetKeyPressed(KeyID.Escape) == true)
+            {
+                ;
+            }
+
             switch (stage_select)
             {
                 case 1:
@@ -63,8 +68,8 @@ namespace CommonPart
 
         public override void SceneDraw(Drawing d)
         {
-            d.Draw(new Vector(0, 0), DataBase.getTex("testbackground.png"), DepthID.BackGroundWall);
-            d.Draw(player_pos, DataBase.getTex("60 105-player.png"), DepthID.Player);
+            d.Draw(new Vector(0, 0), DataBase.getTex("testbackground"), DepthID.BackGroundWall);
+            d.Draw(player_pos, DataBase.getTex("60 105-player"), DepthID.Player);
         }
 
         public int stage_decide()
