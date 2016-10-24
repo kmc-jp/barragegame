@@ -59,7 +59,7 @@ namespace CommonPart {
         public static bool hitcircle(double x1, double y1,double radius1, double x2, double y2,double radius2)
         {
             return distance(x1, y1, x2, y2) <= (radius1 + radius2) * (radius1 + radius2);
-        }
+        } 
 
     }//function.end
     static class EnumExtension {

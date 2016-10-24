@@ -20,6 +20,7 @@ namespace CommonPart
         public MoveType move_type;
         public int zoom_rate;
 
+        //timeをつくろう
         /// <summary>
         /// コンストラクタ(位置不変)
         /// </summary>
@@ -154,7 +155,7 @@ namespace CommonPart
 
         public virtual void draw(Drawing d)
         {
-            animation.Draw(d,new Vector(x,y),DepthID.Effect,zoom_rate/100);
+            animation.Draw(d,new Vector(x,y),DepthID.Enemy,zoom_rate/100);
         }
     }
 }

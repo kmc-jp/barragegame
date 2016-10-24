@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
 
 namespace CommonPart
 {
@@ -13,7 +14,7 @@ namespace CommonPart
     /// <summary>
     /// 細かいスキルの区分
     /// </summary>
-    public enum SkillGenreS {none=0,shot,laser,circle }
+    public enum SkillGenreS {none=0,shot,laser,circle,wayshot,zyuuzi }
 
     abstract class SkillData
     {
@@ -34,9 +35,7 @@ namespace CommonPart
     class SingleShotSkillData :SkillData
     {
         public double speed;
-        public double speed_x, speed_y;
         public double acceleration;
-        public double acceleration_x,acceleration_y;
         public double angle;
         public double radius;
         public int life;
@@ -62,9 +61,56 @@ namespace CommonPart
                 case "circle":
                     sgs = SkillGenreS.circle;
                     break;
+                case "wayshot":
+                    sgs = SkillGenreS.wayshot;
+                    break;
                 default:
                     break;
             }
+        }
+    }//class singleshotskilldata end
+
+    class WayShotSkillData : SingleShotSkillData
+    {
+        public int way;
+        
+        public WayShotSkillData(string _skillName, int _cooldownFps, double _speed, double _acceleration, double _angle, double _radius, double _space, int _life, int _score, int _sword,int _way)
+            : base(_skillName, _cooldownFps,_speed,_acceleration,_angle,_radius,_space,_life,_score,_sword)
+        {
+            way = _way;
+        }
+    }//class WayShotSkillData end
+
+    class LaserTopData :SkillData
+    {
+        public double speed;
+        public double acceleration;
+        public double angle;
+        public double radius;
+        public int life;
+        public int score;
+        public int sword;
+        /// <summary>
+        /// 角速度
+        /// </summary>
+        public double omega;
+        public MoveType moveType;
+        public Color color;
+
+        public LaserTopData(string _skillName, int _cooldownFps,
+            double _speed, double _acceleration, double _angle, double _radius, double _space, int _life, int _score, int _sword,double _omega,Color _color)
+            : base(_skillName, SkillGenreL.generation, SkillGenreS.laser, _cooldownFps)
+        {
+            speed = _speed;
+            acceleration = _acceleration;
+            angle = _angle;
+            radius = _radius;
+            life = _life;
+            score = _score;
+            sword = _sword;
+            omega = _omega;
+            moveType = MoveType.chase_angle;
+            color = _color;
         }
     }
 }

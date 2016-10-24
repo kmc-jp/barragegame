@@ -31,6 +31,10 @@ namespace CommonPart
         public bool dead_mode = false;
         public int dead_time;
         public int muteki_time=0;
+        /// <summary>
+        /// skillの1度目の入力を無視
+        /// </summary>
+        bool first = false;
 
         public double speed_x;
         public double speed_y;
@@ -59,8 +63,7 @@ namespace CommonPart
         public int default_muteki_time = 30;
         
 
-
-        public Player(double _x,double _y,double _speed,double _radius,int _life,string t_n= "36 40-hex1.png")
+        public Player(double _x,double _y,double _speed,double _radius,int _life,string t_n= "36 40-hex1")
         {
             x = _x;
             y = _y;
@@ -176,6 +179,7 @@ namespace CommonPart
             attack_time = 120;
             //sword -= shouhi_sword;
             add_attack_mode = false;
+            first = true;
         }
 
         public void skill(InputManager input,Map map)
@@ -190,49 +194,56 @@ namespace CommonPart
 
             if (attack_mode == true)
             {
-
-                if (closest_enemy != null && closest_enemy.selectable() == false)
+                if (first == false)
                 {
-                    search_enemy(map);
-                }else
-                if (closest_enemy != null)
-                {
-                    double e = Math.Sqrt(Function.distance(x, y, closest_enemy.x, closest_enemy.y + enemy_below));
-                    double v = skill_speed / e;
-                    x -= (x - closest_enemy.x) * v;
-                    y -= (y - closest_enemy.y - enemy_below) * v;
-
-                    if (input.IsKeyDown(KeyID.Select) == true)
+                    if (closest_enemy != null && closest_enemy.selectable() == false)
                     {
-                        add_attack_mode = true;
+                        search_enemy(map);
+                    }
+                    else
+                    if (closest_enemy != null)
+                    {
+                        double e = Math.Sqrt(Function.distance(x, y, closest_enemy.x, closest_enemy.y + enemy_below));
+                        double v = skill_speed / e;
+                        x -= (x - closest_enemy.x) * v;
+                        y -= (y - closest_enemy.y - enemy_below) * v;
+
+                        if (input.GetKeyPressed(KeyID.Select) == true)
+                        {
+                            add_attack_mode = true;
+                        }
+
+                        if (Function.hitcircle(x, y, 2, closest_enemy.x, closest_enemy.y + enemy_below, 6))
+                        {
+                            closest_enemy.damage(atk);
+                            closest_enemy = null;
+                            sword -= shouhi_sword;
+                            stop_time = skill_stop;
+                        }
+                    }
+                    else
+                    {
+                        attack_time--;
+                        if ((input.GetKeyPressed(KeyID.Select) == true || add_attack_mode == true) && sword >= 10)
+                        {
+                            cast_skill(map);
+                            add_attack_mode = false;
+                        }
+                        if (input.IsKeyDown(KeyID.Up) == true || input.IsKeyDown(KeyID.Down) == true
+                            || input.IsKeyDown(KeyID.Right) == true || input.IsKeyDown(KeyID.Left) == true)
+                        {
+                            attack_time = 0;
+                        }
                     }
 
-                    if (Function.hitcircle(x, y, 2, closest_enemy.x, closest_enemy.y + enemy_below, 6))
+                    if (attack_time <= 0 || map.enemys_inside_window.Count <= 0)
                     {
-                        closest_enemy.damage(atk);
-                        closest_enemy = null;
-                        sword -= shouhi_sword;
-                        stop_time = skill_stop;
-                    }
-                }else
-                {
-                    attack_time--;
-                    if ((input.GetKeyPressed(KeyID.Select) == true || add_attack_mode == true) && sword >= 10)
-                    {
-                        cast_skill(map);
+                        attack_mode = false;
                         add_attack_mode = false;
                     }
-                    if(input.IsKeyDown(KeyID.Up)==true|| input.IsKeyDown(KeyID.Down) == true 
-                        || input.IsKeyDown(KeyID.Right) == true || input.IsKeyDown(KeyID.Left) == true)
-                    {
-                        attack_time = 0;
-                    }
-                }
-
-                if (attack_time <= 0||map.enemys_inside_window.Count<=0)
+                }else
                 {
-                    attack_mode = false;
-                    add_attack_mode = false;
+                    first = false;
                 }
             }
     }
@@ -318,7 +329,7 @@ namespace CommonPart
                             && map.enemys_inside_window[i].bullets[j].y <= y)
                             {
                                 map.pros.Add(new Projection(map.enemys_inside_window[i].bullets[j].x, map.enemys_inside_window[i].bullets[j].y,
-                                    MoveType.object_target, map.pro_speed,Map.pro_acceleration, new Animation(new SingleTextureAnimationData(10, TextureID.Score, 3, 1)), this, 100));
+                                    MoveType.object_target, map.pro_speed,map.pro_acceleration, new Animation(new SingleTextureAnimationData(10, TextureID.Score, 3, 1)), this, 100));
                                 map.pro_swords.Add(map.enemys_inside_window[i].bullets[j].sword);
 
                                 map.score += map.enemys_inside_window[i].bullets[j].score;
@@ -329,7 +340,7 @@ namespace CommonPart
                         if (Function.hitcircle(x, y, avoid_radius, map.enemys_inside_window[i].x, map.enemys_inside_window[i].y, map.enemys_inside_window[i].radius)
                             && map.enemys_inside_window[i].y <= y)
                         {
-                            sword += map.enemys_inside_window[i].sword;
+                            sword += map.enemys_inside_window[i].unitType.sword;
                             map.enemys_inside_window[i].remove(Unit_state.dead);
                         }
                     }    
@@ -345,7 +356,7 @@ namespace CommonPart
                             {
 
                                 map.pros.Add(new Projection(map.enemys_inside_window[i].bullets[j].x, map.enemys_inside_window[i].bullets[j].y,
-                                    MoveType.object_target, map.pro_speed,Map.pro_acceleration ,new Animation(new SingleTextureAnimationData(10, TextureID.Score, 3, 1)), this, 100));
+                                    MoveType.object_target, map.pro_speed,map.pro_acceleration ,new Animation(new SingleTextureAnimationData(10, TextureID.Score, 3, 1)), this, 100));
                                 map.pro_swords.Add(map.enemys_inside_window[i].bullets[j].sword);
                                 map.score += map.enemys_inside_window[i].bullets[j].score;
                                 map.enemys_inside_window[i].bullets[j].remove();
@@ -355,7 +366,7 @@ namespace CommonPart
                         if (Function.hitcircle(x, y, avoid_radius, map.enemys_inside_window[i].x, map.enemys_inside_window[i].y, map.enemys_inside_window[i].radius)
                             && map.enemys_inside_window[i].y >= y)
                         {
-                            sword += map.enemys_inside_window[i].sword;
+                            sword += map.enemys_inside_window[i].unitType.sword;
                             map.enemys_inside_window[i].remove(Unit_state.dead);
                         }
                     }
@@ -370,7 +381,7 @@ namespace CommonPart
                             && map.enemys_inside_window[i].bullets[j].x >= x)
                             {
                                 map.pros.Add(new Projection(map.enemys_inside_window[i].bullets[j].x, map.enemys_inside_window[i].bullets[j].y,
-                                    MoveType.object_target, map.pro_speed,Map.pro_acceleration, new Animation(new SingleTextureAnimationData(10, TextureID.Score, 3, 1)), this, 100));
+                                    MoveType.object_target, map.pro_speed,map.pro_acceleration, new Animation(new SingleTextureAnimationData(10, TextureID.Score, 3, 1)), this, 100));
                                 map.pro_swords.Add(map.enemys_inside_window[i].bullets[j].sword);
                                 map.score += map.enemys_inside_window[i].bullets[j].score;
                                 map.enemys_inside_window[i].bullets[j].remove();
@@ -380,7 +391,7 @@ namespace CommonPart
                         if (Function.hitcircle(x, y, avoid_radius, map.enemys_inside_window[i].x, map.enemys_inside_window[i].y, map.enemys_inside_window[i].radius)
                             && map.enemys_inside_window[i].x >= x)
                         {
-                            sword += map.enemys_inside_window[i].sword;
+                            sword += map.enemys_inside_window[i].unitType.sword;
                             map.enemys_inside_window[i].remove(Unit_state.dead);
                         }
                     }
@@ -395,7 +406,7 @@ namespace CommonPart
                             && map.enemys_inside_window[i].bullets[j].x <= x)
                             {
                                 map.pros.Add(new Projection(map.enemys_inside_window[i].bullets[j].x, map.enemys_inside_window[i].bullets[j].y,
-                                     MoveType.object_target, map.pro_speed,Map.pro_acceleration, new Animation(new SingleTextureAnimationData(10, TextureID.Score, 3, 1)), this, 100));
+                                     MoveType.object_target, map.pro_speed,map.pro_acceleration, new Animation(new SingleTextureAnimationData(10, TextureID.Score, 3, 1)), this, 100));
                                 map.pro_swords.Add(map.enemys_inside_window[i].bullets[j].sword);
                                 map.score += map.enemys_inside_window[i].bullets[j].score;
                                 map.enemys_inside_window[i].bullets[j].remove();
@@ -405,7 +416,7 @@ namespace CommonPart
                         if (Function.hitcircle(x, y, avoid_radius, map.enemys_inside_window[i].x, map.enemys_inside_window[i].y, map.enemys_inside_window[i].radius)
                             && map.enemys_inside_window[i].x <= x)
                         {
-                            sword += map.enemys_inside_window[i].sword;
+                            sword += map.enemys_inside_window[i].unitType.sword;
                             map.enemys_inside_window[i].remove(Unit_state.dead);
                         }
                     }

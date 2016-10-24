@@ -75,13 +75,6 @@ namespace CommonPart
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             DataBase.Load_Contents(Content);
-            /*pl =Content.Load< Texture2D > ("18 20-bul1.png");
-            Texture2D[]
-            player_texture = Content.Load<Texture2D>("36 40-hex1.png");
-            bullet_textures.Add(Content.Load<Texture2D>("18 20-bul1.png"));
-            enemy_textures.Add(Content.Load<Texture2D>("36 40-ene1.png")) ;
-            */
-
             // TODO: use this.Content to load your game content here
 
             TextureManager.Load(Content);
@@ -95,7 +88,7 @@ namespace CommonPart
         {
 
             // TODO: Unload any non ContentManager content here
-
+            DataBase.database_singleton.Dispose();
             SoundManager.Music.Close();
         }
 

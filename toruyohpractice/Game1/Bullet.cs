@@ -15,6 +15,7 @@ namespace CommonPart
         public int life;
         public int score;
         public int sword;
+        public bool lasered;
 
         public bool delete = false;
         public int atk = 1;
@@ -27,6 +28,7 @@ namespace CommonPart
             life = _life;
             score = _score;
             sword = _sword;
+            lasered = false;
         }
         public Bullet(double _x, double _y, MoveType _move_type, double _speed, double _acceleration, double _radian, Animation _anime, int _zoom_rate,
             double _radius, int _life, int _score, int _sword)
@@ -36,9 +38,10 @@ namespace CommonPart
             life = _life;
             score = _score;
             sword = _sword;
+            lasered = false;
         }
 
-        public void update(Player player)
+        public virtual void update(Player player)
         {
             base.update();
             if (x < Map.leftside - animation.X / 2 || x > Map.rightside + animation.X / 2
