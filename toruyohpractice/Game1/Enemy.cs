@@ -142,37 +142,36 @@ namespace CommonPart
                             {
                                 case SkillGenreS.shot:
                                     SingleShotSkillData ss = (SingleShotSkillData)sd;
-                                    bullets.Add(new Bullet(x, y, ss.moveType, ss.speed, ss.acceleration, null, new Vector(player.x, player.y), 100, ss.radius, ss.life, ss.score, ss.sword));
+                                    bullets.Add(new Bullet(x, y, ss.moveType, ss.speed, ss.acceleration, ss.aniDName, new Vector(player.x, player.y), 100, ss.radius, ss.life, ss.score, ss.sword));
                                     break;
                                 case SkillGenreS.circle:
                                     SingleShotSkillData ss1 = (SingleShotSkillData)sd;
                                     for (int j = 0; j < 2*Math.PI/ss1.angle; j++)
                                     {
-                                        bullets.Add(new Bullet(x, y, ss1.moveType, ss1.speed, ss1.acceleration,-(Math.PI/2)+j*ss1.angle, null, 100, ss1.radius, ss1.life, ss1.score, ss1.sword));
+                                        bullets.Add(new Bullet(x, y, ss1.moveType, ss1.speed, ss1.acceleration,-(Math.PI/2)+j*ss1.angle, ss1.aniDName, 100, ss1.radius, ss1.life, ss1.score, ss1.sword));
                                     }
                                     break;
                                 case SkillGenreS.laser:
                                     LaserTopData lt = (LaserTopData)sd;
-                                    bullets.Add(new LaserTop(x, y, lt.moveType, lt.speed, lt.acceleration, 0,null, 100, lt.radius, lt.life, lt.score, lt.sword,lt.angle,lt.omega,this,lt.color));
+                                    bullets.Add(new LaserTop(x, y, lt.moveType, lt.speed, lt.acceleration, 0,lt.aniDName, 100, lt.radius, lt.life, lt.score, lt.sword,lt.angle,lt.omega,this,lt.color));
                                     break;
                                 case SkillGenreS.wayshot:
                                     WayShotSkillData ws = (WayShotSkillData)sd;
                                     double player_angle = Math.Atan2(player.y - y, player.x - x);
                                     if (ws.way % 2 == 1)
                                     {
-                                        for (int j = 0; j < (ws.way + 1) / 2; j++) 
+                                        bullets.Add(new Bullet(x, y, ws.moveType, ws.speed, ws.acceleration, player_angle, ws.aniDName, 100, ws.radius, ws.life, ws.score, ws.sword));
+                                        for (int j = 1; j < (ws.way + 1) / 2; j++) 
                                         {
-                                            bullets.Add(new Bullet(x, y, ws.moveType, ws.speed, ws.acceleration, player_angle + j * ws.angle, null, 100, ws.radius, ws.life, ws.score, ws.sword));
-                                            bullets.Add(new Bullet(x, y, ws.moveType, ws.speed, ws.acceleration, player_angle - j * ws.angle, null, 100, ws.radius, ws.life, ws.score, ws.sword));
+                                            bullets.Add(new Bullet(x, y, ws.moveType, ws.speed, ws.acceleration, player_angle + j * ws.angle, ws.aniDName, 100, ws.radius, ws.life, ws.score, ws.sword));
+                                            bullets.Add(new Bullet(x, y, ws.moveType, ws.speed, ws.acceleration, player_angle - j * ws.angle, ws.aniDName, 100, ws.radius, ws.life, ws.score, ws.sword));
                                         }
                                     }else
                                     {
-                                        bullets.Add(new Bullet(x, y, ws.moveType, ws.speed, ws.acceleration, player_angle + ws.angle / 2, null, 100, ws.radius, ws.life, ws.score, ws.sword));
-                                        bullets.Add(new Bullet(x, y, ws.moveType, ws.speed, ws.acceleration, player_angle - ws.angle / 2, null, 100, ws.radius, ws.life, ws.score, ws.sword));
-                                        for (int j = 2; j < ws.way / 2; j++)
+                                        for (int j = 0; j < ws.way / 2; j++)
                                         {
-                                            bullets.Add(new Bullet(x, y, ws.moveType, ws.speed, ws.acceleration, player_angle + j * ws.angle, null, 100, ws.radius, ws.life, ws.score, ws.sword));
-                                            bullets.Add(new Bullet(x, y, ws.moveType, ws.speed, ws.acceleration, player_angle - j * ws.angle, null, 100, ws.radius, ws.life, ws.score, ws.sword));
+                                            bullets.Add(new Bullet(x, y, ws.moveType, ws.speed, ws.acceleration, player_angle + j * ws.angle+ ws.angle / 2, ws.aniDName, 100, ws.radius, ws.life, ws.score, ws.sword));
+                                            bullets.Add(new Bullet(x, y, ws.moveType, ws.speed, ws.acceleration, player_angle - j * ws.angle- ws.angle / 2, ws.aniDName, 100, ws.radius, ws.life, ws.score, ws.sword));
                                         }
                                     }
                                     break;
@@ -180,7 +179,53 @@ namespace CommonPart
                                     SingleShotSkillData ss2 = (SingleShotSkillData)sd;
                                     for (int j = 0; j < 3; j++)
                                     {
-                                        bullets.Add(new Bullet(x, y, ss2.moveType, ss2.speed, ss2.acceleration, j*Math.PI/2, null, 100, ss2.radius, ss2.life, ss2.score, ss2.sword));
+                                        bullets.Add(new Bullet(x, y, ss2.moveType, ss2.speed, ss2.acceleration, j*Math.PI/2, ss2.aniDName, 100, ss2.radius, ss2.life, ss2.score, ss2.sword));
+                                    }
+                                    break;
+                                case SkillGenreS.yanagi:
+                                    SingleShotSkillData ss3 = (SingleShotSkillData)sd;
+                                    for(int j = 1; j < 5; j++)
+                                    {
+                                        Bullet bullet1 = new Bullet(x + ss3.space * j, y - ss3.space * j, ss3.moveType, ss3.speed, ss3.acceleration, ss3.angle, ss3.aniDName, 100, ss3.radius, ss3.life, ss3.score, ss3.sword);
+                                        bullet1.speed_x = -bullet1.speed * ss3.space * j * 0.1;
+                                        bullet1.speed_y = bullet1.speed;
+                                        bullet1.acceleration_x = 0;
+                                        bullet1.acceleration_y = -ss3.acceleration;
+                                        bullets.Add(bullet1);
+                                        Bullet bullet2 = new Bullet(x - ss3.space * j, y - ss3.space * j, ss3.moveType, ss3.speed, ss3.acceleration, ss3.angle, ss3.aniDName, 100, ss3.radius, ss3.life, ss3.score, ss3.sword);
+                                        bullet2.speed_x = bullet2.speed * ss3.space * j * 0.1;
+                                        bullet2.speed_y = bullet2.speed;
+                                        bullet2.acceleration_x = 0;
+                                        bullet2.acceleration_y = -ss3.acceleration;
+                                        bullets.Add(bullet2);
+                                    }
+                                    break;
+                                default:
+                                    use = false;
+                                    break;
+                            }//switch sgs end
+                            #endregion
+                            break;
+                        case SkillGenreL.bullet_create:
+                            #region ジャンルの小さい分類
+                            switch (sd.sgs)
+                            {
+                                case SkillGenreS.shot:
+                                    GenerateUnitSkillData ss = (GenerateUnitSkillData)sd;
+                                    bullets.Add(new SkilledBullet(x, y, ss.moveType, ss.speed, ss.acceleration,ss.angle, ss.aniDName, 100, ss.radius, ss.life, ss.score, ss.sword,ss.unitSkillName,this));
+                                    break;
+                                case SkillGenreS.circle:
+                                    GenerateUnitSkillData ss1 = (GenerateUnitSkillData)sd;
+                                    for (int j = 0; j < 2 * Math.PI / ss1.angle; j++)
+                                    {
+                                        bullets.Add(new SkilledBullet(x, y, ss1.moveType, ss1.speed, ss1.acceleration, -(Math.PI / 2) + j * ss1.angle, ss1.aniDName, 100, ss1.radius, ss1.life, ss1.score, ss1.sword,ss1.unitSkillName,this));
+                                    }
+                                    break;
+                                case SkillGenreS.zyuuzi:
+                                    GenerateUnitSkillData ss2 = (GenerateUnitSkillData)sd;
+                                    for (int j = 0; j < 3; j++)
+                                    {
+                                        bullets.Add(new SkilledBullet(x, y, ss2.moveType, ss2.speed, ss2.acceleration, j * Math.PI / 2, ss2.aniDName, 100, ss2.radius, ss2.life, ss2.score, ss2.sword,ss2.unitSkillName,this));
                                     }
                                     break;
                                 default:
@@ -261,7 +306,7 @@ namespace CommonPart
                 total_score += bullets[j].score;
 
                 map.pros.Add(new Projection(bullets[j].x, bullets[j].y,
-                    MoveType.object_target, map.pro_speed, map.pro_acceleration, new Animation(new SingleTextureAnimationData(10, TextureID.Score, 3, 1)), map.player, 100));
+                    MoveType.object_target, map.pro_speed, map.pro_acceleration, "heal1", map.player, 100));
                 map.pro_swords.Add(bullets[j].sword);
             }
 

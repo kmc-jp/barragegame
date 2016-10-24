@@ -329,7 +329,7 @@ namespace CommonPart
                             && map.enemys_inside_window[i].bullets[j].y <= y)
                             {
                                 map.pros.Add(new Projection(map.enemys_inside_window[i].bullets[j].x, map.enemys_inside_window[i].bullets[j].y,
-                                    MoveType.object_target, map.pro_speed,map.pro_acceleration, new Animation(new SingleTextureAnimationData(10, TextureID.Score, 3, 1)), this, 100));
+                                    MoveType.object_target, map.pro_speed,map.pro_acceleration, "heal1", this, 100));
                                 map.pro_swords.Add(map.enemys_inside_window[i].bullets[j].sword);
 
                                 map.score += map.enemys_inside_window[i].bullets[j].score;
@@ -356,7 +356,7 @@ namespace CommonPart
                             {
 
                                 map.pros.Add(new Projection(map.enemys_inside_window[i].bullets[j].x, map.enemys_inside_window[i].bullets[j].y,
-                                    MoveType.object_target, map.pro_speed,map.pro_acceleration ,new Animation(new SingleTextureAnimationData(10, TextureID.Score, 3, 1)), this, 100));
+                                    MoveType.object_target, map.pro_speed,map.pro_acceleration ,"heal1", this, 100));
                                 map.pro_swords.Add(map.enemys_inside_window[i].bullets[j].sword);
                                 map.score += map.enemys_inside_window[i].bullets[j].score;
                                 map.enemys_inside_window[i].bullets[j].remove();
@@ -381,7 +381,7 @@ namespace CommonPart
                             && map.enemys_inside_window[i].bullets[j].x >= x)
                             {
                                 map.pros.Add(new Projection(map.enemys_inside_window[i].bullets[j].x, map.enemys_inside_window[i].bullets[j].y,
-                                    MoveType.object_target, map.pro_speed,map.pro_acceleration, new Animation(new SingleTextureAnimationData(10, TextureID.Score, 3, 1)), this, 100));
+                                    MoveType.object_target, map.pro_speed,map.pro_acceleration, "heal1", this, 100));
                                 map.pro_swords.Add(map.enemys_inside_window[i].bullets[j].sword);
                                 map.score += map.enemys_inside_window[i].bullets[j].score;
                                 map.enemys_inside_window[i].bullets[j].remove();
@@ -406,7 +406,7 @@ namespace CommonPart
                             && map.enemys_inside_window[i].bullets[j].x <= x)
                             {
                                 map.pros.Add(new Projection(map.enemys_inside_window[i].bullets[j].x, map.enemys_inside_window[i].bullets[j].y,
-                                     MoveType.object_target, map.pro_speed,map.pro_acceleration, new Animation(new SingleTextureAnimationData(10, TextureID.Score, 3, 1)), this, 100));
+                                     MoveType.object_target, map.pro_speed,map.pro_acceleration, "heal1", this, 100));
                                 map.pro_swords.Add(map.enemys_inside_window[i].bullets[j].sword);
                                 map.score += map.enemys_inside_window[i].bullets[j].score;
                                 map.enemys_inside_window[i].bullets[j].remove();

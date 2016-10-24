@@ -151,8 +151,6 @@ namespace CommonPart {
             {
                 bullets += enemys[i].bullets.Count;
             }
-
-
            
             #region 生成
             Random cRandom = new System.Random();
@@ -162,8 +160,8 @@ namespace CommonPart {
             {
                 for (int i = 0; i < 1; i++)
                 {
-                    double random = Function.GetRandomDouble(280, 1000);
-                    double random_y = Function.GetRandomDouble(250, 300);
+                    double random = Function.GetRandomDouble(500, 800);
+                    double random_y = Function.GetRandomDouble(150, 200);
                     if (step[0] % 200 == 1)
                     {
                         enemys.Add(new Enemy(random, random_y, "boss1"));
@@ -242,7 +240,6 @@ namespace CommonPart {
                     pro_swords.Remove(pro_swords[i]);
                 }
             }
-
             step[0]++;
 
         }//update end

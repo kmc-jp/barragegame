@@ -29,13 +29,13 @@ namespace CommonPart
         /// <param name="_move_type"></param>
         /// <param name="_anime"></param>
         /// <param name="_zoom_rate"></param>
-        public Projection(double _x, double _y,MoveType _move_type, Animation _anime, int _zoom_rate)
+        public Projection(double _x, double _y,MoveType _move_type, string _anime, int _zoom_rate)
         {
             x = _x;
             y = _y;
             target = null;
             move_type = _move_type;
-            animation = _anime;
+            animation = new AnimationAdvanced(DataBase.getAniD(_anime));
             zoom_rate = _zoom_rate;
 
             if (animation == null)
@@ -53,7 +53,7 @@ namespace CommonPart
         /// <param name="_acceleration"></param>
         /// <param name="_anime"></param>
         /// <param name="_zoom_rate"></param>
-        public Projection(double _x,double _y,MoveType _move_type,double _speed,double _acceleration,double _radian, Animation _anime,int _zoom_rate)
+        public Projection(double _x,double _y,MoveType _move_type,double _speed,double _acceleration,double _radian, string _anime,int _zoom_rate)
         {
             x = _x;
             y = _y;
@@ -62,7 +62,7 @@ namespace CommonPart
             acceleration = _acceleration;
             radian = _radian;
             move_type = _move_type;
-            animation = _anime;
+            animation = new AnimationAdvanced(DataBase.getAniD(_anime));
             zoom_rate = _zoom_rate;
 
             speed_x = speed * Math.Cos(radian);
@@ -85,7 +85,7 @@ namespace CommonPart
         /// <param name="_anime"></param>
         /// <param name="_target_pos"></param>
         /// <param name="_zoom_rate"></param>
-        public Projection(double _x, double _y, MoveType _move_type, double _speed,double _acceleration, Animation _anime, Vector _target_pos, int _zoom_rate)
+        public Projection(double _x, double _y, MoveType _move_type, double _speed,double _acceleration, string _anime, Vector _target_pos, int _zoom_rate)
             : this(_x, _y, _move_type, _anime, _zoom_rate)
         {
             speed = _speed;
@@ -96,7 +96,6 @@ namespace CommonPart
             acceleration_y = (y - target_pos.Y) * acceleration / e;
             speed_x = (x - target_pos.X) * speed / e;
             speed_y = (y - target_pos.Y) * speed / e;
-
         }
         /// <summary>
         /// 物体に向かって移動
@@ -108,7 +107,7 @@ namespace CommonPart
         /// <param name="_anime"></param>
         /// <param name="_target"></param>
         /// <param name="_zoom_rate"></param>
-        public Projection(double _x, double _y, MoveType _move_type, double _speed,double _acceleration, Animation _anime, Player _target, int _zoom_rate)
+        public Projection(double _x, double _y, MoveType _move_type, double _speed,double _acceleration, string _anime, Player _target, int _zoom_rate)
             : this(_x, _y, _move_type, _anime, _zoom_rate)
         {
             speed = _speed;
