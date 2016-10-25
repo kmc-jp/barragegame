@@ -86,6 +86,7 @@ namespace CommonPart
             : base(_skillName, _aniDName,_cooldownFps,_speed,_acceleration,_angle,_radius,_space,_life,_score,_sword)
         {
             way = _way;
+            sgs = SkillGenreS.wayshot;
         }
     }//class WayShotSkillData end
 

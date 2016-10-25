@@ -15,9 +15,9 @@ namespace CommonPart
         {
             for (int i = 0; i < body_max_index-1; i++)
             {
-                bodys[i] = new Enemy(x,y-animation.Y*i,"boss1body"+i%3);
+                bodys[i] = new Enemy(x, y - animation.Y * i, "boss1body" + i % 3);
             }
-            bodys[body_max_index] = new Enemy(x, y, "boss1tail");
+            bodys[body_max_index-1] = new Enemy(x, y, "boss1tail");
         }
 
         public override void update(Player player)
@@ -26,7 +26,7 @@ namespace CommonPart
 
             if (moving())
             {
-                for (int i = body_max_index; i > 0; i--)
+                for (int i = body_max_index-1; i > 0; i--)
                 {
                     bodys[i].x = bodys[i - 1].x;
                     bodys[i].y = bodys[i - 1].y;
@@ -36,9 +36,18 @@ namespace CommonPart
             }
 
             shot(player);
-            for (int i = 0; i <= body_max_index ; i++)
+            for (int i = 0; i < body_max_index ; i++)
             {
                 bodys[i].shot(player);
+            }
+        }
+
+        public override void draw(Drawing d)
+        {
+            base.draw(d);
+            for(int i=0; i < body_max_index; i++)
+            {
+                bodys[i].draw(d);
             }
         }
 

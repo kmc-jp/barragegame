@@ -236,6 +236,7 @@ namespace CommonPart {
             SkillDatasDictionary.Add("laser", new LaserTopData("laser","bullet1", 1000, 5, 0, Math.PI/2, 8, 0, 1, 10, 10,0.0025, Color.MediumVioletRed));
             SkillDatasDictionary.Add("createbullet", new GenerateUnitSkillData("createbullet", "bullet1", 120, 2, 0, -Math.PI/2, 8, 0, 1, 10, 10, "yanagi"));
             SkillDatasDictionary.Add("yanagi", new SingleShotSkillData("yanagi", "bullet1", 90, 2, 0.2, 0, 8, 0.25, 1, 10, 10));
+            SkillDatasDictionary.Add("5wayshot", new WayShotSkillData("5wayshot", "bullet1", 60, 6, 0, Math.PI/10, 8, 0, 1, 10, 10, 5));
         }
         public static SkillData getSkillData(string skillName)
         {

@@ -31,6 +31,8 @@ namespace CommonPart
         /// </summary>
         public int[] times=new int[2];
 
+        private bool once = false;
+        private Vector displacement4; 
                 
         public Enemy(double _x,double _y,string _unitType_name)
         {
@@ -86,6 +88,15 @@ namespace CommonPart
                     x += displacement3.X;
                     y += displacement3.Y;
                     break;
+                case MoveType.screen_point_target:
+                    if (once == false)
+                    {
+                        Vector goal = unitType.default_poses[motion_index[0]];
+                        displacement4 = new Vector(goal.X - x, goal.Y - y);
+                    }
+                    x += displacement4.X/unitType.times[motion_index[0]];
+                    y += displacement4.Y/unitType.times[motion_index[0]];
+                    break;
                 case MoveType.stop:
                     break;
                 default:
@@ -120,7 +131,7 @@ namespace CommonPart
             }
         }
 
-        public void draw(Drawing d)
+        public virtual void draw(Drawing d)
         {
             animation.Draw(d, new Vector((x - animation.X / 2), (y - animation.Y / 2)), DepthID.Enemy);
             //d.Draw(new Vector((x- animation.X/2),(y- animation.Y/2)), DataBase.getTex(texture_name),DepthID.Enemy);
@@ -163,18 +174,18 @@ namespace CommonPart
                                     double player_angle = Math.Atan2(player.y - y, player.x - x);
                                     if (ws.way % 2 == 1)
                                     {
-                                        bullets.Add(new Bullet(x, y, ws.moveType, ws.speed, ws.acceleration, player_angle, ws.aniDName, 100, ws.radius, ws.life, ws.score, ws.sword));
+                                        bullets.Add(new Bullet(x, y, ws.moveType, -ws.speed, ws.acceleration, player_angle, ws.aniDName, 100, ws.radius, ws.life, ws.score, ws.sword));
                                         for (int j = 1; j < (ws.way + 1) / 2; j++) 
                                         {
-                                            bullets.Add(new Bullet(x, y, ws.moveType, ws.speed, ws.acceleration, player_angle + j * ws.angle, ws.aniDName, 100, ws.radius, ws.life, ws.score, ws.sword));
-                                            bullets.Add(new Bullet(x, y, ws.moveType, ws.speed, ws.acceleration, player_angle - j * ws.angle, ws.aniDName, 100, ws.radius, ws.life, ws.score, ws.sword));
+                                            bullets.Add(new Bullet(x, y, ws.moveType, -ws.speed, ws.acceleration, player_angle + j * ws.angle, ws.aniDName, 100, ws.radius, ws.life, ws.score, ws.sword));
+                                            bullets.Add(new Bullet(x, y, ws.moveType, -ws.speed, ws.acceleration, player_angle - j * ws.angle, ws.aniDName, 100, ws.radius, ws.life, ws.score, ws.sword));
                                         }
                                     }else
                                     {
                                         for (int j = 0; j < ws.way / 2; j++)
                                         {
-                                            bullets.Add(new Bullet(x, y, ws.moveType, ws.speed, ws.acceleration, player_angle + j * ws.angle+ ws.angle / 2, ws.aniDName, 100, ws.radius, ws.life, ws.score, ws.sword));
-                                            bullets.Add(new Bullet(x, y, ws.moveType, ws.speed, ws.acceleration, player_angle - j * ws.angle- ws.angle / 2, ws.aniDName, 100, ws.radius, ws.life, ws.score, ws.sword));
+                                            bullets.Add(new Bullet(x, y, ws.moveType, -ws.speed, ws.acceleration, player_angle + j * ws.angle+ ws.angle / 2, ws.aniDName, 100, ws.radius, ws.life, ws.score, ws.sword));
+                                            bullets.Add(new Bullet(x, y, ws.moveType, -ws.speed, ws.acceleration, player_angle - j * ws.angle- ws.angle / 2, ws.aniDName, 100, ws.radius, ws.life, ws.score, ws.sword));
                                         }
                                     }
                                     break;

@@ -189,7 +189,7 @@ namespace CommonPart {
                     double random_y = Function.GetRandomDouble(150, 200);
                     if (step[0] % 200 == 0)
                     {
-                        enemys.Add(new Enemy(random, random_y, "boss1"));
+                        enemys.Add(new /*Enemy*/Boss1(random, random_y, "boss1"));
                     }else
                     {
                         enemys.Add(new Enemy(random, random_y, "enemy2"));
@@ -209,7 +209,10 @@ namespace CommonPart {
                         enemys[i].exist = true;
                     }
                 }
+
+                //if(enemys[i].n)
             }
+
 
             #region move
 
