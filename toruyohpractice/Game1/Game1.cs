@@ -26,6 +26,8 @@ namespace CommonPart
         public const int WindowSizeX = 1280;
         public const int WindowSizeY = 960;
         internal static readonly Vector WindowSize = new Vector(WindowSizeX, WindowSizeY);
+        public static int music_number = 15;
+        public static bool[] music_checker = new bool[music_number];
 
         //倍率込みのサイズ　ふつうは扱わなくてよい　staticなのは苦しまぎれ
         public static int _WindowSizeX;
@@ -62,6 +64,7 @@ namespace CommonPart
             Settings.WindowStyle = 1;
             d = new Drawing(spriteBatch, new Drawing3D(GraphicsDevice), this);
             scenem = new SceneManager(d);
+            SetFPS(60);
         }
 
         /// <summary>
@@ -72,13 +75,6 @@ namespace CommonPart
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             DataBase.Load_Contents(Content);
-            /*pl =Content.Load< Texture2D > ("18 20-bul1.png");
-            Texture2D[]
-            player_texture = Content.Load<Texture2D>("36 40-hex1.png");
-            bullet_textures.Add(Content.Load<Texture2D>("18 20-bul1.png"));
-            enemy_textures.Add(Content.Load<Texture2D>("36 40-ene1.png")) ;
-            */
-
             // TODO: use this.Content to load your game content here
 
             TextureManager.Load(Content);
@@ -90,9 +86,9 @@ namespace CommonPart
         /// </summary>
         protected override void UnloadContent()
         {
-           
-            // TODO: Unload any non ContentManager content here
 
+            // TODO: Unload any non ContentManager content here
+            DataBase.database_singleton.Dispose();
             SoundManager.Music.Close();
         }
 
@@ -142,7 +138,13 @@ namespace CommonPart
             graphics.PreferredBackBufferHeight = _WindowSizeY;
             graphics.ApplyChanges();
         }
+
+        void SetFPS(double value)
+        {
+            this.TargetElapsedTime = TimeSpan.FromSeconds(1.0 / value);
+
+        }
     }
-    }
+}
 
 

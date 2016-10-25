@@ -15,9 +15,9 @@ namespace CommonPart {
 
         #endregion
         #region Method
-        public MapScene(SceneManager s)
+        public MapScene(SceneManager s,int stage)
             : base(s) {
-            nMap = new Map();
+            nMap = new Map("background1",stage);
             /*bars = new List<WindowBox>();
             for(int i = 0; i < DataBase.BarIndexNum; i++) {
                 bars.Add(new WindowBox(DataBase.BarPos[i],DataBase.BarWidth[i],DataBase.BarHeight[i]));
@@ -62,7 +62,10 @@ namespace CommonPart {
             nMap.update(Input);
             if (nMap.step[0] < 0) { Delete = true; }
 
-            if (Input.GetKeyPressed(KeyID.Select)) Delete = true;
+            if (nMap.player.life <= 0)
+            {
+                
+            }
 
         }
         #endregion

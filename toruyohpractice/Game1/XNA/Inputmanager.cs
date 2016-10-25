@@ -54,6 +54,7 @@ namespace CommonPart
             SetKey(KeyID.Skip, Keys.LeftControl);
             SetKey(KeyID.N, Keys.N);
             SetKey(KeyID.Slow, Keys.LeftShift);
+            SetKey(KeyID.Escape, Keys.Escape);
         }
         public static void SetKey(KeyID id, Keys k)
         {
@@ -104,6 +105,7 @@ namespace CommonPart
         {
             old = now;
             now = Keyboard.GetState();
+            
             index++;
         }
         public override bool IsKeyDown(KeyID k) { return now.IsKeyDown(GetKey(k)); }
@@ -127,7 +129,7 @@ namespace CommonPart
     enum KeyID
     {
         Up, Down, Left, Right,
-        Select, Cancel, Wait, Skip,Slow,
+        Select, Cancel, Wait, Skip,Slow,Escape,
         //以下デバッグ用
         N,
     }

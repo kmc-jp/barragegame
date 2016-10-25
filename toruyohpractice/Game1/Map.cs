@@ -14,6 +14,17 @@ namespace CommonPart {
         public int score = 0;
         public int enemyexist = 0;
         public Vector scroll_speed;
+        public int stage;
+        protected Animation sword_animation;
+
+        public List<Projection> pros = new List<Projection>();
+        public List<int> pro_swords = new List<int>();
+        public double pro_speed = -2;
+        public double pro_acceleration = 1;
+
+        public Vector bar_pos = new Vector(300,600);
+        public Vector life_pos = new Vector(1050, 95);
+        public Vector score_pos = new Vector(1100, 180);
 
         int total_height = 0;
         public int scroll_start;
@@ -25,7 +36,6 @@ namespace CommonPart {
 
 
         public List<string> background_names = new List<string>();
-        public string music_title;
         public List<int> step = new List<int>();
 
         /// <summary>
@@ -39,19 +49,22 @@ namespace CommonPart {
         public static int leftside = 280;
         public static int rightside = 1000;
 
+        public string life_tex_name = "testlife";
+
         public Vector camera = new Vector(leftside, 0);
 
-
-        public Map(string _background_name= "testbackground.png")//コンストラクタ
+        public Map(string _background_name,int _stage)//コンストラクタ
         {
+            stage = _stage;
+
             background_names.Add(_background_name);
             background_names.Add(_background_name);
             step.Add(0);
             v.Add(new Vector(leftside, DataBase.WindowSlimSizeY - DataBase.getTex(background_names[0]).Height));
-            v.Add(new Vector(leftside, v[0].Y - DataBase.getTex(background_names[1]).Height));
+            v.Add(new Vector(leftside, v[0].Y - DataBase.getTex(background_names[0]).Height));
            
             scroll_speed = new Vector(defaultspeed_x, defaultspeed_y);
-            player = new Player(DataBase.WindowDefaultSizeX/2, 500, 6, 10, 5);
+            player = new Player(DataBase.WindowDefaultSizeX/2, 500, 6, 10, 5,"60 105-player");
 
             set_change_scroll(600,20,120);
 
@@ -59,6 +72,8 @@ namespace CommonPart {
             {
                 total_height += DataBase.getTex(background_names[i]).Height;
             }
+
+            SoundManager.Music.PlayBGM(BGMID.stage2, true);
         }
         public Map(string[] bns)
         {
@@ -131,17 +146,31 @@ namespace CommonPart {
 
         public void update(InputManager input)
         {
+            int bullets = 0;
+            for (int i = 0; i < enemys.Count; i++)
+            {
+                bullets += enemys[i].bullets.Count;
+            }
+
+
+           
             #region 生成
             Random cRandom = new System.Random();
             int iRandom = cRandom.Next(1280);
 
-            if (step[0] % 100 == 0)
+            if (step[0] % 10000 == 0 && step[0] > -1) 
             {
-                for (int i = 0; i < 2; i++)
+                for (int i = 0; i < 1; i++)
                 {
                     double random = Function.GetRandomDouble(280, 1000);
-                    double random_y = Function.GetRandomDouble(100, 100);
-                    enemys.Add(new Enemy(random, random_y, 0, 1, 10, 10, 100));
+                    double random_y = Function.GetRandomDouble(250, 300);
+                    if (step[0] % 200 == 1)
+                    {
+                        enemys.Add(new Enemy(random, random_y, "boss1"));
+                    }else
+                    {
+                        enemys.Add(new Enemy(random, random_y, "enemy2"));
+                    }
                     enemyexist++;
                 }
             }
@@ -149,18 +178,17 @@ namespace CommonPart {
 
             for (int i = 0; i < enemys.Count; i++)
             {
-                if (enemys[i].x > Map.leftside - DataBase.getTex(enemys[i].texture_name).Width / 2 ||
-                    enemys[i].x < Map.rightside + DataBase.getTex(enemys[i].texture_name).Width / 2 ||
-                    enemys[i].y < DataBase.WindowSlimSizeY + DataBase.getTex(enemys[i].texture_name).Height / 2 ||
-                    enemys[i].y > 0 - DataBase.getTex(enemys[i].texture_name).Height / 2
-                )
+                if (inside_window(enemys[i]))
                 {
-                    enemys_inside_window.Add(enemys[i]);
+                    if (enemys[i].exist == false)
+                    {
+                        enemys_inside_window.Add(enemys[i]);
+                        enemys[i].exist = true;
+                    }
                 }
             }
 
             #region move
-            input.Update();
 
             camera += scroll_speed;//カメラupdate
             update_scroll_speed();
@@ -175,35 +203,52 @@ namespace CommonPart {
                 }
             }
 
-            #endregion
-
-            if (step[0] % 100 == 0)
+            for(int i = 0;i < pros.Count; i++)
             {
-                for (int i = 0; i < enemys.Count; i++)
+                pros[i].update();
+                if (pros[i].speed >= 40)
                 {
-                    enemys[i].shot1(player);
+                    pros[i].speed = 40;
                 }
             }
 
-            if (input.GetKeyPressed(KeyID.Select) == true) { step[0] = -1000; }
-            if (player.life <= 0)
+            #endregion
+
+            for (int i = 0; i < enemys.Count; i++)
             {
-                //step[0] = -100;
+                enemys[i].shot(player);
             }
+
             for (int i = 0; i < enemys_inside_window.Count; i++)
             {
                 if (enemys_inside_window[i].delete == true)
                 {
+                    if (enemys_inside_window[i].fadeout == false)
+                    {
+                        score += enemys_inside_window[i].score(this);
+                    }
+                    enemys[i].clear();
                     enemys.Remove(enemys_inside_window[i]);
                     enemys_inside_window.Remove(enemys_inside_window[i]);
                 }
             }
+
+            for (int i = 0; i < pros.Count; i++)
+            {
+                if (Function.hitcircle(pros[i].x, pros[i].y, 0, player.x, player.y, 20))
+                {
+                    player.sword += pro_swords[i];
+                    pros.Remove(pros[i]);
+                    pro_swords.Remove(pro_swords[i]);
+                }
+            }
+
             step[0]++;
+
         }//update end
 
         public void Draw(Drawing d)
         {
-            
             d.SetDrawAbsolute();
 
             for (int i = 0; i < v.Count; i++)
@@ -214,23 +259,64 @@ namespace CommonPart {
                 }
             }
 
-
-            if (true)
+            if (enemyexist > 0)
             {
-                if (enemyexist > 0)
+                for (int i = 0; i < enemys.Count; i++)
                 {
-                    for (int i = 0; i < enemys.Count; i++)
+                    if (enemys[i] != null)
                     {
-                        if (enemys[i] != null)
-                        {
-                            enemys[i].draw(d);
-                        }
-                        
+                        enemys[i].draw(d);
                     }
                 }
-                player.draw(d);
             }
+
+            for (int i = 0; i < pros.Count; i++)
+            {
+                pros[i].draw(d);
+            }
+
+            //if (player.dead_mode == false)
+            //{
+                player.draw(d);
+            //}
+
+            for(int i = 0; i < player.life; i++)
+            {
+                d.Draw(new Vector(life_pos.X + DataBase.getTex(life_tex_name).Width * i , life_pos.Y), DataBase.getTex(life_tex_name), DepthID.Status);
+            }
+
+            RichText scoreboard=new RichText(score.ToString(), FontID.Medium,Color.White);
+            scoreboard.Draw(d, score_pos, DepthID.Status);
+
+            d.Draw(new Vector(0, 0), DataBase.getTex("leftside1"), DepthID.StateFront);
+            d.Draw(new Vector(1000, 0), DataBase.getTex("rightside1"), DepthID.StateFront);
+
+            
+            if (player.sword < player.sword_max / 2)
+            {
+                
+            }else
+            {
+                if (player.sword < player.sword_max)
+                {
+
+                }else
+                {
+
+                }
+            }
+            d.DrawLine(bar_pos, new Vector(bar_pos.X + player.sword * 5, bar_pos.Y), 20, Color.Gold, DepthID.Status);//剣ゲージ
+
         }//draw end
+
+        public bool inside_window(Enemy enemy)
+        {
+            return enemy.animation.X > Map.leftside - enemy.animation.X / 2 ||
+                    enemy.animation.X < Map.rightside + enemy.animation.X / 2 ||
+                    enemy.animation.Y < DataBase.WindowSlimSizeY + enemy.animation.Y / 2 ||
+                    enemy.animation.Y > 0 - enemy.animation.Y / 2;
+        }
+
     }// class end
 
 }// namespace end

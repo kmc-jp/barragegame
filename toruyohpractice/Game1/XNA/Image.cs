@@ -224,7 +224,7 @@ namespace CommonPart {
     class Animation: Image {
         public override float X { get { return data.X; } }
         public override float Y { get { return data.Y; } }
-        AnimationData data;
+        public AnimationData data;
         int frame;
         const bool animateWithUpdate = true;
         public Animation(AnimationData d) {
