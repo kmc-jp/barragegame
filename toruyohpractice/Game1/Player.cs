@@ -24,9 +24,8 @@ namespace CommonPart
         public Enemy closest_enemy;
         public bool attacked = false;
         public bool avoid_mode = false;
-        public int avoid_time;
         public int stop_time;
-        public int sword = 100;
+        public int sword = 90;
         public bool acceleration_mode = true;
         public bool dead_mode = false;
         public int dead_time;
@@ -39,8 +38,6 @@ namespace CommonPart
         public double speed_x;
         public double speed_y;
 
-        public int default_x;
-        public int default_y;
         public int skill_stop = 6;
         public int skill_speed = 15;
         public int shouhi_sword = 10;

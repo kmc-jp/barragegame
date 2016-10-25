@@ -12,7 +12,7 @@ namespace CommonPart {
 
     public enum Unit_state { fadeout=0,dead=1,out_of_window=2 };
     public enum MoveType {non_target=0,point_target=1,object_target=2,go_straight,mugen,rightcircle,leftcircle,stop,
-        chase_angle, };
+        chase_angle,screen_point_target };
     public enum Command
     {
         left_and_go_back = -101, nothing = -100, apply_int = 110, apply_string = 111,
@@ -235,7 +235,7 @@ namespace CommonPart {
             SkillDatasDictionary.Add("circle", new SingleShotSkillData("circle","bullet1", 60, 5, 0, Math.PI/10, 5, 0, 1, 50, 10));
             SkillDatasDictionary.Add("laser", new LaserTopData("laser","bullet1", 1000, 5, 0, Math.PI/2, 8, 0, 1, 10, 10,0.0025, Color.MediumVioletRed));
             SkillDatasDictionary.Add("createbullet", new GenerateUnitSkillData("createbullet", "bullet1", 120, 2, 0, -Math.PI/2, 8, 0, 1, 10, 10, "yanagi"));
-            SkillDatasDictionary.Add("yanagi", new SingleShotSkillData("yanagi", "bullet1", 90, 5, 0.2, 0, 8, 1, 1, 10, 10));
+            SkillDatasDictionary.Add("yanagi", new SingleShotSkillData("yanagi", "bullet1", 90, 2, 0.2, 0, 8, 0.25, 1, 10, 10));
         }
         public static SkillData getSkillData(string skillName)
         {
@@ -302,22 +302,27 @@ namespace CommonPart {
             tda("background4");
             tda("ougi");
             tda("720×174 sword");
-            */
             tda("stageselect");
             tda("titlewords");
-            
+            */
             setupSkillData();
 
             AnimationAdDataDictionary.Add("boss1" + defaultAnimationNameAddOn, new AnimationDataAdvanced("boss1" + defaultAnimationNameAddOn,
                 10, 12, 0, "36-40 enemy1", true));
             AnimationAdDataDictionary.Add("boss1atk", new AnimationDataAdvanced("boss1atk", new int[] { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10 },
-                "36-40 enemy1"));
+                "36-40 enemy1",true));
             AnimationAdDataDictionary.Add("enemy2" + defaultAnimationNameAddOn, new AnimationDataAdvanced("enmey2" + defaultAnimationNameAddOn,
                  10, 4, 0, "120 68-enemy2", true));
             AnimationAdDataDictionary.Add("bullet1" + defaultAnimationNameAddOn, new AnimationDataAdvanced("bullet1" + defaultAnimationNameAddOn,
-                10, 3, "16-16 tama1"));
+                10, 3, "16-16 tama1",true));
             AnimationAdDataDictionary.Add("heal1" + defaultAnimationNameAddOn, new AnimationDataAdvanced("heal1" + defaultAnimationNameAddOn,
-                10, 3, "16-16_tama2"));
+                10, 3, "16-16_tama2",true));
+            AnimationAdDataDictionary.Add("swordgauge" + defaultAnimationNameAddOn, new AnimationDataAdvanced("swordgauge" + defaultAnimationNameAddOn,
+                10, 1,1, "720×174 sword",true));
+            AnimationAdDataDictionary.Add("swordgauge" + "high", new AnimationDataAdvanced("swordgauge" + "high",
+                10, 4, 2, "720×174 sword",true));
+            AnimationAdDataDictionary.Add("swordgauge" + "max", new AnimationDataAdvanced("swordgauge" + "max",
+                10,10, 6, "720×174 sword",true));
         }
 
         #region Unload And Save

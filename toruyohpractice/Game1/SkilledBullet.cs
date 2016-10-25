@@ -85,16 +85,16 @@ namespace CommonPart
                                 SingleShotSkillData ss3 = (SingleShotSkillData)sd;
                                 for (int j = 1; j < 5; j++)
                                 {
-                                    Bullet bullet1 = new Bullet(x + ss3.space * j, y - ss3.space * j, ss3.moveType, ss3.speed, ss3.acceleration, ss3.angle, ss3.aniDName, 100, ss3.radius, ss3.life, ss3.score, ss3.sword);
-                                    bullet1.speed_x = -bullet1.speed * ss3.space*j*0.1 ;
-                                    bullet1.speed_y = bullet1.speed;
-                                    bullet1.acceleration_x = 0;
+                                    Bullet bullet1 = new Bullet(x + ss3.space * j, y - ss3.space * j* j*2+4+ animation.Y, ss3.moveType, ss3.speed, ss3.acceleration, ss3.angle, ss3.aniDName, 100, ss3.radius, ss3.life, ss3.score, ss3.sword);
+                                    bullet1.speed_x = -ss3.speed * ss3.space*j*j*0.15 ;
+                                    bullet1.speed_y = ss3.speed+0.5*(ss3.space * j);
+                                    bullet1.acceleration_x = -ss3.acceleration*j*j/120;
                                     bullet1.acceleration_y =-ss3.acceleration;
                                     myboss.bullets.Add(bullet1);
-                                    Bullet bullet2 = new Bullet(x - ss3.space * j, y - ss3.space * j, ss3.moveType, ss3.speed, ss3.acceleration, ss3.angle, ss3.aniDName, 100, ss3.radius, ss3.life, ss3.score, ss3.sword);
-                                    bullet2.speed_x = bullet2.speed * ss3.space*j *0.1;
-                                    bullet2.speed_y = bullet2.speed;
-                                    bullet2.acceleration_x = 0;
+                                    Bullet bullet2 = new Bullet(x - ss3.space * j, y - ss3.space *j* j*2+4+animation.Y, ss3.moveType, ss3.speed, ss3.acceleration, ss3.angle, ss3.aniDName, 100, ss3.radius, ss3.life, ss3.score, ss3.sword);
+                                    bullet2.speed_x = ss3.speed * ss3.space*j*j*0.15;
+                                    bullet2.speed_y = ss3.speed+0.5*(ss3.space * j);
+                                    bullet2.acceleration_x = ss3.acceleration*j*j / 120;
                                     bullet2.acceleration_y = -ss3.acceleration;
                                     myboss.bullets.Add(bullet2);
                                 }

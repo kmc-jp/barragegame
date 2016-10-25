@@ -51,7 +51,7 @@ namespace CommonPart
             }
         }
 
-        public void update(Player player)
+        public virtual void update(Player player)
         {
             animation.Update();
             if (times[0] >=unitType.times[motion_index[0]])
@@ -92,25 +92,28 @@ namespace CommonPart
                     break;
             }
 
-
-            if (x < Map.leftside - animation.X / 2|| x > Map.rightside + animation.X / 2||y > DataBase.WindowSlimSizeY + animation.Y / 2||y < 0 - animation.Y / 2)
+            
+            if (unitType.label.Contains("fadeout")&&(x < Map.leftside - animation.X / 2|| x > Map.rightside + animation.X / 2||y > DataBase.WindowSlimSizeY + animation.Y / 2||y < 0 - animation.Y / 2))
             {
                 remove(Unit_state.out_of_window);
             }
-
+            
             if (Function.hitcircle(x, y,unitType.radius, player.x, player.y, player.radius))
             {
                 player.damage(1);
             }
 
             //bulletのupdate
-            for (int i = 0; i < bullets.Count; i++)
+            for (int i = 0; i < bullets.Count; i++)//update 専用
             {
                 bullets[i].update(player);
                 
-                if (bullets[i].delete == true) { bullets.Remove(bullets[i]); }
             }
+            for (int i = 0; i < bullets.Count; i++)//消す専用
+            {
+                if (bullets[i].delete == true) { bullets.Remove(bullets[i]); }
 
+            }
             for (int i = 0; i < skills.Count; i++)
             {
                 skills[i].update();
@@ -186,14 +189,15 @@ namespace CommonPart
                                     SingleShotSkillData ss3 = (SingleShotSkillData)sd;
                                     for(int j = 1; j < 5; j++)
                                     {
+
                                         Bullet bullet1 = new Bullet(x + ss3.space * j, y - ss3.space * j, ss3.moveType, ss3.speed, ss3.acceleration, ss3.angle, ss3.aniDName, 100, ss3.radius, ss3.life, ss3.score, ss3.sword);
-                                        bullet1.speed_x = -bullet1.speed * ss3.space * j * 0.1;
+                                        bullet1.speed_x = -Math.Pow(bullet1.speed * ss3.space * j,2) * 2;
                                         bullet1.speed_y = bullet1.speed;
                                         bullet1.acceleration_x = 0;
                                         bullet1.acceleration_y = -ss3.acceleration;
                                         bullets.Add(bullet1);
                                         Bullet bullet2 = new Bullet(x - ss3.space * j, y - ss3.space * j, ss3.moveType, ss3.speed, ss3.acceleration, ss3.angle, ss3.aniDName, 100, ss3.radius, ss3.life, ss3.score, ss3.sword);
-                                        bullet2.speed_x = bullet2.speed * ss3.space * j * 0.1;
+                                        bullet2.speed_x = Math.Pow(bullet2.speed * ss3.space * j,2) * 2;
                                         bullet2.speed_y = bullet2.speed;
                                         bullet2.acceleration_x = 0;
                                         bullet2.acceleration_y = -ss3.acceleration;

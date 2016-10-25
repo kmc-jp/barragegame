@@ -15,14 +15,15 @@ namespace CommonPart {
         public int enemyexist = 0;
         public Vector scroll_speed;
         public int stage;
-        protected Animation sword_animation;
+        protected AnimationAdvanced chargeBar;
+        protected string chargeBar_animation_name;
 
         public List<Projection> pros = new List<Projection>();
         public List<int> pro_swords = new List<int>();
         public double pro_speed = -2;
         public double pro_acceleration = 1;
 
-        public Vector bar_pos = new Vector(300,600);
+        public Vector bar_pos = new Vector(450,650);
         public Vector life_pos = new Vector(1050, 95);
         public Vector score_pos = new Vector(1100, 180);
 
@@ -74,6 +75,7 @@ namespace CommonPart {
             }
 
             SoundManager.Music.PlayBGM(BGMID.stage2, true);
+            chargeBar = new AnimationAdvanced(DataBase.getAniD("swordgauge"));
         }
         public Map(string[] bns)
         {
@@ -143,15 +145,38 @@ namespace CommonPart {
                 scroll_speed.Y = defaultspeed_y;
             }
         }
-
-        public void update(InputManager input)
+        private void update_enemys()
         {
-            int bullets = 0;
+            if (enemyexist > 0)
+            {
+                for (int i = 0; i < enemys.Count; i++)
+                {
+                    enemys[i].update(player);
+                }
+            }
             for (int i = 0; i < enemys.Count; i++)
             {
-                bullets += enemys[i].bullets.Count;
+                enemys[i].shot(player);
             }
-           
+
+            for (int i = 0; i < enemys_inside_window.Count; i++)
+            {
+                if (enemys_inside_window[i].delete == true)
+                {
+                    if (enemys_inside_window[i].fadeout == false)
+                    {
+                        score += enemys_inside_window[i].score(this);
+                    }
+                    enemys[i].clear();
+                    enemys.Remove(enemys_inside_window[i]);
+                    enemys_inside_window.Remove(enemys_inside_window[i]);
+                }
+            }
+        }
+        public void update(InputManager input)
+        {
+            chargeBar.Update();
+
             #region 生成
             Random cRandom = new System.Random();
             int iRandom = cRandom.Next(1280);
@@ -162,7 +187,7 @@ namespace CommonPart {
                 {
                     double random = Function.GetRandomDouble(500, 800);
                     double random_y = Function.GetRandomDouble(150, 200);
-                    if (step[0] % 200 == 1)
+                    if (step[0] % 200 == 0)
                     {
                         enemys.Add(new Enemy(random, random_y, "boss1"));
                     }else
@@ -191,15 +216,7 @@ namespace CommonPart {
             camera += scroll_speed;//カメラupdate
             update_scroll_speed();
 
-            player.update(input,this);
-
-            if (enemyexist > 0)
-            {
-                for (int i = 0; i < enemys.Count; i++)
-                {
-                    enemys[i].update(player);
-                }
-            }
+            //player.update(input,this);
 
             for(int i = 0;i < pros.Count; i++)
             {
@@ -211,25 +228,8 @@ namespace CommonPart {
             }
 
             #endregion
-
-            for (int i = 0; i < enemys.Count; i++)
-            {
-                enemys[i].shot(player);
-            }
-
-            for (int i = 0; i < enemys_inside_window.Count; i++)
-            {
-                if (enemys_inside_window[i].delete == true)
-                {
-                    if (enemys_inside_window[i].fadeout == false)
-                    {
-                        score += enemys_inside_window[i].score(this);
-                    }
-                    enemys[i].clear();
-                    enemys.Remove(enemys_inside_window[i]);
-                    enemys_inside_window.Remove(enemys_inside_window[i]);
-                }
-            }
+            update_enemys();
+            
 
             for (int i = 0; i < pros.Count; i++)
             {
@@ -240,10 +240,17 @@ namespace CommonPart {
                     pro_swords.Remove(pro_swords[i]);
                 }
             }
+
+            player.update(input, this);
+
             step[0]++;
 
         }//update end
-
+        private void chargeBarChange(string name,string addOn=null) {
+            if (addOn == null) { chargeBar_animation_name = name; }
+            else { chargeBar_animation_name = name+addOn; }
+            chargeBar = new AnimationAdvanced(DataBase.getAniD(chargeBar_animation_name));
+        }
         public void Draw(Drawing d)
         {
             d.SetDrawAbsolute();
@@ -291,18 +298,29 @@ namespace CommonPart {
             
             if (player.sword < player.sword_max / 2)
             {
-                
-            }else
+                if (chargeBar_animation_name != "swordgauge")
+                {
+                    chargeBarChange("swordgauge");
+                }
+            } else
             {
                 if (player.sword < player.sword_max)
                 {
-
-                }else
+                    if (chargeBar_animation_name != "swordgaugehigh")
+                    {
+                        chargeBarChange("swordgauge", "high");
+                    }
+                }
+                else
                 {
-
+                    if (chargeBar_animation_name != "swordgaugemax")
+                    {
+                        chargeBarChange("swordgauge", "max");
+                    }
                 }
             }
-            d.DrawLine(bar_pos, new Vector(bar_pos.X + player.sword * 5, bar_pos.Y), 20, Color.Gold, DepthID.Status);//剣ゲージ
+            chargeBar.Draw(d, new Vector(bar_pos.X-197, bar_pos.Y-chargeBar.Y/2-28), DepthID.Map);
+            d.DrawLine(bar_pos, new Vector(bar_pos.X + player.sword * 3.8, bar_pos.Y), 17, Color.Violet, DepthID.Status);//剣ゲージ
 
         }//draw end
 
