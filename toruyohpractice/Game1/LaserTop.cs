@@ -16,7 +16,7 @@ namespace CommonPart
         protected Color color;
         protected Enemy enemy;
 
-        public LaserTop(double _x, double _y, MoveType _move_type, double _speed, double _acceleration, double _radian, Animation _anime, int _zoom_rate,double _radius, int _life, int _score, int _sword,
+        public LaserTop(double _x, double _y, MoveType _move_type, double _speed, double _acceleration, double _radian, string _anime, int _zoom_rate,double _radius, int _life, int _score, int _sword,
             double _angle,double _omega,Enemy _enemy,Color _color)
             : base(_x, _y, _move_type, _speed, _acceleration,_radian, _anime, _zoom_rate, _radius, _life, _score, _sword)
         {
@@ -42,12 +42,10 @@ namespace CommonPart
                         if (player.x > x)
                         {
                             angle -= omega*fix;
-                            Console.WriteLine("a");
                         }
                         else
                         {
                             angle += omega*fix;
-                            Console.WriteLine("b");
                         }
                     }
                     else
@@ -58,12 +56,10 @@ namespace CommonPart
                         if ((k * (player.x - enemy.x) + enemy.y > player.y))
                         {
                             angle -= omega*fix;
-                            Console.WriteLine((y - enemy.y) + " " + (player.x - enemy.x) + " " + (x - enemy.x) + " " + enemy.y + " " + player.y);
                         }
                         else
                         {
                             angle += omega*fix;
-                            Console.WriteLine("d");
                         }
                     }
 

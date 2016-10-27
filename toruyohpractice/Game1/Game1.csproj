@@ -38,6 +38,7 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Boss1.cs" />
     <Compile Include="Bullet.cs" />
     <Compile Include="Datas\DataBase.cs" />
     <Compile Include="Datas\HitShape.cs" />
@@ -62,6 +63,7 @@
     <Compile Include="Scenes\MapScene.cs" />
     <Compile Include="Scenes\StageSelectScene.cs" />
     <Compile Include="Skill.cs" />
+    <Compile Include="SkilledBullet.cs" />
     <Compile Include="Updater.cs" />
     <Compile Include="Workers\Unit.cs" />
     <Compile Include="Workers\Worker.cs" />
@@ -190,6 +192,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Icon.ico" />
+    <Content Include="Content\stageselect.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\titlewords.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="UpdateUnziper.exe" />
   </ItemGroup>
   <ItemGroup>

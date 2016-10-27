@@ -296,7 +296,7 @@ namespace CommonPart
     {
         public override float X { get { return data.X; } }
         public override float Y { get { return data.Y; } }
-        AnimationDataAdvanced data;
+        public new AnimationDataAdvanced data;
         protected bool repeat;
         int frame;
         const bool animateWithUpdate = true;
