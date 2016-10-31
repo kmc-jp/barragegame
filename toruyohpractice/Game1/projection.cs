@@ -148,8 +148,12 @@ namespace CommonPart
                 default:
                     break;
             }
-
             animation.Update();
+        }
+
+        public virtual bool hit_jugde(Player player)
+        {
+            return false;
         }
 
         public virtual void draw(Drawing d)

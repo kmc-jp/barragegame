@@ -51,16 +51,22 @@ namespace CommonPart
                 remove();
             }
 
-            if (Function.hitcircle(x, y, radius, player.x, player.y, player.radius) == true)
+            if (hit_jugde(player) == true)
             {
-                ////////
                 life--;
                 player.damage(atk);
             }
+
+
             if (life <= 0)
             {
                 remove();
             }
+        }
+
+        public override bool hit_jugde(Player player)
+        {
+            return Function.hitcircle(x, y, radius, player.x, player.y, player.radius);
         }
 
         public void remove()
