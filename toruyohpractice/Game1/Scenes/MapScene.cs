@@ -60,13 +60,7 @@ namespace CommonPart {
             base.SceneUpdate();
             
             nMap.update(Input);
-            if (nMap.step[0] < 0) { Delete = true; }
-
-            if (nMap.player.life <= 0)
-            {
-                
-            }
-
+            if (Map.step[0] < 0) { Delete = true; }
         }
         #endregion
     }// class end

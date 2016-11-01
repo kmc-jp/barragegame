@@ -50,7 +50,7 @@ namespace CommonPart
                                 break;
                             case SkillGenreS.laser:
                                 LaserTopData lt = (LaserTopData)sd;
-                                myboss.bullets.Add(new LaserTop(x, y, lt.moveType, lt.speed, lt.acceleration, 0, lt.aniDName, 100, lt.radius, lt.life, lt.score, lt.sword, lt.angle, lt.omega, myboss, lt.color));
+                                myboss.bullets.Add(new LaserTop(x, y, lt.moveType, lt.speed, lt.acceleration, 0, lt.aniDName, 100, lt.radius, lt.life, lt.score, lt.sword, lt.omega, myboss, lt.color));
                                 break;
                             case SkillGenreS.wayshot:
                                 WayShotSkillData ws = (WayShotSkillData)sd;
@@ -73,7 +73,7 @@ namespace CommonPart
                                     }
                                 }
                                 break;
-                            case SkillGenreS.zyuuzi:
+                            case SkillGenreS.zyuzi:
                                 SingleShotSkillData ss2 = (SingleShotSkillData)sd;
                                 for (int j = 0; j < 3; j++)
                                 {
