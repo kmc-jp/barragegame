@@ -11,16 +11,14 @@ namespace CommonPart
     class LaserTop:Bullet
     {
         public double length = 0;
-        public double angle;
         protected double omega;
         protected Color color;
         protected Enemy enemy;
 
         public LaserTop(double _x, double _y, MoveType _move_type, double _speed, double _acceleration, double _radian, string _anime, int _zoom_rate,double _radius, int _life, int _score, int _sword,
-            double _angle,double _omega,Enemy _enemy,Color _color)
+            double _omega,Enemy _enemy,Color _color)
             : base(_x, _y, _move_type, _speed, _acceleration,_radian, _anime, _zoom_rate, _radius, _life, _score, _sword)
         {
-            angle = _angle;
             omega = _omega;
             enemy = _enemy;
             color = _color;
@@ -29,7 +27,6 @@ namespace CommonPart
         public override void update(Player player)
         {
             update();
-
             switch (move_type)
             {
                 case MoveType.chase_angle:
@@ -41,11 +38,11 @@ namespace CommonPart
                         fix = y > enemy.y ? 1 : -1;
                         if (player.x > x)
                         {
-                            angle -= omega*fix;
+                            radian -= omega*fix;
                         }
                         else
                         {
-                            angle += omega*fix;
+                            radian += omega*fix;
                         }
                     }
                     else
@@ -55,46 +52,102 @@ namespace CommonPart
 
                         if ((k * (player.x - enemy.x) + enemy.y > player.y))
                         {
-                            angle -= omega*fix;
+                            radian -= omega*fix;
                         }
                         else
                         {
-                            angle += omega*fix;
+                            radian += omega*fix;
                         }
                     }
 
-                    x = enemy.x+length * Math.Cos(angle);
-                    y = enemy.y+length * Math.Sin(angle);
+                    x = enemy.x+length * Math.Cos(radian);
+                    y = enemy.y+length * Math.Sin(radian);
                     break;
                 case MoveType.go_straight:
                     speed += acceleration;
                     length += speed;
-                    angle = Math.PI / 2;
-                    x = enemy.x+ length * Math.Cos(angle);
-                    y = enemy.y+length * Math.Sin(angle);
+                    radian = Math.PI / 2;
+                    x = enemy.x+ length * Math.Cos(radian);
+                    y = enemy.y+length * Math.Sin(radian);
                     break;
             }
-
             if (x < Map.leftside + animation.X / 2) { length-= Map.leftside + animation.X / 2-x; x = Map.leftside + animation.X/2; }
-            if (x > Map.rightside - animation.X/2) { length += Map.rightside - animation.X / 2 - x; x = Map.rightside - animation.X/2; }
-            if (y > DataBase.WindowSlimSizeY - animation.Y/2) { length+= DataBase.WindowSlimSizeY - animation.Y / 2-y; y = DataBase.WindowSlimSizeY - animation.Y / 2; }
+            if (x > Map.rightside - animation.X/2) { length -= x- Map.rightside + animation.X / 2;  x = Map.rightside - animation.X/2; }
+            if (y > DataBase.WindowSlimSizeY - animation.Y/2) { length-= y- DataBase.WindowSlimSizeY + animation.Y / 2; y = DataBase.WindowSlimSizeY - animation.Y / 2; }
             if (y < 0 + animation.Y / 2) {length-= animation.Y / 2-y; y = 0 + animation.Y / 2; }
+            if (length <= 0) { length = 0; }
+
+            hit_jugde(player);
+            if (hit_jugde(player) == true)
+            {
+                life--;
+                player.damage(atk);
+            }
+            /*
+            if (life <= 0)
+            {
+                remove();
+            }
+            */
+        }
+
+        public override bool hit_jugde(Player player)
+        {
+            bool close;
+            bool hit;
+            double k;
+            double d; 
+
+            if (enemy.x <= x)
+            {
+                if (enemy.y <= y)
+                {
+                    close = (player.x > enemy.x && player.x < x) && (player.y > enemy.y && player.y < y);
+                }else
+                {
+                    close = (player.x > enemy.x && player.x < x) && (player.y < enemy.y && player.y > y);
+                }
+            }else
+            {
+                if (enemy.y <= y)
+                {
+                    close = (player.x < enemy.x && player.x > x) && (player.y > enemy.y && player.y < y);
+                } else
+                {
+                    close = (player.x < enemy.x && player.x > x) && (player.y < enemy.y && player.y > y);
+                }
+            }
+
+            k = (enemy.y - y) / (enemy.x - x);
+            d = (Math.Abs(k * player.x -player.y - k * x + y) )/ Math.Sqrt(k * k + 1);
+            hit = d < (player.radius + radius);
+
+            if(hit && close)
+            {
+                if (player.avoid_mode == true)
+                {
+                    length = 0;
+
+                    Map.make_chargePro(x, y,sword,score);
+                    return false;
+                }
+                return true;
+            }else { return false; }
         }
 
         public override void draw(Drawing d)
         {
             double dx, dy;
-            dx = (radius) * Math.Cos(angle - Math.PI / 2)/2;
-            dy = (radius) * Math.Sin(angle - Math.PI / 2) / 2;
+            dx = (radius) * Math.Cos(radian - Math.PI / 2)/2;
+            dy = (radius) * Math.Sin(radian - Math.PI / 2) / 2;
             d.DrawLine(new Vector(enemy.x + dx, enemy.y + dy), new Vector(x + dx, y+dy), (float)radius, new Color(color,(int)(color.A*0.3)), DepthID.Player);
-            dx = (radius*2/3) * Math.Cos(angle - Math.PI / 2) / 2;
-            dy = (radius*2 /3) * Math.Sin(angle - Math.PI / 2) / 2;
+            dx = (radius*2/3) * Math.Cos(radian - Math.PI / 2) / 2;
+            dy = (radius*2 /3) * Math.Sin(radian - Math.PI / 2) / 2;
             //d.DrawLine(new Vector(enemy.x, enemy.y), new Vector(x, y), (float)radius, new Color(color, (int)(color.A * 0.6)), DepthID.StateBack);
             d.DrawLine(new Vector(enemy.x+dx, enemy.y+dy), new Vector(x+dx, y+dy), (float)radius*2/3, new Color(color, (int)(color.A * 0.6)), DepthID.Player);
-            dx = (radius / 4) * Math.Cos(angle - Math.PI / 2) / 2;
-            dy = (radius / 4) * Math.Sin(angle - Math.PI / 2) / 2;
+            dx = (radius / 4) * Math.Cos(radian - Math.PI / 2) / 2;
+            dy = (radius / 4) * Math.Sin(radian - Math.PI / 2) / 2;
             d.DrawLine(new Vector(enemy.x+dx, enemy.y+dy), new Vector(x+dx, y+dy), (float)radius/4, color, DepthID.Player);
-
         }
     }
 }

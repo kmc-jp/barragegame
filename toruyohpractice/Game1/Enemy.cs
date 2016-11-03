@@ -14,7 +14,8 @@ namespace CommonPart
     {
         public double x;
         public double y;
-        public double angle;
+        public double angle=0;
+        protected bool texRotate { get { if (unitType == null) { return false; } else { return unitType.textureTurn; } } }
         public int life = 1;
         public List<Bullet> bullets = new List<Bullet>();
         public List<Skill> skills = new List<Skill>();
@@ -62,48 +63,58 @@ namespace CommonPart
                 {
                     motion_index[0]++;
                     Console.WriteLine("play animation!");
+                    once = false;
                 }else { motion_index[0] = 0; }
                 times[0] = 0;
             }
             times[0]++;
             switch (unitType.moveTypes[motion_index[0]])
             {
+                #region 動作
                 case MoveType.mugen:
                     Vector displacement = MotionCalculation.mugenDisplacement(3, unitType.times[motion_index[0]], times[0]);
                     x -= displacement.X;
                     y -= displacement.Y;
+                    if (texRotate) { angle = Math.Atan2(-displacement.Y, -displacement.X); } //- Math.PI / 2; }
                     break;
                 case MoveType.go_straight:
                     Vector displacement1 = MotionCalculation.tousokuidouDisplacement(unitType.default_poses[motion_index[0]],unitType.times[motion_index[0]]);
                     x += displacement1.X;
                     y += displacement1.Y;
+
                     break;
                 case MoveType.rightcircle:
                     Vector displacement2 = MotionCalculation.rightcircleDisplacement(unitType.speed * unitType.times[motion_index[0]], unitType.times[motion_index[0]], times[0]);
                     x += displacement2.X;
                     y += displacement2.Y;
+
                     break;
                 case MoveType.leftcircle:
                     Vector displacement3 = MotionCalculation.leftcircleDisplacement(unitType.speed * unitType.times[motion_index[0]], unitType.times[motion_index[0]], times[0]);
                     x += displacement3.X;
                     y += displacement3.Y;
+
                     break;
                 case MoveType.screen_point_target:
                     if (once == false)
                     {
                         Vector goal = unitType.default_poses[motion_index[0]];
                         displacement4 = new Vector(goal.X - x, goal.Y - y);
+                        once = true;
                     }
                     x += displacement4.X/unitType.times[motion_index[0]];
                     y += displacement4.Y/unitType.times[motion_index[0]];
+                    if (texRotate) { angle = Math.Atan2(displacement4.Y, displacement4.X); }// - Math.PI / 2; }
                     break;
                 case MoveType.stop:
+                    times[0] = 10;
                     break;
                 default:
                     break;
+                    #endregion
             }
 
-            
+
             if (unitType.label.Contains("fadeout")&&(x < Map.leftside - animation.X / 2|| x > Map.rightside + animation.X / 2||y > DataBase.WindowSlimSizeY + animation.Y / 2||y < 0 - animation.Y / 2))
             {
                 remove(Unit_state.out_of_window);
@@ -133,8 +144,15 @@ namespace CommonPart
 
         public virtual void draw(Drawing d)
         {
-            animation.Draw(d, new Vector((x - animation.X / 2), (y - animation.Y / 2)), DepthID.Enemy);
-            //d.Draw(new Vector((x- animation.X/2),(y- animation.Y/2)), DataBase.getTex(texture_name),DepthID.Enemy);
+            if (!texRotate)
+            {
+                animation.Draw(d, new Vector((x - animation.X / 2), (y - animation.Y / 2)), DepthID.Enemy);
+            }else
+            {
+                float angle2 = (float)(angle ) ;
+                animation.Draw(d, new Vector((x + animation.Y / 2*Math.Cos(angle2)+animation.X/2*Math.Sin(angle2)), (y +animation.Y/2*Math.Sin(angle2) - animation.X/ 2*Math.Cos(angle2))), DepthID.Enemy, 1, (float)(angle+Math.PI/2));
+               
+            }
             for (int i = 0; i < bullets.Count; i++)
             {
                 bullets[i].draw(d);
@@ -147,7 +165,7 @@ namespace CommonPart
             {
                 if (skills[i].coolDown <= 0)
                 {
-                    SkillData sd=DataBase.SkillDatasDictionary[skills[i].skillName];
+                    BarrageUsedSkillData sd= (BarrageUsedSkillData)DataBase.SkillDatasDictionary[skills[i].skillName];
                     bool use = true;
                     switch (sd.sgl) {
                         case SkillGenreL.generation:
@@ -167,7 +185,7 @@ namespace CommonPart
                                     break;
                                 case SkillGenreS.laser:
                                     LaserTopData lt = (LaserTopData)sd;
-                                    bullets.Add(new LaserTop(x, y, lt.moveType, lt.speed, lt.acceleration, 0,lt.aniDName, 100, lt.radius, lt.life, lt.score, lt.sword,lt.angle,lt.omega,this,lt.color));
+                                    bullets.Add(new LaserTop(x, y, lt.moveType, lt.speed, lt.acceleration, lt.angle,lt.aniDName, 100, lt.radius, lt.life, lt.score, lt.sword,lt.omega,this,lt.color));
                                     break;
                                 case SkillGenreS.wayshot:
                                     WayShotSkillData ws = (WayShotSkillData)sd;
@@ -189,7 +207,7 @@ namespace CommonPart
                                         }
                                     }
                                     break;
-                                case SkillGenreS.zyuuzi:
+                                case SkillGenreS.zyuzi:
                                     SingleShotSkillData ss2 = (SingleShotSkillData)sd;
                                     for (int j = 0; j < 3; j++)
                                     {
@@ -236,7 +254,7 @@ namespace CommonPart
                                         bullets.Add(new SkilledBullet(x, y, ss1.moveType, ss1.speed, ss1.acceleration, -(Math.PI / 2) + j * ss1.angle, ss1.aniDName, 100, ss1.radius, ss1.life, ss1.score, ss1.sword,ss1.unitSkillName,this));
                                     }
                                     break;
-                                case SkillGenreS.zyuuzi:
+                                case SkillGenreS.zyuzi:
                                     GenerateUnitSkillData ss2 = (GenerateUnitSkillData)sd;
                                     for (int j = 0; j < 3; j++)
                                     {
@@ -312,7 +330,7 @@ namespace CommonPart
             animation = new AnimationAdvanced(DataBase.getAniD(unitType.animation_name, addOn));
         }
 
-        public int score(Map map)
+        public int score()
         {
             int total_score = 0;
             total_score += unitType.score;
@@ -320,9 +338,9 @@ namespace CommonPart
             {
                 total_score += bullets[j].score;
 
-                map.pros.Add(new Projection(bullets[j].x, bullets[j].y,
-                    MoveType.object_target, map.pro_speed, map.pro_acceleration, "heal1", map.player, 100));
-                map.pro_swords.Add(bullets[j].sword);
+                Map.pros.Add(new Projection(bullets[j].x, bullets[j].y,
+                    MoveType.object_target, Map.pro_speed, Map.pro_acceleration, "heal1", Map.player, 100));
+                Map.pro_swords.Add(bullets[j].sword);
             }
 
             return total_score;

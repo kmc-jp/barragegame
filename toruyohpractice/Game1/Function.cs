@@ -51,6 +51,14 @@ namespace CommonPart {
             return list.OrderBy(_ => Guid.NewGuid());
         }
 
+        /// <summary>
+        /// 距離の二乗が計算されます
+        /// </summary>
+        /// <param name="x1"></param>
+        /// <param name="y1"></param>
+        /// <param name="x2"></param>
+        /// <param name="y2"></param>
+        /// <returns></returns>
         public static double distance(double x1, double y1, double x2, double y2)
         {
             return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);

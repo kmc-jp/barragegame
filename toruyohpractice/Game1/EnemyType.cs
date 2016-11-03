@@ -100,7 +100,7 @@ namespace CommonPart
                 times.Add(_times[i]);
             }
         }
-        public void setup_standard(double _speed,double _acceleration,double _radius,double _angle,int _score,int _sword)
+        public void setup_standard(double _speed,double _acceleration,double _radius,double _angle,int _score=10,int _sword=1)
         {
             speed = _speed;
             acceleration = _acceleration;
