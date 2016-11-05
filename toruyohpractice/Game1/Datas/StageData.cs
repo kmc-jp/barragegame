@@ -51,7 +51,7 @@ namespace CommonPart
                 case 240:
                     Console.WriteLine("a");
                     Map.create_enemy(180, 0, "E1a-0");
-                    Map.create_enemy(180, 0, "E1a-0");
+                    Map.create_enemy(540, 0, "E1a-0");
                     break;
                 case 480:
                     Map.create_enemy(360, 0, "E1a-1");

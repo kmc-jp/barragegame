@@ -98,7 +98,7 @@ namespace CommonPart
                 case MoveType.screen_point_target:
                     if (once == false)
                     {
-                        Vector goal = unitType.default_poses[motion_index[0]];
+                        Vector goal = new Vector(unitType.default_poses[motion_index[0]].X+Map.leftside,unitType.default_poses[motion_index[0]].Y);
                         displacement4 = new Vector(goal.X - x, goal.Y - y);
                         once = true;
                     }
