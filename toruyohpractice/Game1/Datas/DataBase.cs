@@ -232,8 +232,8 @@ namespace CommonPart {
         /// string is its path, maybe from "Content".  and also string key contains a size of texture's single unit
         /// </summary>
         #region SkillData
-        private const int low_speed=3;
-        private const int middle_speed=5;
+        private const int low_speed=2;
+        private const int middle_speed=4;
         private const int high_speed=7;
         private const int big_radius=10;
         private const int small_radius=5;
