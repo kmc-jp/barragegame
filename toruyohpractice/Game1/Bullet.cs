@@ -44,7 +44,6 @@ namespace CommonPart
         public virtual void update(Player player)
         {
             base.update();
-            
             if (x < Map.leftside - animation.X / 2 || x > Map.rightside + animation.X / 2
                 || y > DataBase.WindowSlimSizeY + animation.Y / 2 || y < 0 - animation.Y / 2)
             {

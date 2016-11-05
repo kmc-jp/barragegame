@@ -133,11 +133,11 @@ namespace CommonPart
                     muteki_time = default_muteki_time;
                 }
             }
-
-            if (x < Map.leftside+DataBase.getTex(texture_name).Width/2) { x = Map.leftside+DataBase.getTex(texture_name).Width / 2; }
-            if (x > Map.rightside-DataBase.getTex(texture_name).Width / 2) { x = Map.rightside- DataBase.getTex(texture_name).Width / 2; }
-            if (y > DataBase.WindowSlimSizeY- DataBase.getTex(texture_name).Height / 2) { y = DataBase.WindowSlimSizeY- DataBase.getTex(texture_name).Height / 2; }
-            if (y < 0+ DataBase.getTex(texture_name).Height / 2) { y = 0+ DataBase.getTex(texture_name).Height / 2; }
+            double percent = 0;
+            if (x < Map.leftside+percent*DataBase.getTex(texture_name).Width/2) { x = Map.leftside+percent*DataBase.getTex(texture_name).Width / 2; }
+            if (x > Map.rightside-percent*DataBase.getTex(texture_name).Width / 2) { x = Map.rightside-percent* DataBase.getTex(texture_name).Width / 2; }
+            if (y > DataBase.WindowSlimSizeY- percent*DataBase.getTex(texture_name).Height / 2) { y = DataBase.WindowSlimSizeY- percent * DataBase.getTex(texture_name).Height / 2; }
+            if (y < 0+ percent*DataBase.getTex(texture_name).Height / 2) { y = 0+ percent * DataBase.getTex(texture_name).Height / 2; }
             if (sword >= sword_max) { sword = sword_max; }
             if (sword <= 0) { sword = 0; }
         }

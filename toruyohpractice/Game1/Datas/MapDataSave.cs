@@ -6,6 +6,9 @@ using System.Collections.Generic;
 namespace CommonPart
 {
    
+    /// <summary>
+    /// 必ずnewしてから使ってください。mapの基本属性を保持してどこからでも取得できるためのclass
+    /// </summary>
     class MapDataSave
     {
         #region variables concerns FileStream
@@ -49,13 +52,17 @@ namespace CommonPart
         /// <param name="_mapName">マップの名前</param>
         /// <param name="mx">マップの最大x座標</param>
         /// <param name="my">マップの最大y座標</param>
-        public MapDataSave(string _fileName,string _mapName,int mx,int my,int _xrate,int _yrate)
+        public MapDataSave(string _fileName,string _mapName,int mx,int my,int _xrate,int _yrate,int _leftsideX,int _topsideY)
         {
             fileName = _fileName;
             mapName = _mapName;
             max_x = mx; max_y = my;
             Xrate = _xrate;
             Yrate = _yrate;
+            leftsideX = _leftsideX;
+            topsideY = _topsideY;
+            createFiletoWrite();
+            WriteAll();
         }
         /// <summary>
         /// !! only you already have the File whose name is _fileName.
@@ -63,21 +70,24 @@ namespace CommonPart
         /// <param name="_fileName"></param>
         public MapDataSave(string _fileName)
         {
-            getToDirectoryDatas();
+            DataBase.goToFolderDatas();
             if (File.Exists(_fileName))
             {
-                MapFileStream = File.Open(_fileName, FileMode.OpenOrCreate,FileAccess.Read);
+                MapFileStream = File.Open(_fileName, FileMode.Open,FileAccess.Read);
                 MapFileStream.Position = 0;
                 br = new BinaryReader(MapFileStream);
                 int version = br.ReadInt32();
+                #region switch version
                 switch (version)
                 {
                     case (int)(DataBase.VersionNumber.SixTeenTenTen):
                         mapName = br.ReadString();
                         max_x = br.ReadInt32();
                         max_y = br.ReadInt32();
-                        Xrate = br.ReadInt32();
-                        Yrate = br.ReadInt32();
+                        Xrate = br.ReadSingle();
+                        Yrate = br.ReadSingle();
+                        leftsideX = br.ReadDouble();
+                        topsideY = br.ReadDouble();
                         while (br.BaseStream.Position < br.BaseStream.Length)
                         {
                             bool it_is_int_now = true;
@@ -101,7 +111,10 @@ namespace CommonPart
                                     strings.Add(br.ReadString());
                                 }
                             }// while reading one unit end
-                            utList.Add(new Unit(ints, strings));
+                            if (ints.Count > 0 && strings.Count > 0)
+                            {
+                                utList.Add(new Unit(ints, strings));
+                            }else { Console.WriteLine("MapDataS: ints "+ints.Count+" strs "+strings.Count); }
                         }//while reading all unit end
 
                         // BinaryReader has Read All
@@ -111,6 +124,9 @@ namespace CommonPart
                         Console.Write("Unknown Datas here");
                         break;
                 }
+                #endregion
+                br.Close();
+                MapFileStream.Close();
             }else
             {
                 Console.WriteLine(fileName + " is UnFound. Loading Map failed");
@@ -119,20 +135,14 @@ namespace CommonPart
         }// Load MapSaveData 
         #endregion
 
-        /// <summary>
-        /// 画面上に現れるMapの初期化、ファイルはまだ作っていない
-        /// </summary>
-        public void initialize()
-        {
-
-        }
-
-        static public void update_map_xy(int _ltx,int _lty,int _rbx,int _rby)
+        static public void update_map_xy(int _ltx,int _lty,int _rbx,int _rby,int _leftsideX,int _topsideY)
         {
             ltx = _ltx;
             lty = _lty;
             rbx = _rbx;
             rby = _rby;
+            leftsideX = _leftsideX;
+            topsideY = _topsideY;
         }
         public void changeTo(string _fileName,string _mapName,int mx,int my,int _xrate,int _yrate) {
             mapName = _mapName;
@@ -140,6 +150,26 @@ namespace CommonPart
             max_x = mx;
             max_y = my;
             Xrate = _xrate; Yrate = _yrate;
+        }
+
+        public double ScreenPosXToMapPosX(double sx)
+        {
+            return (sx - leftsideX) / Xrate + ltx;
+        }
+        public double ScreenPosYToMapPosY(double sy)
+        {
+            return lty - (sy - topsideY) / Yrate;
+        }
+        public Vector ScreenPosToMapPos(Vector spos)
+        {
+            return new Vector(
+                ScreenPosXToMapPosX(spos.X), ScreenPosYToMapPosY(spos.Y)
+                );
+        }
+        public Vector ScreenPosToMapPos(double sx,double sy){
+            return new Vector(
+                ScreenPosXToMapPosX(sx), ScreenPosYToMapPosY(sy)
+                );
         }
         public bool PosInsideMap(Vector pos)
         {
@@ -151,30 +181,18 @@ namespace CommonPart
                 return false;
             }
         }
-        /// <summary>
-        /// go to "Datas"
-        /// </summary>
-        public void getToDirectoryDatas()
-        {
-            if (Directory.GetCurrentDirectory() != DataBase.DirectoryWhenGameStart)
-            {
-                Directory.SetCurrentDirectory(DataBase.DirectoryWhenGameStart);
-            }
-            if (!File.Exists("Datas"))
-            {
-                File.Create("Datas");
-            }
-            Directory.SetCurrentDirectory("Datas");
-        }
+        
         /// <summary>
         /// Mapの情報を書き込むファイルを作る
         /// </summary>
         public void createFiletoWrite()
         {
-            getToDirectoryDatas();
+            DataBase.goToFolderDatas();
             MapFileStream = File.Open(fileName, FileMode.OpenOrCreate,FileAccess.Write);
         }
-
+        /// <summary>
+        /// ファイルが作られている前提で、すべてのデータを書き込む
+        /// </summary>
         public void WriteAll() {
             MapFileStream.Position = 0;
             bw = new BinaryWriter(MapFileStream);
@@ -182,8 +200,10 @@ namespace CommonPart
             bw.Write(mapName);
             bw.Write(max_x);bw.Write(max_y);
             bw.Write(Xrate);bw.Write(Yrate);
+            bw.Write(leftsideX);bw.Write(topsideY);
             #region Write Units
             if (utList.Count > 0) {
+                Console.WriteLine("no Units On the MapDataS");
                 for(int i = 0; i < utList.Count; i++)
                 {
                     if (PosInsideMap(new Vector(utList[i].x_index, utList[i].y_index)))
@@ -204,7 +224,8 @@ namespace CommonPart
                 }
             }
             #endregion
-
+            bw.Close();
+            MapFileStream.Close();
         }
         public void close() // contains Dispose()
         {
