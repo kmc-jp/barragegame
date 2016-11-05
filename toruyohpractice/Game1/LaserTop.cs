@@ -27,11 +27,11 @@ namespace CommonPart
         public override void update(Player player)
         {
             update();
+            length += speed;
             switch (move_type)
             {
                 case MoveType.chase_angle:
                     speed += acceleration;
-                    length += speed;
                     int fix;
                     if (Math.Abs(x - enemy.x) < 0.01)
                     {
@@ -65,12 +65,12 @@ namespace CommonPart
                     break;
                 case MoveType.go_straight:
                     speed += acceleration;
-                    length += speed;
                     radian = Math.PI / 2;
                     x = enemy.x+ length * Math.Cos(radian);
                     y = enemy.y+length * Math.Sin(radian);
                     break;
             }
+
             if (x < Map.leftside + animation.X / 2) { length-= Map.leftside + animation.X / 2-x; x = Map.leftside + animation.X/2; }
             if (x > Map.rightside - animation.X/2) { length -= x- Map.rightside + animation.X / 2;  x = Map.rightside - animation.X/2; }
             if (y > DataBase.WindowSlimSizeY - animation.Y/2) { length-= y- DataBase.WindowSlimSizeY + animation.Y / 2; y = DataBase.WindowSlimSizeY - animation.Y / 2; }

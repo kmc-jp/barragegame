@@ -49,6 +49,7 @@ namespace CommonPart
                     Map.boss_mode = false;
                     break;
                 case 240:
+                    Console.WriteLine("a");
                     Map.create_enemy(180, 0, "E1a-0");
                     Map.create_enemy(180, 0, "E1a-0");
                     break;
@@ -108,7 +109,9 @@ namespace CommonPart
                     break;
                 case 4620:
                     Map.boss_mode = true;
-                    Map.create_enemy(360, 0, "boss1");
+                    break;
+                case 4680:
+                    Map.create_boss1(360, 10, "boss1");
                     break;
                     #endregion
             }
