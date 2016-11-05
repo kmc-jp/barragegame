@@ -16,7 +16,7 @@ namespace CommonPart
         public double radian;
         public Vector target_pos;
         public Player target;
-        public Animation animation = null;
+        public AnimationAdvanced animation = null;
         public MoveType move_type;
         public int zoom_rate;
 
@@ -37,11 +37,6 @@ namespace CommonPart
             move_type = _move_type;
             animation = new AnimationAdvanced(DataBase.getAniD(_anime));
             zoom_rate = _zoom_rate;
-
-            if (animation == null)
-            {
-                animation = new Animation(new SingleTextureAnimationData(10,TextureID.Bullet,3,1));
-            }
         }
         /// <summary>
         /// コンストラクタ(速度、加速度あり)
@@ -69,11 +64,6 @@ namespace CommonPart
             speed_y = speed * Math.Sin(radian);
             acceleration_x = acceleration * Math.Cos(radian);
             acceleration_y = acceleration * Math.Sin(radian);
-
-            if (animation == null)
-            {
-                animation = new Animation(new SingleTextureAnimationData(10, TextureID.Bullet, 3, 1));
-            }
         }
         /// <summary>
         /// 点に向かって移動
@@ -149,6 +139,7 @@ namespace CommonPart
                     break;
             }
             animation.Update();
+            Console.WriteLine(animation.X+" "+animation.Y);
         }
 
         public virtual bool hit_jugde(Player player)

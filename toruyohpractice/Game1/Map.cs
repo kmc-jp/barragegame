@@ -12,7 +12,6 @@ namespace CommonPart {
         public static List<Enemy> enemys = new List<Enemy>();
         public List<Enemy> enemys_inside_window = new List<Enemy>();
         public int score = 0;
-        public int enemyexist = 0;
         public Vector scroll_speed;
         public int stage;
         protected AnimationAdvanced chargeBar;
@@ -155,7 +154,7 @@ namespace CommonPart {
         }
         private void update_enemys()
         {
-            if (enemyexist > 0)
+            if (enemys.Count > 0)
             {
                 for (int i = 0; i < enemys.Count; i++)
                 {
@@ -198,16 +197,16 @@ namespace CommonPart {
                 {
                     double random = Function.GetRandomDouble(900, 1000);
                     double random_y = Function.GetRandomDouble(250, 300);
-                    if (step[0] % 200 == 1)
+                    if (step[0] % 200 == 0)
                     {
                         enemys.Add(new Boss1(random, random_y, "boss1"));
                     }else
                     {
                         enemys.Add(new Enemy(random, random_y, "enemy2"));
                     }
-                    enemyexist++;
                 }
-            }*/
+            }
+            */
             #endregion
 
             
@@ -221,10 +220,7 @@ namespace CommonPart {
                         enemys[i].exist = true;
                     }
                 }
-
-                //if(enemys[i].n)
             }
-
 
             #region move
 
@@ -269,7 +265,7 @@ namespace CommonPart {
 
         private void barslide()
         {
-            if (leftside < 0)
+            if (leftside > 0)
             {
                 leftside--;
                 rightside++;
@@ -297,7 +293,11 @@ namespace CommonPart {
         }
         public static void create_enemy(double _x,double _y,string _unitType_name)
         {
-            enemys.Add(new Enemy(_x, _y, _unitType_name));
+            enemys.Add(new Enemy(leftside+_x, _y, _unitType_name));
+        }
+        public static void create_boss1(double _x, double _y, string _unitType_name)
+        {
+            enemys.Add(new Boss1(leftside + _x, _y, _unitType_name));
         }
         private void chargeBarChange(string name,string addOn=null) {
             if (addOn == null) { chargeBar_animation_name = name; }
@@ -317,7 +317,7 @@ namespace CommonPart {
                 }
             }
 
-            if (enemyexist > 0)
+            if (enemys.Count > 0)
             {
                 for (int i = 0; i < enemys.Count; i++)
                 {
@@ -373,6 +373,7 @@ namespace CommonPart {
                     }
                 }
             }
+            
             chargeBar.Draw(d, new Vector(bar_pos.X-197, bar_pos.Y-chargeBar.Y/2-28), DepthID.Map);
             d.DrawLine(bar_pos, new Vector(bar_pos.X + player.sword * 3.8, bar_pos.Y), 17, Color.Violet, DepthID.Status);//剣ゲージ
 

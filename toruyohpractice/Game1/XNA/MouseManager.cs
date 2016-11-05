@@ -12,7 +12,7 @@ namespace CommonPart
         MouseState now;
         MouseState old;
         #region singleton
-        static MouseManager mouse_manager = new MouseManager();
+        public static MouseManager mouse_manager = new MouseManager();
         static MouseManager() { }
         private MouseManager() { }
         #endregion
@@ -69,6 +69,10 @@ namespace CommonPart
                     return false;
 
             }
+        }
+        public bool IsButtomDownOnce(MouseButton b)
+        {
+            return IsButtomDown(b) && !IsOldButtomDown(b);
         }
     }// class MouseManager end
 }// namespace end
