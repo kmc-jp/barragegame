@@ -17,7 +17,6 @@ namespace CommonPart
         public double speed;
         public double radius;
         public int life;
-        public int life_piece = 0;
         public string texture_name;
         public bool attack_mode = false;
         public bool add_attack_mode = false;

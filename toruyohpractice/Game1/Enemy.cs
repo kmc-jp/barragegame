@@ -62,7 +62,7 @@ namespace CommonPart
                 if (motion_index[0] < unitType.moveTypes.Count-1) 
                 {
                     motion_index[0]++;
-                    Console.WriteLine("play animation!");
+                    //Console.WriteLine("play animation!");
                     once = false;
                 }else { motion_index[0] = 0; }
                 times[0] = 0;

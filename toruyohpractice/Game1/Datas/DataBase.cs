@@ -17,9 +17,10 @@ namespace CommonPart {
     {
         left_and_go_back = -101, nothing = -100, apply_int = 110, apply_string = 111,
         button_on = 112, button_off = 113, previousPage = 114, nextPage = 115, Scroll = 116, tru_fals = 117,
-        selectInScroll = 118, closeThis = 119, reloadScroll = 120,
-        openUTD = 200, UTDutButtonPressed = 201, /*204 missed*/
+        selectInScroll = 118, closeThis = 119, reloadScroll = 120, buttonPressed1 = 121, buttonPressed2 = 122,
+        openUTD = 200, UTDutButtonPressed = 201,
         openAniD = 202, addTex = 203, /* 205 missed,*/ playAnimation = 206, newAniD = 207, applyAniD = 208,// open animation DataBase, add Texture,play animation,
+        openMusicGallery = 204,
         specialIntChange1 = 301, specialIntChange2 = 302,
         CreateNewMapFile = 1001, LoadMapFile = 1002,
     };
@@ -133,25 +134,6 @@ namespace CommonPart {
                 }
             }
             catch { Console.WriteLine("tdaA: load error" + name); return; }
-            /*
-             * Directory.SetCurrentDirectory(DirectoryWhenGameStart);
-            if (Directory.Exists("Content"))
-            {
-                Directory.SetCurrentDirectory("Content");
-                if (File.Exists(name))
-                {
-                    Console.WriteLine("Found in " + Directory.GetCurrentDirectory());
-                    TexturesDataDictionary.Add(name, new Texture2Ddata(Content.Load<Texture2D>(name), name));
-                }
-                else
-                {
-                    Console.WriteLine("Tex " + name + "is Null. Maybe Not Found directly in the Content?");
-                }
-            }else {
-                Console.WriteLine("tdaA: CurrentDirectory -" + Directory.GetCurrentDirectory());
-                TexturesDataDictionary.Add(name, new Texture2Ddata(Content.Load<Texture2D>(name), name));
-            }//Contentを見つけていない場合
-            */
         }
 
         #endregion
@@ -221,6 +203,10 @@ namespace CommonPart {
             if (!Directory.Exists("Datas")) { Directory.CreateDirectory("Datas"); }
             Directory.SetCurrentDirectory("Datas");
         }
+        public static void goToStartDirectory()
+        {
+            Directory.SetCurrentDirectory(DirectoryWhenGameStart);
+        }
         #region about Coloum
         public const string BlankDefaultContent = "ClickAndType";
         public const string ButtonDefaultContent = "Click";
@@ -240,31 +226,24 @@ namespace CommonPart {
         public static Dictionary<string, SkillData> SkillDatasDictionary = new Dictionary<string, SkillData>();
         public static void setupSkillData()
         {
-            SkillDatasDictionary.Add("shot",new SingleShotSkillData("shot",SkillGenreS.shot,MoveType.go_straight,"bullet1", 60, -1, 0.3, 0,5,0,1,50,10));
-            SkillDatasDictionary.Add("circle", new SingleShotSkillData("circle",SkillGenreS.circle,MoveType.go_straight,"bullet1", 60, 5, 0, Math.PI/10, 5, 0, 1, 50, 10));
-            SkillDatasDictionary.Add("laser", new LaserTopData("laser",MoveType.chase_angle,"bullet1", 100000, 5, 0, Math.PI/2, 8, 0.008, Color.MediumVioletRed));
-            SkillDatasDictionary.Add("createbullet", new GenerateUnitSkillData("createbullet",SkillGenreS.shot,MoveType.go_straight,"bullet1", 120, 2, 0, -Math.PI/2, 8,"yanagi"));
-            SkillDatasDictionary.Add("yanagi", new SingleShotSkillData("yanagi",SkillGenreS.yanagi ,MoveType.go_straight,"bullet1", 90, 2, 0.2, 8, 0.25));
-            SkillDatasDictionary.Add("5wayshot", new WayShotSkillData("5wayshot", SkillGenreS.wayshot,MoveType.go_straight,"bullet1", 20, 6, 0, Math.PI/10, 8, 5));
-            SkillDatasDictionary.Add("3wayshot-0", new WayShotSkillData("3wayshot-0", SkillGenreS.wayshot,MoveType.go_straight,"bullet1", 40,middle_speed, 0, Math.PI/5, small_radius, 3));
-            SkillDatasDictionary.Add("3wayshot-1", new WayShotSkillData("3wayshot-1", SkillGenreS.wayshot, MoveType.go_straight, "bullet1", 60, middle_speed, 0, Math.PI / 5, small_radius, 3));
-            SkillDatasDictionary.Add("16circle-0", new SingleShotSkillData("16circle-0", SkillGenreS.circle, MoveType.go_straight, "bullet1", 100, low_speed, 0, Math.PI / 10, small_radius));
-            SkillDatasDictionary.Add("downshot-0", new SingleShotSkillData("downshot-0", SkillGenreS.circle,MoveType.go_straight, "bullet1", 45, middle_speed, 0, Math.PI*2, small_radius));
-            SkillDatasDictionary.Add("1wayshot-0",new SingleShotSkillData("1way-0",SkillGenreS.shot,MoveType.go_straight,"bullet1", 60, middle_speed, 0, 0,small_radius));
-            SkillDatasDictionary.Add("4wayshot-0", new WayShotSkillData("4wayshot-0", SkillGenreS.wayshot, MoveType.go_straight, "bullet1", 40, low_speed, 0, Math.PI / 6, big_radius, 4));
-            SkillDatasDictionary.Add("4wayshot-1", new WayShotSkillData("4wayshot-1", SkillGenreS.wayshot, MoveType.go_straight, "bullet1", 80, low_speed, 0, Math.PI / 6, big_radius, 4));
-            SkillDatasDictionary.Add("4wayshot-2", new WayShotSkillData("4wayshot-2", SkillGenreS.wayshot, MoveType.go_straight, "bullet1", 30, middle_speed, 0, Math.PI / 6, small_radius, 4));
-            SkillDatasDictionary.Add("laser-0", new LaserTopData("laser-0", MoveType.go_straight, "bullet1", 120, high_speed, 0, Math.PI / 2, small_radius, 0, Color.Maroon));
-            SkillDatasDictionary.Add("laser-1", new LaserTopData("laser-1", MoveType.chase_angle, "bullet1", 120, high_speed, 0, Math.PI / 2, small_radius, 0.005, Color.MediumVioletRed));
-            SkillDatasDictionary.Add("zyuzi-0", new SingleShotSkillData("zyuzi-0",SkillGenreS.zyuzi ,MoveType.go_straight,"bullet1", 60, low_speed, 0, 0,small_radius));
+            addSkillData(new SingleShotSkillData("shot",SkillGenreS.shot,MoveType.go_straight,"bullet1", 60, -1, 0.3, 0,5,0,1,50,10));
+            addSkillData(new SingleShotSkillData("16circle-0",SkillGenreS.circle,MoveType.go_straight,"bullet1", 60, 5, 0, Math.PI/10, 5, 0, 1, 50, 10));
+            addSkillData(new LaserTopData("laser",MoveType.chase_angle,"bullet1", 100000, 5, 0, Math.PI/2, 8, 0.008, Color.MediumVioletRed));
+            addSkillData(new GenerateUnitSkillData("createbullet",SkillGenreS.shot,MoveType.go_straight,"bullet1", 120, 2, 0, -Math.PI/2, 8,"yanagi"));
+            addSkillData(new SingleShotSkillData("yanagi",SkillGenreS.yanagi ,MoveType.go_straight,"bullet1", 90, 2, 0.2, 8, 0.25));
+            addSkillData(new WayShotSkillData("5wayshot", SkillGenreS.wayshot,MoveType.go_straight,"bullet1", 20, 6, 0, Math.PI/10, 8, 5));
+            addSkillData(new WayShotSkillData("3wayshot-0", SkillGenreS.wayshot,MoveType.go_straight,"bullet1", 40,middle_speed, 0, Math.PI/5, small_radius, 3));
+            addSkillData(new WayShotSkillData("3wayshot-1", SkillGenreS.wayshot, MoveType.go_straight, "bullet1", 60, middle_speed, 0, Math.PI / 5, small_radius, 3));
+            addSkillData(new SingleShotSkillData("16circle-0", SkillGenreS.circle, MoveType.go_straight, "bullet1", 100, low_speed, 0, Math.PI / 10, small_radius));
+            addSkillData(new SingleShotSkillData("downshot-0", SkillGenreS.circle,MoveType.go_straight, "bullet1", 45, middle_speed, 0, Math.PI*2, small_radius));
+            addSkillData(new SingleShotSkillData("1wayshot-0",SkillGenreS.shot,MoveType.go_straight,"bullet1", 60, middle_speed, 0, 0,small_radius));
+            addSkillData(new WayShotSkillData("4wayshot-0", SkillGenreS.wayshot, MoveType.go_straight, "bullet1", 40, low_speed, 0, Math.PI / 6, big_radius, 4));
+            addSkillData(new WayShotSkillData("4wayshot-1", SkillGenreS.wayshot, MoveType.go_straight, "bullet1", 80, low_speed, 0, Math.PI / 6, big_radius, 4));
+            addSkillData(new WayShotSkillData("4wayshot-2", SkillGenreS.wayshot, MoveType.go_straight, "bullet1", 30, middle_speed, 0, Math.PI / 6, small_radius, 4));
+            addSkillData(new LaserTopData("laser-0", MoveType.go_straight, "bullet1", 120, high_speed, 0, Math.PI / 2, small_radius, 0, Color.Maroon));
+            addSkillData(new LaserTopData("laser-1", MoveType.chase_angle, "bullet1", 120, high_speed, 0, Math.PI / 2, small_radius, 0.005, Color.MediumVioletRed));
+            addSkillData(new SingleShotSkillData("zyuzi-0",SkillGenreS.zyuzi ,MoveType.go_straight,"bullet1", 60, low_speed, 0, 0,small_radius));
 
-
-
-
-        }
-        public static SkillData getSkillData(string skillName)
-        {
-            return SkillDatasDictionary[skillName];
         }
         #endregion
         #region GameScreen
@@ -282,6 +261,7 @@ namespace CommonPart {
         public static void Load_Contents(ContentManager c)
         {
             Content = c;
+            goToFolderDatas();
             #region textures
             FileStream texD_file = File.Open(texDFileName, FileMode.OpenOrCreate, FileAccess.Read);
             texD_file.Position = 0;
@@ -304,30 +284,30 @@ namespace CommonPart {
             #region animation
             setup_Animation();
             #endregion
-            /*
+            goToStartDirectory();
+            
                         tda("36-40 enmey1");
                         tda("36 40-enemy1");
                         tda("36 40-hex1");
                         tda("18 20-tama1");
-                        tda("testbackground");
                         tda("16-16 tama1");
                         tda("leftside1");
-                        tda("rightside1");
                         tda("60 105-player");
-                        tda("background3");
-                        tda("testlife");
+                        tda("33x60バッテリーアイコン");
                         tda("16-16_tama2");
             tda("120 68-enemy2");
+            tda("stageselect");
+            tda("400x50タイトル画面文字");
+            tda("rightside1");
             tda("rightside2");
             tda("rightside3");
             tda("rightside4");
             tda("background1");
             tda("background2");
+            tda("background3");
             tda("background4");
             tda("ougi");
             tda("720×174 sword");
-            tda("stageselect");
-            tda("titlewords");
             tda("90 98-boss1_body0");
             tda("90 78-boss1_body1");
             tda("90 77-boss1_body2");
@@ -335,10 +315,9 @@ namespace CommonPart {
             
             tda("Boss1_tail");
             tda("120×68 E1-1");
-            */
+            
             setupSkillData();
-            Console.WriteLine(getTexD("Boss1_tail").w_single);
-            Console.WriteLine(getTexD("Boss1_tail").h_single);
+
             addAniD( new AnimationDataAdvanced("boss1" + defaultAnimationNameAddOn,
                 10, 3, "90 270-boss1", true));
             addAniD(new AnimationDataAdvanced("boss1atk", new int[] { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10 },
@@ -373,9 +352,7 @@ namespace CommonPart {
         public void Dispose()
         {
             Console.WriteLine("DisposeDataBase");
-            Directory.SetCurrentDirectory(DirectoryWhenGameStart);
-            if (!Directory.Exists("Datas")) { Directory.CreateDirectory("Datas"); }
-            Directory.SetCurrentDirectory("Datas");
+            goToFolderDatas();
             Console.WriteLine(Directory.GetCurrentDirectory());
             ut_file.Close();
             #region texture
@@ -405,19 +382,79 @@ namespace CommonPart {
         {
             DirectoryWhenGameStart = Directory.GetCurrentDirectory();
 
-            if (Directory.GetCurrentDirectory() == "Datas") { }
-            else if (!Directory.Exists("Datas")) { Directory.CreateDirectory("Datas"); }
-            Directory.SetCurrentDirectory("Datas");
+            if (!Directory.GetCurrentDirectory().EndsWith("Datas"))
+            {
+                if (!Directory.Exists("Datas")) { Directory.CreateDirectory("Datas"); }
+                Directory.SetCurrentDirectory("Datas");
+            }
             Console.WriteLine(Directory.GetCurrentDirectory());
             ut_file = File.Open(utFileName, FileMode.OpenOrCreate, FileAccess.ReadWrite);
             BinaryReader ut_br = new BinaryReader(ut_file);
             utDataBase = new UnitTypeDataBase(ut_br);
             ut_br.Close();
+            goToStartDirectory();
         }
         private DataBase() { }
         #endregion
 
+
         #region Method
+        /// <summary>
+        /// ファイルパスからファイル名を取得する
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public static string getFileNameFromFilePath(string filePath, char da = '/', char db = '.')
+        {
+            if (filePath == null) { Console.WriteLine("getFileName: filePath is null."); return filePath; }
+            int ia = 0, ib = 0;
+            for (int r = 0; r < filePath.Length; r++)
+            {
+                if (filePath[r] == da)
+                {
+                    ia = r;
+                    Console.WriteLine("Found / " + r.ToString() + " ");
+                }
+                else if (filePath[r] == db)
+                {
+                    ib = r;
+                    Console.WriteLine("Found . " + r.ToString() + " ");
+                }
+            }
+            ia++;
+            if (ia <= 1) { Console.WriteLine("getFileName:" + filePath + " ia not Found?or the First. da is " + da); }
+            if (ib <= ia) { Console.WriteLine("getFileName:" + filePath + " ib<=ia; da is " + da + " db is " + db); }
+            if (ib == 0) { Console.WriteLine("getFileName:" + filePath + " not Found " + db); ib = ia + 1; }
+            if (ib >= filePath.Length) { Console.WriteLine("getFileName:" + filePath + " ib>=length (ia is the last?)"); }
+            return filePath.Substring(ia, ib - ia);
+        }
+        public static void addSkillData(SkillData skdata)
+        {
+            if (existSkillDataName(skdata.skillName))
+            {
+                Console.WriteLine("addSkillData:" + skdata.skillName + " already exists");
+            }
+            else
+            {
+                SkillDatasDictionary.Add(skdata.skillName, skdata);
+            }
+        }
+        public static bool existSkillDataName(string skillName)
+        {
+            return SkillDatasDictionary.ContainsKey(skillName);
+        }
+        public static SkillData getSkillData(string skillName)
+        {
+            if (SkillDatasDictionary.ContainsKey(skillName))
+            {
+                return SkillDatasDictionary[skillName];
+            }
+            else
+            {
+                Console.WriteLine("getSkillData: " + skillName + " does not exist in Dictionary.");
+                return null;
+            }
+        }
         public static void addAniD(AnimationDataAdvanced ad)
         {
             if (AnimationAdDataDictionary.ContainsKey(ad.animationDataName))
@@ -502,8 +539,8 @@ namespace CommonPart {
         }
         public static int getUTDcount() { return utDataBase.UnitTypeList.Count; }
         #endregion
-
     }// DataBase end
+
 
     class Texture2Ddata
     {
