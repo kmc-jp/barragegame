@@ -84,13 +84,13 @@ namespace CommonPart
 
                     break;
                 case MoveType.rightcircle:
-                    Vector displacement2 = MotionCalculation.rightcircleDisplacement(unitType.speed * unitType.times[motion_index[0]], unitType.times[motion_index[0]], times[0]);
+                    Vector displacement2 = MotionCalculation.rightcircleDisplacement(unitType.speed, unitType.times[motion_index[0]], times[0]);
                     x += displacement2.X;
                     y += displacement2.Y;
 
                     break;
                 case MoveType.leftcircle:
-                    Vector displacement3 = MotionCalculation.leftcircleDisplacement(unitType.speed * unitType.times[motion_index[0]], unitType.times[motion_index[0]], times[0]);
+                    Vector displacement3 = MotionCalculation.leftcircleDisplacement(unitType.speed , unitType.times[motion_index[0]], times[0]);
                     x += displacement3.X;
                     y += displacement3.Y;
 
