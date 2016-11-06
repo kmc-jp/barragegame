@@ -24,7 +24,7 @@ namespace CommonPart
         public bool attacked = false;
         public bool avoid_mode = false;
         public int stop_time;
-        public int sword = 90;
+        public int sword = 50;
         public bool acceleration_mode = true;
         public bool dead_mode = false;
         public int dead_time;

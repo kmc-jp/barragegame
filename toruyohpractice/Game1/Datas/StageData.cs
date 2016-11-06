@@ -54,64 +54,54 @@ namespace CommonPart
                     Map.create_enemy(180, 0, "E1a-0");
                     Map.create_enemy(540, 0, "E1a-0");
                     break;
-                case 480:
-                    Map.create_enemy(360, 0, "E1a-1");
+                case 840:
                     Map.create_enemy(0, 0, "E2a-0");
                     Map.create_enemy(720, 0, "E2a-1");
                     break;
-                case 720:
-                    Map.create_enemy(100, 0, "E1b-0");
-                    Map.create_enemy(620, 0, "E1b-0");
-                    break;
-                case 1200:
+                case 1260:
                     Map.create_enemy(360, 0, "E3-0");
                     break;
-                case 1380:
-                    Map.create_enemy(0, 100, "E1c-0");
-                    Map.create_enemy(720, 100, "E1c-0");
+                case 1620:
+                    Map.create_enemy(0, 100,"E1c-0a");
+                    Map.create_enemy(720, 100, "E1c-0b");
                     break;
-                case 1680:
-                    Map.create_enemy(280, 0, "E1a-2");
-                    Map.create_enemy(360, 0, "E1a-2");
-                    Map.create_enemy(420, 0, "E1a-2");
-                    break;
-                case 1920:
+                case 1980:
                     Map.create_enemy(200, 0, "E3-1");
                     Map.create_enemy(520, 0, "E3-1");
                     break;
-                case 2160:
-                    Map.create_enemy(360, 0, "E1a-3");
-                    break;
-                case 2460:
+                case 2480:
                     Map.create_enemy(720,120,"E1b-1");
                     break;
-                case 2520:
+                case 2540:
                     Map.create_enemy(720, 120, "E1b-1");
                     break;
-                case 2580:
+                case 2600:
                     Map.create_enemy(720, 120, "E1b-1");
                     break;
-                case 2640:
+                case 2660:
                     Map.create_enemy(720, 120, "E1b-1");
                     break;
-                case 2700:
+                case 2720:
                     Map.create_enemy(720, 120, "E1b-1");
                     break;
-                case 3180:
+                case 3260:
                     Map.create_enemy(360, 0, "E1c-1");
                     break;
-                case 3400:
+                case 3580:
                     Map.create_enemy(180, 0, "E1c-2");
                     Map.create_enemy(540, 0, "E1c-2");
                     break;
-                case 3960:
+                case 3700:
+                    Map.create_enemy(360, 0, "E1a-1");
+                    break;
+                case 4140:
                     Map.create_enemy(300, 0, "E1a-4");
                     Map.create_enemy(420, 0, "E1a-5");
                     break;
-                case 4620:
+                case 4800:
                     Map.boss_mode = true;
                     break;
-                case 4680:
+                case 4860:
                     playBGM(bgmIDs[1]);//BGMを流す。
                     Map.create_boss1(360, 10, "boss1");
                     break;
