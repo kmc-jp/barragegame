@@ -35,11 +35,11 @@ namespace CommonPart
         }
         /// <summary>
         /// default_angleのdefaultは一番上から
-        /// </summary>
+        /// </summary>>
+        /// <returns></returns>
         /// <param name="r"></param>
         /// <param name="now_time"></param>
-        /// <param name="default_angle"></param>
-        /// <returns></returns>
+        /// <param name="default_angle"></param
         public static Vector rightcircleDisplacement(double r,int now_time,int all_time,double default_angle=-Math.PI/2)
         {
             double omega = 2 * Math.PI / all_time;

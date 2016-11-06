@@ -85,7 +85,7 @@ namespace CommonPart {
             scroll_speed = new Vector(defaultspeed_x, defaultspeed_y);
             player = new Player(DataBase.WindowDefaultSizeX/2, 500, 6, 10, 5*lifesPerPiece,"60 105-player");
 
-            set_change_scroll(600,20,120);
+            //set_change_scroll(600,20,120);
 
             chargeBar = new AnimationAdvanced(DataBase.getAniD("swordgauge"));
         }
@@ -298,6 +298,7 @@ namespace CommonPart {
         }
         public static void create_boss1(double _x, double _y, string _unitType_name)
         {
+            enemys.Clear();
             enemys.Add(new Boss1(leftside + _x, _y, _unitType_name));
         }
         private void chargeBarChange(string name,string addOn=null) {
