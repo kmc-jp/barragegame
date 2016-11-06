@@ -10,24 +10,21 @@ namespace CommonPart
         protected BGMID[] bgmIDs;
         public string[] background_names;
         public string stageName;
-        public StageData(BGMID id ,string backgroundname)
+        public StageData(string _stageName)
         {
-
+            stageName = _stageName;
         }
 
         abstract public void update();
 
         protected virtual void setBGM(BGMID _id)
         {
-            Map.set_BGM(_id);
+            Map.PlayBGM(_id);
         }
 
         protected virtual void setupAllbackgroundWithNames()
         {
-            foreach(string na in background_names)
-            {
-                Map.set_backgroundName(na);
-            }
+            Map.setup_backgroundNamesFromNames(background_names);
         }
 
     }
@@ -35,9 +32,15 @@ namespace CommonPart
     #region Stage1
     class Stage1Data :StageData
     {
-        public Stage1Data(BGMID id, string backgroundname) :base(id,backgroundname)
+        public Stage1Data(string _stageName) :base(_stageName)
         {
-            stageName = "stage1";
+            bgmIDs = new BGMID[] { BGMID.title,BGMID.Stage4Boss}; //一応こうした、いつでも{}の中身を変更できる。
+                                                                  //ただし、MusicPlayer2.cs 30行から登録済でないと流れません。
+            background_names = new string[] { "background1"};
+
+
+            setBGM(bgmIDs[0]);//最初のBGMを流す。
+            setupAllbackgroundWithNames();//背景を用意する。
         }
 
         public override void update()
@@ -49,7 +52,6 @@ namespace CommonPart
                     Map.boss_mode = false;
                     break;
                 case 240:
-                    Console.WriteLine("a");
                     Map.create_enemy(180, 0, "E1a-0");
                     Map.create_enemy(180, 0, "E1a-0");
                     break;

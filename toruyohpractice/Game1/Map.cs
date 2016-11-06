@@ -8,104 +8,88 @@ using System.Threading.Tasks;
 
 namespace CommonPart {
     class Map {
-        public static Player player;
-        public static List<Enemy> enemys = new List<Enemy>();
-        public List<Enemy> enemys_inside_window = new List<Enemy>();
         public int score = 0;
-        public Vector scroll_speed;
-        public int stage;
+
+        public int stage;        protected StageData stagedata;
+
+        public static bool boss_mode = false;
+
+        public Vector score_pos = new Vector(1100, 180);
+        #region player and Life Piece and chargeBar
+        public string life_tex_name = "33x60バッテリーアイコン";
+        /// <summary>
+        /// プレイヤーの1残機をlifePerPiece等分する。基本ダメージは1残機削るが、得たスコアーによって残機が(このint)分の1で回復する。
+        /// </summary>
+        public int lifesPerPiece = 3;
+
         protected AnimationAdvanced chargeBar;
         protected string chargeBar_animation_name;
-        //いる？
-        protected StageData stagedata;
 
+        /// <summary>
+        /// チャージバーの左上の座標
+        /// </summary>
+        public Vector bar_pos = new Vector(450, 650);
+        /// <summary>
+        /// 残機表示の左上の座標
+        /// </summary>
+        public Vector life_pos = new Vector(1070, 105);
+        #endregion
+        #region player Projection
         public static List<Projection> pros = new List<Projection>();
         public static List<int> pro_swords = new List<int>();
         public static double pro_speed = -2;
         public static double pro_acceleration = 1;
-        public static bool boss_mode=false;
-
-        public Vector bar_pos = new Vector(450,650);
-        public Vector life_pos = new Vector(1050, 95);
-        public Vector score_pos = new Vector(1100, 180);
-
-        int total_height = 0;
-        public int scroll_start;
-        public int scroll_time;
-        public double changed_scroll_speed;
-
-        public double defaultspeed_x=0;
-        public double defaultspeed_y=1;
-
-
-        public static List<string> background_names = new List<string>();
-        public static List<BGMID> bgmIDs = new List<BGMID>();
-        public static List<int> step = new List<int>();
-
+        #endregion
+        #region map scroll variable
+        Vector scroll_speed;
+        int scroll_start;
+        int scroll_time;
+        double changed_scroll_speed;
+        /// <summary>
+        /// デフォルトのmapのスクロールの速度
+        /// </summary>
+        const double defaultspeed_x = 0,defaultspeed_y = 1;
+        #endregion
+        #region map BackGround variables
+        static int total_BackGroundHeight = 0;
+        protected static List<string> background_names = new List<string>();
         /// <summary>
         /// 背景画像の描画位置
         /// </summary>
-        public List<Vector> v = new List<Vector>();
+        protected static List<Vector> v = new List<Vector>();
+        #endregion
 
+        #region step[] and others about Map
+        /// <summary>
+        /// 多種多様なMap上の状況判断に使える。整数変数配列である。今 0番目は時間を記録する
+        /// </summary>
+        public static List<int> step = new List<int>();
+
+        public static Player player;
+        public static List<Enemy> enemys = new List<Enemy>();
+        public List<Enemy> enemys_inside_window = new List<Enemy>();
         /// <summary>
         /// 左側のバーの右端のx座標
         /// </summary>
         public static int leftside = 280;
         public static int rightside = 1000;
-
-        public string life_tex_name = "testlife";
-
         public Vector camera = new Vector(leftside, 0);
+        #endregion
 
-        public Map(string _background_name,int _stage)//コンストラクタ
+        public Map(int _stage)//コンストラクタ
         {
             stage = _stage;
-            stagedata = new Stage1Data(BGMID.stage1,"stage1");
-
-            background_names.Add(_background_name);
-            background_names.Add(_background_name);
+            stagedata = new Stage1Data("stage1");
+            
             step.Add(0);
-            v.Add(new Vector(leftside, DataBase.WindowSlimSizeY - DataBase.getTex(background_names[0]).Height));
-            v.Add(new Vector(280, v[0].Y - DataBase.getTex(background_names[0]).Height));
-           
             scroll_speed = new Vector(defaultspeed_x, defaultspeed_y);
-            player = new Player(DataBase.WindowDefaultSizeX/2, 500, 6, 10, 5,"60 105-player");
+            player = new Player(DataBase.WindowDefaultSizeX/2, 500, 6, 10, 5*lifesPerPiece,"60 105-player");
 
             set_change_scroll(600,20,120);
 
-            for (int i = 0; i < background_names.Count; i++)
-            {
-                total_height += DataBase.getTex(background_names[i]).Height;
-            }
-
-            leftside = 280;
-            rightside = 1000;
-
-            SoundManager.Music.PlayBGM(BGMID.stage2, true);
             chargeBar = new AnimationAdvanced(DataBase.getAniD("swordgauge"));
         }
-        public Map(string[] bns)
-        {
-            for(int i = 0; i < bns.Length; i++)
-            {
-                background_names.Add(bns[i]);
-            }
-            step.Add(0);
-            v.Add(new Vector(leftside, DataBase.WindowSlimSizeY - DataBase.getTex(background_names[0]).Height));
-            for (int i = 1; i < background_names.Count; i++)
-            {
-                v.Add(new Vector(leftside, v[i - 1].Y - DataBase.getTex(background_names[i]).Height));
-
-            }
-            /*for (int i = 0; i < background_names.Count; i++)
-            {
-                v.Add(new Vector(leftside, v[v.Count - 1].Y - DataBase.getTex(background_names[i]).Height));
-            }*/
-            scroll_speed = new Vector(defaultspeed_x, defaultspeed_y);
-            player = new Player(DataBase.WindowDefaultSizeX / 2, 500, 6, 10, 5);
-
-            set_change_scroll(600, 20, 120);
-        }
+        
 
         /// <summary>
         /// 
@@ -137,7 +121,7 @@ namespace CommonPart {
             {
                 if (v[i].Y >= DataBase.WindowSlimSizeY)
                 {
-                    v[i]= new Vector(v[i].X, v[i].Y-total_height);
+                    v[i]= new Vector(v[i].X, v[i].Y-total_BackGroundHeight);
                 }
             }
 
@@ -279,17 +263,34 @@ namespace CommonPart {
 
             score += score;
         }
-        public static void set_BGM(BGMID id)
-        {
-            bgmIDs.Add(id);
-        }
         public static void PlayBGM(BGMID id)
         {
             SoundManager.Music.PlayBGM(id, true);
         }
-        public static void set_backgroundName(string _background_name)
+        public static void setup_backgroundNamesFromNames(string[] bns)
         {
-            background_names.Add(_background_name);
+            if (bns.Length <= 0) { Console.WriteLine("setup Map Background:bns 0 length!"); }
+            else if (bns.Length <= 1)
+            {
+                background_names.Add(bns[0]);
+                background_names.Add(bns[0]);
+            }
+            else{
+                for (int i = 0; i < bns.Length; i++)
+                {
+                    background_names.Add(bns[i]);
+                }
+            }
+            v.Add(new Vector(leftside, DataBase.WindowSlimSizeY - DataBase.getTex(background_names[0]).Height));
+            for (int i = 1; i < background_names.Count; i++)
+            {
+                v.Add(new Vector(leftside, v[i - 1].Y - DataBase.getTex(background_names[i]).Height));
+
+            }
+            for (int i = 0; i < background_names.Count; i++)
+            {
+                total_BackGroundHeight += DataBase.getTex(background_names[i]).Height;
+            }
         }
         public static void create_enemy(double _x,double _y,string _unitType_name)
         {
@@ -309,6 +310,7 @@ namespace CommonPart {
         {
             d.SetDrawAbsolute();
 
+            #region drawBackGrounds
             for (int i = 0; i < v.Count; i++)
             {
                 if (inside_of_window(v[i], DataBase.getTex(background_names[i])) == true)
@@ -316,7 +318,8 @@ namespace CommonPart {
                     d.Draw(v[i], DataBase.getTex(background_names[i]), DepthID.BackGroundFloor);
                 }
             }
-
+            #endregion
+            #region enemys draw()
             if (enemys.Count > 0)
             {
                 for (int i = 0; i < enemys.Count; i++)
@@ -327,29 +330,37 @@ namespace CommonPart {
                     }
                 }
             }
-
+            #endregion
+            #region projections draw
             for (int i = 0; i < pros.Count; i++)
             {
                 pros[i].draw(d);
             }
+            #endregion
 
-            //if (player.dead_mode == false)
-            //{
-                player.draw(d);
-            //}
+            player.draw(d);
 
-            for(int i = 0; i < player.life; i++)
+            #region life piece draw
+            int ii;
+            for(ii = 0; ii < player.life/lifesPerPiece; ii++)
             {
-                d.Draw(new Vector(life_pos.X + DataBase.getTex(life_tex_name).Width * i , life_pos.Y), DataBase.getTex(life_tex_name), DepthID.Status);
+                d.Draw(new Vector(life_pos.X + DataBase.getTexD(life_tex_name).w_single * ii, life_pos.Y), DataBase.getTex(life_tex_name),
+                DataBase.getRectFromTextureNameAndIndex(life_tex_name,lifesPerPiece-1), DepthID.Status);
             }
+            if (player.life%lifesPerPiece!=0) {
+                d.Draw(new Vector(life_pos.X + DataBase.getTexD(life_tex_name).w_single * ii, life_pos.Y), DataBase.getTex(life_tex_name),
+                DataBase.getRectFromTextureNameAndIndex(life_tex_name, player.life % lifesPerPiece -1), DepthID.Status);
+            }
+            #endregion
 
             RichText scoreboard=new RichText(score.ToString(), FontID.Medium,Color.White);
             scoreboard.Draw(d, score_pos, DepthID.Status);
 
+            #region sidebar draw
             d.Draw(new Vector(leftside-DataBase.getTex("leftside1").Width, 0), DataBase.getTex("leftside1"), DepthID.StateFront);
             d.Draw(new Vector(rightside, 0), DataBase.getTex("rightside1"), DepthID.StateFront);
-
-            
+            #endregion
+            #region draw sword gauge
             if (player.sword < player.sword_max / 2)
             {
                 if (chargeBar_animation_name != "swordgauge")
@@ -376,7 +387,7 @@ namespace CommonPart {
             
             chargeBar.Draw(d, new Vector(bar_pos.X-197, bar_pos.Y-chargeBar.Y/2-28), DepthID.Map);
             d.DrawLine(bar_pos, new Vector(bar_pos.X + player.sword * 3.8, bar_pos.Y), 17, Color.Violet, DepthID.Status);//剣ゲージ
-
+            #endregion
         }//draw end
 
         public bool inside_window(Enemy enemy)
