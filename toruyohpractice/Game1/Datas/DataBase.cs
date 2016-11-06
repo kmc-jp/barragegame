@@ -15,12 +15,14 @@ namespace CommonPart {
         chase_angle,screen_point_target };
     public enum Command
     {
-        left_and_go_back = -101, nothing = -100, apply_int = 110, apply_string = 111,
+        exit = -1000,
+        left_and_go_back = -101, nothing = -100,
+        apply_int = 110, apply_string = 111,
         button_on = 112, button_off = 113, previousPage = 114, nextPage = 115, Scroll = 116, tru_fals = 117,
         selectInScroll = 118, closeThis = 119, reloadScroll = 120, buttonPressed1 = 121, buttonPressed2 = 122,
         openUTD = 200, UTDutButtonPressed = 201,
-        openAniD = 202, addTex = 203, /* 205 missed,*/ playAnimation = 206, newAniD = 207, applyAniD = 208,// open animation DataBase, add Texture,play animation,
-        openMusicGallery = 204,
+        openAniD = 202, addTex = 203, playAnimation = 206, newAniD = 207, applyAniD = 208,// open animation DataBase, add Texture,play animation,
+        openMusicGallery = 204, openMapEditor = 205,
         specialIntChange1 = 301, specialIntChange2 = 302,
         CreateNewMapFile = 1001, LoadMapFile = 1002,
     };
@@ -94,12 +96,6 @@ namespace CommonPart {
         /// </summary>
         private static void tda(string name)
         {
-
-            /*Directory.SetCurrentDirectory(Directory.GetParent(Directory.GetCurrentDirectory()).FullName);
-            Console.WriteLine(Directory.GetCurrentDirectory());
-            Directory.SetCurrentDirectory(Content.RootDirectory);
-            Console.WriteLine(Directory.GetCurrentDirectory());
-            Console.WriteLine(File.Exists(name));*/
             try
             {
                 Texture2D t = Content.Load<Texture2D>(name);
@@ -149,36 +145,50 @@ namespace CommonPart {
         private static void setup_Animation()
         {
             defaultBlankAnimationData = new AnimationDataAdvanced("defaultblank", 1000, 1, defaultBlankTextureName);
-            FileStream aniD_file = File.Open(aniDFileName, FileMode.OpenOrCreate);
+            FileStream aniD_file = File.Open(aniDFileName, FileMode.OpenOrCreate,FileAccess.Read);
             aniD_file.Position = 0;
             BinaryReader aniD_br = new BinaryReader(aniD_file);
+            Console.WriteLine("in setup_Animation");
+            Console.WriteLine(Directory.GetCurrentDirectory());
+            Console.WriteLine("file exits?: "+File.Exists(aniDFileName));
+            Console.WriteLine("Filelength:"+aniD_br.BaseStream.Length);
             while (aniD_br.BaseStream.Position < aniD_br.BaseStream.Length)
             {
                 try
                 {
                     bool repeat = aniD_br.ReadBoolean();
+                    Console.WriteLine("repeat:"+repeat);
                     int min_index = aniD_br.ReadInt32();
+                    Console.WriteLine("min:" + min_index.ToString());
                     int max_index = aniD_br.ReadInt32();
+                    Console.WriteLine("max:" + max_index.ToString());
                     int length = aniD_br.ReadInt32();
+                    Console.WriteLine("l:" + length.ToString());
                     int[] frames = new int[length];
-                    for (int i = 0; i < length; i++) { frames[i] = aniD_br.ReadInt32(); }
+                    for (int i = 0; i < length; i++) { frames[i] = aniD_br.ReadInt32(); Console.WriteLine(i+":" + frames[i].ToString()); }
                     //ints end, strings start
                     string animeName = aniD_br.ReadString();
+                    Console.WriteLine("name:" + animeName);
                     string textureName = aniD_br.ReadString();
+                    Console.WriteLine("texname:" + textureName);
                     string preName = aniD_br.ReadString();
+                    Console.WriteLine("prename:" + preName);
                     string nexN = aniD_br.ReadString();
+                    Console.WriteLine("nexname:" + nexN);
                     addAniD(new AnimationDataAdvanced(animeName, frames, min_index,textureName, repeat));
                     getAniD(aniDFileName).assignAnimationName(preName, false);
                     getAniD(aniDFileName).assignAnimationName(nexN, true);
+                    Console.WriteLine(aniD_br.BaseStream.Position);
                 }
-                catch (EndOfStreamException e) { break; }
+                catch (EndOfStreamException e) { Console.WriteLine("setup animation: EndOfStream"); break; }
             }
+            Console.WriteLine(aniD_br.BaseStream.Position);
             aniD_br.Close(); aniD_file.Close();
 
         }
         private void save_Animation()
         {
-            FileStream aniD_file = File.Open(aniDFileName, FileMode.Create);
+            FileStream aniD_file = File.Open(aniDFileName, FileMode.Create,FileAccess.Write);
             aniD_file.Position = 0;
 
             BinaryWriter aniD_bw = new BinaryWriter(aniD_file);
@@ -200,8 +210,11 @@ namespace CommonPart {
         public static void goToFolderDatas()
         {
             Directory.SetCurrentDirectory(DirectoryWhenGameStart);
-            if (!Directory.Exists("Datas")) { Directory.CreateDirectory("Datas"); }
-            Directory.SetCurrentDirectory("Datas");
+            if (!Directory.GetCurrentDirectory().EndsWith("Datas"))
+            {
+                if (!Directory.Exists("Datas")) { Directory.CreateDirectory("Datas"); }
+                Directory.SetCurrentDirectory("Datas");
+            }
         }
         public static void goToStartDirectory()
         {
@@ -226,8 +239,6 @@ namespace CommonPart {
         public static Dictionary<string, SkillData> SkillDatasDictionary = new Dictionary<string, SkillData>();
         public static void setupSkillData()
         {
-            addSkillData(new SingleShotSkillData("shot",SkillGenreS.shot,MoveType.go_straight,"bullet1", 60, -1, 0.3, 0,5,0,1,50,10));
-            addSkillData(new SingleShotSkillData("16circle-0",SkillGenreS.circle,MoveType.go_straight,"bullet1", 60, 5, 0, Math.PI/10, 5, 0, 1, 50, 10));
             addSkillData(new LaserTopData("laser",MoveType.chase_angle,"bullet1", 100000, 5, 0, Math.PI/2, 8, 0.008, Color.MediumVioletRed));
             addSkillData(new GenerateUnitSkillData("createbullet",SkillGenreS.shot,MoveType.go_straight,"bullet1", 120, 2, 0, -Math.PI/2, 8,"yanagi"));
             addSkillData(new SingleShotSkillData("yanagi",SkillGenreS.yanagi ,MoveType.go_straight,"bullet1", 90, 2, 0.2, 8, 0.25));
@@ -262,6 +273,7 @@ namespace CommonPart {
         {
             Content = c;
             goToFolderDatas();
+            Console.WriteLine(Directory.GetCurrentDirectory());
             #region textures
             FileStream texD_file = File.Open(texDFileName, FileMode.OpenOrCreate, FileAccess.Read);
             texD_file.Position = 0;
@@ -285,7 +297,7 @@ namespace CommonPart {
             setup_Animation();
             #endregion
             goToStartDirectory();
-            
+            /*
                         tda("36-40 enmey1");
                         tda("36 40-enemy1");
                         tda("36 40-hex1");
@@ -316,8 +328,10 @@ namespace CommonPart {
             tda("Boss1_tail");
             tda("120×68 E1-1");
             
+            tda("タイトル画面NF");
+            */
             setupSkillData();
-
+            /*
             addAniD( new AnimationDataAdvanced("boss1" + defaultAnimationNameAddOn,
                 10, 3, "90 270-boss1", true));
             addAniD(new AnimationDataAdvanced("boss1atk", new int[] { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10 },
@@ -330,7 +344,7 @@ namespace CommonPart {
                 10, 3, "90 77-boss1_body2", true));
             addAniD( new AnimationDataAdvanced("boss1tail" + defaultAnimationNameAddOn,
                 10, 1, "Boss1_tail", true));
-
+            //
             addAniD( new AnimationDataAdvanced("enmey2" + defaultAnimationNameAddOn,
                  10, 4, 0, "120 68-enemy2", true));
             addAniD(new AnimationDataAdvanced("bullet1" + defaultAnimationNameAddOn,
@@ -343,10 +357,14 @@ namespace CommonPart {
                 10, 4, 2, "720×174 sword",true));
             addAniD( new AnimationDataAdvanced("swordgauge" + "max",
                 10,10, 6, "720×174 sword",true));
-
+            //
+            
             addAniD(new AnimationDataAdvanced("E1-1" + defaultAnimationNameAddOn,
                 10, 4, 0, "120×68 E1-1", true));
+            */
+            
         }
+
 
         #region Unload And Save
         public void Dispose()
@@ -375,6 +393,7 @@ namespace CommonPart {
             Content = null;
         }
         #endregion
+
         #region singleton and setup
         public static DataBase database_singleton = new DataBase();
         //public DataBase get() { return database_singleton; }
@@ -396,7 +415,6 @@ namespace CommonPart {
         }
         private DataBase() { }
         #endregion
-
 
         #region Method
         /// <summary>
@@ -457,6 +475,7 @@ namespace CommonPart {
         }
         public static void addAniD(AnimationDataAdvanced ad)
         {
+            Console.WriteLine(ad.animationDataName);
             if (AnimationAdDataDictionary.ContainsKey(ad.animationDataName))
             {
                 Console.WriteLine("addAniD: " + ad.animationDataName + " exists.");
