@@ -232,8 +232,8 @@ namespace CommonPart {
         /// string is its path, maybe from "Content".  and also string key contains a size of texture's single unit
         /// </summary>
         #region SkillData
-        private const int low_speed=3;
-        private const int middle_speed=5;
+        private const int low_speed=2;
+        private const int middle_speed=4;
         private const int high_speed=7;
         private const int big_radius=10;
         private const int small_radius=5;
@@ -246,14 +246,14 @@ namespace CommonPart {
             SkillDatasDictionary.Add("createbullet", new GenerateUnitSkillData("createbullet",SkillGenreS.shot,MoveType.go_straight,"bullet1", 120, 2, 0, -Math.PI/2, 8,"yanagi"));
             SkillDatasDictionary.Add("yanagi", new SingleShotSkillData("yanagi",SkillGenreS.yanagi ,MoveType.go_straight,"bullet1", 90, 2, 0.2, 8, 0.25));
             SkillDatasDictionary.Add("5wayshot", new WayShotSkillData("5wayshot", SkillGenreS.wayshot,MoveType.go_straight,"bullet1", 20, 6, 0, Math.PI/10, 8, 5));
-            SkillDatasDictionary.Add("3wayshot-0", new WayShotSkillData("3wayshot-0", SkillGenreS.wayshot,MoveType.go_straight,"bullet1", 20,middle_speed, 0, Math.PI/10, small_radius, 3));
-            SkillDatasDictionary.Add("3wayshot-1", new WayShotSkillData("3wayshot-1", SkillGenreS.wayshot, MoveType.go_straight, "bullet1", 30, middle_speed, 0, Math.PI / 10, small_radius, 3));
-            SkillDatasDictionary.Add("16circle-0", new SingleShotSkillData("16circle-0", SkillGenreS.circle, MoveType.go_straight, "bullet1", 60, low_speed, 0, Math.PI / 10, small_radius));
-            SkillDatasDictionary.Add("downshot-0", new SingleShotSkillData("downshot-0", SkillGenreS.circle,MoveType.go_straight, "bullet1", 20, middle_speed, 0, Math.PI*2, small_radius));
-            SkillDatasDictionary.Add("1wayshot-0",new SingleShotSkillData("1way-0",SkillGenreS.shot,MoveType.go_straight,"bullet1", 30, middle_speed, 0, 0,small_radius));
-            SkillDatasDictionary.Add("4wayshot-0", new WayShotSkillData("4wayshot-0", SkillGenreS.wayshot, MoveType.go_straight, "bullet1", 30, low_speed, 0, Math.PI / 10, big_radius, 4));
-            SkillDatasDictionary.Add("4wayshot-1", new WayShotSkillData("4wayshot-1", SkillGenreS.wayshot, MoveType.go_straight, "bullet1", 60, low_speed, 0, Math.PI / 10, big_radius, 4));
-            SkillDatasDictionary.Add("4wayshot-2", new WayShotSkillData("4wayshot-2", SkillGenreS.wayshot, MoveType.go_straight, "bullet1", 30, middle_speed, 0, Math.PI / 10, small_radius, 4));
+            SkillDatasDictionary.Add("3wayshot-0", new WayShotSkillData("3wayshot-0", SkillGenreS.wayshot,MoveType.go_straight,"bullet1", 40,middle_speed, 0, Math.PI/5, small_radius, 3));
+            SkillDatasDictionary.Add("3wayshot-1", new WayShotSkillData("3wayshot-1", SkillGenreS.wayshot, MoveType.go_straight, "bullet1", 60, middle_speed, 0, Math.PI / 5, small_radius, 3));
+            SkillDatasDictionary.Add("16circle-0", new SingleShotSkillData("16circle-0", SkillGenreS.circle, MoveType.go_straight, "bullet1", 100, low_speed, 0, Math.PI / 10, small_radius));
+            SkillDatasDictionary.Add("downshot-0", new SingleShotSkillData("downshot-0", SkillGenreS.circle,MoveType.go_straight, "bullet1", 45, middle_speed, 0, Math.PI*2, small_radius));
+            SkillDatasDictionary.Add("1wayshot-0",new SingleShotSkillData("1way-0",SkillGenreS.shot,MoveType.go_straight,"bullet1", 60, middle_speed, 0, 0,small_radius));
+            SkillDatasDictionary.Add("4wayshot-0", new WayShotSkillData("4wayshot-0", SkillGenreS.wayshot, MoveType.go_straight, "bullet1", 40, low_speed, 0, Math.PI / 6, big_radius, 4));
+            SkillDatasDictionary.Add("4wayshot-1", new WayShotSkillData("4wayshot-1", SkillGenreS.wayshot, MoveType.go_straight, "bullet1", 80, low_speed, 0, Math.PI / 6, big_radius, 4));
+            SkillDatasDictionary.Add("4wayshot-2", new WayShotSkillData("4wayshot-2", SkillGenreS.wayshot, MoveType.go_straight, "bullet1", 30, middle_speed, 0, Math.PI / 6, small_radius, 4));
             SkillDatasDictionary.Add("laser-0", new LaserTopData("laser-0", MoveType.go_straight, "bullet1", 120, high_speed, 0, Math.PI / 2, small_radius, 0, Color.Maroon));
             SkillDatasDictionary.Add("laser-1", new LaserTopData("laser-1", MoveType.chase_angle, "bullet1", 120, high_speed, 0, Math.PI / 2, small_radius, 0.005, Color.MediumVioletRed));
             SkillDatasDictionary.Add("zyuzi-0", new SingleShotSkillData("zyuzi-0",SkillGenreS.zyuzi ,MoveType.go_straight,"bullet1", 60, low_speed, 0, 0,small_radius));
