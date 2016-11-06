@@ -139,7 +139,6 @@ namespace CommonPart
                     break;
             }
             animation.Update();
-            Console.WriteLine(animation.X+" "+animation.Y);
         }
 
         public virtual bool hit_jugde(Player player)
