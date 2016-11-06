@@ -24,7 +24,6 @@ namespace CommonPart
         }
         protected void openMusicGallery()
         {
-            close();
             new MusicGalleryScene(scenem);
         }
         override protected void setup_windows()

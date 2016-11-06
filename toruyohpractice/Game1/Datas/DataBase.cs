@@ -243,7 +243,7 @@ namespace CommonPart {
             addSkillData(new GenerateUnitSkillData("createbullet",SkillGenreS.shot,MoveType.go_straight,"bullet1", 120, 2, 0, -Math.PI/2, 8,"yanagi"));
             addSkillData(new SingleShotSkillData("yanagi",SkillGenreS.yanagi ,MoveType.go_straight,"bullet1", 90, 2, 0.2, 8, 0.25));
             addSkillData(new WayShotSkillData("5wayshot", SkillGenreS.wayshot,MoveType.go_straight,"bullet1", 20, 6, 0, Math.PI/10, 8, 5));
-            addSkillData(new WayShotSkillData("3wayshot-0", SkillGenreS.wayshot,MoveType.go_straight,"bullet1", 40,middle_speed, 0, Math.PI/5, small_radius, 3));
+            addSkillData(new WayShotSkillData("3wayshot-0", SkillGenreS.wayshot,MoveType.go_straight,"bullet1", 40,middle_speed, 0, Math.PI/5, small_radius,3));
             addSkillData(new WayShotSkillData("3wayshot-1", SkillGenreS.wayshot, MoveType.go_straight, "bullet1", 60, middle_speed, 0, Math.PI / 5, small_radius, 3));
             addSkillData(new SingleShotSkillData("16circle-0", SkillGenreS.circle, MoveType.go_straight, "bullet1", 100, low_speed, 0, Math.PI / 10, small_radius));
             addSkillData(new SingleShotSkillData("downshot-0", SkillGenreS.circle,MoveType.go_straight, "bullet1", 45, middle_speed, 0, Math.PI*2, small_radius));
