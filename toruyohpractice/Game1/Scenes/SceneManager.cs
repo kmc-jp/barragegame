@@ -41,7 +41,7 @@ namespace CommonPart {
         public SceneManager(Drawing d) {
             draw = d;
             scene = new List<Scene>();
-            new TitleScene(this);
+            new TitleSceneWithWindows(this);
         }
 
         double time;
@@ -51,6 +51,7 @@ namespace CommonPart {
             //各種更新
 
             Input.Update();
+            mouse.Update_(); //####追加
             if (Input.IsKeyDownOld(KeyID.Select) == false && Input.IsKeyDown(KeyID.Select) == true)
             {
 

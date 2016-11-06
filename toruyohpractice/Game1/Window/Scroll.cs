@@ -87,7 +87,24 @@ namespace CommonPart
             }//get end
         }
         protected int now_lastVisiableIndex { get { return -1+Math.Min(coloums.Count, (int)((coloums.Count - visiable_n) * percent) + visiable_n); } }
-
+        /// <summary>
+        /// スクロールによって、coloumsのXにかかる校正
+        /// </summary>
+        protected int coloumsAdjustX { get
+            {
+                if (!vertical) { return -now_firstVisiableIndex * coloumsDistance; }else { return dx; }
+            }
+        }
+        /// <summary>
+        /// スクロールによって、coloumsのYにかかる校正
+        /// </summary>
+        protected int coloumsAdjustY
+        {
+            get
+            {
+                if (vertical) { return -now_firstVisiableIndex * coloumsDistance; } else { return dy; }
+            }
+        }
         /// <summary>
         /// 画面上に見えるこのスクロールの要項の数
         /// </summary>
@@ -100,6 +117,10 @@ namespace CommonPart
         /// 要項の総数
         /// </summary>
         public int Count { get { return coloums.Count; } }
+        /// <summary>
+        /// 要項間の間隔
+        /// </summary>
+        public int coloumsDistance;
         /// <summary>
         /// 黙認の最小スクロールbarの大きさ。
         /// </summary>
@@ -136,9 +157,11 @@ namespace CommonPart
         //  : this(_ox, _oy, _str,_n, _sh * _n, _w,_dx,_dy)
         {
             visiable_n = _n;
+            coloumsDistance = _sh;
             if (_vertical) { h = _sh * visiable_n; w = _w; }
             else { w = _sh * visiable_n; h = _w; }
             dx = _dx; dy = _dy;
+            h += dy;w += dx;
         }
 
         public virtual void addColoum(Coloum c) {
@@ -174,7 +197,8 @@ namespace CommonPart
             else {
                 for (int i = now_firstVisiableIndex; i <=now_lastVisiableIndex; i++)
                 {
-                    if (coloums[i].PosInside(v, (int)(ax - nx + 2 * (dx + pos.X)), (int)(ay - ny + 2 * (dy + pos.Y)) ) )
+                    //if (coloums[i].PosInside(v, (int)(ax - nx + 2 * (dx + pos.X)), (int)(ay - ny + 2 * (dy + pos.Y)) ) )
+                    if(coloums[i].PosInside(v, (int)(ax+coloumsAdjustX), (int)(ay+coloumsAdjustY) ))
                     {
                         select_index(i);
                         return true;
@@ -202,6 +226,7 @@ namespace CommonPart
             return Command.nothing;
         }
         public override Command update_with_mouse_manager(MouseManager m) {
+            Command c = Command.nothing;
             if (m != null)
             {
                 if (now_coloum_index == scrollbar_index && m.IsButtomDown(MouseButton.Left) ) {
@@ -209,17 +234,17 @@ namespace CommonPart
                     if (vertical) { ny += m.MousePosition().Y - m.OldMousePosition().Y;
                     }
                     else { nx += m.MousePosition().X - m.OldMousePosition().X; }
-                    reply = Command.Scroll; // Scrollを返しても、leftcoloum()にならないように書いているかな？
+                    c = Command.Scroll; // Scrollを返しても、leftcoloum()にならないように書いているかな？
                 }
                 else if(m.IsButtomDownOnce(MouseButton.Left)) // Mouseがscroll全体の中に入っているかは、windowで判断している。
                 {
                     // とある要項を選択した。
                     content = coloums[now_coloum_index].content;
-                    reply = coloums[now_coloum_index].is_applied();
+                    c = coloums[now_coloum_index].is_applied();
                     //Console.WriteLine("scroll-coloums" + now_coloum_index + " " + content);
                 }
             }
-            return reply;
+            return c;
         }
 
         public override void draw(Drawing d,int ax,int ay)
@@ -231,7 +256,11 @@ namespace CommonPart
                     , Color.CadetBlue, DepthID.Message);
                 for (int i = now_firstVisiableIndex; i < Math.Min(coloums.Count, (int)((coloums.Count - visiable_n) * percent) + visiable_n); i++)
                 {
-                    coloums[i].draw(d, (int)(ax - nx + 2 * (dx + pos.X)), (int)(ay - ny + 2 * (dy + pos.Y)));
+                    if (coloums[i].pos.X + (int)(ax+coloumsAdjustX) >= ax + pos.X+dx-5 &&
+                        coloums[i].pos.Y + (int)(ay+coloumsAdjustY) >= ay + pos.Y+dy-5)
+                    {
+                        coloums[i].draw(d, (int)(ax+coloumsAdjustX), (int)(ay+coloumsAdjustY));
+                    }
                 }
             }
             //Console.WriteLine("draw "+(ax-nx)+" "+(ay-ny) );
