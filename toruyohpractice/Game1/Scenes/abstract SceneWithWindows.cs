@@ -5,37 +5,21 @@ using Microsoft.Xna.Framework;
 
 namespace CommonPart
 {
-    abstract class BasicEditorScene :Scene
+    abstract class SceneWithWindows :Scene
     {
-        static protected List<Window> windows = new List<Window>();
-        static public bool ready { get; private set; } = false;
+        protected List<Window> windows = new List<Window>();
         /// <summary>
         /// keyboardの対応を決める。
         /// </summary>
-        static protected int nowWindowIndex=0; 
-        public BasicEditorScene(SceneManager scene) : base(scene) { Delete = false; }
+        static protected int nowWindowIndex = 0;
+
+        public SceneWithWindows(SceneManager scene) : base(scene) { Delete = false; }
 
         abstract protected void setup_windows();
         protected virtual void close()
         {
             Delete = true;
             windows.Clear();
-        }
-        protected virtual void addTex()
-        {
-            Console.WriteLine("Type in the path from Content correctly.");
-            Console.WriteLine("Type in End1024 to back to Editor.");
-            string str = Console.ReadLine();
-            if (str == "End1024") { return; }
-            else if (DataBase.TexturesDataDictionary.ContainsKey(str))
-            {
-                Console.Write(" already inside the DataBase\n");
-            }
-            else
-            {
-                DataBase.tdaA(str);
-                addTex();
-            }
         }
         /// <summary>
         /// windowsのすべてのdrawとmousePositionを表示
@@ -44,8 +28,7 @@ namespace CommonPart
         public override void SceneDraw(Drawing d)
         {
             foreach (Window w in windows) { w.draw(d); }
-            Vector MousePosition = mouse.MousePosition();
-            new RichText("x:" + MousePosition.X + " y:" + MousePosition.Y, FontID.Medium).Draw(d, new Vector(10, Game1._WindowSizeY - 40), DepthID.Message);
+            
         }//SceneDraw
         abstract protected void switch_windowsIcommand(int i);
         /// <summary>
@@ -112,6 +95,6 @@ namespace CommonPart
             #endregion
 
         }//SceneUpdate() end
-    }//class BasicEditorScene end
+    }//class SceneWithWindows end
 
 }//namespace CommonPart end

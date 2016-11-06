@@ -25,6 +25,13 @@ namespace CommonPart
             set { if (pstr != null) pstr = new PoorString(value, pstr); else pstr = new PoorString(value,maximumOfCharsEachLine,false); }
         }
         /// <summary>
+        /// Coloum' text explanation that draws!
+        /// </summary>
+        public string nstr
+        {
+            get { if (pstr == null) return null; else return pstr.str; }
+        }
+        /// <summary>
         /// a int enum "Command" command returned if the coloum gots "apply" 
         /// </summary>
         public Command reply;
@@ -87,7 +94,7 @@ namespace CommonPart
             return Command.nothing;
         }
         public virtual Command update_with_mouse_manager(MouseManager m) {
-            if (m.IsButtomDown(MouseButton.Left))
+            if (m.IsButtomDownOnce(MouseButton.Left))
             {
                 if (selected == false)
                 {
@@ -130,7 +137,7 @@ namespace CommonPart
         {
             if (str != null && str != "")
             {
-                new RichText(str, default_fontId, selected ? Color.Yellow : Color.White).Draw(d, pos, DepthID.Message);
+                new RichText(nstr, default_fontId, selected ? Color.Yellow : Color.White).Draw(d, pos, DepthID.Message);
             }
         }
         /// <summary>
@@ -143,7 +150,7 @@ namespace CommonPart
             if (str != null && str != "")
             {
                 Vector posNew = new Vector(pos.X + x, pos.Y + y);
-                new RichText(str, default_fontId, selected ? Color.Yellow : Color.White).Draw(d, posNew, DepthID.Message);
+                new RichText(nstr, default_fontId, selected ? Color.Yellow : Color.White).Draw(d, posNew, DepthID.Message);
             }
         }
         #endregion
@@ -272,6 +279,18 @@ namespace CommonPart
         /// Texture画像内の区画の番号。
         /// </summary>
         protected int TexIndex ;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="_x"></param>
+        /// <param name="_y"></param>
+        /// <param name="_str"></param>
+        /// <param name="_content"></param>
+        /// <param name="_reply"></param>
+        /// <param name="_useTexture">画像を使うかのbool.使う時はtrueで,contentが画像名になる</param>
+        /// <param name="_dx"></param>
+        /// <param name="_dy"></param>
+        /// <param name="index">画像の何コマ目を指定する</param>
         public Button(int _x, int _y, string _str, string _content, Command _reply, bool _useTexture, int _dx = default_distance, int _dy = 0,int index=0) 
             : base(_x, _y, _str, _reply)
         {
