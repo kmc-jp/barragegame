@@ -458,6 +458,7 @@ namespace CommonPart
                 dead_mode = true;
                 dead_time=default_dead_time;
             }
+            if (life < 0) { life = 0; }
         }
 
         public void draw(Drawing d)

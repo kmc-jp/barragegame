@@ -19,18 +19,18 @@ namespace CommonPart {
         /// </summary>
         protected override void setup_windows() {
             int nx = 0;int ny = 0;
-            int dx = 0; 
+            int dx = 0; int dy = 30;
             //windows[0] starts
-            windows.Add(new Window_WithColoum(20, 20, 90, 90));
+            windows.Add(new Window_WithColoum(20, 20, 110, 130));
             ((Window_WithColoum) windows[0] ).AddColoum(new Coloum(nx, ny, "version: "+DataBase.ThisSystemVersionNumber.ToString(), Command.nothing));
-            nx = 5; ny += 15;dx = 30;
-            windows[0].AddColoum(new Button(nx, ny, "", "close UTD", Command.closeThis, false));
-            nx += dx;
+            nx = 5; ny += 15;dx = 30; 
+            windows[0].AddColoum(new Button(nx, ny, "", "open MapEdi", Command.closeThis, false));
+            ny += dy;
             windows[0].AddColoum(new Button(nx, ny, "", "add Texture", Command.addTex, false));
             // windows[0] is finished.
 
             // windows[1] starts
-            windows.Add(new Window_utsList(20, ny + 20, 150, 150));
+            windows.Add(new Window_utsList(20, ny +dy, 150, 150));
 
             // windows[2] starts
             window_ut= new Window_UnitType(DataBase.getUnitType(null),60, ny + 20, 150, 150);
@@ -41,8 +41,13 @@ namespace CommonPart {
         }//SceneDraw
         protected void openAniD()
         {
-            close();
             new AniDEditorScene(scenem);
+            close();
+        }
+        protected void openMapEditorScene()
+        {
+            close();
+            new MapEditorScene(scenem);
         }
         protected override void switch_windowsIcommand(int i)
         {
@@ -52,7 +57,7 @@ namespace CommonPart {
                     openAniD();
                     break;
                 case Command.closeThis:
-                    close();
+                    openMapEditorScene();
                     break;
                 case Command.addTex:
                     addTex();

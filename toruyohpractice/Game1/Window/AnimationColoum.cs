@@ -4,12 +4,12 @@ using Microsoft.Xna.Framework;
 namespace CommonPart
 {
     /// <summary>
-    /// AnimationをWindow内に配置するためのColoum;widthはanimationのwidth
+    /// AnimationをWindow内に配置するためのColoum;widthはanimationのwidth. クリックするとanimation放送
     /// </summary>
     class AnimationColoum : Coloum
     {
-        AnimationAdvanced animationAdvanced;
-        bool updated=true;
+        protected AnimationAdvanced animationAdvanced;
+        protected bool updated=true;
         #region constructor
         /// <summary>
         /// strがタイトルに当たる ,contentが描画するanimationを指定している。
@@ -33,12 +33,14 @@ namespace CommonPart
         /// animationを更新するboolをfalseにする。
         /// </summary>
         public void stop() { updated = false; }
-        public void play(bool _shifted=false) {
+        public void stopAndGoToStart() { stop();animationAdvanced.backToTop(); }
+        public void play() { updated = true; }
+        public void playOrStop(bool _shifted=false) {
             if (updated) { stop(); }
             else
             {
                 if (_shifted) { replay(); }
-                else { updated = true; }
+                else { play(); }
             }
         }
         /// <summary>
@@ -57,11 +59,16 @@ namespace CommonPart
         /// <param name="_c">animationのwidthとheightの固定に照準となるアニメーションを指定できる.nullで自分のanimationで設定</param>
         public override void setup_W_H(int _w, int _h, string _c)
         {
-            dy = (pstr.CountChar() + 1) * pstr.getCharSizeY();
+            int str_x=0,str_y = 0;
+            if (pstr != null && str != "")
+            {
+                str_x= pstr.Width; ;
+                str_y = (pstr.CountChar() + 1) * pstr.getCharSizeY();
+            }
             if (_w <= 0 || _h <= 0)
             {
-                w = 0; h = 0;
-                h += (pstr.CountChar() + 1) * pstr.getCharSizeY();
+                w = 0; h = 0+str_y;
+                h += str_y;
                 w += dx; h += dy;
                 if (_c != null)
                 {
@@ -77,7 +84,7 @@ namespace CommonPart
                         w += (int)animationAdvanced.X;
                         h += (int)animationAdvanced.Y;
                     }
-                    else { w += pstr.Width; }
+                    else { w += str_x; }
                 }
             }
             else
@@ -110,16 +117,22 @@ namespace CommonPart
         }
         #endregion
 
+        public override Command is_applied()
+        {
+            if (reply==Command.playAnimation) {
+                playOrStop();
+            }
+            return base.is_applied();
+        }
         #region update
         public override Command update(KeyManager k, MouseManager m)
         {
             if (updated) { animationAdvanced.Update(); }
-            if (m != null) { return update_with_mouse_manager(m); }
-            return Command.nothing;
+            return base.update(k, m);
         }
         public override Command update_with_mouse_manager(MouseManager m)
         {
-            if (PosInside(m.MousePosition()) && m.IsButtomDown(MouseButton.Left))
+            if (m.IsButtomDown(MouseButton.Left))
             {
                 return is_applied();
             }

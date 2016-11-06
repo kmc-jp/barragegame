@@ -281,10 +281,10 @@ namespace CommonPart {
                     background_names.Add(bns[i]);
                 }
             }
-            v.Add(new Vector(leftside, DataBase.WindowSlimSizeY - DataBase.getTex(background_names[0]).Height));
+            v.Add(new Vector(0, DataBase.WindowSlimSizeY - DataBase.getTex(background_names[0]).Height));
             for (int i = 1; i < background_names.Count; i++)
             {
-                v.Add(new Vector(leftside, v[i - 1].Y - DataBase.getTex(background_names[i]).Height));
+                v.Add(new Vector(v[i-1].X, v[i - 1].Y - DataBase.getTex(background_names[i]).Height));
 
             }
             for (int i = 0; i < background_names.Count; i++)
