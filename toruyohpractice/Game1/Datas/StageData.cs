@@ -17,7 +17,7 @@ namespace CommonPart
 
         abstract public void update();
 
-        protected virtual void setBGM(BGMID _id)
+        protected virtual void playBGM(BGMID _id)
         {
             Map.PlayBGM(_id);
         }
@@ -38,8 +38,6 @@ namespace CommonPart
                                                                   //ただし、MusicPlayer2.cs 30行から登録済でないと流れません。
             background_names = new string[] { "background1"};
 
-
-            setBGM(bgmIDs[0]);//最初のBGMを流す。
             setupAllbackgroundWithNames();//背景を用意する。
         }
 
@@ -49,6 +47,7 @@ namespace CommonPart
             switch (Map.step[0])
             {
                 case 0:
+                    playBGM(bgmIDs[0]);//最初のBGMを流す。
                     Map.boss_mode = false;
                     break;
                 case 240:
@@ -113,6 +112,7 @@ namespace CommonPart
                     Map.boss_mode = true;
                     break;
                 case 4680:
+                    playBGM(bgmIDs[1]);//BGMを流す。
                     Map.create_boss1(360, 10, "boss1");
                     break;
                     #endregion

@@ -158,7 +158,7 @@ namespace CommonPart {
                     {
                         score += enemys_inside_window[i].score();
                     }
-                    enemys[i].clear();
+                    enemys_inside_window[i].clear();
                     enemys.Remove(enemys_inside_window[i]);
                     enemys_inside_window.Remove(enemys_inside_window[i]);
                 }
