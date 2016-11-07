@@ -27,7 +27,7 @@ namespace CommonPart
         public override void update(Player player)
         {
             update();
-            length += speed;
+            #region Laser Motion: length is not changed here!
             switch (move_type)
             {
                 case MoveType.chase_angle:
@@ -70,25 +70,30 @@ namespace CommonPart
                     y = enemy.y+length * Math.Sin(radian);
                     break;
             }
-
-            if (x < Map.leftside + animation.X / 2) { length-= Map.leftside + animation.X / 2-x; x = Map.leftside + animation.X/2; }
+            #endregion
+            #region Laser cannot getout of Window;  changes length and limit it
+            /*
+            if ( x < Map.leftside + animation.X / 2) { length-= Map.leftside + animation.X / 2-x; x = Map.leftside + animation.X/2; }
             if (x > Map.rightside - animation.X/2) { length -= x- Map.rightside + animation.X / 2;  x = Map.rightside - animation.X/2; }
             if (y > DataBase.WindowSlimSizeY - animation.Y/2) { length-= y- DataBase.WindowSlimSizeY + animation.Y / 2; y = DataBase.WindowSlimSizeY - animation.Y / 2; }
             if (y < 0 + animation.Y / 2) {length-= animation.Y / 2-y; y = 0 + animation.Y / 2; }
+            */
+            if ((x < Map.leftside + animation.X / 2) || (x > Map.rightside - animation.X / 2) || (y > DataBase.WindowSlimSizeY - animation.Y / 2)
+                || (y < 0 + animation.Y / 2) )
+            { // もしレーザーの先頭がすでに画面外に出ているなら、lengthを増やさない
+    
+            }else
+            {
+                length += speed;
+            }
             if (length <= 0) { length = 0; }
+            #endregion
 
-            hit_jugde(player);
             if (hit_jugde(player) == true)
             {
-                life--;
                 player.damage(atk);
+                //レーザーはキャラクターにダメージを与えても消えない。
             }
-            /*
-            if (life <= 0)
-            {
-                remove();
-            }
-            */
         }
 
         public override bool hit_jugde(Player player)
@@ -96,32 +101,43 @@ namespace CommonPart
             bool close;
             bool hit;
             double k;
-            double d; 
+            double d;
 
-            if (enemy.x <= x)
+
+            if (Math.Abs(enemy.x - x) > 0.05)
             {
-                if (enemy.y <= y)
+                if (enemy.x <= x)
                 {
-                    close = (player.x > enemy.x && player.x < x) && (player.y > enemy.y && player.y < y);
-                }else
-                {
-                    close = (player.x > enemy.x && player.x < x) && (player.y < enemy.y && player.y > y);
+                    if (enemy.y <= y)
+                    {
+                        close = (player.x > enemy.x && player.x < x) && (player.y > enemy.y && player.y < y);
+                    }
+                    else
+                    {
+                        close = (player.x > enemy.x && player.x < x) && (player.y < enemy.y && player.y > y);
+                    }
                 }
-            }else
-            {
-                if (enemy.y <= y)
+                else
                 {
-                    close = (player.x < enemy.x && player.x > x) && (player.y > enemy.y && player.y < y);
-                } else
-                {
-                    close = (player.x < enemy.x && player.x > x) && (player.y < enemy.y && player.y > y);
+                    if (enemy.y <= y)
+                    {
+                        close = (player.x < enemy.x && player.x > x) && (player.y > enemy.y && player.y < y);
+                    }
+                    else
+                    {
+                        close = (player.x < enemy.x && player.x > x) && (player.y < enemy.y && player.y > y);
+                    }
                 }
+                k = (enemy.y - y) / (enemy.x - x);
+                d = (Math.Abs(k * player.x - player.y - k * x + y)) / Math.Sqrt(k * k + 1);
+                hit = d < (player.radius + radius);
             }
-
-            k = (enemy.y - y) / (enemy.x - x);
-            d = (Math.Abs(k * player.x -player.y - k * x + y) )/ Math.Sqrt(k * k + 1);
-            hit = d < (player.radius + radius);
-
+            else
+            {
+                close = (player.y > enemy.y && player.y < y) || (player.y < enemy.y && player.y > y);
+                hit = Math.Abs(x - player.x) < (player.radius + radius);
+            }
+            
             if(hit && close)
             {
                 if (player.avoid_mode == true)

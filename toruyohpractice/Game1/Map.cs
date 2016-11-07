@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CommonPart {
     class Map {
-        public int score = 0;
+        static public int score = 0;
 
         public int stage;        protected StageData stagedata;
 
@@ -34,9 +34,13 @@ namespace CommonPart {
         /// </summary>
         public Vector life_pos = new Vector(1070, 105);
         #endregion
-        #region player Projection
-        public static List<Projection> pros = new List<Projection>();
-        public static List<int> pro_swords = new List<int>();
+        /// <summary>
+        /// playerがskilltoEnemyで倒した敵の個体数を記録
+        /// </summary>
+        public static int numOfskillKilledEnemies=0;
+        public static int scoreOfskilltoEnemy = 0;
+        #region player ChargeProjections
+        public static List<ChargeProjection> pros = new List<ChargeProjection>();
         public static double pro_speed = -2;
         public static double pro_acceleration = 1;
         #endregion
@@ -67,7 +71,7 @@ namespace CommonPart {
 
         public static Player player;
         public static List<Enemy> enemys = new List<Enemy>();
-        public List<Enemy> enemys_inside_window = new List<Enemy>();
+        public static List<Enemy> enemys_inside_window = new List<Enemy>();
         /// <summary>
         /// 左側のバーの右端のx座標
         /// </summary>
@@ -76,14 +80,21 @@ namespace CommonPart {
         public Vector camera = new Vector(leftside, 0);
         #endregion
 
-        public Map(int _stage)//コンストラクタ
+//##############     variables above
+ 
+//###############   functions below
+        /// <summary>
+        /// constructor コンストラクター
+        /// </summary>
+        /// <param name="_stage"></param>
+        public Map(int _stage)
         {
             stage = _stage;
             stagedata = new Stage1Data("stage1");
-            
+            step.Clear();
             step.Add(0);
             scroll_speed = new Vector(defaultspeed_x, defaultspeed_y);
-            player = new Player(DataBase.WindowDefaultSizeX/2, 500, 6, 10, 5*lifesPerPiece,"60 105-player");
+            player = new Player(DataBase.WindowDefaultSizeX/2, 500, 6, 10, 5*lifesPerPiece,DataBase.charaName);
 
             //set_change_scroll(600,20,120);
 
@@ -145,10 +156,6 @@ namespace CommonPart {
                     enemys[i].update(player);
                 }
             }
-            for (int i = 0; i < enemys.Count; i++)
-            {
-                enemys[i].shot(player);
-            }
 
             for (int i = 0; i < enemys_inside_window.Count; i++)
             {
@@ -164,36 +171,38 @@ namespace CommonPart {
                 }
             }
         }
-        public void update(InputManager input)
+        private void update_chargeProjections()
         {
-            chargeBar.Update();
-
-            stagedata.update();
-            
-            #region 生成
-            /*
-            Random cRandom = new System.Random();
-            int iRandom = cRandom.Next(1280);
-
-            if (step[0] % 100 == 0 && step[0] > -1) 
+            for (int i = 0; i < pros.Count; i++)
             {
-                for (int i = 0; i < 1; i++)
+                if (!pros[i].delete)
                 {
-                    double random = Function.GetRandomDouble(900, 1000);
-                    double random_y = Function.GetRandomDouble(250, 300);
-                    if (step[0] % 200 == 0)
+                    pros[i].update();
+                    if (pros[i].speed >= 40)
                     {
-                        enemys.Add(new Boss1(random, random_y, "boss1"));
-                    }else
+                        pros[i].speed = 40;
+                    }
+                    if (Function.hitcircle(pros[i].x, pros[i].y, 0, player.x, player.y, 20))
                     {
-                        enemys.Add(new Enemy(random, random_y, "enemy2"));
+                        player.sword += pros[i].sword;
+                        pros[i].delete = true;
                     }
                 }
             }
-            */
-            #endregion
+            for (int j = 0; j < pros.Count; j++)
+            {
+                if (pros[j].delete)
+                {
+                    pros.Remove(pros[j]);
+                }
+            }
+        }
 
-            
+        public void update(InputManager input)
+        {
+            chargeBar.Update();
+            stagedata.update();
+            #region 画面上に見える敵を"見える敵たち"に入れる
             for (int i = 0; i < enemys.Count; i++)
             {
                 if (inside_window(enemys[i]))
@@ -205,48 +214,76 @@ namespace CommonPart {
                     }
                 }
             }
-
-            #region move
-
+            #endregion
+            #region map scroll
             camera += scroll_speed;//カメラupdate
             update_scroll_speed();
-
-            //player.update(input,this);
-
-            for(int i = 0;i < pros.Count; i++)
-            {
-                pros[i].update();
-                if (pros[i].speed >= 40)
-                {
-                    pros[i].speed = 40;
-                }
-            }
-
             #endregion
             update_enemys();
-            
-
-            for (int i = 0; i < pros.Count; i++)
-            {
-                if (Function.hitcircle(pros[i].x, pros[i].y, 0, player.x, player.y, 20))
-                {
-                    player.sword += pro_swords[i];
-                    pros.Remove(pros[i]);
-                    pro_swords.Remove(pro_swords[i]);
-                }
-            }
+            update_chargeProjections();
 
             player.update(input, this);
-
-            if (boss_mode == true)
+            if (player.attack_mode)
             {
-                barslide();
+                if(scoreOfskilltoEnemy/ 10000>=1) {
+                    player.life += scoreOfskilltoEnemy / 10000;
+                    scoreOfskilltoEnemy %= 10000;
+                }
             }
-
+            if (boss_mode == true) barslide();
             step[0]++;
-
         }//update end
 
+        public static int caculateBulletScore(int sw)
+        {//sw is may be sword that clearing a bullet gains the character
+            // swはキャラクターが弾丸を消した時に得られる刀チャージの量 かもしれない
+            Console.Write("sw:" + sw);
+            if (player.attack_mode)
+            {
+                Console.Write(" to " + (sw*4+40).ToString() + "\n");
+                return sw*20+40;
+            }
+            Console.Write(" to " + (sw*100).ToString() + "\n");
+            return sw*100;
+        }
+        public static int caculateEnemyScore(int _score)
+        {
+            Console.Write("score:" + _score);
+            if (player.attack_mode) {
+                numOfskillKilledEnemies++;
+                Console.Write(" to " + (_score * 20 + (numOfskillKilledEnemies - 1) * _score * 10).ToString() + "\n");
+                return _score*100+(numOfskillKilledEnemies-1)*_score*100;
+            }
+            Console.Write(" to " + (_score).ToString()+"\n");
+            return _score;
+        }
+
+        #region Create / Make   Map Function
+        /// <summary>
+        /// すでに正しく計算された刀チャージ量と点数を引数で渡し、点数はそのまま総点数に加算し、キャラクターに向かうChargeProjectionを作る
+        /// </summary>
+        /// <param name="x">生成位置x</param>
+        /// <param name="y">生成位置x</param>
+        /// <param name="sword">すでに計算された刀チャージ量</param>
+        /// <param name="_score">すでに計算されたscore</param>
+        public static void make_chargePro(double x,double y,int sword,int _score)
+        {
+            pros.Add(new ChargeProjection(x,y, "heal1",sword, pro_speed, pro_acceleration, player));
+            score += _score;
+            Console.Write("make:" + score);
+        }
+        public static void create_enemy(double _x, double _y, string _unitType_name)
+        {
+            enemys.Add(new Enemy(leftside + _x, _y, _unitType_name));
+        }
+        public static void create_boss1(double _x, double _y, string _unitType_name)
+        {
+            enemys.Clear();
+            enemys_inside_window.Clear();
+            enemys.Add(new Boss1(leftside + _x, _y, _unitType_name));
+        }
+        #endregion
+        #region standard Map Functions
         private void barslide()
         {
             if (leftside > 0)
@@ -254,14 +291,6 @@ namespace CommonPart {
                 leftside--;
                 rightside++;
             }
-        } 
-
-        public static void make_chargePro(double x,double y,int sword,int score)
-        {
-            pros.Add(new Projection(x,y,MoveType.object_target, pro_speed, pro_acceleration, "heal1", player, 100));
-            pro_swords.Add(sword);
-
-            score += score;
         }
         public static void PlayBGM(BGMID id)
         {
@@ -291,15 +320,6 @@ namespace CommonPart {
             {
                 total_BackGroundHeight += DataBase.getTex(background_names[i]).Height;
             }
-        }
-        public static void create_enemy(double _x,double _y,string _unitType_name)
-        {
-            enemys.Add(new Enemy(leftside+_x, _y, _unitType_name));
-        }
-        public static void create_boss1(double _x, double _y, string _unitType_name)
-        {
-            enemys.Clear();
-            enemys.Add(new Boss1(leftside + _x, _y, _unitType_name));
         }
         private void chargeBarChange(string name,string addOn=null) {
             if (addOn == null) { chargeBar_animation_name = name; }
@@ -391,14 +411,14 @@ namespace CommonPart {
             #endregion
         }//draw end
 
-        public bool inside_window(Enemy enemy)
+        static public bool inside_window(Enemy enemy)
         {
-            return enemy.animation.X > Map.leftside - enemy.animation.X / 2 ||
-                    enemy.animation.X < Map.rightside + enemy.animation.X / 2 ||
+            return enemy.animation.X > leftside - enemy.animation.X / 2 ||
+                    enemy.animation.X < rightside + enemy.animation.X / 2 ||
                     enemy.animation.Y < DataBase.WindowSlimSizeY + enemy.animation.Y / 2 ||
                     enemy.animation.Y > 0 - enemy.animation.Y / 2;
         }
-
+        #endregion
     }// class end
 
 }// namespace end

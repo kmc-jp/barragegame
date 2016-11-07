@@ -69,7 +69,7 @@ namespace CommonPart
         public override void SceneDraw(Drawing d)
         {
             d.Draw(new Vector(0, 0), DataBase.getTex("stageselect"), DepthID.BackGroundWall);
-            d.Draw(player_pos, DataBase.getTex("60 105-player"), DepthID.Player);
+            d.Draw(player_pos, DataBase.getTex("130 149-player"), DepthID.Player);
         }
 
         public int stage_decide()
