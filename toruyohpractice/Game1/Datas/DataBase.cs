@@ -309,6 +309,7 @@ namespace CommonPart {
             goToStartDirectory();
             tda("25x145必殺技２");
             tda("167x15必殺技エフェクトsample");
+            tda("130 149-player");
             /*
                         tda("16-16 tama1");
                         tda("leftside1");
@@ -339,8 +340,10 @@ namespace CommonPart {
             tda("タイトル画面NF");
             */
             setupSkillData();
+            AnimationAdDataDictionary.Remove(charaName + defaultAnimationNameAddOn);
             addAniD(new AnimationDataAdvanced("swordSkilltoBossDash", 1, 40, "167x15必殺技エフェクトsample"));
             addAniD(new AnimationDataAdvanced("swordSkilltoBossSlash", 1, 18, "25x145必殺技２"));
+            addAniD(new AnimationDataAdvanced(charaName + defaultAnimationNameAddOn, 10, 1, "130 149-player", false));
             /*
             addAniD( new AnimationDataAdvanced("boss1" + defaultAnimationNameAddOn,
                 10, 3, "90 270-boss1", true));
@@ -372,7 +375,7 @@ namespace CommonPart {
             addAniD(new AnimationDataAdvanced("E1-1" + defaultAnimationNameAddOn,
                 10, 4, 0, "120×68 E1-1", true));
             */
-            addAniD(new AnimationDataAdvanced(charaName + defaultAnimationNameAddOn, 10, 1, "130 149-player", true));
+            addAniD(new AnimationDataAdvanced(charaName + defaultAnimationNameAddOn, 10, 1, "130 149-player", false));
         }
 
 

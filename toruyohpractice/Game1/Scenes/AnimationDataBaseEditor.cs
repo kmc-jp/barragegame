@@ -37,7 +37,7 @@ namespace CommonPart {
             // windows[0] is finished.
 
             // windows[1] starts
-            nx = 115;
+            nx = 50; ny += dy;
             windows.Add(new Window_AniDList(nx, ny, 150, 320));
             
 

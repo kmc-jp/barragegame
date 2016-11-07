@@ -21,14 +21,14 @@ namespace CommonPart
         /// <summary>
         /// 今のスクロールbarの位置のxを取得できるandスクロールbarの位置のxを設定できる
         /// </summary>
-        public double nx { get { if (vertical) return pos.X + dx; else return pos.X + dx + (w-barlength) * percent; }
+        public double nx { get { if (vertical) return pos.X + dx; else return pos.X + dx + (w-barlength()) * percent; }
             protected set
             {
                 if (vertical) { //pos.X = value+dx;
                 } else
                 {
-                    if (value >= w + pos.X + dx -barlength) { percent = 1; }
-                    else { percent = (value - dx - pos.X) / (w-barlength);
+                    if (value >= w + pos.X + dx -barlength()) { percent = 1; }
+                    else { percent = (value - dx - pos.X) / (w-barlength());
                         if(percent > 1) { percent = 1; }
                         if(percent < 0) { percent = 0; }
                     }
@@ -38,13 +38,13 @@ namespace CommonPart
         /// <summary>
         /// 今のスクロールbarの位置.yを取得できandスクロールbarの位置.yを設定できる
         /// </summary>
-        public double ny { get { if (!vertical) return pos.Y + dy; else return pos.Y + dy + (h - barlength) * percent; }
+        public double ny { get { if (!vertical) return pos.Y + dy; else return pos.Y + dy + (h - barlength()) * percent; }
             protected set {
                 if (!vertical) {   //pos.Y = value;
                 } else
                 {
-                    if (value >= pos.Y + dy +h- barlength) { percent = 1; }
-                    else { percent = (value - dy - pos.Y) / (h-barlength);
+                    if (value >= pos.Y + dy +h- barlength()) { percent = 1; }
+                    else { percent = (value - dy - pos.Y) / (h-barlength());
                         if (percent > 1) { percent = 1; }
                         if (percent < 0) { percent = 0; }
                     }
@@ -55,16 +55,16 @@ namespace CommonPart
         /// <summary>
         /// scroll bar の長さ
         /// </summary>
-        public int barlength {
-            get {
-                if (vertical) {
-                    if (coloums.Count > visiable_n) return visiable_n * h / (coloums.Count + 1);
-                    else { return h; }
-                } else
-                {
-                    if (coloums.Count > visiable_n) return visiable_n * w / (coloums.Count + 1);
-                    else { return w; }
-                }
+        public int barlength() {
+            if (vertical)
+            {
+                if (coloums.Count > visiable_n) return visiable_n * h / (coloums.Count + 1);
+                else { return h; }
+            }
+            else
+            {
+                if (coloums.Count > visiable_n) return visiable_n * w / (coloums.Count + 1);
+                else { return w; }
             }
         }
         /// <summary>
@@ -77,12 +77,12 @@ namespace CommonPart
         public int now_coloum_index = -1;//-1の時はスクロールbarを操っている。
         const int scrollbar_index = -1;
         protected int now_firstVisiableIndex { get {
-                if ( (int)((coloums.Count - visiable_n) * percent)<0)
+                if ( (int)((coloums.Count - visiable_n) * percent)<1)
                 {
                     return 0;
                 }else
                 {
-                    return (int)((coloums.Count - visiable_n) * percent);
+                    return (int)((coloums.Count - visiable_n) * percent)-1;
                 }
             }//get end
         }
@@ -252,7 +252,7 @@ namespace CommonPart
             base.draw(d, ax, ay);
             if (coloums != null)
             {
-                d.DrawBox(new Vector2((float)nx + ax, (float)ny + ay), vertical ? new Vector2(w, barlength) : new Vector2(barlength, h)
+                d.DrawBox(new Vector2((float)nx + ax, (float)ny + ay), vertical ? new Vector2(w, barlength()) : new Vector2(barlength(), h)
                     , Color.CadetBlue, DepthID.Message);
                 for (int i = now_firstVisiableIndex; i < Math.Min(coloums.Count, (int)((coloums.Count - visiable_n) * percent) + visiable_n); i++)
                 {
