@@ -1,4 +1,4 @@
-
+﻿
 #----------------------------- Global Properties ----------------------------#
 
 /outputDir:bin/$(Platform)
@@ -505,7 +505,10 @@
 /processorParam:TextureFormat=Color
 /build:タイトル画面NF.png
 
+
 #begin 25x145必殺技２.png
+
+#begin 70x70E3.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -518,6 +521,10 @@
 /build:25x145必殺技２.png
 
 #begin 167x15必殺技エフェクトsample.png
+
+/build:70x70E3.png
+
+#begin 80x77E4.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -530,6 +537,10 @@
 /build:167x15必殺技エフェクトsample.png
 
 #begin 130 149-player.png
+
+/build:80x77E4.png
+
+#begin 90x86E5.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -540,4 +551,31 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:130 149-player.png
+
+/build:90x86E5.png
+
+#begin 100x100E1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:100x100E1.png
+
+#begin 160x112E6.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:160x112E6.png
+
 

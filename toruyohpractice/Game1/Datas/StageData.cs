@@ -34,7 +34,7 @@ namespace CommonPart
     {
         public Stage1Data(string _stageName) :base(_stageName)
         {
-            bgmIDs = new BGMID[] { BGMID.title,BGMID.Stage4Boss}; //一応こうした、いつでも{}の中身を変更できる。
+            bgmIDs = new BGMID[] { BGMID.Stage1onWay,BGMID.Stage1Boss}; //一応こうした、いつでも{}の中身を変更できる。
                                                                   //ただし、MusicPlayer2.cs 30行から登録済でないと流れません。
             background_names = new string[] { "background1"};
 
