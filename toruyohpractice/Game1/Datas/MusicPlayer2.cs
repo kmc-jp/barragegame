@@ -14,7 +14,7 @@ namespace CommonPart
 {
     enum BGMID
     {
-        None = -1, title, Stage1onWay, Stage1Boss, Stage2onWay, Stage2Boss, Stage3onWay, Stage3Boss, Stage4onWay, Stage4Boss,
+        None = -1, title, map, Stage1onWay, Stage1Boss, Stage2onWay, Stage2Boss, Stage3onWay, Stage3Boss, Stage4onWay, Stage4Boss,
     }
     /// <summary>
     /// BGMを再生するためのクラス（with WASAPI in NAudio）
@@ -27,13 +27,14 @@ namespace CommonPart
     {
         //BGMIDを同じにしないでください。曲名を省略するとファイルパスからファイル名を取得し、それをそのまま曲名とする。
         public BGMdata[] bgmDatas = new BGMdata[] {
-            new BGMdata("Content/barragetitle.wav",BGMID.title,100), // ループしない曲はループ情報を省略するだけ
+            new BGMdata("Content/barragetitle.wav",BGMID.title,100,"Rebirth or Reverse",7119,75193), // ループしない曲はループ情報を省略するだけ
             new BGMdata("Content/Stage2_Boss.wav",BGMID.Stage2Boss,100,"蹂躙と幻想ノ狭間ニ"), //ファイル名が曲名になる
             new BGMdata("Content/stage４ボス.wav",BGMID.Stage4Boss,100,"花弁",47340,207970),
             new BGMdata("Content/stage1_way.wav",BGMID.Stage1onWay,100,"埃をかぶった風"),
             new BGMdata("Content/iseki.wav",BGMID.Stage1Boss,100,"Metalworms",6479,232083),
             new BGMdata("Content/maten_game.wav",BGMID.Stage2onWay,100,"the Paradox City"),
             new BGMdata("Content/Stage4_Journey_short.wav",BGMID.Stage4onWay,100,"雪解けの春"),
+            new BGMdata("Content/Map.wav",BGMID.map,100,"エクスプローラ",1020,46934),
         };
 
 
