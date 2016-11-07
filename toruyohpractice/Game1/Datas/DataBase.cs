@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework;
 
 namespace CommonPart {
 
-    public enum Unit_state { fadeout=0,dead=1,out_of_window=2 };
+    public enum Unit_state { fadeout=0,dead,out_of_window,bulletDamagedPlayer, };
     public enum MoveType {non_target=0,point_target=1,object_target=2,go_straight,mugen,rightcircle,leftcircle,stop,
         chase_angle,screen_point_target };
     public enum Command
@@ -70,6 +70,10 @@ namespace CommonPart {
         /// used before every array , etc.--int ...ij&int k-z&intA-F;string GH&string I-P...
         /// </summary>
         public static char interval_of_array = '&';
+        #endregion
+
+        #region about player character
+        public static string charaName = "chara1";
         #endregion
 
         #region UTD
@@ -227,9 +231,6 @@ namespace CommonPart {
         public const string InvaildColoumContentReply_string = "fobagnufabo";
         #endregion
 
-        /// <summary>
-        /// string is its path, maybe from "Content".  and also string key contains a size of texture's single unit
-        /// </summary>
         #region SkillData
         private const int low_speed=2;
         private const int middle_speed=4;
@@ -306,14 +307,12 @@ namespace CommonPart {
             setup_Animation();
             #endregion
             goToStartDirectory();
+            tda("25x145必殺技２");
+            tda("167x15必殺技エフェクトsample");
             /*
-                        tda("36-40 enmey1");
-                        tda("36 40-enemy1");
-                        tda("36 40-hex1");
-                        tda("18 20-tama1");
                         tda("16-16 tama1");
                         tda("leftside1");
-                        tda("60 105-player");
+                        tda("130 149-player");
                         tda("33x60バッテリーアイコン");
                         tda("16-16_tama2");
             tda("120 68-enemy2");
@@ -340,6 +339,8 @@ namespace CommonPart {
             tda("タイトル画面NF");
             */
             setupSkillData();
+            addAniD(new AnimationDataAdvanced("swordSkilltoBossDash", 1, 40, "167x15必殺技エフェクトsample"));
+            addAniD(new AnimationDataAdvanced("swordSkilltoBossSlash", 1, 18, "25x145必殺技２"));
             /*
             addAniD( new AnimationDataAdvanced("boss1" + defaultAnimationNameAddOn,
                 10, 3, "90 270-boss1", true));
@@ -371,7 +372,7 @@ namespace CommonPart {
             addAniD(new AnimationDataAdvanced("E1-1" + defaultAnimationNameAddOn,
                 10, 4, 0, "120×68 E1-1", true));
             */
-            
+            addAniD(new AnimationDataAdvanced(charaName + defaultAnimationNameAddOn, 10, 1, "130 149-player", true));
         }
 
 
