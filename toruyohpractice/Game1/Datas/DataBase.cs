@@ -307,6 +307,8 @@ namespace CommonPart {
             setup_Animation();
             #endregion
             goToStartDirectory();
+            tda("25x145必殺技２");
+            tda("167x15必殺技エフェクトsample");
             /*
                         tda("16-16 tama1");
                         tda("leftside1");
@@ -337,6 +339,8 @@ namespace CommonPart {
             tda("タイトル画面NF");
             */
             setupSkillData();
+            addAniD(new AnimationDataAdvanced("swordSkilltoBossDash", 1, 40, "167x15必殺技エフェクトsample"));
+            addAniD(new AnimationDataAdvanced("swordSkilltoBossSlash", 1, 18, "25x145必殺技２"));
             /*
             addAniD( new AnimationDataAdvanced("boss1" + defaultAnimationNameAddOn,
                 10, 3, "90 270-boss1", true));

@@ -27,7 +27,7 @@ namespace CommonPart
                 bodys[i] = new Enemy(x, y - 0 * i * height_percent, "boss1body" + 0);// i % 3);
             }
             bodys[body_max_index] = new Enemy(x, y, "boss1tail");
-            life = 10000;
+            life = 25000;
         }
 
         public override void damage(int atk)

@@ -19,7 +19,7 @@ namespace CommonPart
         public AnimationAdvanced animation = null;
         public MoveType move_type;
         public int zoom_rate;
-
+        public bool texRotate = false;
         public bool delete = false;
 
         //timeをつくろう
@@ -31,7 +31,7 @@ namespace CommonPart
         /// <param name="_move_type"></param>
         /// <param name="_anime"></param>
         /// <param name="_zoom_rate"></param>
-        public Projection(double _x, double _y,MoveType _move_type, string _anime, int _zoom_rate)
+        public Projection(double _x, double _y,MoveType _move_type, string _anime, int _zoom_rate=100)
         {
             x = _x;
             y = _y;
@@ -155,7 +155,16 @@ namespace CommonPart
 
         public virtual void draw(Drawing d)
         {
-            animation.Draw(d,new Vector(x,y),DepthID.Enemy,zoom_rate/100);
+            if (!texRotate)
+            {
+                animation.Draw(d, new Vector((x - animation.X / 2), (y - animation.Y / 2)), DepthID.Enemy,zoom_rate/100);
+            }
+            else
+            {
+                float angle2 = (float)(radian);
+                animation.Draw(d, new Vector((x + animation.Y / 2 * Math.Cos(angle2) + animation.X / 2 * Math.Sin(angle2)), (y + animation.Y / 2 * Math.Sin(angle2) - animation.X / 2 * Math.Cos(angle2))), DepthID.Enemy, 1, (float)(radian + Math.PI / 2));
+
+            }
         }
     }
 

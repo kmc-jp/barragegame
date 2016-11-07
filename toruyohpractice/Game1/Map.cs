@@ -71,7 +71,7 @@ namespace CommonPart {
 
         public static Player player;
         public static List<Enemy> enemys = new List<Enemy>();
-        public List<Enemy> enemys_inside_window = new List<Enemy>();
+        public static List<Enemy> enemys_inside_window = new List<Enemy>();
         /// <summary>
         /// 左側のバーの右端のx座標
         /// </summary>
@@ -279,6 +279,7 @@ namespace CommonPart {
         public static void create_boss1(double _x, double _y, string _unitType_name)
         {
             enemys.Clear();
+            enemys_inside_window.Clear();
             enemys.Add(new Boss1(leftside + _x, _y, _unitType_name));
         }
         #endregion

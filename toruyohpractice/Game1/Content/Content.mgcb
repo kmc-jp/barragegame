@@ -505,6 +505,30 @@
 /processorParam:TextureFormat=Color
 /build:タイトル画面NF.png
 
+#begin 25x145必殺技２.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:25x145必殺技２.png
+
+#begin 167x15必殺技エフェクトsample.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:167x15必殺技エフェクトsample.png
+
 #begin 130 149-player.png
 /importer:TextureImporter
 /processor:TextureProcessor

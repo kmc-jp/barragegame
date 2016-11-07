@@ -91,10 +91,17 @@ namespace CommonPart
         /// 刀エネルギーが最大になっている時
         /// </summary>
         public int bonusDamage = 1000; 
-        public int swordSkillDamage { get { return atk*3 + 30 * (sword - 50); } }
+        public int swordSkillDamage { get { return atk*3 + 30 * (sword ); } }
         //protected bool skill_attackBoss
         #endregion
-
+        const int prosToBoss_dash_maximum=40;
+        const int prosToBoss_slash_maximum = 18;
+        protected int nowProsIndex = -1;
+        protected double radianForPros=0;
+        /// <summary>
+        /// skillToBossに使われる切り付けのエフェクト。
+        /// </summary>
+        private Projection[] prosToBoss = new Projection[prosToBoss_dash_maximum+prosToBoss_slash_maximum];
         #region about evasion
         public bool avoid_mode = false;
         public bool avoid_InPlusAcceleration = true;
@@ -229,30 +236,35 @@ namespace CommonPart
             #endregion
         }
 
-        public void search_enemy(Map map)
+        public void search_enemy()
         {
             enemyAsTarget = null;
-            if (map.enemys_inside_window.Count > 0)
+            if (Map.enemys_inside_window.Count > 0)
             {
                 int j = 0;
-                for (int i = 0; i < map.enemys_inside_window.Count; i++)
+                for (int i = 0; i < Map.enemys_inside_window.Count; i++)
                 {
-                    if (map.enemys_inside_window[i].selectable() == true)
+                    if (Map.enemys_inside_window[i].selectable() == true)
                     {
-                        enemyAsTarget = map.enemys_inside_window[i];
+                        enemyAsTarget = Map.enemys_inside_window[i];
                         j = i;
                         break;
                     }
                 }
 
-                for (int i = j; i < map.enemys_inside_window.Count; i++)
+                for (int i = j; i < Map.enemys_inside_window.Count; i++)
                 {
-                    if (map.enemys_inside_window[i].selectable()==true
-                        && Function.distance(x, y, map.enemys_inside_window[i].x, map.enemys_inside_window[i].y) < Function.distance(x, y, enemyAsTarget.x, enemyAsTarget.y))
+                    if (Map.enemys_inside_window[i].selectable()==true
+                        && Function.distance(x, y, Map.enemys_inside_window[i].x, Map.enemys_inside_window[i].y) < Function.distance(x, y, enemyAsTarget.x, enemyAsTarget.y))
                     {
-                        enemyAsTarget = map.enemys_inside_window[i];
+                        enemyAsTarget = Map.enemys_inside_window[i];
                     }
                 }
+            }
+            if (enemyAsTarget != null)
+            {
+                double e2 = Math.Sqrt(Function.distance(x, y, enemyAsTarget.x, enemyAsTarget.y + enemy_below));
+                 radianForPros=Math.Atan2( -(y - enemyAsTarget.y) / e2,-(x - enemyAsTarget.x) / e2);
             }
         }
         #region characterAttackskills
@@ -260,9 +272,9 @@ namespace CommonPart
         /// 敵を見つけて、attack_mode=true,add_attack_mode=false
         /// </summary>
         /// <param name="map"></param>
-        public void cast_skilltoEnemy(Map map)
+        public void cast_skilltoEnemy()
         {
-            search_enemy(map);
+            search_enemy();
             attack_mode = true;
             add_attack_mode = false;
         }
@@ -288,7 +300,7 @@ namespace CommonPart
                     #region 敵が消えていたら、もう一回探してみる
                     if (enemyAsTarget == null || enemyAsTarget.selectable() == false)
                     {//敵がskill中にfadeout,もしくは消えた時に,もう一度見つける
-                        search_enemy(map);
+                        search_enemy();
                     }
                     #endregion
                     if (enemyAsTarget != null && enemyAsTarget.selectable())
@@ -322,7 +334,7 @@ namespace CommonPart
                 {//追加攻撃を実行する
                     if (canUseSkilltoEnemyForSecond())
                     {
-                        cast_skilltoEnemy(map);
+                        cast_skilltoEnemy();
                         stop_time = 0;
                     }
                     else { add_attack_mode = false;}
@@ -333,21 +345,22 @@ namespace CommonPart
                 }
                 #endregion
             }
-            if (map.enemys_inside_window.Count>=1 && canUseSkilltoEnemyForFirst())
+            if (Map.enemys_inside_window.Count>=1 && canUseSkilltoEnemyForFirst())
             {//1回目のskill使用可能な状態である
                 if (input.IsKeyDownOnce(KeyID.Select) == true)
                 {
-                    cast_skilltoEnemy(map);
+                    cast_skilltoEnemy();
                 }
             }
         }
 
         public void cast_skilltoBoss(Map map)
         {
-            search_enemy(map);
+            search_enemy();
             attack_mode = true;
             attack_time = 120;
             shouhi_sword = sword;
+            nowProsIndex = -1;
         }
 
         public void skilltoBoss(InputManager input,Map map)
@@ -367,25 +380,63 @@ namespace CommonPart
                 {
                     if (enemyAsTarget.selectable() == false)
                     {
-                        search_enemy(map);
+                        search_enemy();
                     }
                     else
                     {
-                        double e = Math.Sqrt(Function.distance(x, y, enemyAsTarget.x, enemyAsTarget.y + enemy_below));
+                        if (nowProsIndex < prosToBoss_dash_maximum)
+                        {
+                            for (int j = 0; j <= nowProsIndex; j++)
+                            {
+                                prosToBoss[j].update();
+                            }
+                            nowProsIndex++;
+                            prosToBoss[nowProsIndex] = new Projection(x, y, MoveType.non_target, "swordSkilltoBossDash");
+                            prosToBoss[nowProsIndex].texRotate = true;
+                            prosToBoss[nowProsIndex].radian = radianForPros;
+                        }
+                        for (int i = 0; i < nowProsIndex; i++)
+                        {
+                            int nex = i + 1;
+                            //Console.WriteLine(i+":"+Math.Sqrt(Function.distance(prosToBoss[nex].x, prosToBoss[nex].y, prosToBoss[i].x, prosToBoss[i].y)));
+                            double s = Math.Sqrt(Function.distance(prosToBoss[i + 1].x, prosToBoss[nex].y, prosToBoss[i].x, prosToBoss[i].y)) - (prosToBoss[nex].animation.Y + prosToBoss[i].animation.Y )/2+2 ;
+                            if (s > 0.01)
+                            {
+                                double e = Math.Sqrt(Function.distance(prosToBoss[i].x, prosToBoss[i].y, prosToBoss[nex].x, prosToBoss[nex].y));
+                                double speed_x = (prosToBoss[nex].x - prosToBoss[i].x) * s / e;
+                                double speed_y = (prosToBoss[nex].y - prosToBoss[i].y) * s / e;
+                                prosToBoss[i].x += speed_x;
+                                prosToBoss[i].y += speed_y;
+                                //prosToBoss[i].radian = Math.Atan2(speed_y, speed_x);
+                            }
+                        }
+                        int idF = nowProsIndex;
+                        double s1 = Math.Sqrt(Function.distance(x, y, prosToBoss[idF].x, prosToBoss[idF].y)) - (prosToBoss[idF].animation.Y + prosToBoss[idF].animation.Y)/2+1  ;
+                        if (s1 > 0.01)
+                        {
+                            double e = Math.Sqrt(Function.distance(prosToBoss[idF].x, prosToBoss[idF].y, x, y));
+                            double speed_x = (x-enemy_below - prosToBoss[idF].x) * s1 / e;
+                            double speed_y = (y-enemy_below - prosToBoss[idF].y) * s1 / e;
+                            prosToBoss[idF].x += speed_x;
+                            prosToBoss[idF].y += speed_y;
+                            //prosToBoss[idF].radian = Math.Atan2(speed_y, speed_x);
+                        }
+                        //----------above  prosToBoss[];        ----------------------------##  ##   ##
+                        //----                             --------------------------------------###
+                        double e2 = Math.Sqrt(Function.distance(x, y, enemyAsTarget.x, enemyAsTarget.y + enemy_below));
                         double skill_speed = 15;
-                        double v = skill_speed / e;
+                        double v = skill_speed / e2;
                         x -= (x - enemyAsTarget.x) * v;
                         y -= (y - enemyAsTarget.y - enemy_below) * v;
 
                         if (Function.hitcircle(x, y, 2, enemyAsTarget.x, enemyAsTarget.y + enemy_below, 6))
                         {
-                            sword -= shouhi_sword;
-                            shouhi_sword = 100000;//テスト用
                             enemyAsTarget.damage(swordSkillDamage);
-                            if (shouhi_sword == sword_max)
+                            if (sword == sword_max)
                             {
                                 enemyAsTarget.damage(bonusDamage);
                             }
+                            sword -= shouhi_sword;
                             enemyAsTarget = null;
                         }
                     }
@@ -417,34 +468,34 @@ namespace CommonPart
                 avoid_InPlusAcceleration = true;
                 speed = 0;
                 #region　上下左右の回避によって、ダメージを受けるものたち
-                for (int i = 0; i < map.enemys_inside_window.Count; i++)
+                for (int i = 0; i < Map.enemys_inside_window.Count; i++)
                 {
-                    for (int j = 0; j < map.enemys_inside_window[i].bullets.Count; j++)
+                    for (int j = 0; j < Map.enemys_inside_window[i].bullets.Count; j++)
                     {
-                        if (map.enemys_inside_window[i].bullets[j].hit_jugde(x, y, avoid_radius) &&
+                        if (Map.enemys_inside_window[i].bullets[j].hit_jugde(x, y, avoid_radius) &&
                          // すでに当たることが分かったものたちに対して、上下左右どっちに回避したかによって、消す。
-                         ((input.IsKeyDown(KeyID.Up) == true && map.enemys_inside_window[i].bullets[j].y <= y) ||
-                               (input.IsKeyDown(KeyID.Down) == true && map.enemys_inside_window[i].bullets[j].y >= y) ||
-                               (input.IsKeyDown(KeyID.Left) == true && map.enemys_inside_window[i].bullets[j].x <= x) ||
-                               (input.IsKeyDown(KeyID.Right) == true && map.enemys_inside_window[i].bullets[j].x >= x))
+                         ((input.IsKeyDown(KeyID.Up) == true && Map.enemys_inside_window[i].bullets[j].y <= y) ||
+                               (input.IsKeyDown(KeyID.Down) == true && Map.enemys_inside_window[i].bullets[j].y >= y) ||
+                               (input.IsKeyDown(KeyID.Left) == true && Map.enemys_inside_window[i].bullets[j].x <= x) ||
+                               (input.IsKeyDown(KeyID.Right) == true && Map.enemys_inside_window[i].bullets[j].x >= x))
                         )
                         {
-                            /*Map.make_chargePro(map.enemys_inside_window[i].bullets[j].x, map.enemys_inside_window[i].bullets[j].y,
-                                map.enemys_inside_window[i].bullets[j].sword, map.enemys_inside_window[i].bullets[j].score);
-                            map.score += map.enemys_inside_window[i].bullets[j].score;*/
-                            map.enemys_inside_window[i].bullets[j].damage(atk);
+                            /*Map.make_chargePro(Map.enemys_inside_window[i].bullets[j].x, Map.enemys_inside_window[i].bullets[j].y,
+                                Map.enemys_inside_window[i].bullets[j].sword, Map.enemys_inside_window[i].bullets[j].score);
+                            Map.score += Map.enemys_inside_window[i].bullets[j].score;*/
+                            Map.enemys_inside_window[i].bullets[j].damage(atk);
                         }
                     }
 
-                    if (map.enemys_inside_window[i].hit_jugde(x, y, avoid_radius) &&
+                    if (Map.enemys_inside_window[i].hit_jugde(x, y, avoid_radius) &&
                          // すでに当たることが分かったものたちに対して、上下左右どっちに回避したかによって、消す。
-                         ((input.IsKeyDown(KeyID.Up) == true && map.enemys_inside_window[i].y <= y) ||
-                               (input.IsKeyDown(KeyID.Down) == true && map.enemys_inside_window[i].y >= y) ||
-                               (input.IsKeyDown(KeyID.Left) == true && map.enemys_inside_window[i].x <= x) ||
-                               (input.IsKeyDown(KeyID.Right) == true && map.enemys_inside_window[i].x >= x))
+                         ((input.IsKeyDown(KeyID.Up) == true && Map.enemys_inside_window[i].y <= y) ||
+                               (input.IsKeyDown(KeyID.Down) == true && Map.enemys_inside_window[i].y >= y) ||
+                               (input.IsKeyDown(KeyID.Left) == true && Map.enemys_inside_window[i].x <= x) ||
+                               (input.IsKeyDown(KeyID.Right) == true && Map.enemys_inside_window[i].x >= x))
                         )
                     {
-                        map.enemys_inside_window[i].damage(atk);
+                        Map.enemys_inside_window[i].damage(atk);
                     }
                 }
                 #endregion
@@ -490,6 +541,10 @@ namespace CommonPart
         }
         public void draw(Drawing d)
         {
+            for (int j = nowProsIndex; j >= 0; j--)
+            { 
+                prosToBoss[j].draw(d);
+            }
             if (ad != null)
             {
                 ad.Draw(d, new Vector(x - texW / 2, y - texH / 2), DepthID.Player);
