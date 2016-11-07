@@ -16,8 +16,6 @@ namespace CommonPart
         public int score;
         public int sword;
         public bool lasered;
-
-        public bool delete = false;
         public int atk = 1;
 
         public Bullet(double _x,double _y, MoveType _move_type,double _speed,double _acceleration,string _anime,Vector _target_pos,int _zoom_rate
@@ -47,19 +45,13 @@ namespace CommonPart
             if (x < Map.leftside - animation.X / 2 || x > Map.rightside + animation.X / 2
                 || y > DataBase.WindowSlimSizeY + animation.Y / 2 || y < 0 - animation.Y / 2)
             {
-                remove();
+                remove(Unit_state.out_of_window);
             }
 
             if (hit_jugde(player) == true)
             {
-                life--;
                 player.damage(atk);
-            }
-
-
-            if (life <= 0)
-            {
-                remove();
+                remove(Unit_state.bulletDamagedPlayer);
             }
         }
 
@@ -67,10 +59,41 @@ namespace CommonPart
         {
             return Function.hitcircle(x, y, radius, player.x, player.y, player.radius);
         }
-
-        public void remove()
+        /// <summary>
+        /// このbulletのx,yを原点として、このbulletのradius+p_radius半径内にpx,pyがあるかどうか
+        /// </summary>
+        /// <param name="px"></param>
+        /// <param name="py"></param>
+        /// <param name="p_radius"></param>
+        /// <returns></returns>
+        public override bool hit_jugde(double px, double py, double p_radius = 0)
         {
-            delete = true;
+            return Function.hitcircle(x, y, radius, px, py, p_radius);
+        }
+        public void damage(int d) {
+            life -= d;
+            if (life <= 0)  remove(Unit_state.dead);
+        }
+        public void remove(Unit_state us=Unit_state.dead)
+        {
+            switch (us)
+            {
+                case Unit_state.dead: //弾丸がダメージを受けてなくなったか、発射したものが消えたからなくなった。
+                    delete = true;
+                    Map.make_chargePro(x, y, sword, Map.caculateBulletScore(sword));
+                    break;
+                case Unit_state.bulletDamagedPlayer:
+                    delete = true;
+                    break;
+                case Unit_state.fadeout:
+                    delete = true;
+                    break;
+                case Unit_state.out_of_window:
+                    delete = true;
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

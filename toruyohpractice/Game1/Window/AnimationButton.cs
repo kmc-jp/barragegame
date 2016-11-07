@@ -14,7 +14,7 @@ namespace CommonPart
 
         public override Command is_left()
         {
-            Console.WriteLine("AnimationButton:is_left()");
+            //Console.WriteLine("AnimationButton:is_left()");
             stopAndGoToStart();
             return base.is_left();
         }

@@ -57,6 +57,7 @@ namespace CommonPart
         public virtual void update(Player player)
         {
             animation.Update();
+            #region about motion
             if (times[0] >=unitType.times[motion_index[0]])
             {
                 if (motion_index[0] < unitType.moveTypes.Count-1) 
@@ -119,27 +120,28 @@ namespace CommonPart
             {
                 remove(Unit_state.out_of_window);
             }
-            
+            #endregion
             if (Function.hitcircle(x, y,unitType.radius, player.x, player.y, player.radius))
             {
                 player.damage(1);
             }
 
-            //bulletのupdate
+            #region bulletのupdate
             for (int i = 0; i < bullets.Count; i++)//update 専用
             {
-                bullets[i].update(player);
-                
+                bullets[i].update(player); 
             }
             for (int i = 0; i < bullets.Count; i++)//消す専用
             {
                 if (bullets[i].delete == true) { bullets.Remove(bullets[i]); }
-
             }
+            #endregion
+
             for (int i = 0; i < skills.Count; i++)
             {
                 skills[i].update();
             }
+            shot(player);
         }
 
         public virtual void draw(Drawing d)
@@ -279,7 +281,18 @@ namespace CommonPart
             }
         }
 
-        public void damage(int atk)
+        /// <summary>
+        /// このenemyのx,yを原点として、このbulletのradius+p_radius半径内にpx,pyがあるかどうか
+        /// </summary>
+        /// <param name="px"></param>
+        /// <param name="py"></param>
+        /// <param name="p_radius"></param>
+        /// <returns></returns>
+        public bool hit_jugde(double px, double py, double p_radius = 0)
+        {
+            return Function.hitcircle(x, y, radius, px, py, p_radius);
+        }
+        public virtual void damage(int atk)
         {
             life -= atk;
             if (life <= 0)
@@ -315,7 +328,7 @@ namespace CommonPart
 
         public bool selectable()
         {
-            if (delete == true)
+            if (delete || fadeout||!Map.inside_window(this))
             {
                 return false;
             }
@@ -330,17 +343,17 @@ namespace CommonPart
             animation = new AnimationAdvanced(DataBase.getAniD(unitType.animation_name, addOn));
         }
 
-        public int score()
+        /// <summary>
+        /// 現在のplayerの使用スキルに応じて,この敵のスコアと、発した弾丸のスコアを返す。また発した弾丸はすべてremove()が呼ばれる。
+        /// </summary>
+        /// <returns></returns>
+        public virtual int score()
         {
             int total_score = 0;
-            total_score += unitType.score;
+            total_score += Map.caculateEnemyScore(unitType.score);
             for (int j = 0; j < bullets.Count; j++)
             {
-                total_score += bullets[j].score;
-
-                Map.pros.Add(new Projection(bullets[j].x, bullets[j].y,
-                    MoveType.object_target, Map.pro_speed, Map.pro_acceleration, "heal1", Map.player, 100));
-                Map.pro_swords.Add(bullets[j].sword);
+                bullets[j].remove(Unit_state.dead);//remove()を見て、どうなっているかを確認するように
             }
 
             return total_score;
