@@ -79,7 +79,7 @@ namespace CommonPart
                     return 0;
                 }else
                 {
-                    return (int)((coloums.Count - visiable_n) * percent)-1;
+                    return (int)((coloums.Count - visiable_n) * percent);
                 }
             }//get end
         }
@@ -148,12 +148,10 @@ namespace CommonPart
         {
             visiable_n = _n;
             coloumsDistance = _sh;
-            Console.WriteLine(_sh);
             if (_vertical) { h = coloumsDistance * visiable_n; w = _w; }
             else { w = coloumsDistance * visiable_n; h = _w; }
             dx = _dx; dy = _dy;
             h += dy;w += dx;
-            Console.Write(h);
         }
 
         public virtual void addColoum(Coloum c) {
