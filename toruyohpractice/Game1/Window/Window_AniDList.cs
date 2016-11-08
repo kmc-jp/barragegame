@@ -14,7 +14,7 @@ namespace CommonPart
         public Window_AniDList(int _x, int _y, int _w, int _h) : base(_x, _y, _w, _h)
         {
             setup_AniDscroll();
-            mouse_dragable = true;
+            //mouse_dragable = true;
         }
         #endregion
         public string getAniScrollContent_str() { return aniDscroll.content; }
