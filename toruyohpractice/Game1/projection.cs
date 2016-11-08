@@ -19,6 +19,8 @@ namespace CommonPart
         public AnimationAdvanced animation = null;
         public MoveType move_type;
         public int zoom_rate;
+        public bool texRotate = false;
+        public bool delete = false;
 
         //timeをつくろう
         /// <summary>
@@ -29,7 +31,7 @@ namespace CommonPart
         /// <param name="_move_type"></param>
         /// <param name="_anime"></param>
         /// <param name="_zoom_rate"></param>
-        public Projection(double _x, double _y,MoveType _move_type, string _anime, int _zoom_rate)
+        public Projection(double _x, double _y,MoveType _move_type, string _anime, int _zoom_rate=100)
         {
             x = _x;
             y = _y;
@@ -110,6 +112,7 @@ namespace CommonPart
 
         public virtual void update()
         {
+            if (delete) { return; }
             switch (move_type)
             {
                 case MoveType.non_target:
@@ -139,17 +142,58 @@ namespace CommonPart
                     break;
             }
             animation.Update();
-            Console.WriteLine(animation.X+" "+animation.Y);
         }
 
         public virtual bool hit_jugde(Player player)
         {
             return false;
         }
+        public virtual bool hit_jugde(double px,double py, double p_radius=0)
+        {
+            return false;
+        }
 
         public virtual void draw(Drawing d)
         {
-            animation.Draw(d,new Vector(x,y),DepthID.Enemy,zoom_rate/100);
+            if (!texRotate)
+            {
+                animation.Draw(d, new Vector((x - animation.X / 2), (y - animation.Y / 2)), DepthID.Enemy,zoom_rate/100);
+            }
+            else
+            {
+                float angle2 = (float)(radian);
+                animation.Draw(d, new Vector((x + animation.Y / 2 * Math.Cos(angle2) + animation.X / 2 * Math.Sin(angle2)), (y + animation.Y / 2 * Math.Sin(angle2) - animation.X / 2 * Math.Cos(angle2))), DepthID.Enemy, 1, (float)(radian + Math.PI / 2));
+
+            }
+        }
+    }
+
+    class ChargeProjection:Projection
+    {
+        public int sword;
+        /// <summary>
+        /// 物体playerに向かって移動
+        /// </summary>
+        /// <param name="_x"></param>
+        /// <param name="_y"></param>
+        /// <param name="_move_type"></param>
+        /// <param name="_speed"></param>
+        /// <param name="_anime"></param>
+        /// <param name="_target"></param>
+        /// <param name="_zoom_rate"></param>
+        public ChargeProjection(double _x, double _y, string _anime,int _sword, MoveType _move_type, double _speed, double _acceleration, Player _target, int _zoom_rate)
+            : base(_x, _y, _move_type, _speed,_acceleration,_anime, _target,_zoom_rate)
+        { sword = _sword; }
+        public ChargeProjection(double _x, double _y, string _anime, int _sword, double _speed, double _acceleration, Player _target)
+            : this(_x, _y, _anime,_sword,MoveType.object_target, _speed, _acceleration, _target, 100)
+        { }
+        public override bool hit_jugde(double px, double py, double p_radius = 0)
+        {
+            return Function.hitcircle(x, y, speed, px, py, p_radius);
+        }
+        public override bool hit_jugde(Player p)
+        {
+            return Function.hitcircle(x, y, speed/2, p.x,p.y,p.radius);
         }
     }
 }

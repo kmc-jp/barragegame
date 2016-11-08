@@ -40,6 +40,7 @@
   <ItemGroup>
     <Compile Include="Boss1.cs" />
     <Compile Include="Bullet.cs" />
+    <Compile Include="Datas\BGMdata.cs" />
     <Compile Include="Datas\DataBase.cs" />
     <Compile Include="Datas\HitShape.cs" />
     <Compile Include="Datas\MapDataSave.cs" />
@@ -62,14 +63,18 @@
     <Compile Include="Projection.cs" />
     <Compile Include="Save.cs" />
     <Compile Include="Scenes\abstract BasicEditorScene.cs" />
+    <Compile Include="Scenes\abstract SceneWithWindows.cs" />
     <Compile Include="Scenes\AnimationDataBaseEditor.cs" />
     <Compile Include="Scenes\MapEditorScene.cs" />
     <Compile Include="Scenes\MapScene.cs" />
+    <Compile Include="Scenes\MusicGalleryScene.cs" />
     <Compile Include="Scenes\StageSelectScene.cs" />
+    <Compile Include="Scenes\TitleSceneWithWindows.cs" />
     <Compile Include="Scenes\UnitTypeDataEditor.cs" />
     <Compile Include="Skill.cs" />
     <Compile Include="SkilledBullet.cs" />
     <Compile Include="Updater.cs" />
+    <Compile Include="Window\AnimationButton.cs" />
     <Compile Include="Window\AnimationColoum.cs" />
     <Compile Include="Window\Coloum.cs" />
     <Compile Include="Window\PoorText.cs" />
@@ -78,9 +83,9 @@
     <Compile Include="Window\Window_AniDList.cs" />
     <Compile Include="Window\Window_Animation.cs" />
     <Compile Include="Window\Window_UnitType.cs" />
-    <Compile Include="Workers\Unit.cs" />
-    <Compile Include="Workers\Worker.cs" />
-    <Compile Include="Workers\WorkerManager.cs" />
+    <Compile Include="Window\Workers\Unit.cs" />
+    <Compile Include="Window\Workers\Worker.cs" />
+    <Compile Include="Window\Workers\WorkerManager.cs" />
     <Compile Include="XNA\AnimationAdvanced.cs" />
     <Compile Include="XNA\Inputmanager.cs" />
     <Compile Include="Game1.cs" />
@@ -147,9 +152,6 @@
     <Content Include="Content\36-40 hex1.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\60 105-player.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Content\720×174 sword.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -177,13 +179,28 @@
     <Content Include="Content\background4.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\barragetitle.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Boss1_tail.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\gameover.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\iseki.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\KMC.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\leftside1.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Map.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\maten_game.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\None.png">
@@ -207,23 +224,23 @@
     <Content Include="Content\scroll.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Stage2_Boss.mp3">
+    <Content Include="Content\stage1_way.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Stage2_Boss.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\testbackground.png">
+    <Content Include="Content\Stage4_Journey_short.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\stage４ボス.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\white.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\testlife.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Icon.ico" />
     <Content Include="Content\stageselect.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\titlewords.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="UpdateUnziper.exe" />

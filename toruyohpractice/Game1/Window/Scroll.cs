@@ -21,14 +21,14 @@ namespace CommonPart
         /// <summary>
         /// 今のスクロールbarの位置のxを取得できるandスクロールbarの位置のxを設定できる
         /// </summary>
-        public double nx { get { if (vertical) return pos.X + dx; else return pos.X + dx + (w-barlength) * percent; }
+        public double nx { get { if (vertical) return pos.X + dx; else return pos.X + dx + (l-barlength) * percent; }
             protected set
             {
                 if (vertical) { //pos.X = value+dx;
                 } else
                 {
-                    if (value >= w + pos.X + dx -barlength) { percent = 1; }
-                    else { percent = (value - dx - pos.X) / (w-barlength);
+                    if (value >= pos.X + dx+l -barlength) { percent = 1; }
+                    else { percent = (value - dx - pos.X) / (l-barlength);
                         if(percent > 1) { percent = 1; }
                         if(percent < 0) { percent = 0; }
                     }
@@ -38,18 +38,21 @@ namespace CommonPart
         /// <summary>
         /// 今のスクロールbarの位置.yを取得できandスクロールbarの位置.yを設定できる
         /// </summary>
-        public double ny { get { if (!vertical) return pos.Y + dy; else return pos.Y + dy + (h - barlength) * percent; }
+        public double ny { get { if (!vertical) return pos.Y + dy; else return pos.Y+dy+(l - barlength)*percent ; }
             protected set {
+                //barlength is visiable_n * h / (coloums.Count + 1)
                 if (!vertical) {   //pos.Y = value;
                 } else
                 {
-                    if (value >= pos.Y + dy +h- barlength) { percent = 1; }
-                    else { percent = (value - dy - pos.Y) / (h-barlength);
+                    if (value >= pos.Y+dy  +l- barlength) { percent = 1; }
+                    else {
+                        percent = (value -pos.Y-dy) / (l-barlength);
                         if (percent > 1) { percent = 1; }
                         if (percent < 0) { percent = 0; }
                     }
 
                 }
+                //Console.WriteLine((ny+l-barlength)+" "+value+" "+l + " "+(l-barlength)+" "+percent );
             }
         }
         /// <summary>
@@ -57,27 +60,21 @@ namespace CommonPart
         /// </summary>
         public int barlength {
             get {
-                if (vertical) {
-                    if (coloums.Count > visiable_n) return visiable_n * h / (coloums.Count + 1);
-                    else { return h; }
-                } else
-                {
-                    if (coloums.Count > visiable_n) return visiable_n * w / (coloums.Count + 1);
-                    else { return w; }
-                }
+                if (coloums.Count > visiable_n) return (visiable_n * l) / (coloums.Count + 1);
+                else { return l; }
             }
         }
         /// <summary>
         /// スクロールの全長を取得する
         /// </summary>
-        public int l { get { if (vertical) return h; else return w; } }
+        public int l { get { if (vertical) return h-dy; else return w-dx; } }
         /// <summary>
         /// 今スクロールの中で選ばれている要項の番号.PosInsideで定義される
         /// </summary>
         public int now_coloum_index = -1;//-1の時はスクロールbarを操っている。
         const int scrollbar_index = -1;
         protected int now_firstVisiableIndex { get {
-                if ( (int)((coloums.Count - visiable_n) * percent)<0)
+                if ( (int)((coloums.Count - visiable_n) * percent)<1)
                 {
                     return 0;
                 }else
@@ -86,8 +83,27 @@ namespace CommonPart
                 }
             }//get end
         }
-        protected int now_lastVisiableIndex { get { return -1+Math.Min(coloums.Count, (int)((coloums.Count - visiable_n) * percent) + visiable_n); } }
-
+        protected int now_lastVisiableIndex { get { return Math.Min(coloums.Count-1, now_firstVisiableIndex + visiable_n-1); } }
+        protected int scrollStartX { get { return (int)(pos.X + dx); } }
+        protected int scrollStartY { get { return (int)(pos.Y + dy); } }
+        /// <summary>
+        /// スクロールによって、coloumsのXにかかる校正
+        /// </summary>
+        protected int coloumsAdjustX { get
+            {
+                if (!vertical) { return scrollStartX-now_firstVisiableIndex * coloumsDistance; }else { return scrollStartX; }
+            }
+        }
+        /// <summary>
+        /// スクロールによって、coloumsのYにかかる校正
+        /// </summary>
+        protected int coloumsAdjustY
+        {
+            get
+            {
+                if (vertical) { return scrollStartY-now_firstVisiableIndex * coloumsDistance; } else { return scrollStartY; }
+            }
+        }
         /// <summary>
         /// 画面上に見えるこのスクロールの要項の数
         /// </summary>
@@ -101,10 +117,10 @@ namespace CommonPart
         /// </summary>
         public int Count { get { return coloums.Count; } }
         /// <summary>
-        /// 黙認の最小スクロールbarの大きさ。
+        /// 要項間の間隔
         /// </summary>
-        const int default_size = 16;
-        const int min_h = 16;
+        public int coloumsDistance;
+        const int min_bw = 16;
         /// <summary>
         /// タイトルとscrollの距離である. strはタイトルになる
         /// </summary>
@@ -118,10 +134,6 @@ namespace CommonPart
             }
         }
 
-        /*public Scroll(int _ox, int _oy, string _str, int _n,int _h, int _w = default_size,int _dx=default_title_dx,int _dy=default_title_dy) : base(_ox, _oy, _str, Command.Scroll)
-        {
-            h = _h; w = _w;visiable_n = _n;
-        }*/
         /// <summary>
         /// 要項の個別サイズと、画面に見える要項の数でscrollを作る
         /// </summary>
@@ -131,22 +143,23 @@ namespace CommonPart
         /// <param name="_str">タイトル</param>
         /// <param name="_sh">要項間の間隔</param>
         /// <param name="_n">全長に対応する要項の数</param>
-        public Scroll(int _ox, int _oy, string _str, int _sh, int _n, int _w = default_size,bool _vertical=true,int _dx=default_title_dx,int _dy=default_title_dy)
+        public Scroll(int _ox, int _oy, string _str, int _sh, int _n, int _w = min_bw,bool _vertical=true,int _dx=default_title_dx,int _dy=default_title_dy)
           : base(_ox, _oy, _str, Command.Scroll)
-        //  : this(_ox, _oy, _str,_n, _sh * _n, _w,_dx,_dy)
         {
             visiable_n = _n;
-            if (_vertical) { h = _sh * visiable_n; w = _w; }
-            else { w = _sh * visiable_n; h = _w; }
+            coloumsDistance = _sh;
+            if (_vertical) { h = coloumsDistance * visiable_n; w = _w; }
+            else { w = coloumsDistance * visiable_n; h = _w; }
             dx = _dx; dy = _dy;
+            h += dy;w += dx;
         }
 
         public virtual void addColoum(Coloum c) {
             coloums.Add(c);
-            if (default_size * coloums.Count > l)
+            if (coloumsDistance * visiable_n > l)
             {
-                if (vertical) { h = default_size * coloums.Count; }
-                else { w = default_size * coloums.Count; }
+                if (vertical) { h = coloumsDistance * visiable_n-dy; }
+                else { w = coloumsDistance * visiable_n-dx; }
             }
         }
         public void clear_all_coloums()
@@ -174,7 +187,8 @@ namespace CommonPart
             else {
                 for (int i = now_firstVisiableIndex; i <=now_lastVisiableIndex; i++)
                 {
-                    if (coloums[i].PosInside(v, (int)(ax - nx + 2 * (dx + pos.X)), (int)(ay - ny + 2 * (dy + pos.Y)) ) )
+                    //if (coloums[i].PosInside(v, (int)(ax - nx + 2 * (dx + pos.X)), (int)(ay - ny + 2 * (dy + pos.Y)) ) )
+                    if(coloums[i].PosInside(v, (int)(ax+coloumsAdjustX), (int)(ay+coloumsAdjustY) ))
                     {
                         select_index(i);
                         return true;
@@ -202,6 +216,7 @@ namespace CommonPart
             return Command.nothing;
         }
         public override Command update_with_mouse_manager(MouseManager m) {
+            Command c = Command.nothing;
             if (m != null)
             {
                 if (now_coloum_index == scrollbar_index && m.IsButtomDown(MouseButton.Left) ) {
@@ -209,31 +224,36 @@ namespace CommonPart
                     if (vertical) { ny += m.MousePosition().Y - m.OldMousePosition().Y;
                     }
                     else { nx += m.MousePosition().X - m.OldMousePosition().X; }
-                    reply = Command.Scroll; // Scrollを返しても、leftcoloum()にならないように書いているかな？
+                    c = Command.Scroll; // Scrollを返しても、leftcoloum()にならないように書いているかな？
                 }
                 else if(m.IsButtomDownOnce(MouseButton.Left)) // Mouseがscroll全体の中に入っているかは、windowで判断している。
                 {
                     // とある要項を選択した。
                     content = coloums[now_coloum_index].content;
-                    reply = coloums[now_coloum_index].is_applied();
+                    c = coloums[now_coloum_index].is_applied();
                     //Console.WriteLine("scroll-coloums" + now_coloum_index + " " + content);
                 }
             }
-            return reply;
+            return c;
         }
 
         public override void draw(Drawing d,int ax,int ay)
         {
             base.draw(d, ax, ay);
+            d.DrawBoxFrame(new Vector(pos.X+dx+ax,pos.Y+dy+ay), vertical ? new Vector2(w, l) : new Vector2(l, h), Color.RosyBrown, DepthID.Message);
             if (coloums != null)
             {
                 d.DrawBox(new Vector2((float)nx + ax, (float)ny + ay), vertical ? new Vector2(w, barlength) : new Vector2(barlength, h)
-                    , Color.CadetBlue, DepthID.Message);
-                for (int i = now_firstVisiableIndex; i < Math.Min(coloums.Count, (int)((coloums.Count - visiable_n) * percent) + visiable_n); i++)
+                    , Color.LimeGreen, DepthID.Message);
+                for (int i = now_firstVisiableIndex; i <= now_lastVisiableIndex; i++)
                 {
-                    coloums[i].draw(d, (int)(ax - nx + 2 * (dx + pos.X)), (int)(ay - ny + 2 * (dy + pos.Y)));
+                    if (coloums[i].pos.X + ax+coloumsAdjustX >= ax + scrollStartX-2 &&
+                        coloums[i].pos.Y + ay+coloumsAdjustY >= ay + scrollStartY-2)
+                    {
+                        coloums[i].draw(d, (int)(ax+coloumsAdjustX), (int)(ay+coloumsAdjustY));
+                    }
                 }
-            }
+            } 
             //Console.WriteLine("draw "+(ax-nx)+" "+(ay-ny) );
         }
         public override void draw(Drawing d) { draw(d, 0, 0); }
