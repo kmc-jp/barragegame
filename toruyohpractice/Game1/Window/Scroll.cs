@@ -79,7 +79,7 @@ namespace CommonPart
                     return 0;
                 }else
                 {
-                    return (int)((coloums.Count - visiable_n) * percent);
+                    return (int)((coloums.Count - visiable_n) * percent)-1;
                 }
             }//get end
         }
