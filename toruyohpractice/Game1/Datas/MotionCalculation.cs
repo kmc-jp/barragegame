@@ -43,14 +43,15 @@ namespace CommonPart
         public static Vector rightcircleDisplacement(double speed,int all_time, int now_time,double default_angle=-Math.PI/2)
         {
             double omega = 2 * Math.PI / all_time;
-            double r = speed * omega;
-            return new Vector(-r * omega * Math.Sin(omega * now_time + default_angle), r * Math.Cos(omega * now_time + default_angle));
+            double r = speed / omega;
+            Console.WriteLine(omega + "," + r + "," + Math.Sin(omega * now_time + default_angle));
+            return new Vector(-r * omega * Math.Sin(omega * now_time + default_angle), r*omega* Math.Cos(omega * now_time + default_angle));
         }
         public static Vector leftcircleDisplacement(double speed,int all_time, int now_time, double default_angle = Math.PI / 2)
         {
             double omega = 2 * Math.PI / all_time;
-            double r = speed * omega;
-            return new Vector(r * omega * Math.Sin(-(omega * now_time + default_angle)), -r * Math.Cos(-(omega * now_time + default_angle)));
+            double r = speed / omega;
+            return new Vector(r * omega * Math.Sin(-(omega * now_time + default_angle)), -r*omega * Math.Cos(-(omega * now_time + default_angle)));
         }
 
         public static Vector tousokuidouDisplacement(Vector displacement,int alltime)

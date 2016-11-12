@@ -211,7 +211,7 @@ namespace CommonPart
                                     break;
                                 case SkillGenreS.zyuzi:
                                     SingleShotSkillData ss2 = (SingleShotSkillData)sd;
-                                    for (int j = 0; j < 3; j++)
+                                    for (int j = 0; j < 4; j++)
                                     {
                                         bullets.Add(new Bullet(x, y, ss2.moveType, ss2.speed, ss2.acceleration, j*Math.PI/2, ss2.aniDName, 100, ss2.radius, ss2.life, ss2.score, ss2.sword));
                                     }
