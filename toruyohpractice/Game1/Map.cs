@@ -154,11 +154,16 @@ namespace CommonPart {
                 case 1:
                     stagedata = new Stage1Data("stage1");
                     break;
+                case 2:
+                    stagedata = new Stage2Data("stage2");
+                    break;
+                case 4:
+                    stagedata = new Stage4Data("stage4");
+                    break;
                 default:
-                    stagedata = new Stage1Data("tt");
+                    stagedata = new Stage1Data("stage1");
                     break;
             }
-            #endregion
             step.Clear();
             step.Add(0);
             scroll_speed = new Vector(defaultspeed_x, defaultspeed_y);
