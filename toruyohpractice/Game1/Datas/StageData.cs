@@ -98,12 +98,130 @@ namespace CommonPart
                     Map.create_enemy(300, 0, "E1a-4");
                     Map.create_enemy(420, 0, "E1a-5");
                     break;
-                case 4380:
-                    Map.EngagingTrueBoss();
+                case 4580:
+                    Map.boss_mode = true;
                     break;
-                case 4400:
+                case 4600:
                     playBGM(bgmIDs[1]);//BGMを流す。
                     Map.create_boss1(360, 10, "boss1");
+                    break;
+                    #endregion
+            }
+        }
+    }
+    #endregion
+
+    #region Stage4
+    class Stage4Data : StageData
+    {
+        public Stage4Data(string _stageName) : base(_stageName)
+        {
+            bgmIDs = new BGMID[] { BGMID.Stage4onWay, BGMID.Stage4Boss }; //一応こうした、いつでも{}の中身を変更できる。
+                                                                          //ただし、MusicPlayer2.cs 30行から登録済でないと流れません。
+            background_names = new string[] { "background4" };
+
+            setupAllbackgroundWithNames();//背景を用意する。
+        }
+
+        public override void update()
+        {
+            #region 敵配置
+            switch (Map.step[0])
+            {
+                case 0:
+                    playBGM(bgmIDs[0]);//最初のBGMを流す。
+                    Map.boss_mode = false;
+                    break;
+                case 240:
+                    Map.create_enemy(360, 0, "4E2-f2a"); //便宜上、UnitType名は[4][敵画像名][順番(a-)]とした
+                    break;
+                case 660:
+                    Map.create_enemy(150, 0, "4E2-f2b"); //一つ減らした
+                    break;
+                case 900:
+                    Map.create_enemy(0, 240, "4E4-2a");
+                    break;
+                case 1020:
+                    Map.create_enemy(720, 240, "4E4-1a");
+                    break;
+                case 1140:
+                    Map.create_enemy(0, 240, "4E4-2a"); //1a,2aはそれぞれ共通の画像と動きに変更
+                    break;
+                case 1260:
+                    Map.create_enemy(720, 240, "4E4-1a");
+                    break;
+                case 1620:
+                    Map.create_enemy(320, 0, "4E1a");
+                    Map.create_enemy(380, 0, "4E1b");
+                    break;
+                case 2040:
+                    Map.create_enemy(70, 720, "4E2-2a");
+                    Map.create_enemy(170, 720, "4E2-2a");
+                    Map.create_enemy(550, 720, "4E2-2a");
+                    Map.create_enemy(650, 720, "4E2-2a");
+                    break;
+                case 2460:
+                    Map.create_enemy(0, 200, "4E5a");
+                    Map.create_enemy(720, 200, "4E5b");
+                    break;
+                case 2640:
+                    Map.create_enemy(360, 720, "4E3-2a");
+                    break;
+                case 2800:
+                    Map.create_enemy(360, 0, "4E2-f1a");
+                    break;
+                case 3180:
+                    Map.create_enemy(60, 0, "4E2-1a");
+                    Map.create_enemy(120, 0, "4E2-1a");
+                    Map.create_enemy(180, 0, "4E2-1a");
+                    Map.create_enemy(240, 0, "4E2-1a");
+                    Map.create_enemy(300, 0, "4E2-1a");
+                    Map.create_enemy(420, 0, "4E2-1a");
+                    Map.create_enemy(480, 0, "4E2-1a");
+                    Map.create_enemy(540, 0, "4E2-1a");
+                    Map.create_enemy(600, 0, "4E2-1a");
+                    Map.create_enemy(660, 0, "4E2-1a");
+                    break;
+                case 4020:
+                    Map.create_enemy(100, 720, "4E2-f2d");
+                    Map.create_enemy(200, 720, "4E2-f2d");
+                    Map.create_enemy(520, 720, "4E2-f2d");
+                    Map.create_enemy(620, 720, "4E2-f2d"); //たぶんこの弾幕きつすぎるから間引きか全削除
+                    break;
+                case 4640:
+                    Map.create_enemy(360, 0, "4E4-2c");
+                    break;
+                case 4700:
+                    Map.create_enemy(360, 0, "4E4-2c");
+                    break;
+                case 4760:
+                    Map.create_enemy(360, 0, "4E4-2c");
+                    break;
+                case 5040:
+                    Map.create_enemy(0, 200, "4E5c");
+                    Map.create_enemy(720, 200, "4E5d");
+                    break;
+                case 5520:
+                    Map.create_enemy(100, 0, "4E1c");
+                    Map.create_enemy(620, 0, "4E1c");
+                    break;
+                case 5640:
+                    Map.create_enemy(230, 0, "4E1c");
+                    Map.create_enemy(490, 0, "4E1c");
+                    break;
+                case 5780:
+                    Map.create_enemy(360, 0, "4E1c");
+                    break;
+                case 6300:
+                    Map.create_enemy(360, 0, "4E4-1b");
+                    Map.create_enemy(360, 0, "4E4-1c");
+                    break;
+                case 6900:
+                    Map.boss_mode = true;
+                    break;
+                case 6920:
+                    playBGM(bgmIDs[1]);//BGMを流す。
+                    Map.create_boss1(360, 10, "boss4"); 
                     break;
                     #endregion
             }
