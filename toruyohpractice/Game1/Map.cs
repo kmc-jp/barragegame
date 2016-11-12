@@ -105,6 +105,9 @@ namespace CommonPart {
         public static int enemysIndexOfBoss=0;
         public static List<Enemy> enemys = new List<Enemy>();
         public static List<Enemy> enemys_inside_window = new List<Enemy>();
+
+        
+
         /// <summary>
         /// 左側のバーの右端のx座標
         /// </summary>
@@ -309,7 +312,20 @@ namespace CommonPart {
             //Console.Write(" to " + (_score).ToString()+"\n");
             return _score;
         }
+        #region Map Advanced Function
+        /// <summary>
+        /// マップ上のすべての物体の更新を止める。
+        /// </summary>
+        /// <param name="time"></param>
+        public static void stopUpdating(int time)
+        {
 
+        }
+        public static void CutInTextureAndStopUpdating()
+        {
+
+        }
+        #endregion
         #region Create / Make   Map Function
         /// <summary>
         /// すでに正しく計算された刀チャージ量と点数を引数で渡し、点数はそのまま総点数に加算し、キャラクターに向かうChargeProjectionを作る

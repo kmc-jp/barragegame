@@ -293,6 +293,7 @@ namespace CommonPart
                 radianForPros = Math.Atan2(-(y - enemyAsTarget.y) / e2, -(x - enemyAsTarget.x) / e2);
             }
         }
+
         #region characterAttackskills
         /// <summary>
         /// 敵を見つけて、attack_mode=true,add_attack_mode=false
