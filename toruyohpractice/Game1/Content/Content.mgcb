@@ -433,18 +433,6 @@
 /processorParam:TextureFormat=Color
 /build:167x15必殺技エフェクトsample.png
 
-#begin 80x77E4.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:80x77E4.png
-
 #begin 130 149-player.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -540,4 +528,16 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:130x149刀モーション.png
+
+#begin 79x77E4.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:79x77E4.png
 
