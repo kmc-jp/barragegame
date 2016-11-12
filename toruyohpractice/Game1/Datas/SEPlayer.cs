@@ -107,6 +107,5 @@ namespace CommonPart {
         enemyattack,laser,bossdamage,
         playerattack1,playerattack2,cutin,playerdamage,
         player50gauge,player100gauge,
-
     }
 }

@@ -11,6 +11,7 @@ namespace CommonPart
         private string titleWindowBackGroundNames = "タイトル画面NF";
         public TitleSceneWithWindows(SceneManager scene) : base(scene) {
             setup_windows();
+            SoundManager.Music.PlayBGM(BGMID.title,true);
         }
         protected void openStageSelectScene()
         {

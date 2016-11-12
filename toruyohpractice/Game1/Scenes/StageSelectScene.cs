@@ -8,6 +8,9 @@ namespace CommonPart
 {
     class StageSelectScene:Scene
     {
+        /// <summary>
+        /// indexではない
+        /// </summary>
         int stage_select =1;
         public int stage_number = 5;
         Vector player_pos = new Vector();

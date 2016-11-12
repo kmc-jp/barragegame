@@ -83,9 +83,9 @@
     <Compile Include="Window\Window_AniDList.cs" />
     <Compile Include="Window\Window_Animation.cs" />
     <Compile Include="Window\Window_UnitType.cs" />
-    <Compile Include="Window\Workers\Unit.cs" />
-    <Compile Include="Window\Workers\Worker.cs" />
-    <Compile Include="Window\Workers\WorkerManager.cs" />
+    <Compile Include="Workers\Unit.cs" />
+    <Compile Include="Workers\Worker.cs" />
+    <Compile Include="Workers\WorkerManager.cs" />
     <Compile Include="XNA\AnimationAdvanced.cs" />
     <Compile Include="XNA\Inputmanager.cs" />
     <Compile Include="Game1.cs" />
@@ -100,7 +100,6 @@
     <Compile Include="Scenes\SettingsScene.cs" />
     <Compile Include="Scenes\SoundTest.cs" />
     <Compile Include="Scenes\TalkWindow.cs" />
-    <Compile Include="Scenes\TitleScene.cs" />
     <Compile Include="Scenes\UpdateScene.cs" />
     <Compile Include="XNA\Drawing.cs" />
     <Compile Include="XNA\Drawing3D.cs" />

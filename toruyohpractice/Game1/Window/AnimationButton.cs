@@ -15,13 +15,22 @@ namespace CommonPart
         public override Command is_left()
         {
             //Console.WriteLine("AnimationButton:is_left()");
-            stopAndGoToStart();
+            if (!selected)
+            {
+                stopAndGoToStart();
+            }
             return base.is_left();
         }
         public override Command update_with_mouse_manager(MouseManager m)
         {
             play();
             return base.update_with_mouse_manager(m);
+        }
+        public override void is_selected()
+        {
+            Console.WriteLine(content);
+            play();
+            base.is_selected();
         }
     }
 }
