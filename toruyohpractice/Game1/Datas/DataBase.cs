@@ -74,7 +74,11 @@ namespace CommonPart {
 
         #region about player character / boss character / map stage / enemy motion 
         public static string charaName = "chara1";
+        public static string charaCutInTexName = "カットインfin";
         public const string bossLifeBar_default_aniName = "1280x150体力ゲージ";
+        /// <summary>
+        /// すべてのstop_timeとかに使われる。普通0より小さくならないtimeがこの値だと無限と認識する。
+        /// </summary>
         public const int motion_inftyTime =-99999;
         #endregion
 
@@ -318,6 +322,10 @@ namespace CommonPart {
             #endregion
             goToStartDirectory();
             tda(bossLifeBar_default_aniName);
+            tda(charaCutInTexName);
+            tda("1280x2000背景用グレー画像");
+            tda("1100x270メッセージウィンドゥ");
+            tda("333x226扇ゲージ");
             tda("25x145必殺技２");
             tda("167x15必殺技エフェクトsample");
             tda("130 149-player");

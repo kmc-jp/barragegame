@@ -83,8 +83,8 @@ namespace CommonPart {
         /// ゲーム中のmapでどのような動作を行う/行っているか　の定義を示す。
         /// </summary>
         public const string updated = "-updated", fullStopped = "-fulStop", playerStopped = "-plaStop", enemysStopped = "-eneStop",
-             bothSideMove = "-boSidMove";
-        static protected string mapState = ""; //初期は空として、その都度変えていく 
+             bothSideMove = "-boSidMove", gameOver="-gAMeOVer";
+        static public string mapState = ""; //初期は空として、その都度変えていく 
         /// <summary>
         /// 両サイドが0,1280まで広がり、最後のboss戦画面になる
         /// </summary>
@@ -94,6 +94,24 @@ namespace CommonPart {
             leftsideTo = 0; rightsideTo = 1280;
             mapState += bothSideMove;
         }
+        #endregion
+        #region map cutin texture and about stop
+        /// <summary>
+        /// マップの更新が止まるまでの時間.
+        /// </summary>
+        public static int readyToStop_time = 0;
+        /// <summary>
+        /// mapが更新を止める時間
+        /// </summary>
+        public static int stop_time=0;
+        /// <summary>
+        /// cut in するtextureの名前
+        /// </summary>
+        public static string cutIn_texName=null;
+        public static int cutIn_texPosNowX,cutIn_texPosNowY;
+        public static int cutIn_texPosToX,cutIn_texPosToY;
+        public static int cutIn_speed;
+        public static int cutIn_texTime =-1;
         #endregion
         #region step[] and others about Map
         /// <summary>
@@ -252,6 +270,26 @@ namespace CommonPart {
 
         public void update(InputManager input)
         {
+            #region update cutIn
+            if (cutIn_texTime > 0)
+            {
+                cutIn_texTime--;
+            } 
+            else if(cutIn_texTime<=0 && cutIn_texTime != DataBase.motion_inftyTime)
+            {
+                cutIn_texName = null;
+            }
+            cutIn_texPosNowX = Function.towardValue(cutIn_texPosNowX, cutIn_texPosToX, cutIn_speed);
+            cutIn_texPosNowY = Function.towardValue(cutIn_texPosNowY, cutIn_texPosToY, cutIn_speed);
+            #endregion
+            if (readyToStop_time<=0)
+            {
+                if (stop_time > 0)
+                {
+                    stop_time--;
+                    return;
+                }else if( stop_time == DataBase.motion_inftyTime) { return; }
+            }else { readyToStop_time--; }
             chargeBar.Update();
             stagedata.update();
             #region 画面上に見える敵を"見える敵たち"に入れる
@@ -317,15 +355,28 @@ namespace CommonPart {
         /// マップ上のすべての物体の更新を止める。
         /// </summary>
         /// <param name="time"></param>
-        public static void stopUpdating(int time)
+        public static void stopUpdating(int _stop_time,int _ready_to_stop_time)
         {
-
+            readyToStop_time = _ready_to_stop_time;
+            stop_time = _stop_time;
         }
-        public static void CutInTextureAndStopUpdating()
+        public static void CutInTexture(string texName,int x,int y,int toX,int toY,int texTime,int _cutInSpeed)
         {
-
+            cutIn_speed = _cutInSpeed;
+            cutIn_texName = texName;
+            cutIn_texPosNowX = x;
+            cutIn_texPosNowY = y;
+            cutIn_texPosToX = toX;
+            cutIn_texPosToY = toY;
+            cutIn_texTime = texTime;
         }
         #endregion
+        public static void game_over_start()
+        {
+            stopUpdating(DataBase.motion_inftyTime, 400);
+            CutInTexture("1280x2000背景用グレー画像",0,-2000,0,0,DataBase.motion_inftyTime,10);
+            mapState +=gameOver;
+        }
         #region Create / Make   Map Function
         /// <summary>
         /// すでに正しく計算された刀チャージ量と点数を引数で渡し、点数はそのまま総点数に加算し、キャラクターに向かうChargeProjectionを作る
@@ -489,6 +540,13 @@ namespace CommonPart {
             
             chargeBar.Draw(d, new Vector(bar_pos.X-197, bar_pos.Y-chargeBar.Y/2-28), DepthID.Map);
             d.DrawLine(bar_pos, new Vector(bar_pos.X + player.sword * 3.8, bar_pos.Y), 17, Color.Violet, DepthID.Status);//剣ゲージ
+            #endregion
+
+            #region draw CutIn
+            if(cutIn_texTime>0 && cutIn_texName!=null && cutIn_texName != "")
+            {
+                d.Draw(new Vector(cutIn_texPosNowX, cutIn_texPosNowY),DataBase.getTex(cutIn_texName),DepthID.Status);
+            }
             #endregion
         }//draw end
 

@@ -82,7 +82,7 @@ namespace CommonPart
         /// <summary>
         /// skillを使うに最低限のエネルギー
         /// </summary>
-        public int sword_condition = 20;
+        public int sword_condition = 50;
         public int default_speed = 6;
         /// <summary>
         /// 敵のどれくらいしたまで移動するか
@@ -92,7 +92,7 @@ namespace CommonPart
         /// 刀エネルギーが最大になっている時
         /// </summary>
         public int bonusDamage = 1000; 
-        public int swordSkillDamage { get { return atk*3 + 30 * (sword ); } }
+        public int swordSkillDamage { get { return atk*3 + 30 * (sword-50 ); } }
         //protected bool skill_attackBoss
         #endregion
         const int prosToBoss_dash_maximum=40;
@@ -110,6 +110,7 @@ namespace CommonPart
         public int avoid_speed = 11;
         public int avoid_acceleration = 1;
         public int avoid_stop_time = 15;
+        private SoundEffectID avoid_SEid =SoundEffectID.playerattack1;
         /// <summary>
         /// 回避時に敵弾を消せる半円の半径
         /// </summary>
@@ -317,6 +318,18 @@ namespace CommonPart
             Map.numOfskillKilledEnemies = 0;
             Map.scoreOfskilltoEnemy = 0;
         }
+        protected void skilltoBossEnd()
+        {
+            playAnimation(DataBase.defaultAnimationNameAddOn);
+            InForcedRoute = true;
+            attack_mode = false;
+            add_attack_mode = false;
+            enemyAsTarget = null;
+            Map.numOfskillKilledEnemies = 0;
+            Map.scoreOfskilltoEnemy = 0;
+            for(int i = 0; i < prosToBoss.Length; i++) { prosToBoss[i] = null; }
+            nowProsIndex = -1;
+        }
         public void skilltoEnemy(InputManager input)
         {
             //skill開始からstop時間が終わるまで追加攻撃を予約したら、追加攻撃するが
@@ -401,6 +414,7 @@ namespace CommonPart
             attack_time = 120;
             shouhi_sword = sword;
             nowProsIndex = -1;
+            Map.CutInTexture(DataBase.charaCutInTexName,-400,100,100,100,100,10);
         }
 
         public void skilltoBoss(InputManager input)
@@ -416,6 +430,7 @@ namespace CommonPart
                     }
                     else
                     {
+                        #region projections 更新
                         if (nowProsIndex < prosToBoss_dash_maximum)
                         {
                             for (int j = 0; j <= nowProsIndex; j++)
@@ -453,40 +468,42 @@ namespace CommonPart
                             prosToBoss[idF].y += speed_y;
                             //prosToBoss[idF].radian = Math.Atan2(speed_y, speed_x);
                         }
+                        #endregion
                         //----------above  prosToBoss[];        ----------------------------##  ##   ##
                         //----                             --------------------------------------###
+                        #region move to boss
                         double e2 = Math.Sqrt(Function.distance(x, y, enemyAsTarget.x, enemyAsTarget.y + enemy_below));
                         double skill_speed = 15;
                         double v = skill_speed / e2;
                         x -= (x - enemyAsTarget.x) * v;
                         y -= (y - enemyAsTarget.y - enemy_below) * v;
-
-                        if (Function.hitcircle(x, y, 2, enemyAsTarget.x, enemyAsTarget.y + enemy_below, 6))
+                        #endregion
+                        if (skill_attackStandby < 0)
+                        {
+                            if (Function.hitcircle(x, y, skill_speed / 2, enemyAsTarget.x, enemyAsTarget.y + enemy_below, enemyAsTarget.radius))
+                            {
+                                enemyAsTarget.stop_time = skill_max_attckStandby;
+                                skill_attackStandby = skill_max_attckStandby;
+                                playAnimation(DataBase.aniNameAddOn_spell);
+                            }
+                        }
+                        else if (skill_attackStandby > 0) { skill_attackStandby--; }
+                        else
                         {
                             enemyAsTarget.damage(swordSkillDamage);
                             if (sword == sword_max)
                             {
+                                SoundManager.PlaySE(SoundEffectID.player100gauge);
                                 enemyAsTarget.damage(bonusDamage);
-                            }
+                            }else { SoundManager.PlaySE(SoundEffectID.player50gauge); }
                             sword -= shouhi_sword;
                             enemyAsTarget = null;
+                            stop_time = skill_stop_time + 2;
                         }
                     }
                 }
 
-                if (enemyAsTarget==null)
-                {
-                    double e = Math.Sqrt(Function.distance(x, y, DataBase.WindowDefaultSizeX / 2, 500));
-                    double skill_speed = 15;
-                    double v = skill_speed / e;
-                    x -= (x - DataBase.WindowDefaultSizeX/2) * v;
-                    y -= (y - 500) * v;
-
-                    if (Function.hitcircle(x, y, 0, DataBase.WindowDefaultSizeX/2,500, 8))
-                    {
-                        attack_mode = false;
-                    }
-                }
+                
             }
             #endregion
             #region try to cast a skill
@@ -510,6 +527,8 @@ namespace CommonPart
                 avoid_mode = true;
                 avoid_InPlusAcceleration = true;
                 speed = 0;
+                SoundManager.PlaySE(avoid_SEid);
+
                 #region　上下左右の回避によって、ダメージを受けるものたち
                 for (int i = 0; i < Map.enemys_inside_window.Count; i++)
                 {
@@ -579,10 +598,11 @@ namespace CommonPart
         {
             if (!Invincible()) 
             {
+                SoundManager.PlaySE(SoundEffectID.playerdamage);
                 life -= atk;
                 InForcedRoute = true;
             }
-            if (life < 0) { life = 0; }
+            if (life < 0) { life = 0; Map.game_over_start(); }
         }
         public void draw(Drawing d)
         {

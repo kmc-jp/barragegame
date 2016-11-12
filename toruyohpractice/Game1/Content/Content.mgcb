@@ -1,4 +1,4 @@
-﻿
+
 #----------------------------- Global Properties ----------------------------#
 
 /outputDir:bin/$(Platform)
@@ -493,10 +493,7 @@
 /processorParam:TextureFormat=Color
 /build:160x112E6.png
 
-
 #begin 1100x270メッセージウィンドゥ.png
-
-#begin 50x50_Bani1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -506,7 +503,6 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-
 /build:1100x270メッセージウィンドゥ.png
 
 #begin 333x226扇ゲージ.png
@@ -545,6 +541,16 @@
 /processorParam:TextureFormat=Color
 /build:1280x2000背景用グレー画像.png
 
+#begin 50x50_Bani1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
 /build:50x50_Bani1.png
 
 #begin 130x149右横回避.png
@@ -582,4 +588,16 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:130x149刀モーション.png
+
+#begin カットインfin.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:カットインfin.png
 
