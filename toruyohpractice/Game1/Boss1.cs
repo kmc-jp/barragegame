@@ -27,12 +27,14 @@ namespace CommonPart
                 bodys[i] = new Enemy(x, y - 0 * i * height_percent, "boss1body" + 0);// i % 3);
             }
             bodys[body_max_index] = new Enemy(x, y, "boss1tail");
-            life = 25000;
+            maxLife = 16000;
+            life = maxLife;
         }
 
         public override void damage(int atk)
         {
             base.damage(atk);
+            Map.bossDamaged();
             Console.WriteLine("BossHp: " + life);
         }
         public override void update(Player player)

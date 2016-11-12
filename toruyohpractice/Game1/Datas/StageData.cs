@@ -99,7 +99,7 @@ namespace CommonPart
                     Map.create_enemy(420, 0, "E1a-5");
                     break;
                 case 4380:
-                    Map.boss_mode = true;
+                    Map.EngagingTrueBoss();
                     break;
                 case 4400:
                     playBGM(bgmIDs[1]);//BGMを流す。

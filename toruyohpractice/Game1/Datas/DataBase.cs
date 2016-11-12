@@ -72,8 +72,10 @@ namespace CommonPart {
         public static char interval_of_array = '&';
         #endregion
 
-        #region about player character
+        #region about player character / boss character / map stage / enemy motion 
         public static string charaName = "chara1";
+        public const string bossLifeBar_default_aniName = "1280x150体力ゲージ";
+        public const int motion_inftyTime =-99999;
         #endregion
 
         #region UTD
@@ -140,6 +142,8 @@ namespace CommonPart {
         #region Animation
         public static AnimationDataAdvanced defaultBlankAnimationData;
         public const string defaultAnimationNameAddOn = "-stand";
+        public const string aniNameAddOn_spell = "-spell", 
+            aniNameAddOn_evadeL= "-evadeL", aniNameAddOn_evadeR = "-evadeR";
         static string aniDFileName = "animationNames.dat";
         public static Dictionary<string, AnimationDataAdvanced> AnimationAdDataDictionary = new Dictionary<string, AnimationDataAdvanced>();
 
@@ -161,32 +165,35 @@ namespace CommonPart {
                 try
                 {
                     bool repeat = aniD_br.ReadBoolean();
-                    Console.WriteLine("repeat:"+repeat);
+                    //Console.WriteLine("repeat:"+repeat);
                     int min_index = aniD_br.ReadInt32();
-                    Console.WriteLine("min:" + min_index.ToString());
+                    //Console.WriteLine("min:" + min_index.ToString());
                     int max_index = aniD_br.ReadInt32();
-                    Console.WriteLine("max:" + max_index.ToString());
+                    //Console.WriteLine("max:" + max_index.ToString());
                     int length = aniD_br.ReadInt32();
-                    Console.WriteLine("l:" + length.ToString());
+                    //Console.WriteLine("l:" + length.ToString());
                     int[] frames = new int[length];
-                    for (int i = 0; i < length; i++) { frames[i] = aniD_br.ReadInt32(); Console.WriteLine(i+":" + frames[i].ToString()); }
+                    for (int i = 0; i < length; i++) { frames[i] = aniD_br.ReadInt32();
+                        //Console.WriteLine(i+":" + frames[i].ToString());
+                    }
                     //ints end, strings start
                     string animeName = aniD_br.ReadString();
-                    Console.WriteLine("name:" + animeName);
+                    //Console.WriteLine("name:" + animeName);
                     string textureName = aniD_br.ReadString();
-                    Console.WriteLine("texname:" + textureName);
+                    //Console.WriteLine("texname:" + textureName);
                     string preName = aniD_br.ReadString();
-                    Console.WriteLine("prename:" + preName);
+                    //Console.WriteLine("prename:" + preName);
                     string nexN = aniD_br.ReadString();
-                    Console.WriteLine("nexname:" + nexN);
+                    //Console.WriteLine("nexname:" + nexN);
                     addAniD(new AnimationDataAdvanced(animeName, frames, min_index,textureName, repeat));
                     getAniD(aniDFileName).assignAnimationName(preName, false);
                     getAniD(aniDFileName).assignAnimationName(nexN, true);
-                    Console.WriteLine(aniD_br.BaseStream.Position);
+                    Console.Write(aniD_br.BaseStream.Position+" ");
                 }
                 catch (EndOfStreamException e) { Console.WriteLine("setup animation: EndOfStream"); break; }
             }
             Console.WriteLine(aniD_br.BaseStream.Position);
+            Console.WriteLine("AnimationDataAdvanced setup finished.");
             aniD_br.Close(); aniD_file.Close();
 
         }
@@ -307,9 +314,14 @@ namespace CommonPart {
             setup_Animation();
             #endregion
             goToStartDirectory();
+            tda(bossLifeBar_default_aniName);
             tda("25x145必殺技２");
             tda("167x15必殺技エフェクトsample");
             tda("130 149-player");
+            tda("130x149右横回避");
+            tda("130x149左横回避");
+            tda("130x149刀モーション");
+            #region tda as program
             /*
                         tda("16-16 tama1");
                         tda("leftside1");
@@ -339,11 +351,20 @@ namespace CommonPart {
             
             tda("タイトル画面NF");
             */
+            #endregion
             setupSkillData();
-            AnimationAdDataDictionary.Remove(charaName + defaultAnimationNameAddOn);
+            addAniD(new AnimationDataAdvanced(charaName +aniNameAddOn_evadeL,new int[] { 2,2,8,2,2},"130x149左横回避"));
+            addAniD(new AnimationDataAdvanced(charaName + aniNameAddOn_evadeR, new int[] { 2, 2, 8, 2, 2 }, "130x149右横回避"));
+            getAniD(charaName + aniNameAddOn_evadeR).assignAnimationName(charaName + defaultAnimationNameAddOn, true);
+            getAniD(charaName + aniNameAddOn_evadeL).assignAnimationName(charaName + defaultAnimationNameAddOn, true);
+            addAniD(new AnimationDataAdvanced(charaName + aniNameAddOn_spell, new int[] { 4, 2, 2,15 }, "130x149刀モーション"));
             addAniD(new AnimationDataAdvanced("swordSkilltoBossDash", 1, 40, "167x15必殺技エフェクトsample"));
             addAniD(new AnimationDataAdvanced("swordSkilltoBossSlash", 1, 18, "25x145必殺技２"));
             addAniD(new AnimationDataAdvanced(charaName + defaultAnimationNameAddOn, 10, 1, "130 149-player", false));
+            addAniD(new AnimationDataAdvanced(bossLifeBar_default_aniName+defaultAnimationNameAddOn,10,1,bossLifeBar_default_aniName));
+            addAniD(new AnimationDataAdvanced(bossLifeBar_default_aniName + aniNameAddOn_spell, 10, 4,2, bossLifeBar_default_aniName));
+            getAniD(bossLifeBar_default_aniName + aniNameAddOn_spell).assignAnimationName(bossLifeBar_default_aniName + defaultAnimationNameAddOn, true);
+            #region addAniD in program
             /*
             addAniD( new AnimationDataAdvanced("boss1" + defaultAnimationNameAddOn,
                 10, 3, "90 270-boss1", true));
@@ -375,7 +396,10 @@ namespace CommonPart {
             addAniD(new AnimationDataAdvanced("E1-1" + defaultAnimationNameAddOn,
                 10, 4, 0, "120×68 E1-1", true));
             */
+            #endregion
             addAniD(new AnimationDataAdvanced(charaName + defaultAnimationNameAddOn, 10, 1, "130 149-player", false));
+
+            
         }
 
 
@@ -529,6 +553,10 @@ namespace CommonPart {
             if (AnimationAdDataDictionary.ContainsKey(name + defaultAnimationNameAddOn))
             {
                 return AnimationAdDataDictionary[name + defaultAnimationNameAddOn];
+            }
+            else if (AnimationAdDataDictionary.ContainsKey(name))
+            {
+                return AnimationAdDataDictionary[name];
             }
             else
             {

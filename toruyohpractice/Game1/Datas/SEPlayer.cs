@@ -93,5 +93,6 @@ namespace CommonPart {
     enum SoundEffectID {
         None,
         Cursor_Move, Cursor_OK, Cursor_Cancel,
+        
     }
 }

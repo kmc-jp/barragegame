@@ -15,6 +15,11 @@ namespace CommonPart {
 
         #endregion
         #region Method
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="stage">indexではない、1がステージ1のデータを指定している。</param>
         public MapScene(SceneManager s,int stage)
             : base(s) {
             nMap = new Map(stage);

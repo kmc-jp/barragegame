@@ -101,13 +101,10 @@ namespace CommonPart
     {
         KeyboardState now;
         KeyboardState old;
-        int index;
         public override void Update_()
         {
             old = now;
             now = Keyboard.GetState();
-            
-            index++;
         }
         public override bool IsKeyDown(KeyID k) { return now.IsKeyDown(GetKey(k)); }
         public override bool IsKeyDownOld(KeyID k) { return old.IsKeyDown(GetKey(k)); }
