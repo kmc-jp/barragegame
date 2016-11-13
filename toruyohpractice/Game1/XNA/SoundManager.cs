@@ -22,7 +22,7 @@ namespace CommonPart {
         
         /// <param name="volume">0～100</param>
         /// <param name="pitch">倍率 0～2</param>
-        public static void PlaySE(SoundEffectID id, int volume = 50, float pitch = 1) {
+        public static void PlaySE(SoundEffectID id, int volume = 100, float pitch = 1) {
             SE.Play(id, volume, pitch);
         }
     }
