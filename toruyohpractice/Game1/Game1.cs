@@ -34,8 +34,8 @@ namespace CommonPart
         public static int _WindowSizeY;
 
 
-        [DllImport("kernel32")]
-        static extern bool AllocConsole();
+        //[DllImport("kernel32")]
+        //static extern bool AllocConsole();
         public Game1()
         {
             this.Window.Title = "Barrage Game";
@@ -56,7 +56,7 @@ namespace CommonPart
         protected override void Initialize()
         {
             //コンソールモード
-            AllocConsole();
+            //AllocConsole();
             // TODO: Add your initialization logic here
             ChangeWindowSize(1);
             base.Initialize();
