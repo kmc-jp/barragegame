@@ -42,7 +42,7 @@ namespace CommonPart {
         public override void SceneDraw(Drawing d) {
             // マップの描画
             nMap.Draw(d);
-            
+            if (gameOver) window.draw(d); 
         }
         public override void SceneUpdate() {
             base.SceneUpdate();
@@ -54,10 +54,10 @@ namespace CommonPart {
                 window = null;
                 window = new Window_WithColoum(90,220,1100,270);
                 window.assignBackgroundImage("1100x270メッセージウィンドゥ");
-                int nx = 600, ny = 40;
+                int nx = 520, ny = 100;
                 window.AddColoum(new Button(nx, ny,"Retry","",Command.buttonPressed1,false));
-                ny +=270/2;
-                window.AddColoum(new Button(600, 45, "BackToTitle", "", Command.buttonPressed1, false));
+                ny +=60;
+                window.AddColoum(new Button(nx, ny, "BackToTitle", "", Command.buttonPressed2, false));
                 #endregion
             }else if (!MapFulStop && Map.mapState.Contains(Map.backToStageSelection) && Map.stop_time == DataBase.motion_inftyTime && Map.readyToStop_time <= 0)
             {

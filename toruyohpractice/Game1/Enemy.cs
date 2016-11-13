@@ -164,7 +164,7 @@ namespace CommonPart
                 #endregion
                 update_skills();
                 shot(player);
-            }else { stop_time--; }
+            }else { stop_time--; return; }
         }
 
         public virtual void draw(Drawing d)
