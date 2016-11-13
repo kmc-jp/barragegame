@@ -69,6 +69,33 @@ namespace CommonPart {
             return distance(x1, y1, x2, y2) <= (radius1 + radius2) * (radius1 + radius2);
         } 
 
+        /// <summary>
+        /// 今の値と目標値と一回の変化値の絶対値で、今の値を目標値の方へと一回分変化させる。
+        /// </summary>
+        /// <returns></returns>
+        public static int towardValue(int now,int target,int speed) {
+            int dif = target - now;
+            int abso = Math.Abs(dif);
+            if (abso > speed)
+            {
+                return now+dif * speed / abso;
+            }
+            else { return target; }
+        }
+        /// <summary>
+        /// 今の値と目標値と一回の変化値の絶対値で、今の値を目標値の方へと一回分変化させる。
+        /// </summary>
+        /// <returns></returns>
+        public static double towardValue(double now, double target, double speed)
+        {
+            double dif = target - now;
+            double abso = Math.Abs(dif);
+            if (abso > speed)
+            {
+                return dif * speed / abso;
+            }
+            else { return target; }
+        }
     }//function.end
     static class EnumExtension {
         /// <summary>

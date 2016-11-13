@@ -144,7 +144,7 @@ namespace CommonPart
                 {
                     length = 0;
 
-                    Map.make_chargePro(x, y,sword,score);
+                    Map.make_chargePro(x, y,sword,Map.caculateBulletScore(score));
                     return false;
                 }
                 return true;
