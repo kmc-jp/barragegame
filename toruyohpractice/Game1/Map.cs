@@ -12,8 +12,6 @@ namespace CommonPart {
 
         public int stage;        protected StageData stagedata;
 
-        public static bool boss_mode = false;
-
         public Vector score_pos = new Vector(1100, 180);
         #region player and Life Piece and chargeBar
         public string life_tex_name = "33x60バッテリーアイコン";
@@ -63,6 +61,58 @@ namespace CommonPart {
         protected static List<Vector> v = new List<Vector>();
         #endregion
 
+        #region about boss
+        public static bool boss_mode = false;
+        /// <summary>
+        /// animation nameとして扱う. 
+        /// </summary>
+        static protected string bossLifeBarTextureName;
+        static protected AnimationAdvanced bossLifeBarAnime = null;
+        protected Vector bossLifeBarAnimationLeftTopPos = new Vector(0, 0);
+        protected Vector bossLifeGaugeLeftTopDisplacement = new Vector(102, 24);
+        protected Vector bossLifeGaugeLeftTopPos { get { return bossLifeBarAnimationLeftTopPos + bossLifeGaugeLeftTopDisplacement; } }
+        /// <summary>
+        /// .Yは一定だと思って使う.
+        /// </summary>
+        protected Vector bossLifeGaugeSizeMaximum = new Vector(1077, 37), bossLifeGaugeSize=new Vector(0,37);
+        protected Color bossLifeGaugeColor = Color.Crimson;
+        protected Enemy BOSS { get { if (boss_mode) { if (enemys.Count > enemysIndexOfBoss) { return enemys[enemysIndexOfBoss]; } else { return null; } } else { return null; } } }
+        #endregion
+        #region about Map State
+        /// <summary>
+        /// ゲーム中のmapでどのような動作を行う/行っているか　の定義を示す。
+        /// </summary>
+        public const string updated = "-updated", fullStopped = "-fulStop", playerStopped = "-plaStop", enemysStopped = "-eneStop",
+             bothSideMove = "-boSidMove", gameOver = "-gAMeOVer", backToStageSelection = "-backToStageSelection" ;
+        static public string mapState = ""; //初期は空として、その都度変えていく 
+        /// <summary>
+        /// 両サイドが0,1280まで広がり、最後のboss戦画面になる
+        /// </summary>
+        static public void EngagingTrueBoss()
+        {
+            boss_mode = true;
+            leftsideTo = 0; rightsideTo = 1280;
+            mapState += bothSideMove;
+        }
+        #endregion
+        #region map cutin texture and about stop
+        /// <summary>
+        /// マップの更新が止まるまでの時間.
+        /// </summary>
+        public static int readyToStop_time = 0;
+        /// <summary>
+        /// mapが更新を止める時間
+        /// </summary>
+        public static int stop_time=0;
+        /// <summary>
+        /// cut in するtextureの名前
+        /// </summary>
+        public static string cutIn_texName=null;
+        public static int cutIn_texPosNowX,cutIn_texPosNowY;
+        public static int cutIn_texPosToX,cutIn_texPosToY;
+        public static int cutIn_speed;
+        public static int cutIn_texTime =-1;
+        #endregion
         #region step[] and others about Map
         /// <summary>
         /// 多種多様なMap上の状況判断に使える。整数変数配列である。今 0番目は時間を記録する
@@ -70,15 +120,23 @@ namespace CommonPart {
         public static List<int> step = new List<int>();
 
         public static Player player;
+        public static int enemysIndexOfBoss=0;
         public static List<Enemy> enemys = new List<Enemy>();
         public static List<Enemy> enemys_inside_window = new List<Enemy>();
+
+        
+
         /// <summary>
         /// 左側のバーの右端のx座標
         /// </summary>
         public static int leftside = 280;
         public static int rightside = 1000;
-        public Vector camera = new Vector(leftside, 0);
+        public static int topside = 0;
+        static protected int leftsideTo = 280; // bothSideMoveの時、左辺がどこに行くのかを決める
+        static protected int rightsideTo = 1000; // bothSideMoveの時、右辺がどこに行くのかを決める
+        static protected int sideMoveSpeed = 4; // 両サイドが動くときの速度
         #endregion
+
 
 //##############     variables above
  
@@ -89,28 +147,62 @@ namespace CommonPart {
         /// <param name="_stage"></param>
         public Map(int _stage)
         {
+            setMapAsNewlyCreated();
             stage = _stage;
-            stagedata = new Stage1Data("stage1");
-            step.Clear();
-            step.Add(0);
+            #region switch stage 
+            switch (stage)
+            {
+                case 1:
+                    stagedata = new Stage1Data("stage1");
+                    break;
+                case 2:
+                    stagedata = new Stage2Data("stage2");
+                    break;
+                case 4:
+                    stagedata = new Stage4Data("stage4");
+                    break;
+                default:
+                    stage = 1;
+                    stagedata = new Stage1Data("stage1");
+                    break;
+            }
+            #endregion
             scroll_speed = new Vector(defaultspeed_x, defaultspeed_y);
-            player = new Player(DataBase.WindowDefaultSizeX/2, 500, 6, 10, 5*lifesPerPiece,DataBase.charaName);
+            Map.player = new Player(DataBase.WindowDefaultSizeX/2, 500, 6, 10, 5*lifesPerPiece,DataBase.charaName);
 
-            //set_change_scroll(600,20,120);
+            bossLifeGaugeSize.X=0;
+            leftside = 280;
+            rightside = 1000;
 
             chargeBar = new AnimationAdvanced(DataBase.getAniD("swordgauge"));
         }
         
-
+        private void setMapAsNewlyCreated()
+        {
+            Map.mapState = "";
+            Map.player = null;
+            chargeBar = null;
+            Map.bossLifeBarAnime = null;
+            Map.step.Clear();
+            Map.step.Add(0);
+            Map.leftside = 280; Map.rightside = 1000;
+            Map.leftsideTo = 280; Map.rightsideTo = 1000;
+            Map.stop_time = Map.readyToStop_time = 0;
+            Map.cutIn_texName = null;
+            Map.cutIn_texTime = 0;
+            Map.enemys.Clear(); Map.enemys_inside_window.Clear();
+            Map.v.Clear(); Map.background_names.Clear();
+            Map.pros.Clear();
+        }
         /// <summary>
         /// 
         /// </summary>
         /// <param name="v"></param>
         /// <param name="tex"></param>
         /// <returns></returns>
-        public bool inside_of_window(Vector v,Texture2D tex)
+        public bool inside_of_window(Vector v,int w, int h)
         {
-            return camera.X < v.X + tex.Width || DataBase.WindowDefaultSizeX - camera.X > v.X || camera.Y < v.Y || camera.Y + DataBase.WindowSlimSizeY > v.Y + tex.Height;
+            return leftside < v.X + w || DataBase.WindowDefaultSizeX - leftside > v.X || topside < v.Y || topside + DataBase.WindowSlimSizeY > v.Y + h;
         }
 
         public void set_change_scroll(int _scroll_time, double _changed_scroll_speed,int _scroll_start=-1)
@@ -163,7 +255,7 @@ namespace CommonPart {
                 {
                     if (enemys_inside_window[i].fadeout == false)
                     {
-                        score += enemys_inside_window[i].score();
+                        enemys_inside_window[i].score();
                     }
                     enemys_inside_window[i].clear();
                     enemys.Remove(enemys_inside_window[i]);
@@ -200,6 +292,26 @@ namespace CommonPart {
 
         public void update(InputManager input)
         {
+            #region update cutIn
+            if (Map.cutIn_texTime > 0)
+            {
+                Map.cutIn_texTime--;
+            } 
+            else if(Map.cutIn_texTime <=0 && Map.cutIn_texTime != DataBase.motion_inftyTime)
+            {
+                Map.cutIn_texName = null;
+            }
+            Map.cutIn_texPosNowX = Function.towardValue(Map.cutIn_texPosNowX, Map.cutIn_texPosToX, Map.cutIn_speed);
+            Map.cutIn_texPosNowY = Function.towardValue(Map.cutIn_texPosNowY, Map.cutIn_texPosToY, Map.cutIn_speed);
+            #endregion
+            if (Map.readyToStop_time <=0)
+            {
+                if (Map.stop_time > 0)
+                {
+                    Map.stop_time--;
+                    return;
+                }else if(Map.stop_time == DataBase.motion_inftyTime) { return; }
+            }else { Map.readyToStop_time--; }
             chargeBar.Update();
             stagedata.update();
             #region 画面上に見える敵を"見える敵たち"に入れる
@@ -216,48 +328,94 @@ namespace CommonPart {
             }
             #endregion
             #region map scroll
-            camera += scroll_speed;//カメラupdate
             update_scroll_speed();
             #endregion
             update_enemys();
             update_chargeProjections();
 
-            player.update(input, this);
+            if (player.life > 0)
+            {
+                player.update(input, this);
+            }
             if (player.attack_mode)
             {
-                if(scoreOfskilltoEnemy/ 10000>=1) {
-                    player.life += scoreOfskilltoEnemy / 10000;
-                    scoreOfskilltoEnemy %= 10000;
+                if(Map.scoreOfskilltoEnemy / 10000>=1) {
+                    player.life += Map.scoreOfskilltoEnemy / 10000;
+                    Map.scoreOfskilltoEnemy %= 10000;
                 }
             }
-            if (boss_mode == true) barslide();
+            if (boss_mode == true)
+            {
+                barslide();
+                if (BOSS!=null && BOSS.life <= 0 && !mapState.Contains(backToStageSelection) )
+                {
+                    game_win_start();
+                }
+            }
             step[0]++;
         }//update end
 
         public static int caculateBulletScore(int sw)
         {//sw is may be sword that clearing a bullet gains the character
             // swはキャラクターが弾丸を消した時に得られる刀チャージの量 かもしれない
-            Console.Write("sw:" + sw);
+            //Console.Write("sw:" + sw);
             if (player.attack_mode)
             {
-                Console.Write(" to " + (sw*4+40).ToString() + "\n");
-                return sw*20+40;
+                int s = sw * 20 + 40;
+                scoreOfskilltoEnemy += s;
+                //Console.Write(" to " + s.ToString() + "\n");
+                return s;
             }
-            Console.Write(" to " + (sw*100).ToString() + "\n");
+            //Console.Write(" to " + (sw*100).ToString() + "\n");
             return sw*100;
         }
         public static int caculateEnemyScore(int _score)
         {
-            Console.Write("score:" + _score);
+            //Console.Write("score:" + _score);
             if (player.attack_mode) {
                 numOfskillKilledEnemies++;
-                Console.Write(" to " + (_score * 20 + (numOfskillKilledEnemies - 1) * _score * 10).ToString() + "\n");
-                return _score*100+(numOfskillKilledEnemies-1)*_score*100;
+                int s = _score * 100 + (numOfskillKilledEnemies - 1) * _score * 100;
+                scoreOfskilltoEnemy += s;
+                //Console.Write(" to " + s.ToString() + "\n");
+                return s;
             }
-            Console.Write(" to " + (_score).ToString()+"\n");
+            //Console.Write(" to " + (_score).ToString()+"\n");
             return _score;
         }
-
+        #region Map Advanced Function
+        /// <summary>
+        /// マップ上のすべての物体の更新を止める。
+        /// </summary>
+        /// <param name="time"></param>
+        public static void stopUpdating(int _stop_time,int _ready_to_stop_time)
+        {
+            readyToStop_time = _ready_to_stop_time;
+            stop_time = _stop_time;
+        }
+        public static void CutInTexture(string texName,int x,int y,int toX,int toY,int texTime,int _cutInSpeed)
+        {
+            Map.cutIn_speed = _cutInSpeed;
+            Map.cutIn_texName = texName;
+            Map.cutIn_texPosNowX = x;
+            Map.cutIn_texPosNowY = y;
+            Map.cutIn_texPosToX = toX;
+            Map.cutIn_texPosToY = toY;
+            Map.cutIn_texTime = texTime;
+        }
+        public static void game_over_start()
+        {
+            Console.Write("gameOver");
+            stopUpdating(DataBase.motion_inftyTime, 400);
+            //CutInTexture("1280x2000背景用グレー画像", 0,-2000,0,0,DataBase.motion_inftyTime,10);
+            mapState +=gameOver;
+        }
+        public static void game_win_start()
+        {
+            stopUpdating(DataBase.motion_inftyTime, 400);
+            CutInTexture("1280x2000背景用グレー画像", 0, -2000, 0, 0, DataBase.motion_inftyTime, 10);
+            mapState += backToStageSelection;
+        }
+        #endregion
         #region Create / Make   Map Function
         /// <summary>
         /// すでに正しく計算された刀チャージ量と点数を引数で渡し、点数はそのまま総点数に加算し、キャラクターに向かうChargeProjectionを作る
@@ -269,27 +427,41 @@ namespace CommonPart {
         public static void make_chargePro(double x,double y,int sword,int _score)
         {
             pros.Add(new ChargeProjection(x,y, "heal1",sword, pro_speed, pro_acceleration, player));
-            score += _score;
-            Console.Write("make:" + score);
+            Map.score += _score;
+            //Console.Write(score.ToString() + " " + _score.ToString()+" ");
         }
         public static void create_enemy(double _x, double _y, string _unitType_name)
         {
             enemys.Add(new Enemy(leftside + _x, _y, _unitType_name));
         }
-        public static void create_boss1(double _x, double _y, string _unitType_name)
+        public static void create_boss1(double _x, double _y, string _unitType_name, string _bossLifeBarName = DataBase.bossLifeBar_default_aniName)
         {
             enemys.Clear();
             enemys_inside_window.Clear();
-            enemys.Add(new Boss1(leftside + _x, _y, _unitType_name));
+            if (enemys.Count <= enemysIndexOfBoss)
+            {
+                enemys.Add(new Boss1(leftside + _x, _y, _unitType_name));
+            }
+            else
+            {
+                enemys.Insert(enemysIndexOfBoss, new Boss1(leftside + _x, _y, _unitType_name));
+            }
+            bossLifeBarTextureName = _bossLifeBarName;
+            bossLifeBarAnime = new AnimationAdvanced(DataBase.getAniD(bossLifeBarTextureName + DataBase.defaultAnimationNameAddOn));
+        }
+        public static void bossDamaged()
+        {
+            bossLifeBarAnime = new AnimationAdvanced(DataBase.getAniD(bossLifeBarTextureName+DataBase.aniNameAddOn_spell));
         }
         #endregion
         #region standard Map Functions
         private void barslide()
         {
-            if (leftside > 0)
+            leftside = Function.towardValue(leftside, leftsideTo, sideMoveSpeed);
+            rightside = Function.towardValue(rightside, rightsideTo, sideMoveSpeed);
+            if (leftside==leftsideTo && rightside == rightsideTo)
             {
-                leftside--;
-                rightside++;
+                mapState.Replace(bothSideMove, "");
             }
         }
         public static void PlayBGM(BGMID id)
@@ -334,24 +506,30 @@ namespace CommonPart {
             #region drawBackGrounds
             for (int i = 0; i < v.Count; i++)
             {
-                if (inside_of_window(v[i], DataBase.getTex(background_names[i])) == true)
+                if (inside_of_window(v[i], DataBase.getTexD(background_names[i]).w_single, DataBase.getTexD(background_names[i]).h_single) )
                 { 
                     d.Draw(v[i], DataBase.getTex(background_names[i]), DepthID.BackGroundFloor);
                 }
             }
             #endregion
             #region enemys draw()
-            if (enemys.Count > 0)
+            if (enemys_inside_window.Count > 0)
             {
-                for (int i = 0; i < enemys.Count; i++)
+                for (int i = 0; i < enemys_inside_window.Count; i++)
                 {
-                    if (enemys[i] != null)
+                    if (enemys_inside_window[i] != null)
                     {
-                        enemys[i].draw(d);
+                        enemys_inside_window[i].draw(d);
                     }
                 }
             }
             #endregion
+            if (bossLifeBarAnime != null)
+            {
+                bossLifeGaugeSize.X = Function.towardValue(bossLifeGaugeSize.X,(bossLifeGaugeSizeMaximum.X * BOSS.life*1.0/BOSS.maxLife),100);
+                d.DrawBox(bossLifeGaugeLeftTopPos, bossLifeGaugeSize, bossLifeGaugeColor, DepthID.Status);
+                bossLifeBarAnime.Draw(d, bossLifeBarAnimationLeftTopPos, DepthID.Status);
+            }
             #region projections draw
             for (int i = 0; i < pros.Count; i++)
             {
@@ -378,8 +556,8 @@ namespace CommonPart {
             scoreboard.Draw(d, score_pos, DepthID.Status);
 
             #region sidebar draw
-            d.Draw(new Vector(leftside-DataBase.getTex("leftside1").Width, 0), DataBase.getTex("leftside1"), DepthID.StateFront);
-            d.Draw(new Vector(rightside, 0), DataBase.getTex("rightside1"), DepthID.StateFront);
+            d.Draw(new Vector(leftside-DataBase.getTex("leftside"+stage.ToString()).Width, 0), DataBase.getTex("leftside"+stage.ToString()), DepthID.StateFront);
+            d.Draw(new Vector(rightside, 0), DataBase.getTex("rightside"+stage.ToString()), DepthID.StateFront);
             #endregion
             #region draw sword gauge
             if (player.sword < player.sword_max / 2)
@@ -408,6 +586,14 @@ namespace CommonPart {
             
             chargeBar.Draw(d, new Vector(bar_pos.X-197, bar_pos.Y-chargeBar.Y/2-28), DepthID.Map);
             d.DrawLine(bar_pos, new Vector(bar_pos.X + player.sword * 3.8, bar_pos.Y), 17, Color.Violet, DepthID.Status);//剣ゲージ
+            #endregion
+
+            #region draw CutIn
+            if(Map.cutIn_texTime >0 && Map.cutIn_texName !=null && Map.cutIn_texName != "")
+            {
+                Console.Write("drawCutIn");
+                d.Draw(new Vector(Map.cutIn_texPosNowX, Map.cutIn_texPosNowY),DataBase.getTex(Map.cutIn_texName),DepthID.Status);
+            }
             #endregion
         }//draw end
 

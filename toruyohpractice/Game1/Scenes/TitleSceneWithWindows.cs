@@ -11,6 +11,7 @@ namespace CommonPart
         private string titleWindowBackGroundNames = "タイトル画面NF";
         public TitleSceneWithWindows(SceneManager scene) : base(scene) {
             setup_windows();
+            SoundManager.Music.PlayBGM(BGMID.title,true);
         }
         protected void openStageSelectScene()
         {
@@ -35,12 +36,12 @@ namespace CommonPart
             windows[0].assignBackgroundImage(titleWindowBackGroundNames);
             windows[0].AddColoum(new Coloum(nx, ny, "version: " + DataBase.ThisSystemVersionNumber.ToString(), Command.nothing));
             nx = 5; ny += dy;
-            windows[0].AddColoum(new Button(nx, ny, "open MapEditor", "", Command.openMapEditor, false));
+            //windows[0].AddColoum(new Button(nx, ny, "open MapEditor", "", Command.openMapEditor, false));
             ny += 2 * dy; nx += dx;
             nx = 100;
             windows[0].AddColoum(new AnimationButton(nx, ny, "", DataBase.getAniD("NewGame-selected"), Command.buttonPressed1,0,0));
             ny += dy;
-            windows[0].AddColoum(new AnimationButton(nx, ny, "", DataBase.getAniD("LoadGame-selected"), Command.buttonPressed2,0,0));
+            //windows[0].AddColoum(new AnimationButton(nx, ny, "", DataBase.getAniD("LoadGame-selected"), Command.buttonPressed2,0,0));
             ny += dy;
             windows[0].AddColoum(new AnimationButton(nx, ny, "", DataBase.getAniD("Gallery-selected"), Command.openMusicGallery, 0, 0));
             ny += 2*dy;
