@@ -24,7 +24,7 @@ namespace CommonPart
         {
             for (int i = 0; i < body_max_index; i++)
             {
-                bodys[i] = new Enemy(x, y - 0 * i * height_percent, "boss1body" + 0);// i % 3);
+                bodys[i] = new Enemy(x, y - 0 * i * height_percent, "boss1body" +  i % 3);
             }
             bodys[body_max_index] = new Enemy(x, y, "boss1tail");
             maxLife = 16000;

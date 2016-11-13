@@ -416,7 +416,9 @@ namespace CommonPart
             attack_time = 120;
             shouhi_sword = sword;
             nowProsIndex = -1;
-            Map.CutInTexture(DataBase.charaCutInTexName,-400,100,100,100,100,10);
+            skill_attackStandby = -1;
+            Map.CutInTexture(DataBase.charaCutInTexName,-400,100,100,100,60,10);
+            Map.stopUpdating(50, 0);
         }
 
         public void skilltoBoss(InputManager input)
@@ -424,6 +426,7 @@ namespace CommonPart
             #region skill is active
             if (attack_mode == true)
             {
+                #region enemyAsTarget null
                 if (enemyAsTarget != null)
                 {// target exists
                     if (enemyAsTarget.selectable() == false)
@@ -493,10 +496,7 @@ namespace CommonPart
                             }
                         }
                         else if (skill_attackStandby > 0) {
-
-
                             skill_attackStandby--;
-
                         }
                         else
                         {
@@ -510,15 +510,14 @@ namespace CommonPart
                             enemyAsTarget = null;
                             stop_time = skill_stop_time + 2;
                         }
-                        if (stop_time > 0 && stop_time <= 2)
-                        {
-                            skilltoBossEnd();
-                            stop_time--;
-                        }
                     }
                 }
-
-                
+                #endregion
+                if (stop_time > 0 && stop_time <= 2)
+                {
+                    skilltoBossEnd();
+                    stop_time--;
+                }
             }
             #endregion
             #region try to cast a skill
@@ -611,13 +610,13 @@ namespace CommonPart
 
         public void damage(int atk)
         {
-            if (!Invincible()) 
+            if (life>0 && !Invincible()) 
             {
                 SoundManager.PlaySE(SoundEffectID.playerdamage);
                 life -= atk;
                 InForcedRoute = true;
             }
-            if (life < 0) { life = 0; Map.game_over_start(); }
+            if (life>-5 && life <= 0) { life = -6; Map.game_over_start(); }
         }
         public void draw(Drawing d)
         {
