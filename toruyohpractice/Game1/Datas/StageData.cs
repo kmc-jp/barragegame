@@ -98,10 +98,10 @@ namespace CommonPart
                     Map.create_enemy(300, 0, "E1a-4");
                     Map.create_enemy(420, 0, "E1a-5");
                     break;
-                case 80:
-                    Map.boss_mode = true;
+                case 4880:
+                    Map.EngagingTrueBoss();
                     break;
-                case 100:
+                case 4900:
                     playBGM(bgmIDs[1]);//BGMを流す。
                     Map.create_boss1(360, 10, "boss1");
                     break;

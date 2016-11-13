@@ -406,7 +406,7 @@ namespace CommonPart {
         {
             Console.Write("gameOver");
             stopUpdating(DataBase.motion_inftyTime, 400);
-            CutInTexture("1280x2000背景用グレー画像", 0,-2000,0,0,DataBase.motion_inftyTime,10);
+            //CutInTexture("1280x2000背景用グレー画像", 0,-2000,0,0,DataBase.motion_inftyTime,10);
             mapState +=gameOver;
         }
         public static void game_win_start()
@@ -526,7 +526,7 @@ namespace CommonPart {
             #endregion
             if (bossLifeBarAnime != null)
             {
-                bossLifeGaugeSize.X = Function.towardValue(bossLifeGaugeSize.X,(bossLifeGaugeSizeMaximum.X * BOSS.life/BOSS.maxLife),100);
+                bossLifeGaugeSize.X = Function.towardValue(bossLifeGaugeSize.X,(bossLifeGaugeSizeMaximum.X * BOSS.life*1.0/BOSS.maxLife),100);
                 d.DrawBox(bossLifeGaugeLeftTopPos, bossLifeGaugeSize, bossLifeGaugeColor, DepthID.Status);
                 bossLifeBarAnime.Draw(d, bossLifeBarAnimationLeftTopPos, DepthID.Status);
             }

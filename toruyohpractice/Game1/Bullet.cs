@@ -16,7 +16,7 @@ namespace CommonPart
         public int score;
         public int sword;
         public bool lasered;
-        public int atk = 1;
+        public int atk = 3;
 
         public Bullet(double _x,double _y, MoveType _move_type,double _speed,double _acceleration,string _anime,Vector _target_pos,int _zoom_rate
             ,double _radius, int _life,int _score,int _sword)
