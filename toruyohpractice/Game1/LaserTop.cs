@@ -159,7 +159,7 @@ namespace CommonPart
             d.DrawLine(new Vector(enemy.x + dx, enemy.y + dy), new Vector(x + dx, y+dy), (float)radius, new Color(color,(int)(color.A*0.3)), DepthID.Player);
             dx = (radius*2/3) * Math.Cos(radian - Math.PI / 2) / 2;
             dy = (radius*2 /3) * Math.Sin(radian - Math.PI / 2) / 2;
-            //d.DrawLine(new Vector(enemy.x, enemy.y), new Vector(x, y), (float)radius, new Color(color, (int)(color.A * 0.6)), DepthID.StateBack);
+
             d.DrawLine(new Vector(enemy.x+dx, enemy.y+dy), new Vector(x+dx, y+dy), (float)radius*2/3, new Color(color, (int)(color.A * 0.6)), DepthID.Player);
             dx = (radius / 4) * Math.Cos(radian - Math.PI / 2) / 2;
             dy = (radius / 4) * Math.Sin(radian - Math.PI / 2) / 2;

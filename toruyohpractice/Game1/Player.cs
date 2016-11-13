@@ -296,6 +296,7 @@ namespace CommonPart
         }
 
         #region characterAttackskills
+        #region skillToEnemy
         /// <summary>
         /// 敵を見つけて、attack_mode=true,add_attack_mode=false
         /// </summary>
@@ -318,6 +319,7 @@ namespace CommonPart
             Map.numOfskillKilledEnemies = 0;
             Map.scoreOfskilltoEnemy = 0;
         }
+        #endregion
         protected void skilltoBossEnd()
         {
             playAnimation(DataBase.defaultAnimationNameAddOn);
@@ -472,22 +474,30 @@ namespace CommonPart
                         //----------above  prosToBoss[];        ----------------------------##  ##   ##
                         //----                             --------------------------------------###
                         #region move to boss
-                        double e2 = Math.Sqrt(Function.distance(x, y, enemyAsTarget.x, enemyAsTarget.y + enemy_below));
-                        double skill_speed = 15;
-                        double v = skill_speed / e2;
-                        x -= (x - enemyAsTarget.x) * v;
-                        y -= (y - enemyAsTarget.y - enemy_below) * v;
+                        if (!Function.hitcircle(x, y, skill_speed / 2, enemyAsTarget.x, enemyAsTarget.y + enemy_below, enemyAsTarget.radius))
+                        {
+                            double e2 = Math.Sqrt(Function.distance(x, y, enemyAsTarget.x, enemyAsTarget.y + enemy_below));
+                            double skill_speed = 15;
+                            double v = skill_speed / e2;
+                            x -= (x - enemyAsTarget.x) * v;
+                            y -= (y - enemyAsTarget.y - enemy_below) * v;
+                        }
                         #endregion
                         if (skill_attackStandby < 0)
                         {
                             if (Function.hitcircle(x, y, skill_speed / 2, enemyAsTarget.x, enemyAsTarget.y + enemy_below, enemyAsTarget.radius))
                             {
                                 enemyAsTarget.stop_time = skill_max_attckStandby;
-                                skill_attackStandby = skill_max_attckStandby;
+                                skill_attackStandby = 18;
                                 playAnimation(DataBase.aniNameAddOn_spell);
                             }
                         }
-                        else if (skill_attackStandby > 0) { skill_attackStandby--; }
+                        else if (skill_attackStandby > 0) {
+
+
+                            skill_attackStandby--;
+
+                        }
                         else
                         {
                             enemyAsTarget.damage(swordSkillDamage);
@@ -496,9 +506,14 @@ namespace CommonPart
                                 SoundManager.PlaySE(SoundEffectID.player100gauge);
                                 enemyAsTarget.damage(bonusDamage);
                             }else { SoundManager.PlaySE(SoundEffectID.player50gauge); }
-                            sword -= shouhi_sword;
+                            sword = 0;
                             enemyAsTarget = null;
                             stop_time = skill_stop_time + 2;
+                        }
+                        if (stop_time > 0 && stop_time <= 2)
+                        {
+                            skilltoBossEnd();
+                            stop_time--;
                         }
                     }
                 }
