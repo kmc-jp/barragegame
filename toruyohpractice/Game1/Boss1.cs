@@ -8,6 +8,7 @@ namespace CommonPart
 {
     class Boss1:Enemy
     {
+        
         const int body_max_index=13;
         public Enemy[] bodys = new Enemy[body_max_index + 1];
         private Vector[] bodys_pos = new Vector[body_max_index + 1];
@@ -90,7 +91,6 @@ namespace CommonPart
             { // boss1 回転中心は特別に画像の下半分にする。
                 float angle2 = (float)(angle);
                 animation.Draw(d, new Vector((x + animation.Y *head_rotatePercentY * Math.Cos(angle2) + animation.X * head_rotatePercentX * Math.Sin(angle2)), (y + animation.Y * head_rotatePercentY * Math.Sin(angle2) - animation.X * head_rotatePercentX * Math.Cos(angle2))), DepthID.Enemy, 1, (float)(angle + Math.PI / 2));
-
             }
             for (int i = 0; i < bullets.Count; i++)
             {

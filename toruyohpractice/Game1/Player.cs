@@ -189,6 +189,9 @@ namespace CommonPart
                         }
                     }
                     #endregion
+                    if (Map.boss_mode && Map.step[0]%60==0) {
+                        sword +=5;
+                    }
                     //回避を使っているか
                     avoid(keymanager);
                 }//if 硬直しているか end
@@ -613,7 +616,7 @@ namespace CommonPart
             if (life>0 && !Invincible()) 
             {
                 SoundManager.PlaySE(SoundEffectID.playerdamage);
-                life -= atk;
+                //life -= atk;
                 InForcedRoute = true;
             }
             if (life>-5 && life <= 0) { life = -6; Map.game_over_start(); }

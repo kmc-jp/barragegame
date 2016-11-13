@@ -92,7 +92,7 @@ namespace CommonPart {
             double abso = Math.Abs(dif);
             if (abso > speed)
             {
-                return dif * speed / abso;
+                return now+dif * speed / abso;
             }
             else { return target; }
         }

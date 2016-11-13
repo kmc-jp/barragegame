@@ -100,6 +100,7 @@ namespace CommonPart
                     break;
                 case 4880:
                     Map.boss_mode = true;
+                    Map.EngagingTrueBoss();
                     break;
                 case 4900:
                     playBGM(bgmIDs[1]);//BGMを流す。
