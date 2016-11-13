@@ -14,6 +14,7 @@ namespace CommonPart {
         Map nMap;
         int stage;
         Window_WithColoum window;
+        bool MapFulStop = false;
         bool gameOver=false;
         #endregion
         #region Method
@@ -31,6 +32,8 @@ namespace CommonPart {
         {
             nMap = null;
             nMap=new Map(stage);
+            window = null;
+            gameOver = false; MapFulStop = false;
         }
         /// <summary>
         /// ゲーム画面の描画メソッド
@@ -43,8 +46,10 @@ namespace CommonPart {
         }
         public override void SceneUpdate() {
             base.SceneUpdate();
-            if (!gameOver && Map.mapState.Contains(Map.gameOver) && Map.stop_time == DataBase.motion_inftyTime && Map.readyToStop_time <= 0)
-            {
+            if (!MapFulStop && Map.mapState.Contains(Map.gameOver) && Map.stop_time == DataBase.motion_inftyTime && Map.readyToStop_time <= 0)
+            {// gameOverに入ったので、準備をして、mapはもう更新しなくする
+                #region gameOver starts as Map Scene. Create Window
+                MapFulStop = true;
                 gameOver = true;
                 window = null;
                 window = new Window_WithColoum(90,220,1100,270);
@@ -53,12 +58,20 @@ namespace CommonPart {
                 window.AddColoum(new Button(nx, ny,"Retry","",Command.buttonPressed1,false));
                 ny +=270/2;
                 window.AddColoum(new Button(600, 45, "BackToTitle", "", Command.buttonPressed1, false));
+                #endregion
+            }else if (!MapFulStop && Map.mapState.Contains(Map.backToStageSelection) && Map.stop_time == DataBase.motion_inftyTime && Map.readyToStop_time <= 0)
+            {
+                #region backToStageSelectionScene
+                MapFulStop = true;
+                Delete = true;
+                #endregion
             }
-            else if(!gameOver)
-            {
+            else if(!MapFulStop)
+            {//gameOverに入っていないのでmapは更新する
                 nMap.update(Input);
-            }else
-            {
+            }else if(gameOver)
+            {// gameOverが確定している、この時はwindowだけを操作する
+                #region window update as GameIsOver
                 window.update((KeyManager)Input, mouse);
                 switch (window.commandForTop)
                 {
@@ -69,6 +82,7 @@ namespace CommonPart {
                         Delete = true;
                         break;
                 }
+                #endregion
             }
             if (Map.step[0] < 0) { Delete = true; }
         }

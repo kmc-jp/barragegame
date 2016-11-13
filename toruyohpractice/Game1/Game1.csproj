@@ -289,6 +289,9 @@
     <Content Include="Content\stage４ボス.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\white.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Icon.ico" />
     <Content Include="Content\stageselect.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

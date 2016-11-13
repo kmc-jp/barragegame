@@ -83,7 +83,7 @@ namespace CommonPart {
         /// ゲーム中のmapでどのような動作を行う/行っているか　の定義を示す。
         /// </summary>
         public const string updated = "-updated", fullStopped = "-fulStop", playerStopped = "-plaStop", enemysStopped = "-eneStop",
-             bothSideMove = "-boSidMove", gameOver="-gAMeOVer";
+             bothSideMove = "-boSidMove", gameOver = "-gAMeOVer", backToStageSelection = "-backToStageSelection" ;
         static public string mapState = ""; //初期は空として、その都度変えていく 
         /// <summary>
         /// 両サイドが0,1280まで広がり、最後のboss戦画面になる
@@ -147,6 +147,7 @@ namespace CommonPart {
         /// <param name="_stage"></param>
         public Map(int _stage)
         {
+            setMapAsNewlyCreated();
             stage = _stage;
             #region switch stage 
             switch (stage)
@@ -164,8 +165,7 @@ namespace CommonPart {
                     stagedata = new Stage1Data("stage1");
                     break;
             }
-            step.Clear();
-            step.Add(0);
+            #endregion
             scroll_speed = new Vector(defaultspeed_x, defaultspeed_y);
             player = new Player(DataBase.WindowDefaultSizeX/2, 500, 6, 10, 5*lifesPerPiece,DataBase.charaName);
 
@@ -176,7 +176,23 @@ namespace CommonPart {
             chargeBar = new AnimationAdvanced(DataBase.getAniD("swordgauge"));
         }
         
-
+        private void setMapAsNewlyCreated()
+        {
+            Map.mapState = "";
+            Map.player = null;
+            chargeBar = null;
+            Map.bossLifeBarAnime = null;
+            Map.step.Clear();
+            Map.step.Add(0);
+            Map.leftside = 280; Map.rightside = 1000;
+            Map.leftsideTo = 280; Map.rightsideTo = 1000;
+            Map.stop_time = Map.readyToStop_time = 0;
+            Map.cutIn_texName = null;
+            Map.cutIn_texTime = 0;
+            Map.enemys.Clear(); Map.enemys_inside_window.Clear();
+            Map.v.Clear(); Map.background_names.Clear();
+            Map.pros.Clear();
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -324,7 +340,14 @@ namespace CommonPart {
                     scoreOfskilltoEnemy %= 10000;
                 }
             }
-            if (boss_mode == true) barslide();
+            if (boss_mode == true)
+            {
+                barslide();
+                if (BOSS.life <= 0 && !mapState.Contains(backToStageSelection) )
+                {
+                    game_win_start();
+                }
+            }
             step[0]++;
         }//update end
 
@@ -381,6 +404,12 @@ namespace CommonPart {
             stopUpdating(DataBase.motion_inftyTime, 400);
             CutInTexture("1280x2000背景用グレー画像",0,-2000,0,0,DataBase.motion_inftyTime,10);
             mapState +=gameOver;
+        }
+        public static void game_win_start()
+        {
+            stopUpdating(DataBase.motion_inftyTime, 400);
+            CutInTexture("1280x2000背景用グレー画像", 0, -2000, 0, 0, DataBase.motion_inftyTime, 10);
+            mapState += backToStageSelection;
         }
         #region Create / Make   Map Function
         /// <summary>
