@@ -370,7 +370,7 @@ namespace CommonPart {
             //Console.Write("score:" + _score);
             if (player.attack_mode) {
                 numOfskillKilledEnemies++;
-                int s = _score * 100 + (numOfskillKilledEnemies - 1) * _score * 100;
+                int s = _score * 100 + (numOfskillKilledEnemies - 1) * _score * 40;
                 scoreOfskilltoEnemy += s;
                 //Console.Write(" to " + s.ToString() + "\n");
                 return s;

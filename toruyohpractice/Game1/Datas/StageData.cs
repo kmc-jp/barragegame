@@ -98,10 +98,10 @@ namespace CommonPart
                     Map.create_enemy(300, 0, "E1a-4");
                     Map.create_enemy(420, 0, "E1a-5");
                     break;
-                case 4580:
+                case 300:
                     Map.boss_mode = true;
                     break;
-                case 4600:
+                case 305:
                     playBGM(bgmIDs[1]);//BGMを流す。
                     Map.create_boss1(360, 10, "boss1");
                     break;
