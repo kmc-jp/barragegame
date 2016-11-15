@@ -114,7 +114,7 @@ namespace CommonPart
         /// <summary>
         /// 回避時に敵弾を消せる半円の半径
         /// </summary>
-        public int avoid_radius = 100;
+        public int avoid_radius = 120;
 
         #endregion
 
@@ -126,7 +126,7 @@ namespace CommonPart
         /// <summary>
         /// ダメージ受けてから無敵になる時間
         /// </summary>
-        public int default_muteki_time = 30;
+        public int default_muteki_time = 35;
         /// <summary>
         /// ダメージを受けたか/強制移動中なのか
         /// </summary>

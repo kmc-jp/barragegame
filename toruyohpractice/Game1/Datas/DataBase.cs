@@ -146,7 +146,7 @@ namespace CommonPart {
         #region Animation
         public static AnimationDataAdvanced defaultBlankAnimationData;
         public const string defaultAnimationNameAddOn = "-stand";
-        public const string aniNameAddOn_spell = "-spell", 
+        public const string aniNameAddOn_spell = "-spell", aniNameAddOn_spellOff = "-spell off",
             aniNameAddOn_evadeL= "-evadeL", aniNameAddOn_evadeR = "-evadeR";
         static string aniDFileName = "animationNames.dat";
         public static Dictionary<string, AnimationDataAdvanced> AnimationAdDataDictionary = new Dictionary<string, AnimationDataAdvanced>();
@@ -327,6 +327,7 @@ namespace CommonPart {
             goToStartDirectory();
             tda(bossLifeBar_default_aniName);
             tda(charaCutInTexName);
+            tda("150x150Mapアイコン");
             tda("1280x2000背景用グレー画像");
             tda("1100x270メッセージウィンドゥ");
             tda("333x226扇ゲージ");
@@ -368,6 +369,11 @@ namespace CommonPart {
             */
             #endregion
             setupSkillData();
+            
+            addAniD(new AnimationDataAdvanced("stageSelectButton"+defaultAnimationNameAddOn,14,4,0,"150x150Mapアイコン",true));
+            addAniD(new AnimationDataAdvanced("stageSelectButton" + aniNameAddOn_spell, 14, 4, 4, "150x150Mapアイコン", true));
+            addAniD(new AnimationDataAdvanced("stageSelectButton" + aniNameAddOn_spellOff, 14, 4, 8, "150x150Mapアイコン", true));
+            
             addAniD(new AnimationDataAdvanced(charaName +aniNameAddOn_evadeL,new int[] { 2,2,8,2,2},"130x149左横回避"));
             addAniD(new AnimationDataAdvanced(charaName + aniNameAddOn_evadeR, new int[] { 2, 2, 8, 2, 2 }, "130x149右横回避"));
             getAniD(charaName + aniNameAddOn_evadeR).assignAnimationName(charaName + defaultAnimationNameAddOn, true);
@@ -469,6 +475,15 @@ namespace CommonPart {
         #endregion
 
         #region Method
+        /// <summary>
+        /// 渡された時間が無限を意味するか0より大きいならtrue, 0以下で無限でないならfalse
+        /// </summary>
+        /// <param name="time"></param>
+        /// <returns></returns>
+        public static bool timeEffective(int time)
+        {
+            return (time == motion_inftyTime || time > 0);
+        }
         /// <summary>
         /// ファイルパスからファイル名を取得する
         /// </summary>
