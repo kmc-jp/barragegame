@@ -449,6 +449,7 @@ namespace CommonPart {
             TexturesDataDictionary.Clear();
 
             Content = null;
+            database_singleton = null;
         }
         #endregion
 

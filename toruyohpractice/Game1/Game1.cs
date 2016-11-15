@@ -89,6 +89,10 @@ namespace CommonPart
 
             // TODO: Unload any non ContentManager content here
             SoundManager.Music.Close();
+            if (DataBase.database_singleton != null)
+            {
+                DataBase.database_singleton.Dispose();
+            }
         }
 
         /// <summary>
