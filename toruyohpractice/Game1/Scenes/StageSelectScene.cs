@@ -3,39 +3,118 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
 
 namespace CommonPart
 {
-    class StageSelectScene:Scene
+    class StageSelectScene : Scene
     {
         /// <summary>
         /// indexではない
         /// </summary>
-        int stage_select =1;
-        public int stage_number = 1;
+        int stage_select = 1;
+        bool[] stageAvailable;
         Vector player_pos = new Vector();
-        Vector stage1_pos = new Vector(450, 450);
-        Vector stage2_pos = new Vector(100, 200);
-        Vector stage3_pos = new Vector(400, 80);
-        Vector stage4_pos = new Vector(750, 150);
-        Vector stage5_pos = new Vector(1080, 25);
+        const string playerIconName = "130 149-player";
+        int pw=DataBase.getTexD(playerIconName).w_single;
+        int ph = DataBase.getTexD(playerIconName).h_single;
+        Vector[] stagesPos = new Vector[] {
+            new Vector(450, 450), new Vector(100, 200),
+            new Vector(400, 80),new Vector(750, 150),
+            new Vector(1080, 25),
+        };
+        string stageButtonAniDName="stageSelectButton";
+        AnimationAdvanced[] animations; 
 
-
-        public StageSelectScene(SceneManager scenem) : base(scenem) { }
+        public StageSelectScene(SceneManager scenem) : base(scenem) {
+            stageAvailable = new bool[stagesPos.Length];
+            animations = new AnimationAdvanced[stagesPos.Length];
+            for(int i = 0; i < stagesPos.Length; i++)
+            {
+                stageAvailable[i] = false;
+            }
+            stageAvailable[0] = true;
+            for(int j = 0; j < stagesPos.Length; j++)
+            {
+                if (stageAvailable[j] == false)
+                {
+                    animations[j] = new AnimationAdvanced(DataBase.getAniD(stageButtonAniDName, DataBase.defaultAnimationNameAddOn));
+                }
+                else
+                {
+                    if (stage_select == j)
+                    {
+                        animations[j] = new AnimationAdvanced(DataBase.getAniD(stageButtonAniDName, DataBase.aniNameAddOn_spell));
+                    }
+                    else
+                    {
+                        animations[j] = new AnimationAdvanced(DataBase.getAniD(stageButtonAniDName, DataBase.aniNameAddOn_spellOff));
+                    }
+                }
+            }
+        }
 
         public override void SceneUpdate()
         {
+            bool changed=false;
+            int add=0;
             if (Input.GetKeyPressed(KeyID.Up) == true || Input.GetKeyPressed(KeyID.Right) == true)
             {
-                stage_select++;
+                animations[stage_select - 1] = null;
+                if (!stageAvailable[stage_select - 1])
+                {
+                    animations[stage_select - 1] = new AnimationAdvanced(DataBase.getAniD(stageButtonAniDName,
+                        DataBase.defaultAnimationNameAddOn));
+                }else {
+                    animations[stage_select - 1] = new AnimationAdvanced(DataBase.getAniD(stageButtonAniDName,
+                    DataBase.aniNameAddOn_spellOff));
+                }
+                changed = true;
+                add = 1;
             }
             if (Input.GetKeyPressed(KeyID.Down) == true || Input.GetKeyPressed(KeyID.Left) == true)
             {
-                stage_select--;
+                animations[stage_select - 1] = null;
+                if (!stageAvailable[stage_select - 1])
+                {
+                    animations[stage_select - 1] = new AnimationAdvanced(DataBase.getAniD(stageButtonAniDName,
+                        DataBase.defaultAnimationNameAddOn));
+                }
+                else
+                {
+                    animations[stage_select - 1] = new AnimationAdvanced(DataBase.getAniD(stageButtonAniDName,
+                    DataBase.aniNameAddOn_spellOff));
+                }
+                changed = true;
+                add = -1;
             }
-            if (stage_select >= stage_number){ stage_select = stage_number;}
-            if (stage_select <= 1){stage_select = 1;}
-
+            int number = 0;
+            while (add!=0 && number <stagesPos.Length)
+            {
+                number++;
+                if (stage_select < stagesPos.Length && stageAvailable[stage_select - 1])
+                {
+                    break;
+                }
+                else {
+                    stage_select += add;
+                    if (stage_select > stagesPos.Length) { stage_select = 1; }
+                    if (stage_select < 1) { stage_select = stagesPos.Length; }
+                }
+            }
+            if (changed) {
+                animations[stage_select - 1] = null;
+                if (!stageAvailable[stage_select - 1])
+                {
+                    animations[stage_select - 1] = new AnimationAdvanced(DataBase.getAniD(stageButtonAniDName,
+                        DataBase.defaultAnimationNameAddOn));
+                }
+                else
+                {
+                    animations[stage_select - 1] = new AnimationAdvanced(DataBase.getAniD(stageButtonAniDName,
+                    DataBase.aniNameAddOn_spell));
+                }
+            }
             if (Input.GetKeyPressed(KeyID.Select) == true)
             {
                 new MapScene(scenem,stage_select);
@@ -43,42 +122,27 @@ namespace CommonPart
 
             if (Input.GetKeyPressed(KeyID.Escape) == true)
             {
-                ;
+                Delete=true;
             }
-
-            switch (stage_select)
+            player_pos.X = stagesPos[stage_select-1].X-pw/2;
+            player_pos.Y = stagesPos[stage_select - 1].Y-ph/2;
+            for(int j = 0; j < stagesPos.Length; j++)
             {
-                case 1:
-                    player_pos = stage1_pos;
-                    break;
-                case 2:
-                    player_pos = stage2_pos;
-                    break;
-                case 3:
-                    player_pos = stage3_pos;
-                    break;
-                case 4:
-                    player_pos = stage4_pos;
-                    break;
-                case 5:
-                    player_pos = stage5_pos;
-                    break;
-                default:
-                    break;
+                animations[j].Update();
             }
-            
         }
 
         public override void SceneDraw(Drawing d)
         {
             d.Draw(new Vector(0, 0), DataBase.getTex("stageselect"), DepthID.BackGroundWall);
-            d.Draw(player_pos, DataBase.getTex("130 149-player"), DepthID.Player);
+            d.Draw(player_pos, DataBase.getTex(playerIconName), DepthID.Player);
+            for(int i = 0; i < stagesPos.Length-1; i++)
+            {
+                d.DrawLine(stagesPos[i], stagesPos[i + 1], 2, Color.Wheat, DepthID.Status);
+            }
+            for(int j=0;j<stagesPos.Length;j++){
+                animations[j].Draw(d, new Vector(stagesPos[j].X-animations[j].X/2,stagesPos[j].Y-animations[j].Y/2), DepthID.Status);
+            }
         }
-
-        public int stage_decide()
-        {
-            return stage_select;
-        }
-
     }
 }

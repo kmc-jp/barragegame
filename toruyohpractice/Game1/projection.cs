@@ -22,7 +22,11 @@ namespace CommonPart
         public bool texRotate = false;
         public bool delete = false;
 
-        //timeをつくろう
+        /// <summary>
+        /// 0:画像は見えない、動かない,1:画像は見えない、動く,2:画像は見える動かない,3:画像は見えて動く
+        /// </summary>
+        public int[] exist_times=new int[4];
+        
         /// <summary>
         /// コンストラクタ(位置不変)
         /// </summary>
@@ -31,41 +35,16 @@ namespace CommonPart
         /// <param name="_move_type"></param>
         /// <param name="_anime"></param>
         /// <param name="_zoom_rate"></param>
-        public Projection(double _x, double _y,MoveType _move_type, string _anime, int _zoom_rate=100)
+        public Projection(double _x, double _y,MoveType _move_type, string _anime, double _speed=0,double _acceleration=0,double _radian=Math.PI/2,int _zoom_rate=100)
         {
             x = _x;
             y = _y;
             target = null;
             move_type = _move_type;
             animation = new AnimationAdvanced(DataBase.getAniD(_anime));
+            speed = _speed; acceleration = _acceleration;radian = _radian;
             zoom_rate = _zoom_rate;
-        }
-        /// <summary>
-        /// コンストラクタ(速度、加速度あり)
-        /// </summary>
-        /// <param name="_x"></param>
-        /// <param name="_y"></param>
-        /// <param name="_move_type"></param>
-        /// <param name="_speed"></param>
-        /// <param name="_acceleration"></param>
-        /// <param name="_anime"></param>
-        /// <param name="_zoom_rate"></param>
-        public Projection(double _x,double _y,MoveType _move_type,double _speed,double _acceleration,double _radian, string _anime,int _zoom_rate)
-        {
-            x = _x;
-            y = _y;
-            target = null;
-            speed = _speed;
-            acceleration = _acceleration;
-            radian = _radian;
-            move_type = _move_type;
-            animation = new AnimationAdvanced(DataBase.getAniD(_anime));
-            zoom_rate = _zoom_rate;
-
-            speed_x = speed * Math.Cos(radian);
-            speed_y = speed * Math.Sin(radian);
-            acceleration_x = acceleration * Math.Cos(radian);
-            acceleration_y = acceleration * Math.Sin(radian);
+            set_speed_and_acceleration_from_radian();
         }
         /// <summary>
         /// 点に向かって移動
@@ -151,6 +130,23 @@ namespace CommonPart
         public virtual bool hit_jugde(double px,double py, double p_radius=0)
         {
             return false;
+        }
+
+        /// <summary>
+        /// radianが正しく記録されなければならない。
+        /// </summary>
+        protected virtual void set_speed_and_acceleration_from_radian()
+        {
+            if (speed != 0)
+            {
+                speed_x = speed * Math.Cos(radian);
+                speed_y = speed * Math.Sin(radian);
+            }
+            if (acceleration != 0)
+            {
+                acceleration_x = acceleration * Math.Cos(radian);
+                acceleration_y = acceleration * Math.Sin(radian);
+            }
         }
 
         public virtual void draw(Drawing d)
