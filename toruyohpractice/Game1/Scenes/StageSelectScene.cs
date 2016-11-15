@@ -120,9 +120,10 @@ namespace CommonPart
                 new MapScene(scenem,stage_select);
             }
 
-            if (Input.GetKeyPressed(KeyID.Escape) == true)
+            if (Input.GetKeyPressed(KeyID.Escape) == true || Input.GetKeyPressed(KeyID.Cancel))
             {
                 Delete=true;
+                new TitleSceneWithWindows(scenem);
             }
             player_pos.X = stagesPos[stage_select-1].X-pw/2;
             player_pos.Y = stagesPos[stage_select - 1].Y-ph/2;

@@ -369,11 +369,11 @@ namespace CommonPart {
             */
             #endregion
             setupSkillData();
-            /*
+            
             addAniD(new AnimationDataAdvanced("stageSelectButton"+defaultAnimationNameAddOn,14,4,0,"150x150Mapアイコン",true));
             addAniD(new AnimationDataAdvanced("stageSelectButton" + aniNameAddOn_spell, 14, 4, 4, "150x150Mapアイコン", true));
             addAniD(new AnimationDataAdvanced("stageSelectButton" + aniNameAddOn_spellOff, 14, 4, 8, "150x150Mapアイコン", true));
-            */
+            
             addAniD(new AnimationDataAdvanced(charaName +aniNameAddOn_evadeL,new int[] { 2,2,8,2,2},"130x149左横回避"));
             addAniD(new AnimationDataAdvanced(charaName + aniNameAddOn_evadeR, new int[] { 2, 2, 8, 2, 2 }, "130x149右横回避"));
             getAniD(charaName + aniNameAddOn_evadeR).assignAnimationName(charaName + defaultAnimationNameAddOn, true);
