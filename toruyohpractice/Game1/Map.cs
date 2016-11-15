@@ -168,7 +168,7 @@ namespace CommonPart {
             }
             #endregion
             scroll_speed = new Vector(defaultspeed_x, defaultspeed_y);
-            Map.player = new Player(DataBase.WindowDefaultSizeX/2, 500, 6, 10, 5*lifesPerPiece,DataBase.charaName);
+            Map.player = new Player(DataBase.WindowDefaultSizeX/2, 500, 6, 10, 6*lifesPerPiece,DataBase.charaName);
 
             bossLifeGaugeSize.X=0;
             leftside = 280;
@@ -192,6 +192,10 @@ namespace CommonPart {
             Map.cutIn_texTime = 0;
             Map.enemys.Clear(); Map.enemys_inside_window.Clear();
             Map.v.Clear(); Map.background_names.Clear();
+            enemys = null; enemys_inside_window = null;
+            v = null; background_names = null;
+            enemys = new List<Enemy>(); enemys_inside_window = new List<Enemy>();
+            v = new List<Vector>(); background_names = new List<string>();
             Map.pros.Clear();
         }
         /// <summary>
@@ -408,14 +412,14 @@ namespace CommonPart {
         public static void game_over_start()
         {
             Console.Write("gameOver");
-            stopUpdating(DataBase.motion_inftyTime, 400);
-            CutInTexture("1280x2000背景用グレー画像", 0,-2000,0,0,DataBase.motion_inftyTime,10);
+            stopUpdating(DataBase.motion_inftyTime, 240);
+            CutInTexture("1280x2000背景用グレー画像", 0,-2000,0,0,DataBase.motion_inftyTime,20);
             mapState +=gameOver;
         }
         public static void game_win_start()
         {
-            stopUpdating(DataBase.motion_inftyTime, 300);
-            CutInTexture("1280x2000背景用グレー画像", 0, -2000, 0, 0, DataBase.motion_inftyTime, 10);
+            stopUpdating(DataBase.motion_inftyTime, 240);
+            CutInTexture("1280x2000背景用グレー画像", 0, -2000, 0, 0, DataBase.motion_inftyTime, 20);
             mapState += backToStageSelection;
         }
         #endregion
@@ -594,7 +598,7 @@ namespace CommonPart {
             if(DataBase.timeEffective(Map.cutIn_texTime) && Map.cutIn_texName !=null && Map.cutIn_texName != "")
             {
                 Console.Write("drawCutIn");
-                d.Draw(new Vector(Map.cutIn_texPosNowX, Map.cutIn_texPosNowY),DataBase.getTex(Map.cutIn_texName),DepthID.Status);
+                d.Draw(new Vector(Map.cutIn_texPosNowX, Map.cutIn_texPosNowY),DataBase.getTex(Map.cutIn_texName),DepthID.Message);
             }
             #endregion
         }//draw end
