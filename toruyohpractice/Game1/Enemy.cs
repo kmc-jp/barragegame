@@ -17,8 +17,6 @@ namespace CommonPart
         #endregion
 
         #region basic undeclared variables
-        public double x;
-        public double y;
         public List<Bullet> bullets = new List<Bullet>();
         public List<Skill> skills = new List<Skill>();
         public string unitType_name;
