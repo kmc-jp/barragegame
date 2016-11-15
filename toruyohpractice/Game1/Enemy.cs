@@ -10,7 +10,7 @@ using CommonPart;
 
 namespace CommonPart
 {
-    class Enemy
+    class Enemy:Unit
     {
         #region const labels
         public const string unitLabel_FadeOut = "fadeout";
@@ -65,10 +65,8 @@ namespace CommonPart
         protected List<int> motionLoopsStart, motionLoopsEnd;
         #endregion
 
-        public Enemy(double _x,double _y,string _unitType_name)
+        public Enemy(double _x,double _y,string _unitType_name):base(_x,_y)
         {
-            x = _x;
-            y = _y;
             unitType_name = _unitType_name;
             label = unitType.label;
             playAnimation(DataBase.defaultAnimationNameAddOn);
@@ -167,7 +165,7 @@ namespace CommonPart
             }else { stop_time--; return; }
         }
 
-        public virtual void draw(Drawing d)
+        public override void draw(Drawing d)
         {
             if (!texRotate)
             {

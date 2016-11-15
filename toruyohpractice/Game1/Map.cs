@@ -304,14 +304,17 @@ namespace CommonPart {
             Map.cutIn_texPosNowX = Function.towardValue(Map.cutIn_texPosNowX, Map.cutIn_texPosToX, Map.cutIn_speed);
             Map.cutIn_texPosNowY = Function.towardValue(Map.cutIn_texPosNowY, Map.cutIn_texPosToY, Map.cutIn_speed);
             #endregion
-            if (Map.readyToStop_time <=0)
+            if (!DataBase.timeEffective(Map.readyToStop_time) )
             {
-                if (Map.stop_time > 0)
+                if (DataBase.timeEffective(Map.stop_time))
                 {
-                    Map.stop_time--;
+                    if (Map.stop_time != DataBase.motion_inftyTime)
+                    {
+                        Map.stop_time--;
+                    }
                     return;
-                }else if(Map.stop_time == DataBase.motion_inftyTime) { return; }
-            }else { Map.readyToStop_time--; }
+                }
+            }else if(Map.readyToStop_time!=DataBase.motion_inftyTime){ Map.readyToStop_time--; }
             chargeBar.Update();
             stagedata.update();
             #region 画面上に見える敵を"見える敵たち"に入れる
@@ -486,7 +489,6 @@ namespace CommonPart {
             for (int i = 1; i < background_names.Count; i++)
             {
                 v.Add(new Vector(v[i-1].X, v[i - 1].Y - DataBase.getTex(background_names[i]).Height));
-
             }
             for (int i = 0; i < background_names.Count; i++)
             {
@@ -589,7 +591,7 @@ namespace CommonPart {
             #endregion
 
             #region draw CutIn
-            if(Map.cutIn_texTime >0 && Map.cutIn_texName !=null && Map.cutIn_texName != "")
+            if(DataBase.timeEffective(Map.cutIn_texTime) && Map.cutIn_texName !=null && Map.cutIn_texName != "")
             {
                 Console.Write("drawCutIn");
                 d.Draw(new Vector(Map.cutIn_texPosNowX, Map.cutIn_texPosNowY),DataBase.getTex(Map.cutIn_texName),DepthID.Status);

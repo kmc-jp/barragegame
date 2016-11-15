@@ -84,7 +84,7 @@ namespace CommonPart {
             // windows[0] is finished.
             dy = 48; ny += dy;
             // windows[1] starts
-            windows.Add(new Window_utsList(20, ny, 200, 300));
+            //windows.Add(new Window_utsList(20, ny, 200, 300));
         }
         /// <summary>
         /// mapEditorSceneはすぐにDeleteされない.Deleteはこのシーンが一番前面にでている時に限って、消される

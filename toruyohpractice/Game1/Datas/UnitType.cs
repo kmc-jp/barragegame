@@ -377,10 +377,12 @@ namespace CommonPart
             UnitTypeList.Add(new ActiveAniSkiedUnitType("E2-2a", "E2-2", "enemy"));
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.screen_point_target, 180, new Vector(540, 480));
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.screen_point_target, 180, new Vector(180, 0));
-            
-            UnitTypeList.Add(new ActiveAniSkiedUnitType("E2-2a", "E2-2", "enemy"));
+            UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
+
+            UnitTypeList.Add(new ActiveAniSkiedUnitType("E2-2b", "E2-2", "enemy"));
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.screen_point_target, 180, new Vector(180, 480));
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.screen_point_target, 180, new Vector(540, 0));
+            UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
 
             UnitTypeList.Add(new ActiveAniSkiedUnitType("E2-f1", "E2-f1", "enemy"));
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.go_straight, 120, new Vector(0, -180));
