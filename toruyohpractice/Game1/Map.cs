@@ -377,7 +377,7 @@ namespace CommonPart {
             //Console.Write("score:" + _score);
             if (player.attack_mode) {
                 numOfskillKilledEnemies++;
-                int s = _score * 100 + (numOfskillKilledEnemies - 1) * _score * 100;
+                int s = _score * 100 + (numOfskillKilledEnemies - 1) * _score * 40;
                 scoreOfskilltoEnemy += s;
                 //Console.Write(" to " + s.ToString() + "\n");
                 return s;
@@ -414,7 +414,7 @@ namespace CommonPart {
         }
         public static void game_win_start()
         {
-            stopUpdating(DataBase.motion_inftyTime, 400);
+            stopUpdating(DataBase.motion_inftyTime, 300);
             CutInTexture("1280x2000背景用グレー画像", 0, -2000, 0, 0, DataBase.motion_inftyTime, 10);
             mapState += backToStageSelection;
         }
@@ -526,7 +526,7 @@ namespace CommonPart {
                 }
             }
             #endregion
-            if (bossLifeBarAnime != null)
+            if (bossLifeBarAnime != null&& BOSS!=null)
             {
                 bossLifeGaugeSize.X = Function.towardValue(bossLifeGaugeSize.X,(bossLifeGaugeSizeMaximum.X * BOSS.life*1.0/BOSS.maxLife),100);
                 d.DrawBox(bossLifeGaugeLeftTopPos, bossLifeGaugeSize, bossLifeGaugeColor, DepthID.Status);

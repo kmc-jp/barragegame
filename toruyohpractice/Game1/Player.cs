@@ -616,7 +616,7 @@ namespace CommonPart
             if (life>0 && !Invincible()) 
             {
                 SoundManager.PlaySE(SoundEffectID.playerdamage);
-                //life -= atk;
+                life -= atk;
                 InForcedRoute = true;
             }
             if (life>-5 && life <= 0) { life = -6; Map.game_over_start(); }

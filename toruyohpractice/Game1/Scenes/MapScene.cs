@@ -59,12 +59,15 @@ namespace CommonPart {
                 ny +=60;
                 window.AddColoum(new Button(nx, ny, "BackToTitle", "", Command.buttonPressed2, false));
                 #endregion
+                SoundManager.Music.PlayBGM(BGMID.None,true);
             }else if (!MapFulStop && Map.mapState.Contains(Map.backToStageSelection) && Map.stop_time == DataBase.motion_inftyTime && Map.readyToStop_time <= 0)
             {
                 #region backToStageSelectionScene
                 MapFulStop = true;
                 Delete = true;
+                new TitleSceneWithWindows(scenem);
                 #endregion
+                SoundManager.Music.PlayBGM(BGMID.None, true);
             }
             else if(!MapFulStop)
             {//gameOverに入っていないのでmapは更新する
@@ -80,6 +83,7 @@ namespace CommonPart {
                         break;
                     case Command.buttonPressed2:
                         Delete = true;
+                        new TitleSceneWithWindows(scenem);
                         break;
                 }
                 #endregion

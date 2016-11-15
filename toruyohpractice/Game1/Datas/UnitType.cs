@@ -138,22 +138,26 @@ namespace CommonPart
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.screen_point_target, 100, new Vector(1000, 650));
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.screen_point_target, 100, new Vector(1000, 50));
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(4, 0, 30, 0, 10, 10);
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames("boss8circle-0");
             //((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames("5wayshot");
             UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
 
             UnitTypeList.Add(new ActiveAniSkiedUnitType("boss1body0", "boss1body0", "boss"));
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.stop, 100, new Vector(50, 50));
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).textureTurn = true;
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames("1wayshot-0");
             UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
 
             UnitTypeList.Add(new ActiveAniSkiedUnitType("boss1body1", "boss1body1", "boss"));
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.stop, 100, new Vector(50, 50));
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).textureTurn = true;
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames("boss1wayshot-1");
             UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
 
             UnitTypeList.Add(new ActiveAniSkiedUnitType("boss1body2", "boss1body2", "boss"));
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.stop, 100, new Vector(50, 50));
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).textureTurn = true;
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames("boss1wayshot-0");
             UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
 
             UnitTypeList.Add(new ActiveAniSkiedUnitType("boss1tail", "boss1tail", "boss"));
@@ -161,6 +165,58 @@ namespace CommonPart
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames("laser");
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).textureTurn = true;
             UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
+            #endregion
+
+            #region Boss2
+            UnitTypeList.Add(new ActiveAniSkiedUnitType("boss2", "boss2", "boss"));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(0, 0, 100, 0, 1000, 0);
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.stop, 100, new Vector(50, 50));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames("boss8circle-0");
+            //((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames("5wayshot");
+            UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
+
+            UnitTypeList.Add(new ActiveAniSkiedUnitType("funnnel0", "E6", "boss"));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.stop, 100, new Vector(50, 50));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames("laser-0");
+            UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
+
+            UnitTypeList.Add(new ActiveAniSkiedUnitType("funnnel1", "E6", "boss"));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.stop, 100, new Vector(50, 50));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames("3wayshot-1");
+            UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
+
+            UnitTypeList.Add(new ActiveAniSkiedUnitType("funnnel2", "E6", "boss"));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.stop, 100, new Vector(50, 50));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames("laser-0");
+            UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
+
+            UnitTypeList.Add(new ActiveAniSkiedUnitType("funnnel3", "E6", "boss"));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.stop, 100, new Vector(50, 50));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames("laser-0");
+            UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
+            
+            UnitTypeList.Add(new ActiveAniSkiedUnitType("funnnel4", "E6", "boss"));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.stop, 100, new Vector(50, 50));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames("3wayshot-1");
+            UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
+
+            UnitTypeList.Add(new ActiveAniSkiedUnitType("funnnel5", "E6", "boss"));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.stop, 100, new Vector(50, 50));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames("laser-0");
+            UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
+            
+            UnitTypeList.Add(new ActiveAniSkiedUnitType("head", "boss2head", "boss"));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.stop, 100, new Vector(50, 50));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).textureTurn = true;
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames("boss8circle-0");
+            UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
+
+            UnitTypeList.Add(new ActiveAniSkiedUnitType("body7", "boss2body", "boss"));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.stop, 100, new Vector(50, 50));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).textureTurn = true;
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames("boss2wayshot-0");
+            UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
+            
             #endregion
 
             #region Stage1
