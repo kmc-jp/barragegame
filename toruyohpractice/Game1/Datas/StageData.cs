@@ -99,6 +99,7 @@ namespace CommonPart
                     Map.create_enemy(420, 0, "E1a-5");
                     break;
                 case 4880:
+                    Map.boss_mode = true;
                     Map.EngagingTrueBoss();
                     break;
                 case 4900:
