@@ -265,23 +265,23 @@ namespace CommonPart {
 
             addSkillData(new SingleShotSkillData("yanagi",SkillGenreS.yanagi ,MoveType.go_straight,"bullet1", low_cd1, 2, 0.2,0.25,8,1));
 
-            addSkillData(new WayShotSkillData("5wayshot", SkillGenreS.wayshot,MoveType.go_straight,"bullet1", high_cd3, 6, 0, highangle1, 8,5));
-            addSkillData(new WayShotSkillData("3wayshot-0", SkillGenreS.wayshot,MoveType.go_straight,"bullet1", middle_cd1,middle_speed, 0, middleangle2, small_radius, 3));
-            addSkillData(new WayShotSkillData("3wayshot-1", SkillGenreS.wayshot, MoveType.go_straight, "bullet1", middle_cd2, middle_speed, 0, middleangle2, small_radius, 3));
-            addSkillData(new WayShotSkillData("boss1wayshot-0", SkillGenreS.wayshot, MoveType.go_straight, "bullet1", 100, middle_speed, 0, middleangle2, small_radius, 3));
-            addSkillData(new WayShotSkillData("boss1wayshot-1", SkillGenreS.wayshot, MoveType.go_straight, "bullet1", 170, middle_speed, 0, middleangle2, small_radius, 3));
-            addSkillData(new WayShotSkillData("boss2wayshot-0", SkillGenreS.wayshot, MoveType.go_straight, "bullet1", 270, middle_speed, 0, middleangle2, small_radius, 3));
-            addSkillData(new SingleShotSkillData("16circle-0", SkillGenreS.circle, MoveType.go_straight, "bullet1", low_cd2, low_speed, 0, highangle1, small_radius));
-            addSkillData(new SingleShotSkillData("boss8circle-0", SkillGenreS.circle, MoveType.go_straight, "bullet1", low_cd3, low_speed, 0, middleangle2, small_radius));
-            addSkillData(new SingleShotSkillData("downshot-0", SkillGenreS.shot,MoveType.go_straight, "bullet1", low_cd1, middle_speed, 0, lowangle1, small_radius));
-            addSkillData(new SingleShotSkillData("1wayshot-0",SkillGenreS.shot,MoveType.go_straight,"bullet1", middle_cd2, middle_speed, 0, 0,small_radius));
-            addSkillData(new SingleShotSkillData("1wayshot-1", SkillGenreS.shot, MoveType.go_straight, "bullet1", middle_cd2, high_speed, 0, 0, small_radius));
-            addSkillData(new WayShotSkillData("4wayshot-0", SkillGenreS.wayshot, MoveType.go_straight, "bullet1", middle_cd1, middle_speed, 0, middleangle1, big_radius, 4));
-            addSkillData(new WayShotSkillData("4wayshot-1", SkillGenreS.wayshot, MoveType.go_straight, "bullet1", low_cd1, middle_speed, 0, middleangle2, big_radius, 4));
-            addSkillData(new WayShotSkillData("4wayshot-2", SkillGenreS.wayshot, MoveType.go_straight, "bullet1", high_cd3, middle_speed, 0, middleangle1, small_radius, 4));
-            addSkillData(new LaserTopData("laser-0", MoveType.go_straight, "bullet1", low_cd3, high_speed, 0, lowangle1, small_radius, 0, Color.Maroon));
-            addSkillData(new LaserTopData("laser-1", MoveType.chase_angle, "bullet1", low_cd3, high_speed, 0, lowangle1, small_radius, 0.002, Color.MediumVioletRed,0,15));
-            addSkillData(new SingleShotSkillData("zyuzi-0",SkillGenreS.zyuzi ,MoveType.go_straight,"bullet1", middle_cd2, low_speed, 0, 0,small_radius));
+            addSkillData(new WayShotSkillData("5wayshot", SkillGenreS.wayshot,MoveType.go_straight,"bulletsmall", high_cd3, 6, 0, highangle1, 8,5));
+            addSkillData(new WayShotSkillData("3wayshot-0", SkillGenreS.wayshot,MoveType.go_straight,"bulletsmall", middle_cd1,middle_speed, 0, middleangle2, small_radius, 3));
+            addSkillData(new WayShotSkillData("3wayshot-1", SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", middle_cd2, middle_speed, 0, middleangle2, small_radius, 3));
+            addSkillData(new WayShotSkillData("boss1wayshot-0", SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", 100, middle_speed, 0, middleangle2, small_radius, 3));
+            addSkillData(new WayShotSkillData("boss1wayshot-1", SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", 170, middle_speed, 0, middleangle2, small_radius, 3));
+            addSkillData(new WayShotSkillData("boss2wayshot-0", SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", 270, middle_speed, 0, middleangle2, small_radius, 3));
+            addSkillData(new SingleShotSkillData("16circle-0", SkillGenreS.circle, MoveType.go_straight, "bulletsmall", low_cd2, low_speed, 0, highangle1, small_radius));
+            addSkillData(new SingleShotSkillData("boss8circle-0", SkillGenreS.circle, MoveType.go_straight, "bulletsmall", low_cd3, low_speed, 0, middleangle2, small_radius));
+            addSkillData(new SingleShotSkillData("downshot-0", SkillGenreS.shot,MoveType.go_straight, "bulletsmall", low_cd1, middle_speed, 0, lowangle1, small_radius));
+            addSkillData(new SingleShotSkillData("1wayshot-0",SkillGenreS.shot,MoveType.go_straight,"bulletsmall", middle_cd2, middle_speed, 0, 0,small_radius));
+            addSkillData(new SingleShotSkillData("1wayshot-1", SkillGenreS.shot, MoveType.go_straight, "bulletsmall", middle_cd2, high_speed, 0, 0, small_radius));
+            addSkillData(new WayShotSkillData("4wayshot-0", SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", middle_cd1, middle_speed, 0, middleangle1, big_radius, 4));
+            addSkillData(new WayShotSkillData("4wayshot-1", SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", low_cd1, middle_speed, 0, middleangle2, big_radius, 4));
+            addSkillData(new WayShotSkillData("4wayshot-2", SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", high_cd3, middle_speed, 0, middleangle1, small_radius, 4));
+            addSkillData(new LaserTopData("laser-0", MoveType.go_straight, "bulletsmall", low_cd3, high_speed, 0, lowangle1, small_radius, 0, Color.Maroon));
+            addSkillData(new LaserTopData("laser-1", MoveType.chase_angle, "bulletsmall", low_cd3, high_speed, 0, lowangle1, small_radius, 0.002, Color.MediumVioletRed,0,15));
+            addSkillData(new SingleShotSkillData("zyuzi-0",SkillGenreS.zyuzi ,MoveType.go_straight,"bulletsmall", middle_cd2, low_speed, 0, 0,small_radius));
 
         }
         #endregion
