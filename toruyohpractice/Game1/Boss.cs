@@ -118,19 +118,22 @@ namespace CommonPart
         /// 頭部が回転する時、画像のどこを中心に回転するかを決める。1のときは画像の底辺である。1/2の時は画像の中央横線上となる。
         /// </summary>
         protected double head_rotatePercentY = 1;
+        private bool funnelsOut = false;
         public Boss2(double _x, double _y, string _unitType_name) : base(_x, _y, _unitType_name)
         {
             body_max_index = 7;
             bodys = new Enemy[body_max_index+1];
-            bodys[0] = new Enemy(x - 145, y - 30, "funnnel0");
-            bodys[1] = new Enemy(x - 180, y + 5,"funnnel1");
-            bodys[2] = new Enemy(x - 215, y - 30,"funnnel2");
-            bodys[3] = new Enemy(x +145, y - 30, "funnnel3");
-            bodys[4] = new Enemy(x  +180, y + 5, "funnnel4");
-            bodys[5] = new Enemy(x  +215, y - 30, "funnnel5");
-            bodys[6] = new Enemy(x, y, "head");
-            bodys[7] = new Enemy(x , y, "body7");
-            maxLife = 10000;
+            bodys_pos = new Vector[body_max_index + 1];
+            for(int i = 0; i < 3; i++)
+            {
+                bodys_pos[i] = new Vector(-110 - 35 * i,-30 + i % 2 * 25);
+                bodys_pos[i + 3] = new Vector(110 + 35 * i, -30 + i % 2 * 25);
+                bodys[i] = new Enemy(x +bodys_pos[i].X, y +bodys_pos[i].Y, "funnnel"+i%2);
+                bodys[i+3] = new Enemy(x + bodys_pos[i+3].X, y + bodys_pos[i+3].Y, "funnnel" + i % 2);
+            }
+            bodys[6] = new Enemy(x, y, "boss2 head");
+            bodys[7] = new Enemy(x , y, "boss2 body7");
+            maxLife = 14000;
             life = maxLife;
         }
 
@@ -143,21 +146,26 @@ namespace CommonPart
             for (int i = 0; i <= body_max_index; i++)
             {
                 bodys[i].shot(player);
-                bodys[i].update(player);
+                if (i <= 5)
+                {
+                    if (!funnelsOut) {
+                        bodys[i].moveToScreenPos_now(x + bodys_pos[i].X, y + bodys_pos[i].Y);
+                    }
+                    bodys[i].update(player);
+                }else { bodys[i].moveToScreenPos_now(x,y); bodys[i].update(player); }
             }
         }
 
         public override void draw(Drawing d)
         {
-            for (int i = body_max_index; i >= 0; i--)
-            {
-                bodys[i].draw(d);
-            }
             if (!texRotate)
             {
                 animation.Draw(d, new Vector((x - animation.X / 2), (y - animation.Y / 2)), DepthID.Enemy);
             }
-            
+            for (int i = body_max_index; i >= 0; i--)
+            {
+                bodys[i].draw(d);
+            }
             for (int i = 0; i < bullets.Count; i++)
             {
                 bullets[i].draw(d);

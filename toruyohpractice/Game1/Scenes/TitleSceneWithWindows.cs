@@ -56,6 +56,7 @@ namespace CommonPart
             {
                 case Command.exit:
                     close();
+                    scenem.Exit();
                     break;
                 case Command.openMapEditor:
                     openMapEditorScene();

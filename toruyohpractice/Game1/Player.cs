@@ -107,7 +107,7 @@ namespace CommonPart
         /// <summary>
         /// 回避時に敵弾を消せる半円の半径
         /// </summary>
-        public int avoid_radius = 120;
+        public int avoid_radius = 110;
 
         #endregion
 
@@ -182,7 +182,7 @@ namespace CommonPart
                     }
                     #endregion
                     if (Map.boss_mode && Map.step[0]%60==0) {
-                        sword +=5;
+                        sword +=3;
                     }
                     //回避を使っているか
                     avoid(keymanager);
@@ -541,6 +541,7 @@ namespace CommonPart
                 #region　上下左右の回避によって、ダメージを受けるものたち
                 for (int i = 0; i < Map.enemys_inside_window.Count; i++)
                 {
+                    #region its bullets
                     for (int j = 0; j < Map.enemys_inside_window[i].bullets.Count; j++)
                     {
                         if (Map.enemys_inside_window[i].bullets[j].hit_jugde(x, y, avoid_radius) &&
@@ -557,6 +558,8 @@ namespace CommonPart
                             Map.enemys_inside_window[i].bullets[j].damage(atk);
                         }
                     }
+                    #endregion
+                    #region its bodys and bodys' bullets
                     if (Map.enemys_inside_window[i].label.Contains("boss"))
                     {
                         for(int j = 0; j < ((Boss)(Map.enemys_inside_window[i])).bodys.Length; j++)
@@ -565,13 +568,13 @@ namespace CommonPart
                             {
                                 if (((Boss)Map.enemys_inside_window[i]).bodys[j].bullets[k].hit_jugde(x, y, avoid_radius) &&
                                 // すでに当たることが分かったものたちに対して、上下左右どっちに回避したかによって、消す。
-                                ((input.IsKeyDown(KeyID.Up) == true && ((Boss)Map.enemys_inside_window[i]).bodys[j].y <= y) ||
-                               (input.IsKeyDown(KeyID.Down) == true && ((Boss)Map.enemys_inside_window[i]).bodys[j].y >= y) ||
-                               (input.IsKeyDown(KeyID.Left) == true && ((Boss)Map.enemys_inside_window[i]).bodys[j].x <= x) ||
-                               (input.IsKeyDown(KeyID.Right) == true && ((Boss)Map.enemys_inside_window[i]).bodys[j].x >= x))
+                                ((input.IsKeyDown(KeyID.Up) == true && ((Boss)Map.enemys_inside_window[i]).bodys[j].bullets[k].y <= y) ||
+                               (input.IsKeyDown(KeyID.Down) == true && ((Boss)Map.enemys_inside_window[i]).bodys[j].bullets[k].y >= y) ||
+                               (input.IsKeyDown(KeyID.Left) == true && ((Boss)Map.enemys_inside_window[i]).bodys[j].bullets[k].x <= x) ||
+                               (input.IsKeyDown(KeyID.Right) == true && ((Boss)Map.enemys_inside_window[i]).bodys[j].bullets[k].x >= x))
                                 )
                                 {
-                                    ((Boss)Map.enemys_inside_window[i]).bodys[j].damage(atk);
+                                    ((Boss)Map.enemys_inside_window[i]).bodys[j].bullets[k].damage(atk);
                                 }
                             }
                             if (((Boss)Map.enemys_inside_window[i]).bodys[j].hit_jugde(x, y, avoid_radius) &&
@@ -582,10 +585,11 @@ namespace CommonPart
                                (input.IsKeyDown(KeyID.Right) == true && ((Boss)Map.enemys_inside_window[i]).bodys[j].x >= x))
                         )
                             {
-                                Map.enemys_inside_window[i].damage(atk);
+                                Map.enemys_inside_window[i].damage(atk/2);
                             }
                         }
                     }
+                    #endregion
                     if (Map.enemys_inside_window[i].hit_jugde(x, y, avoid_radius) &&
                          // すでに当たることが分かったものたちに対して、上下左右どっちに回避したかによって、消す。
                          ((input.IsKeyDown(KeyID.Up) == true && Map.enemys_inside_window[i].y <= y) ||

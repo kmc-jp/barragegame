@@ -101,6 +101,14 @@ namespace CommonPart
             : this(_x, _y, _move_type, _anime, _speed,_acceleration,_radian,_zoom_rate)
         {
             target = _target;
+            switch (move_type)
+            {
+                case MoveType.chase_target:
+                    radian = Math.Atan2(target.y - y, target.x - x);
+                    break;
+                default:
+                    break;
+            }
         }
         #endregion
 
@@ -199,7 +207,8 @@ namespace CommonPart
             {
                 useExistTime = true;
                 int i;
-                for(i=0 ; i < _ets.Length && i<exist_times_length; i++) { exist_times[exist_times_length-1-i] = _ets[i]; }
+                exist_times = new int[exist_times_length];
+                for (i=0 ; i < _ets.Length && i<exist_times_length; i++) { exist_times[exist_times_length-1-i] = _ets[i]; }
                 while(i < exist_times_length) { exist_times[i] = 0;i++; }
             }
         }
@@ -211,6 +220,7 @@ namespace CommonPart
         public virtual void setup_exist_time(int _ets)
         {
             useExistTime = true;
+            exist_times = new int[exist_times_length];
             for (int i = 1; i < exist_times_length; i++) { exist_times[exist_times_length - 1 - i] = 0; }
             exist_times[exist_times_length-1] =_ets;
         }

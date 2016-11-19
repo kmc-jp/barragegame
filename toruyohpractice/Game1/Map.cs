@@ -180,6 +180,7 @@ namespace CommonPart {
         private void setMapAsNewlyCreated()
         {
             Map.mapState = "";
+            stagedata = null;
             Map.player = null;
             chargeBar = null;
             Map.bossLifeBarAnime = null;
@@ -190,12 +191,14 @@ namespace CommonPart {
             Map.stop_time = Map.readyToStop_time = 0;
             Map.cutIn_texName = null;
             Map.cutIn_texTime = 0;
+            #region enemys clear
             Map.enemys.Clear(); Map.enemys_inside_window.Clear();
-            Map.v.Clear(); Map.background_names.Clear();
             enemys = null; enemys_inside_window = null;
-            v = null; background_names = null;
             enemys = new List<Enemy>(); enemys_inside_window = new List<Enemy>();
-            v = new List<Vector>(); background_names = new List<string>();
+            #endregion
+            #region about background 
+            v.Clear(); background_names.Clear(); total_BackGroundHeight = 0;
+            #endregion
             Map.pros.Clear();
         }
         /// <summary>
@@ -412,14 +415,14 @@ namespace CommonPart {
         public static void game_over_start()
         {
             Console.Write("gameOver");
-            stopUpdating(DataBase.motion_inftyTime, 240);
-            CutInTexture("1280x2000背景用グレー画像", 0,-2000,0,0,DataBase.motion_inftyTime,20);
+            stopUpdating(DataBase.motion_inftyTime, 180);
+            CutInTexture("1280x2000背景用グレー画像", 0,-2000,0,0,DataBase.motion_inftyTime,30);
             mapState +=gameOver;
         }
         public static void game_win_start()
         {
-            stopUpdating(DataBase.motion_inftyTime, 240);
-            CutInTexture("1280x2000背景用グレー画像", 0, -2000, 0, 0, DataBase.motion_inftyTime, 20);
+            stopUpdating(DataBase.motion_inftyTime, 180);
+            CutInTexture("1280x2000背景用グレー画像", 0, -2000, 0, 0, DataBase.motion_inftyTime, 30);
             mapState += backToStageSelection;
         }
         #endregion
@@ -609,10 +612,9 @@ namespace CommonPart {
             d.DrawLine(bar_pos, new Vector(bar_pos.X + player.sword * 3.8, bar_pos.Y), 17, Color.Violet, DepthID.Status);//剣ゲージ
             #endregion
 
-            #region draw CutIn
+            #region draw CutIns
             if(DataBase.timeEffective(Map.cutIn_texTime) && Map.cutIn_texName !=null && Map.cutIn_texName != "")
             {
-                Console.Write("drawCutIn");
                 d.Draw(new Vector(Map.cutIn_texPosNowX, Map.cutIn_texPosNowY),DataBase.getTex(Map.cutIn_texName),DepthID.Message);
             }
             #endregion
@@ -620,10 +622,10 @@ namespace CommonPart {
 
         static public bool inside_window(Enemy enemy)
         {
-            return enemy.animation.X > leftside - enemy.animation.X / 2 ||
-                    enemy.animation.X < rightside + enemy.animation.X / 2 ||
-                    enemy.animation.Y < DataBase.WindowSlimSizeY + enemy.animation.Y / 2 ||
-                    enemy.animation.Y > 0 - enemy.animation.Y / 2;
+            return enemy.x > leftside - enemy.animation.X / 2 &&
+                    enemy.x < rightside + enemy.animation.X / 2 &&
+                    enemy.y < DataBase.WindowSlimSizeY + enemy.animation.Y / 2 &&
+                    enemy.y > 0 - enemy.animation.Y / 2;
         }
         #endregion
     }// class end

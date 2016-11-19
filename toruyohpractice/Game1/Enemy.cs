@@ -411,7 +411,6 @@ namespace CommonPart
                                 #endregion
                                 #region genre small. circle
                                 case SkillGenreS.circle:
-                                    SingleShotSkillData ss1 = (SingleShotSkillData)sd;
                                     for (int j = 0; j < 2*Math.PI/sd.angle; j++)
                                     {
                                         bullets.Add(new Bullet(x, y, sd.moveType, sd.speed, sd.acceleration, sd.aniDName, (Math.PI / 2) + j * sd.angle, sd.radius,sd.sword, sd.life, sd.score));

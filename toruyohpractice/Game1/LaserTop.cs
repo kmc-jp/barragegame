@@ -28,6 +28,8 @@ namespace CommonPart
             omega = _omega;
             enemy = _enemy;
             color = _color;
+
+            atk = 1;
         }
         /// <summary>
         /// 目標点だけはある場合に使う
@@ -43,6 +45,8 @@ namespace CommonPart
             omega = _omega;
             enemy = _enemy;
             color = _color;
+
+            atk = 1;
         }
 
         /// <summary>
@@ -59,6 +63,8 @@ namespace CommonPart
             omega = _omega;
             enemy = _enemy;
             color = _color;
+
+            atk = 1;
         }
 
 
@@ -121,11 +127,20 @@ namespace CommonPart
 
             if (hit_jugde(player) == true)
             {
-                player.damage(atk);
-                //レーザーはキャラクターにダメージを与えても消えない。
+                if (!player.avoid_mode)
+                {
+                    player.damage(atk);
+                    //レーザーはキャラクターにダメージを与えても消えない。
+                }else { //レーザーが回避中のプレイヤーに当たる
+                    length = 0;
+                }
             }
         }
-
+        public override void damage(int d)
+        {
+            length = 0;
+            //laserはダメージを受けない
+        }
         public override bool hit_jugde(double px, double py, double p_radius = 0)
         {
             bool close;

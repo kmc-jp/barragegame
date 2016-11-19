@@ -14,7 +14,7 @@ namespace CommonPart
     /// <summary>
     /// 細かいスキルの区分
     /// </summary>
-    public enum SkillGenreS {none=0,shot,laser,circle,wayshot,zyuzi,yanagi }
+    public enum SkillGenreS {none=0,shot,laser,circle,wayshot,yanagi }
 
     abstract class SkillData
     {

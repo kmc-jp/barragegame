@@ -15,7 +15,7 @@ namespace CommonPart
         public int score;
         public int sword;
         public bool lasered;
-        public int atk = 3;
+        public int atk = 2;
 
         /// <summary>
         /// 目標物体がある場合に使う
@@ -93,7 +93,7 @@ namespace CommonPart
         {
             return Function.hitcircle(x, y, radius, px, py, p_radius);
         }
-        public void damage(int d) {
+        public virtual void damage(int d) {
             life -= d;
             if (life <= 0)  remove(Unit_state.dead);
         }

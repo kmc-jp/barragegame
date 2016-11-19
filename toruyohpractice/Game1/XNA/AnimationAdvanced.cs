@@ -183,7 +183,10 @@ namespace CommonPart
         static public AnimationDataAdvanced getAcopyFromDataBaseByName(string _ani_name) {
             if (DataBase.existsAniD(_ani_name, null)) {
                 AnimationDataAdvanced aDad = DataBase.getAniD(_ani_name);
-                return new AnimationDataAdvanced(_ani_name + "_copy", aDad.frames, aDad.min_texture_index, aDad.texture_name, aDad.repeat);
+                AnimationDataAdvanced n_aDad=new AnimationDataAdvanced(_ani_name + "_copy", aDad.frames, aDad.min_texture_index, aDad.texture_name, aDad.repeat);
+                n_aDad.assignAnimationName(aDad.pre_animation_name,false);
+                n_aDad.assignAnimationName(aDad.next_animation_name, true);
+                return n_aDad;
             }
             else {
                 Console.WriteLine("copy failed. Not Found In Dictionary.");
@@ -197,14 +200,14 @@ namespace CommonPart
         /// </summary>
         /// <param name="animation_name">animationDataにアクセス用のkey</param>
         /// <param name="next">true=これは続きのアニメーション、false=これは前の</param>
-        public void assignAnimationName(string animation_name,bool next)
+        public void assignAnimationName(string _animation_name,bool next)
         {
             if (next)
             {
-                next_animation_name = animation_name;
+                next_animation_name = _animation_name;
             }
             else {
-                pre_animation_name = animation_name;
+                pre_animation_name = _animation_name;
             }
         }
 
