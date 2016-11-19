@@ -86,7 +86,6 @@ namespace CommonPart
         /// </summary>
         protected override void UnloadContent()
         {
-
             // TODO: Unload any non ContentManager content here
             SoundManager.Music.Close();
             if (DataBase.database_singleton != null)
