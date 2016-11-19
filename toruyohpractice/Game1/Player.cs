@@ -107,7 +107,7 @@ namespace CommonPart
         /// <summary>
         /// 回避時に敵弾を消せる半円の半径
         /// </summary>
-        public int avoid_radius = 110;
+        public int avoid_radius = 115;
 
         #endregion
 
