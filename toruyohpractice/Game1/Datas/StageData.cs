@@ -119,7 +119,7 @@ namespace CommonPart
         {
             bgmIDs = new BGMID[] { BGMID.Stage2onWay, BGMID.Stage2Boss }; //一応こうした、いつでも{}の中身を変更できる。
             //ただし、MusicPlayer2.cs 30行から登録済でないと流れません。
-            background_names = new string[] { "background1" };
+            background_names = new string[] { "background2" };
         }
         public override void update()
         {
@@ -211,7 +211,7 @@ namespace CommonPart
                     break;
                 case 4920:
                     playBGM(bgmIDs[1]);//BGMを流す。
-                    Map.create_boss1(360, 10, "boss1");
+                    Map.create_boss2(360, 10, "boss2");
                     break;
             }
             #endregion

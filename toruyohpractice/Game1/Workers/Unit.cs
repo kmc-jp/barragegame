@@ -18,7 +18,10 @@ namespace CommonPart
         /// マップ上の座標
         /// </summary>
         public int x_index,y_index;
-        //true Width and Heigh can be obtained with Texture.Width,Height
+        /// <summary>
+        /// 当たり判定用の半径
+        /// </summary>
+        public double radius=0;
         /// <summary>
         /// usually it is 100, which is 100 % rate
         /// </summary>
@@ -35,63 +38,17 @@ namespace CommonPart
         #endregion
 
         #region constructor
+        /// <summary>
+        /// only assign x,y. do nothing else
+        /// </summary>
+        /// <param name="_x"></param>
+        /// <param name="_y"></param>
         public Unit(double _x,double _y)
         {    x = _x; y = _y;    }
         #endregion
 
         #region method
-        /*
-        public void add_skill(string skillName)
-        {
-            if (DataBase.existSkillDataName(skillName))
-            {
-                skills.Add(new Skill(skillName));
-            }else { Console.WriteLine("add_skill: Does not exist"+skillName); }
-        }
-
-        /// <summary>
-        /// スキルのクールダウンをそのデータでのクールダウン*reduceByPercentまで増やす
-        /// </summary>
-        /// <param name="_skillName"></param>
-        /// <param name="reduceByPercent"></param>
-        public void add_skill_coolDown(string _skillName,float reduceByPercent)
-        {
-            foreach (Skill sk in skills)
-            {
-                if (sk.skillName == _skillName)
-                {
-                    sk.coolDown +=(int)(reduceByPercent*DataBase.getSkillData(_skillName).cooldownFps);
-                }
-            }
-        }
-        /// <summary>
-        /// スキルのクールダウンをそのデータでのクールダウン*reduceByPercentまで増やす
-        /// </summary>
-        public void add_skill_coolDown(int index, float reduceByPercent)
-        {
-            skills[index].coolDown += (int)(reduceByPercent * DataBase.getSkillData(skills[index].skillName).cooldownFps);
-        }
-        public void set_skill_coolDown(string _skillName,int cd)
-        {
-            foreach(Skill sk in skills)
-            {
-                if (sk.skillName == _skillName)
-                {
-                    sk.coolDown = cd;
-                }
-            }
-        }
-        /// <summary>
-        /// skillsの配列のiインデックスのスキルのクールダウンを設定する
-        /// </summary>
-        /// <param name="index">インデックスは常に0から始まている</param>
-        /// <param name="cd"></param>
-        public void set_skill_coolDown(int index, int cd)
-        {
-            if (index >= skills.Count) { return; }
-            else { skills[index].coolDown = cd; }
-        }
-        */
+        //Functions around skill are all added to Enemy 
         public void moveToScreenPos_now(double _x,double _y) { x = _x; y = _y; }
         /// <summary>
         /// マップ上のこの座標へ移動させる

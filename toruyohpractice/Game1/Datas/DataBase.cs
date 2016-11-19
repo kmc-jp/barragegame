@@ -10,9 +10,17 @@ using Microsoft.Xna.Framework;
 
 namespace CommonPart {
 
-    public enum Unit_state { fadeout=0,dead,out_of_window,bulletDamagedPlayer, };
-    public enum MoveType {non_target=0,point_target=1,object_target=2,go_straight,mugen,rightcircle,leftcircle,stop,
-        chase_angle,screen_point_target };
+    /// <summary>
+    /// projectionなどに使われる exist_timesの各インデックスが代表するもの
+    /// </summary>
+    public enum existTimesIndex{    InvisibleStill = 0, InvisibleActive, VisibleStill, VisibleActive    }
+    public enum Unit_state { fadeout=0,dead,out_of_window,bulletDamagedPlayer,exist_timeOut };
+    public enum MoveType {noMotion=0, screen_point_target = 1,object_target=2,go_straight,mugen,rightcircle,leftcircle,stop,
+        chase_target };
+    /// <summary>
+    /// MoveTypeを持ち、なんらかのposをも持っている時、そのposの意味
+    /// </summary>
+    public enum PointType { notused = -1, default_pos = 0, displacement, pos_on_screen, }
     public enum Command
     {
         exit = -1000,
@@ -243,6 +251,8 @@ namespace CommonPart {
         #endregion
 
         #region SkillData
+        public const string skillUsedAfterDeath = "-after death";
+
         private const int low_speed=2;
         private const int middle_speed=4;
         private const int high_speed=7;
@@ -259,9 +269,7 @@ namespace CommonPart {
         public static Dictionary<string, SkillData> SkillDatasDictionary = new Dictionary<string, SkillData>();
         public static void setupSkillData()
         {
-            
-            addSkillData(new LaserTopData("laser",MoveType.chase_angle,"bullet1", 100000, 5, 0, lowangle1, high_cd2, 0.008, Color.MediumVioletRed));
-            addSkillData(new GenerateUnitSkillData("createbullet",SkillGenreS.shot,MoveType.go_straight,"bullet1", low_cd3, 2, 0, Math.PI/2, 8,"yanagi"));
+            addSkillData(new GenerateSkilledBulletData("createbullet",SkillGenreS.shot,MoveType.go_straight,"bullet1", low_cd3, 2, 0, Math.PI/2, 8,"yanagi"));
 
             addSkillData(new SingleShotSkillData("yanagi",SkillGenreS.yanagi ,MoveType.go_straight,"bullet1", low_cd1, 2, 0.2,0.25,8,1));
 
@@ -279,10 +287,9 @@ namespace CommonPart {
             addSkillData(new WayShotSkillData("4wayshot-0", SkillGenreS.wayshot, MoveType.go_straight, "bullet1", middle_cd1, middle_speed, 0, middleangle1, big_radius, 4));
             addSkillData(new WayShotSkillData("4wayshot-1", SkillGenreS.wayshot, MoveType.go_straight, "bullet1", low_cd1, middle_speed, 0, middleangle2, big_radius, 4));
             addSkillData(new WayShotSkillData("4wayshot-2", SkillGenreS.wayshot, MoveType.go_straight, "bullet1", high_cd3, middle_speed, 0, middleangle1, small_radius, 4));
-            addSkillData(new LaserTopData("laser-0", MoveType.go_straight, "bullet1", low_cd3, high_speed, 0, lowangle1, small_radius, 0, Color.Maroon));
-            addSkillData(new LaserTopData("laser-1", MoveType.chase_angle, "bullet1", low_cd3, high_speed, 0, lowangle1, small_radius, 0.002, Color.MediumVioletRed,0,15));
+            addSkillData(new LaserTopData("laser-0", MoveType.go_straight, "bullet1", low_cd3, high_speed, 0, lowangle1, small_radius, 0, Color.Maroon,25,0,5));
+            addSkillData(new LaserTopData("laser-1", MoveType.chase_target, "bullet1", low_cd3, high_speed, 0, lowangle1, small_radius, 0.002, Color.MediumVioletRed,20,0,15));
             addSkillData(new SingleShotSkillData("zyuzi-0",SkillGenreS.zyuzi ,MoveType.go_straight,"bullet1", middle_cd2, low_speed, 0, 0,small_radius));
-
         }
         #endregion
         #region GameScreen

@@ -130,7 +130,10 @@ namespace CommonPart
                         if (texRotate) { angle = Math.Atan2(displacement4.Y, displacement4.X); }// - Math.PI / 2; }
                         break;
                     case MoveType.stop:
-                        times[0] = 10;
+                        //times[0]フレームだけ停止する
+                        break;
+                    case MoveType.noMotion:
+                        times[0] = DataBase.motion_inftyTime;
                         break;
                     default:
                         break;
@@ -394,73 +397,89 @@ namespace CommonPart
                             #region ジャンルの小さい分類
                             switch (sd.sgs)
                             {
+                                #region genre small. shot
                                 case SkillGenreS.shot:
                                     SingleShotSkillData ss = (SingleShotSkillData)sd;
-                                    if (ss.moveType == MoveType.object_target)
+                                    if (ss.moveType == MoveType.object_target)//これは常に敵を追うパターンである。
                                     {
-                                        bullets.Add(new Bullet(x, y, ss.moveType, ss.speed, ss.acceleration, ss.aniDName, new Vector(player.x, player.y), 100, ss.radius, ss.life, ss.score, ss.sword));
-                                    }else
+                                        bullets.Add(new Bullet(x, y, sd.moveType, sd.speed, sd.acceleration, sd.aniDName, player,sd.angle, sd.radius, sd.sword,sd.life, sd.score));
+                                    }else if(sd.moveType==MoveType.screen_point_target)
                                     {
-                                        bullets.Add(new Bullet(x, y, ss.moveType, ss.speed, ss.acceleration,ss.angle, ss.aniDName, 100, ss.radius, ss.life, ss.score, ss.sword));
-                                    }
-
+                                        bullets.Add(new Bullet(x, y, sd.moveType, sd.speed, sd.acceleration, sd.aniDName,new Vector(player.x,player.y),PointType.pos_on_screen,sd.angle, sd.radius, sd.sword,sd.life, sd.score));
+                                    }else { bullets.Add(new Bullet(x, y, sd.moveType, sd.speed, sd.acceleration, sd.aniDName, sd.angle, sd.radius, sd.sword, sd.life, sd.score) ); }
                                     break;
+                                #endregion
+                                #region genre small. circle
                                 case SkillGenreS.circle:
                                     SingleShotSkillData ss1 = (SingleShotSkillData)sd;
-                                    for (int j = 0; j < 2*Math.PI/ss1.angle; j++)
+                                    for (int j = 0; j < 2*Math.PI/sd.angle; j++)
                                     {
-                                        bullets.Add(new Bullet(x, y, ss1.moveType, ss1.speed, ss1.acceleration,(Math.PI/2)+j*ss1.angle, ss1.aniDName, 100, ss1.radius, ss1.life, ss1.score, ss1.sword));
+                                        bullets.Add(new Bullet(x, y, sd.moveType, sd.speed, sd.acceleration, sd.aniDName, (Math.PI / 2) + j * sd.angle, sd.radius,sd.sword, sd.life, sd.score));
+                                        if (sd.duration>0) { bullets[bullets.Count - 1].setup_exist_time(sd.duration); }
                                     }
                                     break;
+                                #endregion
+                                #region genre small. laser
                                 case SkillGenreS.laser:
                                     LaserTopData lt = (LaserTopData)sd;
-                                    bullets.Add(new LaserTop(x, y, lt.moveType, lt.speed, lt.acceleration, lt.angle,lt.aniDName, 100, lt.radius, lt.life, lt.score, lt.sword,lt.omega,this,lt.color));
+                                    if (lt.moveType == MoveType.chase_target)
+                                    {
+                                        bullets.Add(new LaserTop(x, y, lt.moveType, lt.speed, lt.acceleration, player, lt.aniDName, lt.angle, lt.radius, lt.omega, this, lt.color, lt.sword, lt.life, lt.score));
+                                    }
+                                    else
+                                    {
+                                        bullets.Add(new LaserTop(x, y, lt.moveType, lt.speed, lt.acceleration, lt.angle, lt.aniDName, lt.radius, lt.omega, this, lt.color,lt.sword,lt.life, lt.score));
+                                    }
+                                    if (lt.duration > 0) { bullets[bullets.Count - 1].setup_exist_time(lt.duration); }
                                     break;
+                                #endregion
+                                #region genre small. wayshot
                                 case SkillGenreS.wayshot:
                                     WayShotSkillData ws = (WayShotSkillData)sd;
                                     double player_angle = Math.Atan2(player.y - y, player.x - x);
                                     if (ws.way % 2 == 1)
                                     {
-                                        bullets.Add(new Bullet(x, y, ws.moveType, ws.speed, ws.acceleration, player_angle, ws.aniDName, 100, ws.radius, ws.life, ws.score, ws.sword));
+                                        bullets.Add(new Bullet(x, y, sd.moveType, sd.speed, sd.acceleration, sd.aniDName, player_angle, sd.radius, sd.sword,sd.life,sd.score));
                                         for (int j = 1; j < (ws.way + 1) / 2; j++) 
                                         {
-                                            bullets.Add(new Bullet(x, y, ws.moveType, ws.speed, ws.acceleration, player_angle + j * ws.angle, ws.aniDName, 100, ws.radius, ws.life, ws.score, ws.sword));
-                                            bullets.Add(new Bullet(x, y, ws.moveType, ws.speed, ws.acceleration, player_angle - j * ws.angle, ws.aniDName, 100, ws.radius, ws.life, ws.score, ws.sword));
+                                            bullets.Add(new Bullet(x, y, sd.moveType, sd.speed, sd.acceleration, sd.aniDName, player_angle+j*sd.angle, sd.radius, sd.sword, sd.life, sd.score));
+                                            bullets.Add(new Bullet(x, y, sd.moveType, sd.speed, sd.acceleration, sd.aniDName, player_angle - j * sd.angle, sd.radius, sd.sword, sd.life, sd.score));
                                         }
                                     }else
                                     {
                                         for (int j = 0; j < ws.way / 2; j++)
                                         {
-                                            bullets.Add(new Bullet(x, y, ws.moveType, ws.speed, ws.acceleration, player_angle + j * ws.angle+ ws.angle / 2, ws.aniDName, 100, ws.radius, ws.life, ws.score, ws.sword));
-                                            bullets.Add(new Bullet(x, y, ws.moveType, ws.speed, ws.acceleration, player_angle - j * ws.angle- ws.angle / 2, ws.aniDName, 100, ws.radius, ws.life, ws.score, ws.sword));
+                                            bullets.Add(new Bullet(x, y, sd.moveType, sd.speed, sd.acceleration, sd.aniDName, player_angle + j * sd.angle+sd.angle/2, sd.radius, sd.sword, sd.life, sd.score));
+                                            bullets.Add(new Bullet(x, y, sd.moveType, sd.speed, sd.acceleration, sd.aniDName, player_angle - j * sd.angle-sd.angle/2, sd.radius, sd.sword, sd.life, sd.score));
                                         }
                                     }
+                                    if (sd.duration > 0) { for (int kk = 0; kk < ws.way; kk++) { bullets[bullets.Count - 1-kk].setup_exist_time(ws.duration); }  }
                                     break;
-                                case SkillGenreS.zyuzi:
-                                    SingleShotSkillData ss2 = (SingleShotSkillData)sd;
-                                    for (int j = 0; j < 4; j++)
-                                    {
-                                        bullets.Add(new Bullet(x, y, ss2.moveType, ss2.speed, ss2.acceleration, j*Math.PI/2, ss2.aniDName, 100, ss2.radius, ss2.life, ss2.score, ss2.sword));
-                                    }
-                                    break;
+                                #endregion
+                                #region genre small yanagi
                                 case SkillGenreS.yanagi:
-                                    SingleShotSkillData ss3 = (SingleShotSkillData)sd;
-                                    for (int j = 1; j < 5; j++)
+                                    WayShotSkillData ws2 = (WayShotSkillData)sd;
+                                    #region yanagi setting
+                                    for (int j = 1; j < ws2.way+1; j++)
                                     {
-                                        Bullet bullet1 = new Bullet(x + ss3.space * j+ss3.radius, y - ss3.space * j * j *2 + 4 + animation.Y/2, ss3.moveType, ss3.speed, ss3.acceleration, ss3.angle, ss3.aniDName, 100, ss3.radius, ss3.life, ss3.score, ss3.sword);
-                                        bullet1.speed_x = ss3.speed * (j-1) * 0.25;
-                                        bullet1.speed_y = -ss3.speed + 0.1 * (ss3.space * j);
-                                        bullet1.acceleration_x = +ss3.acceleration * j * j / 120;
-                                        bullet1.acceleration_y = ss3.acceleration;
+                                        Bullet bullet1 = new Bullet(x + sd.space * j + sd.radius, y - sd.space * j * j * 2 + 4 + animation.Y / 2, sd.moveType, 
+                                            sd.speed, sd.acceleration, sd.aniDName,sd.angle, sd.radius, sd.sword, sd.life, sd.score);
+                                        bullet1.speed_x = sd.speed * (j-1) * 0.25;
+                                        bullet1.speed_y = -sd.speed + 0.1 * (sd.space * j);
+                                        bullet1.acceleration_x = +sd.acceleration * j * j / 120;
+                                        bullet1.acceleration_y = sd.acceleration;
                                         bullets.Add(bullet1);
-                                        Bullet bullet2 = new Bullet(x - ss3.space * j-ss3.radius, y - ss3.space * j * j *2 + 4 + animation.Y/2, ss3.moveType, ss3.speed, ss3.acceleration, ss3.angle, ss3.aniDName, 100, ss3.radius, ss3.life, ss3.score, ss3.sword);
-                                        bullet2.speed_x = -ss3.speed * (j-1) * 0.25;
-                                        bullet2.speed_y = -ss3.speed + 0.1 * (ss3.space * j);
-                                        bullet2.acceleration_x = -ss3.acceleration * j * j / 120;
-                                        bullet2.acceleration_y = ss3.acceleration;
+                                        Bullet bullet2 = new Bullet(x - sd.space * j-sd.radius, y - sd.space * j * j *2 + 4 + animation.Y/2, sd.moveType,
+                                            sd.speed, sd.acceleration, sd.aniDName, sd.angle, sd.radius, sd.sword, sd.life, sd.score);
+                                        bullet2.speed_x = -sd.speed * (j-1) * 0.25;
+                                        bullet2.speed_y = -sd.speed + 0.1 * (sd.space * j);
+                                        bullet2.acceleration_x = -sd.acceleration * j * j / 120;
+                                        bullet2.acceleration_y = sd.acceleration;
                                         bullets.Add(bullet2);
                                     }
+                                    #endregion
                                     break;
+                                #endregion
                                 default:
                                     use = false;
                                     break;
@@ -468,27 +487,92 @@ namespace CommonPart
                             #endregion
                             break;
                         case SkillGenreL.bullet_create:
+                            GenerateSkilledBulletData gsb= (GenerateSkilledBulletData)sd;
                             #region ジャンルの小さい分類
                             switch (sd.sgs)
                             {
+                                #region genre small. shot:
                                 case SkillGenreS.shot:
-                                    GenerateUnitSkillData ss = (GenerateUnitSkillData)sd;
-                                    bullets.Add(new SkilledBullet(x, y, ss.moveType, ss.speed, ss.acceleration,ss.angle, ss.aniDName, 100, ss.radius, ss.life, ss.score, ss.sword,ss.unitSkillName,this));
+                                    if (gsb.moveType == MoveType.object_target)//これは常に敵を追うパターンである。
+                                    {
+                                        bullets.Add(new SkilledBullet(x, y, sd.moveType, sd.speed, sd.acceleration, sd.aniDName,player, sd.angle, sd.radius,
+                                            gsb.unitSkillName, this, sd.sword, sd.life, sd.score));
+                                    }
+                                    else if (sd.moveType == MoveType.screen_point_target)
+                                    {
+                                        bullets.Add(new SkilledBullet(x, y, sd.moveType, sd.speed, sd.acceleration, sd.aniDName, new Vector(player.x, player.y), PointType.pos_on_screen,
+                                            sd.angle, sd.radius, gsb.unitSkillName, this, sd.sword, sd.life, sd.score));
+                                    }
+                                    else { bullets.Add(new SkilledBullet(x, y, sd.moveType, sd.speed, sd.acceleration, sd.aniDName, sd.angle, sd.radius,
+                                        gsb.unitSkillName, this,sd.sword, sd.life, sd.score)); }
                                     break;
+                                #endregion
+                                #region genre small circle
                                 case SkillGenreS.circle:
-                                    GenerateUnitSkillData ss1 = (GenerateUnitSkillData)sd;
-                                    for (int j = 0; j < 2 * Math.PI / ss1.angle; j++)
+                                    SingleShotSkillData ss1 = (SingleShotSkillData)sd;
+                                    for (int j = 0; j < 2 * Math.PI / sd.angle; j++)
                                     {
-                                        bullets.Add(new SkilledBullet(x, y, ss1.moveType, ss1.speed, ss1.acceleration, (Math.PI / 2) + j * ss1.angle, ss1.aniDName, 100, ss1.radius, ss1.life, ss1.score, ss1.sword,ss1.unitSkillName,this));
+                                        bullets.Add(new SkilledBullet(x, y, sd.moveType, sd.speed, sd.acceleration, sd.aniDName, (Math.PI / 2) + j * sd.angle, sd.radius, 
+                                            gsb.unitSkillName,this,sd.sword, sd.life, sd.score));
+                                        if (sd.duration > 0) { bullets[bullets.Count - 1].setup_exist_time(sd.duration); }
                                     }
                                     break;
-                                case SkillGenreS.zyuzi:
-                                    GenerateUnitSkillData ss2 = (GenerateUnitSkillData)sd;
-                                    for (int j = 0; j < 3; j++)
+                                #endregion
+                                #region genre small wayshot
+                                case SkillGenreS.wayshot:
+                                    WayShotSkillData ws = (WayShotSkillData)sd;
+                                    double player_angle = Math.Atan2(player.y - y, player.x - x);
+                                    if (ws.way % 2 == 1)
                                     {
-                                        bullets.Add(new SkilledBullet(x, y, ss2.moveType, ss2.speed, ss2.acceleration, j * Math.PI / 2, ss2.aniDName, 100, ss2.radius, ss2.life, ss2.score, ss2.sword,ss2.unitSkillName,this));
+                                        bullets.Add(new SkilledBullet(x, y, sd.moveType, sd.speed, sd.acceleration, sd.aniDName, player_angle, sd.radius,
+                                            gsb.unitSkillName, this,sd.sword, sd.life, sd.score));
+                                        for (int j = 1; j < (ws.way + 1) / 2; j++)
+                                        {
+                                            bullets.Add(new SkilledBullet(x, y, sd.moveType, sd.speed, sd.acceleration, sd.aniDName, player_angle + j * sd.angle, sd.radius,
+                                                gsb.unitSkillName,this,sd.sword, sd.life, sd.score));
+                                            bullets.Add(new SkilledBullet(x, y, sd.moveType, sd.speed, sd.acceleration, sd.aniDName, player_angle - j * sd.angle, sd.radius,
+                                                gsb.unitSkillName, this,sd.sword, sd.life, sd.score));
+                                        }
                                     }
+                                    else
+                                    {
+                                        for (int j = 0; j < ws.way / 2; j++)
+                                        {
+                                            bullets.Add(new SkilledBullet(x, y, sd.moveType, sd.speed, sd.acceleration, sd.aniDName, player_angle + j * sd.angle + sd.angle / 2, sd.radius,
+                                                gsb.unitSkillName, this,sd.sword, sd.life, sd.score));
+                                            bullets.Add(new SkilledBullet(x, y, sd.moveType, sd.speed, sd.acceleration, sd.aniDName, player_angle - j * sd.angle - sd.angle / 2, sd.radius,
+                                                gsb.unitSkillName, this,sd.sword, sd.life, sd.score));
+                                        }
+                                    }
+                                    if (sd.duration > 0) { for (int kk = 0; kk < ws.way; kk++) { bullets[bullets.Count - 1 - kk].setup_exist_time(sd.duration); } }
                                     break;
+                                #endregion
+                                #region yanagi
+                                case SkillGenreS.yanagi:
+                                    WayShotSkillData ws2 = (WayShotSkillData)sd;
+                                    #region yanagi setting
+                                    for (int j = 1; j < ws2.way+1; j++)
+                                    {
+                                        Bullet bullet1 = new SkilledBullet(x + sd.space * j + sd.radius, y - sd.space * j * j * 2 + 4 + animation.Y / 2, sd.moveType,
+                                            sd.speed, sd.acceleration, sd.aniDName, sd.angle, sd.radius,
+                                            gsb.unitSkillName, this,sd.sword, sd.life, sd.score);
+                                        bullet1.speed_x = sd.speed * (j - 1) * 0.25;
+                                        bullet1.speed_y = -sd.speed + 0.1 * (sd.space * j);
+                                        bullet1.acceleration_x = +sd.acceleration * j * j / 120;
+                                        bullet1.acceleration_y = sd.acceleration;
+                                        bullets.Add(bullet1);
+                                        Bullet bullet2 = new SkilledBullet(x - sd.space * j - sd.radius, y - sd.space * j * j * 2 + 4 + animation.Y / 2, sd.moveType,
+                                            sd.speed, sd.acceleration, sd.aniDName, sd.angle, sd.radius,
+                                            gsb.unitSkillName, this,sd.sword, sd.life, sd.score);
+                                        bullet2.speed_x = -sd.speed * (j - 1) * 0.25;
+                                        bullet2.speed_y = -sd.speed + 0.1 * (sd.space * j);
+                                        bullet2.acceleration_x = -sd.acceleration * j * j / 120;
+                                        bullet2.acceleration_y = sd.acceleration;
+                                        bullets.Add(bullet2);
+                                    }
+                                    #endregion
+                                    break;
+                                #endregion
                                 default:
                                     use = false;
                                     break;

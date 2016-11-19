@@ -6,13 +6,25 @@ using System.Threading.Tasks;
 
 namespace CommonPart
 {
-    class Boss1:Enemy
+    abstract class Boss:Enemy {
+
+        protected int body_max_index;
+        public Enemy[] bodys;
+        protected Vector[] bodys_pos;
+        protected double height_percent;
+
+        public Boss(double _x,double _y,string _unitType_name):base(_x,_y,_unitType_name)
+        {   }
+
+        protected virtual bool moving() { return true; }
+        public override void damage(int atk)
+        {
+            base.damage(atk);
+            Map.bossDamaged();
+        }
+    }
+    class Boss1:Boss
     {
-        
-        const int body_max_index=13;
-        public Enemy[] bodys = new Enemy[body_max_index + 1];
-        private Vector[] bodys_pos = new Vector[body_max_index + 1];
-        const double height_percent = 0.35;
         /// <summary>
         /// 頭部が回転する時、画像のどこを中心に回転するかを決める。1のときは画像の右側である。1/2の時は画像の中央縦線上となる。
         /// </summary>
@@ -23,6 +35,9 @@ namespace CommonPart
         protected double head_rotatePercentY = 1;
         public Boss1(double _x, double _y, string _unitType_name):base(_x,_y,_unitType_name)
         {
+            body_max_index = 13;
+            height_percent = 0.35;
+            bodys = new Enemy[body_max_index+1];
             for (int i = 0; i < body_max_index; i++)
             {
                 bodys[i] = new Enemy(x, y - 0 * i * height_percent, "boss1body" +  i % 3);
@@ -30,13 +45,6 @@ namespace CommonPart
             bodys[body_max_index] = new Enemy(x, y, "boss1tail");
             maxLife = 10000;
             life = maxLife;
-        }
-
-        public override void damage(int atk)
-        {
-            base.damage(atk);
-            Map.bossDamaged();
-            Console.WriteLine("BossHp: " + life);
         }
         public override void update(Player player)
         {
@@ -98,15 +106,10 @@ namespace CommonPart
             }
         }
 
-        private bool moving() { return true; }
     }
 
-    class Boss2 : Enemy
+    class Boss2 : Boss
     {
-        const int body_max_index = 8;
-        public Enemy[] bodys = new Enemy[body_max_index + 1];
-        private Vector[] bodys_pos = new Vector[body_max_index + 1];
-        const double height_percent = 0.35;
         /// <summary>
         /// 頭部が回転する時、画像のどこを中心に回転するかを決める。1のときは画像の右側である。1/2の時は画像の中央縦線上となる。
         /// </summary>
@@ -117,6 +120,8 @@ namespace CommonPart
         protected double head_rotatePercentY = 1;
         public Boss2(double _x, double _y, string _unitType_name) : base(_x, _y, _unitType_name)
         {
+            body_max_index = 7;
+            bodys = new Enemy[body_max_index+1];
             bodys[0] = new Enemy(x - 145, y - 30, "funnnel0");
             bodys[1] = new Enemy(x - 180, y + 5,"funnnel1");
             bodys[2] = new Enemy(x - 215, y - 30,"funnnel2");
@@ -129,12 +134,6 @@ namespace CommonPart
             life = maxLife;
         }
 
-        public override void damage(int atk)
-        {
-            base.damage(atk);
-            Map.bossDamaged();
-            Console.WriteLine("BossHp: " + life);
-        }
         public override void update(Player player)
         {
             base.update(player);
@@ -164,7 +163,5 @@ namespace CommonPart
                 bullets[i].draw(d);
             }
         }
-
-        private bool moving() { return true; }
     }
 }

@@ -109,14 +109,15 @@ namespace CommonPart
         }
         protected override void Update(GameTime gameTime)//mainloop
         {
+            /*
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
+                */
 
             // TODO: Add your update logic here            
             if (!scenem.Update() && !exited) {
                 exitGame();
-                this.Exit();
+                Exit();
                 SoundManager.Music.Close();
                 exited = true;
             }

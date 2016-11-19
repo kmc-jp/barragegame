@@ -10,23 +10,16 @@ using Microsoft.Xna.Framework.Input;
 
 namespace CommonPart
 {
-    class Player
+    class Player:Unit
     {
         #region standard variables
-        /// <summary>
-        /// キャラクターのスクリーン上の座標
-        /// </summary>
-        public double x, y;
         /// <summary>
         /// キャラクターの速度
         /// </summary>
         public double speed;
         public double speed_x;//後に計算されて代入される
         public double speed_y;
-        /// <summary>
-        /// 当たり判定用の半径
-        /// </summary>
-        public double radius;
+
         /// <summary>
         /// (キャラクターの残機*MapでのlifesPerPiece) の値になります。
         /// </summary>
@@ -158,9 +151,8 @@ namespace CommonPart
         /// <param name="_radius"></param>
         /// <param name="_life">残機数*MapでのlifesPerPiece</param>
         /// <param name="a_n">これはAnimationDataAdvancedの名前の前半部分である。</param>
-        public Player(double _x,double _y,double _speed,double _radius,int _life,string a_n)
+        public Player(double _x,double _y,double _speed,double _radius,int _life,string a_n):base(_x,_y)
         {
-            x = _x;y = _y;
             speed = _speed;
             radius = _radius;
             life = _life;
@@ -446,7 +438,7 @@ namespace CommonPart
                                 prosToBoss[j].update();
                             }
                             nowProsIndex++;
-                            prosToBoss[nowProsIndex] = new Projection(x, y, MoveType.non_target, "swordSkilltoBossDash");
+                            prosToBoss[nowProsIndex] = new Projection(x, y, MoveType.noMotion, "swordSkilltoBossDash");
                             prosToBoss[nowProsIndex].texRotate = true;
                             prosToBoss[nowProsIndex].radian = radianForPros;
                         }
@@ -565,7 +557,35 @@ namespace CommonPart
                             Map.enemys_inside_window[i].bullets[j].damage(atk);
                         }
                     }
-
+                    if (Map.enemys_inside_window[i].label.Contains("boss"))
+                    {
+                        for(int j = 0; j < ((Boss)(Map.enemys_inside_window[i])).bodys.Length; j++)
+                        {
+                            for(int k=0; k < ((Boss)(Map.enemys_inside_window[i])).bodys[j].bullets.Count; k++)
+                            {
+                                if (((Boss)Map.enemys_inside_window[i]).bodys[j].bullets[k].hit_jugde(x, y, avoid_radius) &&
+                                // すでに当たることが分かったものたちに対して、上下左右どっちに回避したかによって、消す。
+                                ((input.IsKeyDown(KeyID.Up) == true && ((Boss)Map.enemys_inside_window[i]).bodys[j].y <= y) ||
+                               (input.IsKeyDown(KeyID.Down) == true && ((Boss)Map.enemys_inside_window[i]).bodys[j].y >= y) ||
+                               (input.IsKeyDown(KeyID.Left) == true && ((Boss)Map.enemys_inside_window[i]).bodys[j].x <= x) ||
+                               (input.IsKeyDown(KeyID.Right) == true && ((Boss)Map.enemys_inside_window[i]).bodys[j].x >= x))
+                                )
+                                {
+                                    ((Boss)Map.enemys_inside_window[i]).bodys[j].damage(atk);
+                                }
+                            }
+                            if (((Boss)Map.enemys_inside_window[i]).bodys[j].hit_jugde(x, y, avoid_radius) &&
+                            // すでに当たることが分かったものたちに対して、上下左右どっちに回避したかによって、消す。
+                            ((input.IsKeyDown(KeyID.Up) == true && ((Boss)Map.enemys_inside_window[i]).bodys[j].y <= y) ||
+                               (input.IsKeyDown(KeyID.Down) == true && ((Boss)Map.enemys_inside_window[i]).bodys[j].y >= y) ||
+                               (input.IsKeyDown(KeyID.Left) == true && ((Boss)Map.enemys_inside_window[i]).bodys[j].x <= x) ||
+                               (input.IsKeyDown(KeyID.Right) == true && ((Boss)Map.enemys_inside_window[i]).bodys[j].x >= x))
+                        )
+                            {
+                                Map.enemys_inside_window[i].damage(atk);
+                            }
+                        }
+                    }
                     if (Map.enemys_inside_window[i].hit_jugde(x, y, avoid_radius) &&
                          // すでに当たることが分かったものたちに対して、上下左右どっちに回避したかによって、消す。
                          ((input.IsKeyDown(KeyID.Up) == true && Map.enemys_inside_window[i].y <= y) ||
@@ -621,7 +641,7 @@ namespace CommonPart
             }
             if (life>-5 && life <= 0) { life = -6; Map.game_over_start(); }
         }
-        public void draw(Drawing d)
+        public override void draw(Drawing d)
         {
             for (int j = nowProsIndex; j >= 0; j--)
             { 
