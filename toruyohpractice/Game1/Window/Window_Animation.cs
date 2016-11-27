@@ -105,6 +105,8 @@ namespace CommonPart
 
             DataBase.addAniD(new AnimationDataAdvanced(ani_name, frames,
                 min_index, texture_name, repeat));
+            Console.Write(DataBase.existsAniD(ani_name,null)+" : ");
+            Console.WriteLine(pre_ani_name+" "+next_ani_name);
             DataBase.getAniD(ani_name).assignAnimationName(pre_ani_name, false);
             DataBase.getAniD(ani_name).assignAnimationName(next_ani_name, true);
             ad = DataBase.getAniD(ani_name);

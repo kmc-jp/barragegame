@@ -46,6 +46,7 @@ namespace CommonPart {
         }
         public override void SceneUpdate() {
             base.SceneUpdate();
+            if (Input.IsKeyDown(KeyID.Escape)) { Delete = true; new StageSelectScene(scenem); }
             if (!MapFulStop && Map.mapState.Contains(Map.gameOver) && Map.stop_time == DataBase.motion_inftyTime && Map.readyToStop_time <= 0)
             {// gameOverに入ったので、準備をして、mapはもう更新しなくする
                 #region gameOver starts as Map Scene. Create Window
@@ -65,7 +66,7 @@ namespace CommonPart {
                 #region backToStageSelectionScene
                 MapFulStop = true;
                 Delete = true;
-                new TitleSceneWithWindows(scenem);
+                new StageSelectScene(scenem);
                 #endregion
                 SoundManager.Music.PlayBGM(BGMID.None, true);
             }

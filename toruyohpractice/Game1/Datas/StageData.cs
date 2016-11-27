@@ -62,8 +62,8 @@ namespace CommonPart
                     Map.create_enemy(360, 0, "E3-0");
                     break;
                 case 1620:
-                    Map.create_enemy(0, 100,"E1c-0a");
-                    Map.create_enemy(720, 100, "E1c-0b");
+                    Map.create_enemy(40, 100,"E1c-0a");
+                    Map.create_enemy(680, 100, "E1c-0b");
                     break;
                 case 1980:
                     Map.create_enemy(200, 0, "E3-1");
@@ -98,11 +98,11 @@ namespace CommonPart
                     Map.create_enemy(300, 0, "E1a-4");
                     Map.create_enemy(420, 0, "E1a-5");
                     break;
-                case 4880:
+                case 4700:
                     Map.boss_mode = true;
                     Map.EngagingTrueBoss();
                     break;
-                case 4900:
+                case 4720:
                     playBGM(bgmIDs[1]);//BGMを流す。
                     Map.create_boss1(360, 10, "boss1");
                     break;
@@ -119,7 +119,8 @@ namespace CommonPart
         {
             bgmIDs = new BGMID[] { BGMID.Stage2onWay, BGMID.Stage2Boss }; //一応こうした、いつでも{}の中身を変更できる。
             //ただし、MusicPlayer2.cs 30行から登録済でないと流れません。
-            background_names = new string[] { "background1" };
+            background_names = new string[] { "background2" };
+            setupAllbackgroundWithNames();
         }
         public override void update()
         {
@@ -204,14 +205,14 @@ namespace CommonPart
                     Map.create_enemy(720, 270, "E5-g");
                     break;
                 case 4200:
-                    Map.create_enemy(360, 0, "E4-h");
+                    Map.create_enemy(360, 0, "E4-1h");
                     break;
                 case 4860:
                     Map.boss_mode = true;
                     break;
                 case 4920:
                     playBGM(bgmIDs[1]);//BGMを流す。
-                    Map.create_boss1(360, 10, "boss1");
+                    Map.create_boss2(360, 10, "boss2");
                     break;
             }
             #endregion
