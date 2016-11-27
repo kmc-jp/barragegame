@@ -208,11 +208,11 @@ namespace CommonPart
                     Map.create_enemy(360, 0, "E4-1h");
                     break;
                 case 4860:
-                    Map.boss_mode = true;
+                    Map.EngagingTrueBoss();
                     break;
                 case 4920:
                     playBGM(bgmIDs[1]);//BGMを流す。
-                    Map.create_boss2(360, 10, "boss2");
+                    Map.create_boss2(720, 10, "boss2");
                     break;
             }
             #endregion

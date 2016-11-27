@@ -22,20 +22,21 @@ namespace CommonPart
         SceneManager scenem;
         Drawing d;
 
-
+        public static double enemySkills_update_fps = 60;
+        public static double enemyBullets_update_fps = 60;
+        public static double fps = 60;
         public const int WindowSizeX = 1280;
         public const int WindowSizeY = 960;
         internal static readonly Vector WindowSize = new Vector(WindowSizeX, WindowSizeY);
-        public static int music_number = 15;
-        public static bool[] music_checker = new bool[music_number];
 
         //倍率込みのサイズ　ふつうは扱わなくてよい　staticなのは苦しまぎれ
         public static int _WindowSizeX;
         public static int _WindowSizeY;
 
-
+#if DEBUG
         [DllImport("kernel32")]
         static extern bool AllocConsole();
+#endif
         public Game1()
         {
             this.Window.Title = "Barrage Game";
@@ -56,7 +57,9 @@ namespace CommonPart
         protected override void Initialize()
         {
             //コンソールモード
+#if DEBUG
             AllocConsole();
+#endif
             // TODO: Add your initialization logic here
             ChangeWindowSize(1);
             base.Initialize();
@@ -152,6 +155,9 @@ namespace CommonPart
 
         void SetFPS(double value)
         {
+            fps = value;
+            if (value < enemyBullets_update_fps) { enemyBullets_update_fps = value; }
+            if (value < enemySkills_update_fps) { enemySkills_update_fps = value; }
             this.TargetElapsedTime = TimeSpan.FromSeconds(1.0 / value);
 
         }

@@ -146,51 +146,54 @@ namespace CommonPart
             return !useExistTime || ( !DataBase.timeEffective(exist_times[(int)existTimesIndex.InvisibleActive]) &&
                    !DataBase.timeEffective(exist_times[(int)existTimesIndex.InvisibleStill] )  );
         }
-        public virtual void update()
+        public virtual void update(bool bulletMove=true)
         {
             if (delete) { return; }
             if (!update_exist_times())
             {
                 return;
             }
-            #region switch move_type
-            switch (move_type)
+            if (bulletMove)
             {
-                case MoveType.noMotion:
-                    break;
-                case MoveType.object_target:
-                    if (!Function.hitcircle(x, y, radius, target.x, target.y, speed/3))
-                    {
+                #region switch move_type
+                switch (move_type)
+                {
+                    case MoveType.noMotion:
+                        break;
+                    case MoveType.object_target:
+                        if (!Function.hitcircle(x, y, radius, target.x, target.y, speed / 3))
+                        {
+                            speed += acceleration;
+                            double eu = Math.Sqrt(Function.distance(x, y, target.x, target.y));
+                            speed_x = (target.x - x) * speed / eu;
+                            speed_y = (target.y - y) * speed / eu;
+                            x += speed_x;
+                            y += speed_y;
+                        }
+                        break;
+                    case MoveType.screen_point_target:
+                        if (!Function.hitcircle(x, y, radius, target_pos.X, target_pos.Y, speed / 3))
+                        {
+                            speed += acceleration;
+                            double ep = Math.Sqrt(Function.distance(x, y, target_pos.X, target_pos.Y));
+                            speed_x = speed * (target_pos.X - x) / ep;
+                            speed_y = speed * (target_pos.Y - y) / ep;
+                            x += speed_x;
+                            y += speed_y;
+                        }
+                        break;
+                    case MoveType.go_straight: //角度変化がない前提である。
                         speed += acceleration;
-                        double eu = Math.Sqrt(Function.distance(x, y, target.x, target.y));
-                        speed_x = (target.x - x) * speed / eu;
-                        speed_y = (target.y - y) * speed / eu;
+                        speed_x += acceleration_x;
+                        speed_y += acceleration_y;
                         x += speed_x;
                         y += speed_y;
-                    }
-                    break;
-                case MoveType.screen_point_target:
-                    if (!Function.hitcircle(x, y, radius, target_pos.X, target_pos.Y, speed/3))
-                    {
-                        speed += acceleration;
-                        double ep = Math.Sqrt(Function.distance(x, y, target_pos.X, target_pos.Y));
-                        speed_x = speed * (target_pos.X - x) / ep;
-                        speed_y = speed * (target_pos.Y - y) / ep;
-                        x += speed_x;
-                        y += speed_y;
-                    }
-                    break;
-                case MoveType.go_straight: //角度変化がない前提である。
-                    speed += acceleration;
-                    speed_x += acceleration_x;
-                    speed_y += acceleration_y;
-                    x += speed_x;
-                    y += speed_y;
-                    break;
-                default:
-                    break;
+                        break;
+                    default:
+                        break;
+                }
+                #endregion
             }
-            #endregion
             if (visible()) { animation.Update(); }
         }
         /// <summary>

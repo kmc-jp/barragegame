@@ -52,10 +52,6 @@ namespace CommonPart {
 
             Input.Update();
             mouse.Update_(); //####追加
-            if (Input.IsKeyDownOld(KeyID.Select) == false && Input.IsKeyDown(KeyID.Select) == true)
-            {
-
-            }
             JoyPadManager.Update();
             draw.Update();
             Scene ns = nowScene;

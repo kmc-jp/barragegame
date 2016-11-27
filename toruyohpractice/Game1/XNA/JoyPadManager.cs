@@ -109,6 +109,10 @@ using DInput = Microsoft.DirectX.DirectInput;
         static JoyPadManager() {
             GetPad();
         }
+        /// <summary>
+        /// 使用可能かどうかの判断に使える。trueの時、padは使える状態である。
+        /// </summary>
+        /// <returns></returns>
         public static bool Enable() { return padid >= 0; }
         public static JoyWrapper.JOYINFOEX PadState() { return padstate; }
         public static JoyWrapper.JOYCAPS PadCaps() { return padcaps; }

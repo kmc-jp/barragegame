@@ -27,7 +27,7 @@ namespace CommonPart {
         left_and_go_back = -101, nothing = -100,
         apply_int = 110, apply_string = 111,
         button_on = 112, button_off = 113, previousPage = 114, nextPage = 115, Scroll = 116, tru_fals = 117,
-        selectInScroll = 118, closeThis = 119, reloadScroll = 120, buttonPressed1 = 121, buttonPressed2 = 122,
+        selectInScroll = 118, closeThis = 119, reloadScroll = 120, buttonPressed1 = 121, buttonPressed2 = 122, buttonPressed3 = 123,
         openUTD = 200, UTDutButtonPressed = 201,
         openAniD = 202, addTex = 203, playAnimation = 206, newAniD = 207, applyAniD = 208,// open animation DataBase, add Texture,play animation,
         openMusicGallery = 204, openMapEditor = 205,
@@ -292,8 +292,9 @@ namespace CommonPart {
             addSkillData(new SingleShotSkillData("boss8circle-0", SkillGenreS.circle, MoveType.go_straight, "bulletsmall", low_cd3, low_speed, 0, middleangle2, small_radius));
             addSkillData(new SingleShotSkillData("downshot-0", SkillGenreS.shot,MoveType.go_straight, "bulletsmall", low_cd1, middle_speed, 0, lowangle1, small_radius));
             addSkillData(new SingleShotSkillData("downshot-1", SkillGenreS.shot, MoveType.go_straight, "bulletline", middle_cd1, middle_speed, 0, lowangle1, small_radius));
-            addSkillData(new SingleShotSkillData("1wayshot-0",SkillGenreS.shot,MoveType.object_target,"bulletsmall", middle_cd2, middle_speed, 0, 0,small_radius,120));
-            addSkillData(new SingleShotSkillData("1wayshot-1", SkillGenreS.shot, MoveType.object_target, "bulletsmall", middle_cd2, high_speed, 0, 0, small_radius,120));
+            addSkillData(new WayShotSkillData("1wayshot-1", SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", middle_cd2, high_speed, 0, 0, small_radius,1));
+            addSkillData(new SingleShotSkillData("1chaseShot-1",SkillGenreS.shot,MoveType.object_target,"bulletsmall", middle_cd2, middle_speed, 0, 0,small_radius,120));
+            addSkillData(new SingleShotSkillData("1chaseShot-2", SkillGenreS.shot, MoveType.object_target, "bulletsmall", middle_cd2, high_speed, 0, 0, small_radius,120));
             addSkillData(new WayShotSkillData("2wayshot-0", SkillGenreS.wayshot, MoveType.go_straight, "bulletlarge", middle_cd1, middle_speed, 0, middleangle1, big_radius, 2));
             addSkillData(new WayShotSkillData("4wayshot-0", SkillGenreS.wayshot, MoveType.go_straight, "bulletlarge", middle_cd1, middle_speed, 0, middleangle1, big_radius, 4));
             addSkillData(new WayShotSkillData("4wayshot-1", SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", low_cd1, middle_speed, 0, middleangle2, big_radius, 4));

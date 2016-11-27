@@ -171,10 +171,10 @@ namespace CommonPart
                     #region move
                     if (attack_mode == false)
                     {
-                        if (keymanager.IsKeyDown(KeyID.Up) == true) { y = y - speed; }
-                        if (keymanager.IsKeyDown(KeyID.Down) == true) { y = y + speed; }
-                        if (keymanager.IsKeyDown(KeyID.Right) == true) { x = x + speed; }
-                        if (keymanager.IsKeyDown(KeyID.Left) == true) { x = x - speed; }
+                        if (keymanager.IsKeyDown(KeyID.Up)) { y = y - speed; }
+                        if (keymanager.IsKeyDown(KeyID.Down)) { y = y + speed; }
+                        if (keymanager.IsKeyDown(KeyID.Right)) { x = x + speed; }
+                        if (keymanager.IsKeyDown(KeyID.Left)) { x = x - speed; }
                         if (avoid_mode == false)
                         {//回避中に速度が小さくならないように
                             if (keymanager.IsKeyDown(KeyID.Slow) == true) { speed = 2; } else { speed = default_speed; }//テスト用数値
@@ -274,7 +274,7 @@ namespace CommonPart
                     }
                 }
 
-                for (int i = j; i < Map.enemys_inside_window.Count; i++)
+                for (int i = j+1; i < Map.enemys_inside_window.Count; i++)
                 {
                     if (Map.enemys_inside_window[i].selectable() == true
                         && Function.distance(x, y, Map.enemys_inside_window[i].x, Map.enemys_inside_window[i].y) < Function.distance(x, y, enemyAsTarget.x, enemyAsTarget.y))
@@ -421,12 +421,12 @@ namespace CommonPart
             #region skill is active
             if (attack_mode == true)
             {
-                #region enemyAsTarget null
+                #region enemyAsTarget not null
                 if (enemyAsTarget != null)
                 {// target exists
                     if (enemyAsTarget.selectable() == false)
                     {//yet cannot be attacked. 
-                        search_boss();
+                        skilltoBossEnd();
                     }
                     else
                     {
@@ -506,7 +506,7 @@ namespace CommonPart
                             stop_time = skill_stop_time + 2;
                         }
                     }
-                }
+                }else { skilltoBossEnd(); }
                 #endregion
                 if (stop_time > 0 && stop_time <= 2)
                 {

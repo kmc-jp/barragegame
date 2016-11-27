@@ -248,10 +248,16 @@ namespace CommonPart {
         }
         private void update_enemys()
         {
+            bool bulletsMove = ((int)(step[0] * Game1.enemyBullets_update_fps / Game1.fps)
+                - (int)((step[0] - 1) * Game1.enemyBullets_update_fps / Game1.fps)) >= 1;
+            bool skillsUpdate = ((int)(step[0] * Game1.enemySkills_update_fps / Game1.fps)
+                - (int)((step[0] - 1) * Game1.enemySkills_update_fps / Game1.fps)) >= 1;
             if (enemys.Count > 0)
             {
                 for (int i = 0; i < enemys.Count; i++)
                 {
+                    enemys[i].bulletsMove = bulletsMove;
+                    enemys[i].skillsUpdate = skillsUpdate;
                     enemys[i].update(player);
                 }
             }
@@ -269,6 +275,7 @@ namespace CommonPart {
                     enemys_inside_window.Remove(enemys_inside_window[i]);
                 }
             }
+            
         }
         private void update_chargeProjections()
         {
