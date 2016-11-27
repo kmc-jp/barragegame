@@ -208,14 +208,14 @@ namespace CommonPart
         public override void Draw(int f, Drawing d, Vector2 pos, DepthID depth, float size = 1, float angle = 0)
         {
             int x = getIndexNow(f);
-            //d.Draw(pos, DataBase.getTex(texture_name), new Rectangle(x % xNum * width, x / xNum * height, width, height), depth, size, angle);
-            d.Draw(pos, DataBase.getTex(texture_name), DataBase.getRectFromTextureNameAndIndex(texture_name, x), depth, size);
+            //Console.WriteLine(x);
+            d.Draw(pos, DataBase.getTex(texture_name), DataBase.getRectFromTextureNameAndIndex(texture_name, x), depth, size,angle);
         }
         public override void Draw(int f, Drawing d, Vector2 pos, DepthID depth, Vector2 size, float angle = 0)
         {
             int x = getIndexNow(f);
-            // d.Draw(pos, DataBase.getTex(texture_name), new Rectangle(x % xNum * width, x / xNum * height, width, height), depth, size, angle);
-            d.Draw(pos, DataBase.getTex(texture_name), DataBase.getRectFromTextureNameAndIndex(texture_name, x), depth, size);
+            //Console.WriteLine(x);
+            d.Draw(pos, DataBase.getTex(texture_name), DataBase.getRectFromTextureNameAndIndex(texture_name, x), depth, size,angle);
         }
         #endregion
 
@@ -250,7 +250,13 @@ namespace CommonPart
             int x = 0;// x は今描かれるべきコマの番号の変数である。ここではまだ求まっていない
             //またこれはmin_texture_indexを考慮していない。
             if (!repeat && t > totalFrame) {
-                x = frames.Length - 1;
+                if (frames.Length <= 0)
+                {
+                    x = 0;
+                    Console.WriteLine("ErrorAniDad: frames length 0");
+                }else {
+                    x = frames.Length - 1;
+                }
             }
             else
             {
@@ -296,7 +302,7 @@ namespace CommonPart
     {
         public override float X { get { return data.X; } }
         public override float Y { get { return data.Y; } }
-        AnimationDataAdvanced data;
+        public new AnimationDataAdvanced data;
         protected bool repeat;
         int frame;
         const bool animateWithUpdate = true;

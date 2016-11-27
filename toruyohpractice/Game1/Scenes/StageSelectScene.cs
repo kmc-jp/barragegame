@@ -11,11 +11,11 @@ namespace CommonPart
         int stage_select =1;
         public int stage_number = 5;
         Vector player_pos = new Vector();
-        Vector stage1_pos = new Vector(100, 600);
-        Vector stage2_pos = new Vector(200, 500);
-        Vector stage3_pos = new Vector(300, 400);
-        Vector stage4_pos = new Vector(400, 300);
-        Vector stage5_pos = new Vector(500, 200);
+        Vector stage1_pos = new Vector(450, 450);
+        Vector stage2_pos = new Vector(100, 200);
+        Vector stage3_pos = new Vector(400, 80);
+        Vector stage4_pos = new Vector(750, 150);
+        Vector stage5_pos = new Vector(1080, 25);
 
 
         public StageSelectScene(SceneManager scenem) : base(scenem) { }
@@ -68,7 +68,7 @@ namespace CommonPart
 
         public override void SceneDraw(Drawing d)
         {
-            d.Draw(new Vector(0, 0), DataBase.getTex("testbackground"), DepthID.BackGroundWall);
+            d.Draw(new Vector(0, 0), DataBase.getTex("stageselect"), DepthID.BackGroundWall);
             d.Draw(player_pos, DataBase.getTex("60 105-player"), DepthID.Player);
         }
 

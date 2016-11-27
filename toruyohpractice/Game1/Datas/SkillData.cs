@@ -10,11 +10,11 @@ namespace CommonPart
     /// <summary>
     /// 大きいスキルの区分
     /// </summary>
-    public enum SkillGenreL {none=0,generation=1 }
+    public enum SkillGenreL {none=0,generation=1,bullet_create }
     /// <summary>
     /// 細かいスキルの区分
     /// </summary>
-    public enum SkillGenreS {none=0,shot,laser,circle,wayshot,zyuuzi }
+    public enum SkillGenreS {none=0,shot,laser,circle,wayshot,zyuzi,yanagi }
 
     abstract class SkillData
     {
@@ -32,7 +32,7 @@ namespace CommonPart
         }
     }//class SkillData end
 
-    class SingleShotSkillData :SkillData
+    class BarrageUsedSkillData:SkillData
     {
         public double speed;
         public double acceleration;
@@ -43,74 +43,70 @@ namespace CommonPart
         public int sword;
         public double space;
         public MoveType moveType;
-               
-        public SingleShotSkillData(string _skillName,int _cooldownFps,double _speed,double _acceleration,double _angle,double _radius,double _space,int _life,int _score,int _sword)
-            :base(_skillName,SkillGenreL.generation,SkillGenreS.shot, _cooldownFps)
+        public string aniDName;
+        public BarrageUsedSkillData(string _skillName, SkillGenreS _sgs,MoveType mt, string _aniDName, int _cooldownFps, double _speed, double _acceleration, double _angle, double _radius,
+            double _space = 0, int _life = 1, int _score = 10, int _sword = 1)
+            :base(_skillName,SkillGenreL.generation,_sgs,_cooldownFps)
         {
+            aniDName = _aniDName;
             speed = _speed;
             acceleration = _acceleration;
             angle = _angle;
-            radius=_radius;
+            radius = _radius;
             space = _space;
             life = _life;
             score = _score;
             sword = _sword;
-            moveType = MoveType.go_straight;
-            switch (skillName)
-            {
-                case "circle":
-                    sgs = SkillGenreS.circle;
-                    break;
-                case "wayshot":
-                    sgs = SkillGenreS.wayshot;
-                    break;
-                default:
-                    break;
-            }
+            moveType = mt;
+        }
+    }
+
+    class SingleShotSkillData :BarrageUsedSkillData
+    {
+        public SingleShotSkillData(string _skillName,SkillGenreS _sgs,MoveType mt,string _aniDName,int _cooldownFps,double _speed,double _acceleration,double _angle,double _radius,double _space=0,int _life=1,int _score=10,int _sword=1)
+            :base(_skillName,_sgs,mt,_aniDName, _cooldownFps,_speed,_acceleration,_angle,_radius,_space,_life,_score,_sword)
+        {
+           
         }
     }//class singleshotskilldata end
 
-    class WayShotSkillData : SingleShotSkillData
+    class WayShotSkillData : BarrageUsedSkillData
     {
         public int way;
         
-        public WayShotSkillData(string _skillName, int _cooldownFps, double _speed, double _acceleration, double _angle, double _radius, double _space, int _life, int _score, int _sword,int _way)
-            : base(_skillName, _cooldownFps,_speed,_acceleration,_angle,_radius,_space,_life,_score,_sword)
+        public WayShotSkillData(string _skillName,SkillGenreS _sgs, MoveType mt,string _aniDName, int _cooldownFps, double _speed, double _acceleration, double _angle, double _radius, int _way, double _space=0, int _life=1, int _score=10, int _sword=1)
+            : base(_skillName,_sgs, mt,_aniDName,_cooldownFps,_speed,_acceleration,_angle,_radius,_space,_life,_score,_sword)
         {
             way = _way;
         }
     }//class WayShotSkillData end
 
-    class LaserTopData :SkillData
+    class LaserTopData :BarrageUsedSkillData
     {
-        public double speed;
-        public double acceleration;
-        public double angle;
-        public double radius;
-        public int life;
-        public int score;
-        public int sword;
         /// <summary>
         /// 角速度
         /// </summary>
         public double omega;
-        public MoveType moveType;
         public Color color;
 
-        public LaserTopData(string _skillName, int _cooldownFps,
-            double _speed, double _acceleration, double _angle, double _radius, double _space, int _life, int _score, int _sword,double _omega,Color _color)
-            : base(_skillName, SkillGenreL.generation, SkillGenreS.laser, _cooldownFps)
+        public LaserTopData(string _skillName, MoveType mt, string _aniDName,int _cooldownFps,
+            double _speed, double _acceleration, double _angle, double _radius, double _omega, Color _color, double _space=0, int _life=1, int _score=10, int _sword=1)
+            : base(_skillName,SkillGenreS.laser,mt,_aniDName, _cooldownFps,_speed,_acceleration,_angle,_radius,_space,_life,_score,_sword)
         {
-            speed = _speed;
-            acceleration = _acceleration;
-            angle = _angle;
-            radius = _radius;
-            life = _life;
-            score = _score;
-            sword = _sword;
-            omega = _omega;
-            moveType = MoveType.chase_angle;
             color = _color;
+            omega = _omega;
+        }
+    }
+
+    class GenerateUnitSkillData : BarrageUsedSkillData
+    {
+        public string unitSkillName;
+
+        public GenerateUnitSkillData(string _skillName,SkillGenreS _sgs, MoveType mt,string _aniDName,int _cooldownFps,double _speed,double _acceleration,double _angle,double _radius, string _unitSkillName, double _space=0,int _life=1,int _score=10,int _sword=1)
+            :base(_skillName,_sgs,mt,_aniDName, _cooldownFps, _speed, _acceleration, _angle, _radius,_space,_life, _score, _sword)
+        {
+            sgl = SkillGenreL.bullet_create;
+            unitSkillName = _unitSkillName;
         }
     }
 }

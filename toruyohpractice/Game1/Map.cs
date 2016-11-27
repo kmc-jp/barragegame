@@ -8,21 +8,25 @@ using System.Threading.Tasks;
 
 namespace CommonPart {
     class Map {
-        public Player player;
-        public List<Enemy> enemys = new List<Enemy>();
+        public static Player player;
+        public static List<Enemy> enemys = new List<Enemy>();
         public List<Enemy> enemys_inside_window = new List<Enemy>();
         public int score = 0;
         public int enemyexist = 0;
         public Vector scroll_speed;
         public int stage;
-        protected Animation sword_animation;
+        protected AnimationAdvanced chargeBar;
+        protected string chargeBar_animation_name;
+        //いる？
+        protected StageData stagedata;
 
-        public List<Projection> pros = new List<Projection>();
-        public List<int> pro_swords = new List<int>();
-        public double pro_speed = -2;
-        public double pro_acceleration = 1;
+        public static List<Projection> pros = new List<Projection>();
+        public static List<int> pro_swords = new List<int>();
+        public static double pro_speed = -2;
+        public static double pro_acceleration = 1;
+        public static bool boss_mode=false;
 
-        public Vector bar_pos = new Vector(300,600);
+        public Vector bar_pos = new Vector(450,650);
         public Vector life_pos = new Vector(1050, 95);
         public Vector score_pos = new Vector(1100, 180);
 
@@ -35,8 +39,9 @@ namespace CommonPart {
         public double defaultspeed_y=1;
 
 
-        public List<string> background_names = new List<string>();
-        public List<int> step = new List<int>();
+        public static List<string> background_names = new List<string>();
+        public static List<BGMID> bgmIDs = new List<BGMID>();
+        public static List<int> step = new List<int>();
 
         /// <summary>
         /// 背景画像の描画位置
@@ -56,12 +61,13 @@ namespace CommonPart {
         public Map(string _background_name,int _stage)//コンストラクタ
         {
             stage = _stage;
+            stagedata = new Stage1Data(BGMID.stage1,"stage1");
 
             background_names.Add(_background_name);
             background_names.Add(_background_name);
             step.Add(0);
             v.Add(new Vector(leftside, DataBase.WindowSlimSizeY - DataBase.getTex(background_names[0]).Height));
-            v.Add(new Vector(leftside, v[0].Y - DataBase.getTex(background_names[0]).Height));
+            v.Add(new Vector(280, v[0].Y - DataBase.getTex(background_names[0]).Height));
            
             scroll_speed = new Vector(defaultspeed_x, defaultspeed_y);
             player = new Player(DataBase.WindowDefaultSizeX/2, 500, 6, 10, 5,"60 105-player");
@@ -73,7 +79,11 @@ namespace CommonPart {
                 total_height += DataBase.getTex(background_names[i]).Height;
             }
 
+            leftside = 280;
+            rightside = 1000;
+
             SoundManager.Music.PlayBGM(BGMID.stage2, true);
+            chargeBar = new AnimationAdvanced(DataBase.getAniD("swordgauge"));
         }
         public Map(string[] bns)
         {
@@ -143,58 +153,8 @@ namespace CommonPart {
                 scroll_speed.Y = defaultspeed_y;
             }
         }
-
-        public void update(InputManager input)
+        private void update_enemys()
         {
-            int bullets = 0;
-            for (int i = 0; i < enemys.Count; i++)
-            {
-                bullets += enemys[i].bullets.Count;
-            }
-
-
-           
-            #region 生成
-            Random cRandom = new System.Random();
-            int iRandom = cRandom.Next(1280);
-
-            if (step[0] % 10000 == 0 && step[0] > -1) 
-            {
-                for (int i = 0; i < 1; i++)
-                {
-                    double random = Function.GetRandomDouble(280, 1000);
-                    double random_y = Function.GetRandomDouble(250, 300);
-                    if (step[0] % 200 == 1)
-                    {
-                        enemys.Add(new Enemy(random, random_y, "boss1"));
-                    }else
-                    {
-                        enemys.Add(new Enemy(random, random_y, "enemy2"));
-                    }
-                    enemyexist++;
-                }
-            }
-            #endregion
-
-            for (int i = 0; i < enemys.Count; i++)
-            {
-                if (inside_window(enemys[i]))
-                {
-                    if (enemys[i].exist == false)
-                    {
-                        enemys_inside_window.Add(enemys[i]);
-                        enemys[i].exist = true;
-                    }
-                }
-            }
-
-            #region move
-
-            camera += scroll_speed;//カメラupdate
-            update_scroll_speed();
-
-            player.update(input,this);
-
             if (enemyexist > 0)
             {
                 for (int i = 0; i < enemys.Count; i++)
@@ -202,18 +162,6 @@ namespace CommonPart {
                     enemys[i].update(player);
                 }
             }
-
-            for(int i = 0;i < pros.Count; i++)
-            {
-                pros[i].update();
-                if (pros[i].speed >= 40)
-                {
-                    pros[i].speed = 40;
-                }
-            }
-
-            #endregion
-
             for (int i = 0; i < enemys.Count; i++)
             {
                 enemys[i].shot(player);
@@ -225,13 +173,78 @@ namespace CommonPart {
                 {
                     if (enemys_inside_window[i].fadeout == false)
                     {
-                        score += enemys_inside_window[i].score(this);
+                        score += enemys_inside_window[i].score();
                     }
                     enemys[i].clear();
                     enemys.Remove(enemys_inside_window[i]);
                     enemys_inside_window.Remove(enemys_inside_window[i]);
                 }
             }
+        }
+        public void update(InputManager input)
+        {
+            chargeBar.Update();
+
+            stagedata.update();
+            
+            #region 生成
+            /*
+            Random cRandom = new System.Random();
+            int iRandom = cRandom.Next(1280);
+
+            if (step[0] % 100 == 0 && step[0] > -1) 
+            {
+                for (int i = 0; i < 1; i++)
+                {
+                    double random = Function.GetRandomDouble(900, 1000);
+                    double random_y = Function.GetRandomDouble(250, 300);
+                    if (step[0] % 200 == 1)
+                    {
+                        enemys.Add(new Boss1(random, random_y, "boss1"));
+                    }else
+                    {
+                        enemys.Add(new Enemy(random, random_y, "enemy2"));
+                    }
+                    enemyexist++;
+                }
+            }*/
+            #endregion
+
+            
+            for (int i = 0; i < enemys.Count; i++)
+            {
+                if (inside_window(enemys[i]))
+                {
+                    if (enemys[i].exist == false)
+                    {
+                        enemys_inside_window.Add(enemys[i]);
+                        enemys[i].exist = true;
+                    }
+                }
+
+                //if(enemys[i].n)
+            }
+
+
+            #region move
+
+            camera += scroll_speed;//カメラupdate
+            update_scroll_speed();
+
+            //player.update(input,this);
+
+            for(int i = 0;i < pros.Count; i++)
+            {
+                pros[i].update();
+                if (pros[i].speed >= 40)
+                {
+                    pros[i].speed = 40;
+                }
+            }
+
+            #endregion
+            update_enemys();
+            
 
             for (int i = 0; i < pros.Count; i++)
             {
@@ -243,9 +256,54 @@ namespace CommonPart {
                 }
             }
 
+            player.update(input, this);
+
+            if (boss_mode == true)
+            {
+                barslide();
+            }
+
             step[0]++;
 
         }//update end
+
+        private void barslide()
+        {
+            if (leftside < 0)
+            {
+                leftside--;
+                rightside++;
+            }
+        } 
+
+        public static void make_chargePro(double x,double y,int sword,int score)
+        {
+            pros.Add(new Projection(x,y,MoveType.object_target, pro_speed, pro_acceleration, "heal1", player, 100));
+            pro_swords.Add(sword);
+
+            score += score;
+        }
+        public static void set_BGM(BGMID id)
+        {
+            bgmIDs.Add(id);
+        }
+        public static void PlayBGM(BGMID id)
+        {
+            SoundManager.Music.PlayBGM(id, true);
+        }
+        public static void set_backgroundName(string _background_name)
+        {
+            background_names.Add(_background_name);
+        }
+        public static void create_enemy(double _x,double _y,string _unitType_name)
+        {
+            enemys.Add(new Enemy(_x, _y, _unitType_name));
+        }
+        private void chargeBarChange(string name,string addOn=null) {
+            if (addOn == null) { chargeBar_animation_name = name; }
+            else { chargeBar_animation_name = name+addOn; }
+            chargeBar = new AnimationAdvanced(DataBase.getAniD(chargeBar_animation_name));
+        }
 
         public void Draw(Drawing d)
         {
@@ -288,24 +346,35 @@ namespace CommonPart {
             RichText scoreboard=new RichText(score.ToString(), FontID.Medium,Color.White);
             scoreboard.Draw(d, score_pos, DepthID.Status);
 
-            d.Draw(new Vector(0, 0), DataBase.getTex("leftside1"), DepthID.StateFront);
-            d.Draw(new Vector(1000, 0), DataBase.getTex("rightside1"), DepthID.StateFront);
+            d.Draw(new Vector(leftside-DataBase.getTex("leftside1").Width, 0), DataBase.getTex("leftside1"), DepthID.StateFront);
+            d.Draw(new Vector(rightside, 0), DataBase.getTex("rightside1"), DepthID.StateFront);
 
             
             if (player.sword < player.sword_max / 2)
             {
-                
-            }else
+                if (chargeBar_animation_name != "swordgauge")
+                {
+                    chargeBarChange("swordgauge");
+                }
+            } else
             {
                 if (player.sword < player.sword_max)
                 {
-
-                }else
+                    if (chargeBar_animation_name != "swordgaugehigh")
+                    {
+                        chargeBarChange("swordgauge", "high");
+                    }
+                }
+                else
                 {
-
+                    if (chargeBar_animation_name != "swordgaugemax")
+                    {
+                        chargeBarChange("swordgauge", "max");
+                    }
                 }
             }
-            d.DrawLine(bar_pos, new Vector(bar_pos.X + player.sword * 5, bar_pos.Y), 20, Color.Gold, DepthID.Status);//剣ゲージ
+            chargeBar.Draw(d, new Vector(bar_pos.X-197, bar_pos.Y-chargeBar.Y/2-28), DepthID.Map);
+            d.DrawLine(bar_pos, new Vector(bar_pos.X + player.sword * 3.8, bar_pos.Y), 17, Color.Violet, DepthID.Status);//剣ゲージ
 
         }//draw end
 

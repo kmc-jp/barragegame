@@ -11,7 +11,8 @@ using Microsoft.Xna.Framework;
 namespace CommonPart {
 
     public enum Unit_state { fadeout=0,dead=1,out_of_window=2 };
-    public enum MoveType {non_target=0,point_target=1,object_target=2,go_straight,mugen,rightcircle,leftcircle,stop,chase_angle };
+    public enum MoveType {non_target=0,point_target=1,object_target=2,go_straight,mugen,rightcircle,leftcircle,stop,
+        chase_angle,screen_point_target };
     public enum Command
     {
         left_and_go_back = -101, nothing = -100, apply_int = 110, apply_string = 111,
@@ -190,7 +191,7 @@ namespace CommonPart {
 
         public static AnimationDataAdvanced getAniD(string name, string addOn = null)
         {
-            Console.WriteLine("DataBase:"+name + addOn);
+            //Console.WriteLine("DataBase:"+name + addOn);
             if (addOn == null && AnimationAdDataDictionary.ContainsKey(name))
             {
                 return AnimationAdDataDictionary[name];
@@ -227,12 +228,34 @@ namespace CommonPart {
         /// string is its path, maybe from "Content".  and also string key contains a size of texture's single unit
         /// </summary>
         #region SkillData
+        private const int low_speed=3;
+        private const int middle_speed=5;
+        private const int high_speed=7;
+        private const int big_radius=10;
+        private const int small_radius=5;
         public static Dictionary<string, SkillData> SkillDatasDictionary = new Dictionary<string, SkillData>();
         public static void setupSkillData()
         {
-            SkillDatasDictionary.Add("shot",new SingleShotSkillData("shot", 60, -1, 0.3, 0,5,0,1,50,10));
-            SkillDatasDictionary.Add("circle", new SingleShotSkillData("circle", 60, 5, 0, Math.PI/10, 5, 0, 1, 50, 10));
-            SkillDatasDictionary.Add("laser", new LaserTopData("laser", 1000, 5, 0, Math.PI/2, 8, 0, 1, 10, 10,0.005, Color.MediumVioletRed));
+            SkillDatasDictionary.Add("shot",new SingleShotSkillData("shot",SkillGenreS.shot,MoveType.go_straight,"bullet1", 60, -1, 0.3, 0,5,0,1,50,10));
+            SkillDatasDictionary.Add("circle", new SingleShotSkillData("circle",SkillGenreS.circle,MoveType.go_straight,"bullet1", 60, 5, 0, Math.PI/10, 5, 0, 1, 50, 10));
+            SkillDatasDictionary.Add("laser", new LaserTopData("laser",MoveType.chase_angle,"bullet1", 100000, 5, 0, Math.PI/2, 8, 0.008, Color.MediumVioletRed));
+            SkillDatasDictionary.Add("createbullet", new GenerateUnitSkillData("createbullet",SkillGenreS.shot,MoveType.go_straight,"bullet1", 120, 2, 0, -Math.PI/2, 8,"yanagi"));
+            SkillDatasDictionary.Add("yanagi", new SingleShotSkillData("yanagi",SkillGenreS.yanagi ,MoveType.go_straight,"bullet1", 90, 2, 0.2, 8, 0.25));
+            SkillDatasDictionary.Add("5wayshot", new WayShotSkillData("5wayshot", SkillGenreS.wayshot,MoveType.go_straight,"bullet1", 20, 6, 0, Math.PI/10, 8, 5));
+            SkillDatasDictionary.Add("3wayshot-0", new WayShotSkillData("3wayshot-0", SkillGenreS.wayshot,MoveType.go_straight,"bullet1", 20,middle_speed, 0, Math.PI/10, small_radius, 3));
+            SkillDatasDictionary.Add("3wayshot-1", new WayShotSkillData("3wayshot-1", SkillGenreS.wayshot, MoveType.go_straight, "bullet1", 30, middle_speed, 0, Math.PI / 10, small_radius, 3));
+            SkillDatasDictionary.Add("16circle-0", new SingleShotSkillData("16circle-0", SkillGenreS.circle, MoveType.go_straight, "bullet1", 60, low_speed, 0, Math.PI / 10, small_radius));
+            SkillDatasDictionary.Add("downshot-0", new SingleShotSkillData("downshot-0", SkillGenreS.circle,MoveType.go_straight, "bullet1", 20, middle_speed, 0, Math.PI*2, small_radius));
+            SkillDatasDictionary.Add("1wayshot-0",new SingleShotSkillData("1way-0",SkillGenreS.shot,MoveType.go_straight,"bullet1", 30, middle_speed, 0, 0,small_radius));
+            SkillDatasDictionary.Add("4wayshot-0", new WayShotSkillData("4wayshot-0", SkillGenreS.wayshot, MoveType.go_straight, "bullet1", 30, low_speed, 0, Math.PI / 10, big_radius, 4));
+            SkillDatasDictionary.Add("4wayshot-1", new WayShotSkillData("4wayshot-1", SkillGenreS.wayshot, MoveType.go_straight, "bullet1", 60, low_speed, 0, Math.PI / 10, big_radius, 4));
+            SkillDatasDictionary.Add("4wayshot-2", new WayShotSkillData("4wayshot-2", SkillGenreS.wayshot, MoveType.go_straight, "bullet1", 30, middle_speed, 0, Math.PI / 10, small_radius, 4));
+            SkillDatasDictionary.Add("laser-0", new LaserTopData("laser-0", MoveType.non_target, "bullet1", 120, high_speed, 0, Math.PI / 2, small_radius, 0, Color.MediumVioletRed));
+            SkillDatasDictionary.Add("laser-1", new LaserTopData("laser-1", MoveType.chase_angle, "bullet1", 120, high_speed, 0, Math.PI / 2, small_radius, 0.005, Color.MediumVioletRed));
+            SkillDatasDictionary.Add("zyuzi-0", new SingleShotSkillData("zyuzi-0",SkillGenreS.zyuzi ,MoveType.go_straight,"bullet1", 60, low_speed, 0, 0,small_radius));
+
+
+
 
         }
         public static SkillData getSkillData(string skillName)
@@ -289,9 +312,7 @@ namespace CommonPart {
                         tda("60 105-player");
                         tda("background3");
                         tda("testlife");
-                        tda("140 220-enemy1");
                         tda("16-16_tama2");
-                        */
             tda("120 68-enemy2");
             tda("rightside2");
             tda("rightside3");
@@ -301,15 +322,46 @@ namespace CommonPart {
             tda("background4");
             tda("ougi");
             tda("720×174 sword");
-            
+            tda("stageselect");
+            tda("titlewords");
+            tda("90 98-boss1_body0");
+            tda("90 78-boss1_body1");
+            tda("90 77-boss1_body2");
+            tda("90 270-boss1");
+            */
+            tda("Boss1_tail");
+            tda("120×68 E1-1");
+
             setupSkillData();
 
             AnimationAdDataDictionary.Add("boss1" + defaultAnimationNameAddOn, new AnimationDataAdvanced("boss1" + defaultAnimationNameAddOn,
-                10, 12, 0, "36-40 enemy1", true));
+                10, 3, "90 270-boss1", true));
             AnimationAdDataDictionary.Add("boss1atk", new AnimationDataAdvanced("boss1atk", new int[] { 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10 },
-                "36-40 enemy1"));
+                "36-40 enemy1",true));
+            AnimationAdDataDictionary.Add("boss1body0" + defaultAnimationNameAddOn, new AnimationDataAdvanced("boss1body0" + defaultAnimationNameAddOn,
+                10, 3, "90 98-boss1_body0", true));
+            AnimationAdDataDictionary.Add("boss1body1" + defaultAnimationNameAddOn, new AnimationDataAdvanced("boss1body1" + defaultAnimationNameAddOn,
+                10, 3, "90 78-boss1_body1", true));
+            AnimationAdDataDictionary.Add("boss1body2" + defaultAnimationNameAddOn, new AnimationDataAdvanced("boss1body2" + defaultAnimationNameAddOn,
+                10, 3, "90 77-boss1_body2", true));
+            AnimationAdDataDictionary.Add("boss1tail" + defaultAnimationNameAddOn, new AnimationDataAdvanced("boss1body2" + defaultAnimationNameAddOn,
+                10, 1, "Boss1_tail", true));
+
             AnimationAdDataDictionary.Add("enemy2" + defaultAnimationNameAddOn, new AnimationDataAdvanced("enmey2" + defaultAnimationNameAddOn,
                  10, 4, 0, "120 68-enemy2", true));
+            AnimationAdDataDictionary.Add("bullet1" + defaultAnimationNameAddOn, new AnimationDataAdvanced("bullet1" + defaultAnimationNameAddOn,
+                10, 3, "16-16 tama1",true));
+            AnimationAdDataDictionary.Add("heal1" + defaultAnimationNameAddOn, new AnimationDataAdvanced("heal1" + defaultAnimationNameAddOn,
+                10, 3, "16-16_tama2",true));
+            AnimationAdDataDictionary.Add("swordgauge" + defaultAnimationNameAddOn, new AnimationDataAdvanced("swordgauge" + defaultAnimationNameAddOn,
+                10, 1,1, "720×174 sword",true));
+            AnimationAdDataDictionary.Add("swordgauge" + "high", new AnimationDataAdvanced("swordgauge" + "high",
+                10, 4, 2, "720×174 sword",true));
+            AnimationAdDataDictionary.Add("swordgauge" + "max", new AnimationDataAdvanced("swordgauge" + "max",
+                10,10, 6, "720×174 sword",true));
+
+            AnimationAdDataDictionary.Add("E1-1" + defaultAnimationNameAddOn, new AnimationDataAdvanced("enmey2" + defaultAnimationNameAddOn,
+                10, 4, 0, "120×68 E1-1", true));
         }
 
         #region Unload And Save
@@ -434,6 +486,8 @@ namespace CommonPart {
             if (h_single == 0) { h_single = texture.Height; }
             x_max = texture.Width / w_single;
             y_max = texture.Height / h_single;
+            if (x_max == 0) { Console.WriteLine("Texture2Ddata: x_max=0 Error! : "+texName); }
+            if (y_max == 0) { Console.WriteLine("Texture2Ddata: y_max=0 Error! : " + texName); }
         }
         public Texture2D getTex()
         {

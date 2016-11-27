@@ -9,7 +9,7 @@ namespace CommonPart
     /// <summary>
     /// default_posesの意味
     /// </summary>
-    public enum PointType { default_pos = 0, displacement, }
+    public enum PointType { notused=-1,default_pos = 0, displacement,pos_on_screen, }
 
     class ActiveAniSkiedUnitType:SkilledAnimatedUnitType
     {
@@ -22,7 +22,8 @@ namespace CommonPart
         public int sword;
         public List<Vector> default_poses;
         public List<int> times;
-        public PointType pointType;
+        public List<PointType> pointTypes;
+        public bool textureTurn;
 
         public ActiveAniSkiedUnitType(string _typename, string _texture_name, string _label,List<MoveType> _moveTypes,List<Vector> _default_poses,List<int> _times) : this(_typename, _texture_name, _label,_moveTypes)
         {
@@ -39,16 +40,16 @@ namespace CommonPart
             moveTypes = new List<MoveType>();
             default_poses = new List<Vector>();
             times = new List<int>();
+            pointTypes = new List<PointType>();
         }
 
 
-        public void add_MoveTypeDataSet(MoveType m, int t,Vector v)
+        public void add_MoveTypeDataSet(MoveType m, int t, Vector v, PointType p = PointType.notused)
         {
-
             moveTypes.Add(m);
-            set_ith_MTDataSet(moveTypes.Count - 1, t, v);
+            set_ith_MTDataSet(moveTypes.Count - 1, t, v, p);
         }
-        public void set_ith_MTDataSet(int id,int t,Vector v)
+        public void set_ith_MTDataSet(int id, int t, Vector v, PointType p= PointType.notused)
         {
             for(int i = times.Count; i < id-1; i++)
             {
@@ -60,8 +61,14 @@ namespace CommonPart
                 default_poses.Add(new Vector(0,0));
 
             }
-            if (times.Capacity > id) { times[id] = t; }else { times.Add(t); }
-            if (default_poses.Capacity > id) { default_poses.Add(v); } else { default_poses.Add(v); }
+            for (int i = pointTypes.Count; i < id - 1; i++)
+            {
+                pointTypes.Add(PointType.notused);
+
+            }
+            if (times.Count > id) { times[id] = t; }else { times.Add(t); }
+            if (default_poses.Count > id) { default_poses.Add(v); } else { default_poses.Add(v); }
+            if (pointTypes.Count > id) { pointTypes[id] = p; } else { pointTypes.Add(p); }
         }
 
         public void Initialize(List<MoveType> _moveTypes, List<Vector> _default_poses, List<int> _times, double _speed, double _acceleration, double _radius,double _angle, int _score, int _sword)
@@ -93,7 +100,7 @@ namespace CommonPart
                 times.Add(_times[i]);
             }
         }
-        public void setup_standard(double _speed,double _acceleration,double _radius,double _angle,int _score,int _sword)
+        public void setup_standard(double _speed,double _acceleration,double _radius,double _angle,int _score=10,int _sword=1)
         {
             speed = _speed;
             acceleration = _acceleration;
