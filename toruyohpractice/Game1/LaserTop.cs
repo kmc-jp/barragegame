@@ -68,9 +68,9 @@ namespace CommonPart
         }
 
 
-        public override void update(Player player)
+        public override void update(Player player,bool bulletMove)
         {
-            update();
+            update(bulletMove);
             #region Laser Motion: length is not changed here!
             switch (move_type)
             {
@@ -115,16 +115,19 @@ namespace CommonPart
                     break;
             }
             #endregion
-            #region Laser cannot getout of Window;  changes length and limit it
-            if ((x < Map.leftside + animation.X / 2) || (x > Map.rightside - animation.X / 2) || (y > DataBase.WindowSlimSizeY - animation.Y / 2)
-                || (y < 0 + animation.Y / 2) )
-            { /* もしレーザーの先頭がすでに画面外に出ているなら、lengthを増やさない*/  }
-            else{
-                length += speed;
+            if (bulletMove)
+            {
+                #region Laser cannot getout of Window;  changes length and limit it
+                if ((x < Map.leftside + animation.X / 2) || (x > Map.rightside - animation.X / 2) || (y > DataBase.WindowSlimSizeY - animation.Y / 2)
+                    || (y < 0 + animation.Y / 2))
+                { /* もしレーザーの先頭がすでに画面外に出ているなら、lengthを増やさない*/  }
+                else
+                {
+                    length += speed;
+                }
+                if (length <= 0) { length = 0; }
+                #endregion
             }
-            if (length <= 0) { length = 0; }
-            #endregion
-
             if (hit_jugde(player) == true)
             {
                 if (!player.avoid_mode)

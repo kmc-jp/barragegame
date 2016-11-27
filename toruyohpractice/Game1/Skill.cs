@@ -16,9 +16,12 @@ namespace CommonPart
             skillName = _skillName;
         }
 
-        public void update()
+        public void update(bool update=true)
         {
-            coolDown--;
+            if (update)
+            {
+                coolDown--;
+            }
         }
 
         public void used(int i = 0)

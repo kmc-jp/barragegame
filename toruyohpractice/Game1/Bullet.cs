@@ -15,7 +15,7 @@ namespace CommonPart
         public int score;
         public int sword;
         public bool lasered;
-        public int atk = 2;
+        public int atk = 1;
 
         /// <summary>
         /// 目標物体がある場合に使う
@@ -62,9 +62,9 @@ namespace CommonPart
             lasered = false;
         }
 
-        public virtual void update(Player player)
+        public virtual void update(Player player,bool bulletMove=true)
         {
-            base.update();
+            base.update(bulletMove);
             if (x < Map.leftside - animation.X / 2 || x > Map.rightside + animation.X / 2
                 || y > DataBase.WindowSlimSizeY + animation.Y / 2 || y < 0 - animation.Y / 2)
             {

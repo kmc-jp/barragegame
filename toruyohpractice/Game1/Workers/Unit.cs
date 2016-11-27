@@ -21,7 +21,7 @@ namespace CommonPart
         /// <summary>
         /// 当たり判定用の半径
         /// </summary>
-        public double radius=0;
+        public virtual double radius { get; set; } = 0;
         /// <summary>
         /// usually it is 100, which is 100 % rate
         /// </summary>

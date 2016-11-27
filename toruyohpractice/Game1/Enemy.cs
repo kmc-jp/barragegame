@@ -16,7 +16,8 @@ namespace CommonPart
         public const string unitLabel_FadeOut = "fadeout";
         #endregion
 
-        #region basic undeclared variables
+        #region basic variables as an Enemy
+        public bool bulletsMove = true,skillsUpdate=true;
         public List<Bullet> bullets = new List<Bullet>();
         public List<Skill> skills = new List<Skill>();
         public string unitType_name;
@@ -27,7 +28,7 @@ namespace CommonPart
         #region property
         protected bool texRotate { get { if (unitType == null) { return false; } else { return unitType.textureTurn; } } }
         public ActiveAniSkiedUnitType unitType { get { return (ActiveAniSkiedUnitType)DataBase.getUnitType(unitType_name); } }
-        public double radius { get { return unitType.radius; } }
+        public override double radius { get { return unitType.radius; } }
         #endregion
         public int life = 1;
         public int maxLife;
@@ -154,7 +155,7 @@ namespace CommonPart
                 #region bulletのupdate
                 for (int i = 0; i < bullets.Count; i++)//update 専用
                 {
-                    bullets[i].update(player);
+                    bullets[i].update(player,bulletsMove);
                 }
                 for (int i = 0; i < bullets.Count; i++)//消す専用
                 {
@@ -196,7 +197,7 @@ namespace CommonPart
         protected void update_skills() {
             for (int i = 0; i < skills.Count; i++)
             {
-                skills[i].update();
+                skills[i].update(skillsUpdate);
             }
         }
 
