@@ -16,7 +16,7 @@ namespace CommonPart
         public int score;
         public int sword;
         public bool lasered;
-        public int atk = 1;
+        public int atk = 3;
 
         public Bullet(double _x,double _y, MoveType _move_type,double _speed,double _acceleration,string _anime,Vector _target_pos,int _zoom_rate
             ,double _radius, int _life,int _score,int _sword)
@@ -30,7 +30,7 @@ namespace CommonPart
         }
         public Bullet(double _x, double _y, MoveType _move_type, double _speed, double _acceleration, double _radian, string _anime, int _zoom_rate,
             double _radius, int _life, int _score, int _sword)
-            : base(_x, _y, _move_type, _speed, _acceleration,_radian, _anime, _zoom_rate)
+            : base(_x, _y, _move_type, _anime,_speed, _acceleration,_radian, _zoom_rate)
         {
             radius = _radius;
             life = _life;

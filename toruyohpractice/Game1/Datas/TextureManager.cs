@@ -43,10 +43,8 @@ namespace CommonPart {
 
             //画像をセット
             SetTexture(TextureID.White, "white");
-            SetTexture(TextureID.Scroll, "scroll");
-            SetTexture(TextureID.Bullet, "16-16 tama1");
-            SetTexture(TextureID.Score, "16-16_tama2");
-            SetTexture(TextureID.Sword, "720×174 sword");
+            //SetTexture(TextureID.Scroll, "scroll");
+            
         }
 
         /// <summary>

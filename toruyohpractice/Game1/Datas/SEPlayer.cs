@@ -62,14 +62,14 @@ namespace CommonPart {
             SetSE(SoundEffectID.Cursor_Move, "Content/icon3.mp3");
             SetSE(SoundEffectID.Cursor_Cancel, "Content/icon4.mp3");
             SetSE(SoundEffectID.Cursor_OK, "Content/icon1.mp3");
-            SetSE(SoundEffectID.stageselect, "Content/stageselect.mp3");
-            SetSE(SoundEffectID.enemyattack, "Content/enemyattack2.mp3	");
+            SetSE(SoundEffectID.stageselect, "Content/stageselect1.mp3");
+            SetSE(SoundEffectID.enemyattack, "Content/enemyattack2.mp3");
             SetSE(SoundEffectID.laser, "Content/enemylaser1.mp3");
             SetSE(SoundEffectID.bossdamage, "Content/bossdamaged2.mp3");
             SetSE(SoundEffectID.playerattack1, "Content/playerattack4.mp3");
-            SetSE(SoundEffectID.playerattack2, "playerattack1.mp3");
-            SetSE(SoundEffectID.cutin, "playercutin1.mp3");
-            SetSE(SoundEffectID.playerdamage, "playerdamaged3.mp3");
+            SetSE(SoundEffectID.playerattack2, "Content/playerattack1.mp3");
+            SetSE(SoundEffectID.cutin, "Content/playercutin1.mp3");
+            SetSE(SoundEffectID.playerdamage, "Content/playerdamaged3.mp3");
             SetSE(SoundEffectID.player50gauge, "Content/player50gauge1.mp3");
             SetSE(SoundEffectID.player100gauge, "Content/player100gauge1.mp3");
 
@@ -107,6 +107,5 @@ namespace CommonPart {
         enemyattack,laser,bossdamage,
         playerattack1,playerattack2,cutin,playerdamage,
         player50gauge,player100gauge,
-
     }
 }

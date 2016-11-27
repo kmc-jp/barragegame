@@ -12,14 +12,29 @@ namespace CommonPart {
     class MapScene : Scene {
         #region Variable
         Map nMap;
-
+        int stage;
+        Window_WithColoum window;
+        bool MapFulStop = false;
+        bool gameOver=false;
         #endregion
         #region Method
-        public MapScene(SceneManager s,int stage)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="stage">indexではない、1がステージ1のデータを指定している。</param>
+        public MapScene(SceneManager s,int _stage)
             : base(s) {
+            stage = _stage;
             nMap = new Map(stage);
         }
-
+        private void RetryThisMap()
+        {
+            nMap = null;
+            nMap=new Map(stage);
+            window = null;
+            gameOver = false; MapFulStop = false;
+        }
         /// <summary>
         /// ゲーム画面の描画メソッド
         /// </summary>
@@ -27,12 +42,52 @@ namespace CommonPart {
         public override void SceneDraw(Drawing d) {
             // マップの描画
             nMap.Draw(d);
-            
+            if (gameOver) window.draw(d); 
         }
         public override void SceneUpdate() {
             base.SceneUpdate();
-            
-            nMap.update(Input);
+            if (!MapFulStop && Map.mapState.Contains(Map.gameOver) && Map.stop_time == DataBase.motion_inftyTime && Map.readyToStop_time <= 0)
+            {// gameOverに入ったので、準備をして、mapはもう更新しなくする
+                #region gameOver starts as Map Scene. Create Window
+                MapFulStop = true;
+                gameOver = true;
+                window = null;
+                window = new Window_WithColoum(90,220,1100,270);
+                window.assignBackgroundImage("1100x270メッセージウィンドゥ");
+                int nx = 520, ny = 100;
+                window.AddColoum(new Button(nx, ny,"Retry","",Command.buttonPressed1,false));
+                ny +=60;
+                window.AddColoum(new Button(nx, ny, "BackToTitle", "", Command.buttonPressed2, false));
+                #endregion
+                SoundManager.Music.PlayBGM(BGMID.None,true);
+            }else if (!MapFulStop && Map.mapState.Contains(Map.backToStageSelection) && Map.stop_time == DataBase.motion_inftyTime && Map.readyToStop_time <= 0)
+            {
+                #region backToStageSelectionScene
+                MapFulStop = true;
+                Delete = true;
+                new TitleSceneWithWindows(scenem);
+                #endregion
+                SoundManager.Music.PlayBGM(BGMID.None, true);
+            }
+            else if(!MapFulStop)
+            {//gameOverに入っていないのでmapは更新する
+                nMap.update(Input);
+            }else if(gameOver)
+            {// gameOverが確定している、この時はwindowだけを操作する
+                #region window update as GameIsOver
+                window.update((KeyManager)Input, mouse);
+                switch (window.commandForTop)
+                {
+                    case Command.buttonPressed1:
+                        RetryThisMap();
+                        break;
+                    case Command.buttonPressed2:
+                        Delete = true;
+                        new TitleSceneWithWindows(scenem);
+                        break;
+                }
+                #endregion
+            }
             if (Map.step[0] < 0) { Delete = true; }
         }
         #endregion
