@@ -34,12 +34,14 @@ namespace CommonPart
             //windows[0] starts
             windows.Add(new Window_WithColoum(0, 0, DataBase.WindowDefaultSizeX, DataBase.WindowDefaultSizeY));
             windows[0].assignBackgroundImage(titleWindowBackGroundNames);
-            windows[0].AddColoum(new Coloum(nx, ny, "version: " + DataBase.ThisSystemVersionNumber.ToString(), Command.nothing));
+            //windows[0].AddColoum(new Coloum(nx, ny, "version: " + DataBase.ThisSystemVersionNumber.ToString(), Command.nothing));
             nx = 5; ny += dy;
-            windows[0].AddColoum(new Button(nx, ny, "open MapEditor", "", Command.openMapEditor, false));
+            //windows[0].AddColoum(new Button(nx, ny, "open MapEditor", "", Command.openMapEditor, false));
             ny += 2 * dy; nx += dx;
             nx = 100;
-            windows[0].AddColoum(new AnimationButton(nx, ny, "", DataBase.getAniD("NewGame-selected"), Command.buttonPressed1,0,0));
+            windows[0].AddColoum(new AnimationButton(nx, ny, "高級向け", DataBase.getAniD("NewGame-selected"), Command.buttonPressed1,80,0));
+            ny += 2*dy;
+            windows[0].AddColoum(new AnimationButton(nx, ny, "ノーマル", DataBase.getAniD("NewGame-selected"), Command.buttonPressed2, 80, 0));
             ny += dy;
             //windows[0].AddColoum(new AnimationButton(nx, ny, "", DataBase.getAniD("LoadGame-selected"), Command.buttonPressed2,0,0));
             ny += dy;
@@ -49,24 +51,28 @@ namespace CommonPart
             ny += dy;
             // windows[0] is finished.
         }
-
         override protected void switch_windowsIcommand(int i)
         {
             switch (windows[i].commandForTop)
             {
                 case Command.exit:
                     close();
+                    scenem.Exit();
                     break;
                 case Command.openMapEditor:
                     openMapEditorScene();
-                    break;
-                case Command.buttonPressed2:
-                    
                     break;
                 case Command.openMusicGallery:
                     openMusicGallery();
                     break;
                 case Command.buttonPressed1: //1 new game
+                    Game1.enemyBullets_update_fps = 60;
+                    Game1.enemySkills_update_fps = 60;
+                    openStageSelectScene();
+                    break;
+                case Command.buttonPressed2:
+                    Game1.enemyBullets_update_fps = 45;
+                    Game1.enemySkills_update_fps = 40;
                     openStageSelectScene();
                     break;
                 case Command.nothing:
