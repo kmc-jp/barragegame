@@ -69,9 +69,9 @@ namespace CommonPart
             base.dead();
             shot(Map.player, true);
         }
-        public override void update(Player player)
+        public override void update(Player player,bool bulletMove)
         {
-            base.update(player);
+            base.update(player,bulletMove);
             skill.update();
             shot(player);
         }

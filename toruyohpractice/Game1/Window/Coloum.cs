@@ -79,15 +79,15 @@ namespace CommonPart
         {
             Command c = Command.nothing;
             if (k != null && selected) { c = update_with_key_manager(k); }
-            if (m != null) { c= update_with_mouse_manager(m); }
+            if (c==Command.nothing && m != null) { c= update_with_mouse_manager(m); }
             return c;
         }
         public virtual Command update_with_key_manager(KeyManager k) {
-            if (k.IsKeyDown(KeyID.Select))
+            if (k.IsKeyDownOnce(KeyID.Select))
             {
                 return is_applied();
             }
-            if (k.IsKeyDown(KeyID.Cancel))
+            if (k.IsKeyDownOnce(KeyID.Cancel))
             {
                 return is_left();
             }

@@ -77,10 +77,9 @@ namespace CommonPart
                     bodys[0].angle = Math.Atan2(speed_y, speed_x);
                 }
             }
-            shot(player);
             for (int i = 0; i <= body_max_index ; i++)
             {
-                bodys[i].shot(player);
+                bodys[i].bulletsMove = bulletsMove;
                 bodys[i].update(player);
             }
         }
@@ -141,11 +140,9 @@ namespace CommonPart
         {
             base.update(player);
 
-            
-            shot(player);
             for (int i = 0; i <= body_max_index; i++)
             {
-                bodys[i].shot(player);
+                bodys[i].bulletsMove = bulletsMove;
                 if (i <= 5)
                 {
                     if (!funnelsOut) {

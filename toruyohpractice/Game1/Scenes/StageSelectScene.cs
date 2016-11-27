@@ -113,12 +113,12 @@ namespace CommonPart
                     DataBase.aniNameAddOn_spell));
                 }
             }
-            if (Input.GetKeyPressed(KeyID.Select) == true)
+            if (Input.IsKeyDownOnce(KeyID.Select) == true)
             {
                 new MapScene(scenem,stage_select);
             }
 
-            if (Input.GetKeyPressed(KeyID.Escape) == true || Input.GetKeyPressed(KeyID.Cancel))
+            if (Input.IsKeyDownOnce(KeyID.Escape) == true || Input.IsKeyDownOnce(KeyID.Cancel))
             {
                 Delete=true;
                 new TitleSceneWithWindows(scenem);
