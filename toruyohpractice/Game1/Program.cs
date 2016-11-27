@@ -46,10 +46,10 @@ namespace CommonPart
                         flag = true;
                     }
                     SoundManager.Music.Close();
-                      if (flag)
-                           MessageBox.Show("エラーが発生しました。強制終了します。\n内容 : " + e.Message + "\nエラーログ書き出しに失敗しました。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                       else
-                           MessageBox.Show("エラーが発生しました。強制終了します。\n内容 : " + e.Message, "エラー", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                    if (flag)
+                        MessageBox.Show("エラーが発生しました。強制終了します。\n内容 : " + e.Message + "\nエラーログ書き出しに失敗しました。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                    else
+                        MessageBox.Show("エラーが発生しました。強制終了します。\n内容 : " + e.Message, "エラー", MessageBoxButtons.OK, MessageBoxIcon.Stop);
                 }
             }
         }

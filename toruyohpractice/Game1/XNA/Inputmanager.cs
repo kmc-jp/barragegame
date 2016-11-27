@@ -15,6 +15,7 @@ namespace CommonPart
         public bool IsEnd { get; protected set; }
         public abstract bool IsKeyDown(KeyID k);
         public abstract bool IsKeyDownOld(KeyID k);
+        public abstract bool IsKeyDownOnce(KeyID k);
         static readonly int keys = Function.GetEnumLength(typeof(KeyID));
         int[] times = new int[keys];
         public int KeyDownTime(KeyID k)
@@ -100,16 +101,15 @@ namespace CommonPart
     {
         KeyboardState now;
         KeyboardState old;
-        int index;
         public override void Update_()
         {
             old = now;
             now = Keyboard.GetState();
-            
-            index++;
         }
         public override bool IsKeyDown(KeyID k) { return now.IsKeyDown(GetKey(k)); }
         public override bool IsKeyDownOld(KeyID k) { return old.IsKeyDown(GetKey(k)); }
+        // 離されている状態から押した状態になった時にtrueになる。
+        public override bool IsKeyDownOnce(KeyID k) { return IsKeyDown(k) && !IsKeyDownOld(k); }
     }
 
     /// <summary>

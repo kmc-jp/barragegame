@@ -35,20 +35,20 @@ namespace CommonPart
         }
         /// <summary>
         /// default_angleのdefaultは一番上から
-        /// </summary>
+        /// </summary>>
+        /// <returns></returns>
         /// <param name="r"></param>
         /// <param name="now_time"></param>
-        /// <param name="default_angle"></param>
-        /// <returns></returns>
-        public static Vector rightcircleDisplacement(double r,int now_time,int all_time,double default_angle=-Math.PI/2)
+        /// <param name="default_angle"></param
+        public static Vector rightcircleDisplacement(double speed,int all_time, int now_time,double default_angle=-Math.PI/2)
         {
             double omega = 2 * Math.PI / all_time;
-            return new Vector(-r * omega * Math.Sin(omega * now_time + default_angle), r * Math.Cos(omega * now_time + default_angle));
+            return new Vector(-speed * Math.Sin(omega * now_time + default_angle), speed * Math.Cos(omega * now_time + default_angle));
         }
-        public static Vector leftcircleDisplacement(double r, int now_time, int all_time, double default_angle = Math.PI / 2)
+        public static Vector leftcircleDisplacement(double speed,int all_time, int now_time, double default_angle = Math.PI / 2)
         {
             double omega = 2 * Math.PI / all_time;
-            return new Vector(-r * omega * Math.Sin(-(omega * now_time + default_angle)), r * Math.Cos(-(omega * now_time + default_angle)));
+            return new Vector(speed * Math.Sin(-(omega * now_time + default_angle)), -speed * Math.Cos(-(omega * now_time + default_angle)));
         }
 
         public static Vector tousokuidouDisplacement(Vector displacement,int alltime)

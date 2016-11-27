@@ -86,10 +86,12 @@ namespace CommonPart
         /// </summary>
         protected override void UnloadContent()
         {
-
             // TODO: Unload any non ContentManager content here
-            DataBase.database_singleton.Dispose();
             SoundManager.Music.Close();
+            if (DataBase.database_singleton != null)
+            {
+                DataBase.database_singleton.Dispose();
+            }
         }
 
         /// <summary>
@@ -100,15 +102,24 @@ namespace CommonPart
         /// 
 
         bool exited;
-
+        protected void exitGame()
+        {
+            DataBase.database_singleton.Dispose();
+        }
         protected override void Update(GameTime gameTime)//mainloop
         {
+            /*
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
+                */
 
             // TODO: Add your update logic here            
-            if (!scenem.Update() && !exited) { this.Exit(); SoundManager.Music.Close(); exited = true; }
+            if (!scenem.Update() && !exited) {
+                exitGame();
+                Exit();
+                SoundManager.Music.Close();
+                exited = true;
+            }
             base.Update(gameTime);
             SoundManager.Update();
         }

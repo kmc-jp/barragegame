@@ -68,9 +68,8 @@ namespace CommonPart
         /// <param name="_frames">各画像ファイルのコマが表示され続けるframe数の配列</param>
         /// <param name="_texture_name">DataBaseのTexturesDataDictionaryのkeyです</param>
         public AnimationDataAdvanced(string name, int[] _frames,string _texture_name,bool _repeat=false)
+            :this(name,0,_texture_name,_repeat)
         {
-
-            animationDataName = name;
             totalFrame = 0;
             frames = new int[_frames.Length];
             for(int i = 0; i < _frames.Length; i++)
@@ -78,22 +77,8 @@ namespace CommonPart
                 frames[i] = _frames[i];
                 totalFrame += frames[i];
             }
-            texture_name = _texture_name;
 
-            repeat = _repeat;
-
-            min_texture_index = 0;max_texture_index = frames.Length - 1;
-
-            Texture2Ddata td = DataBase.getTexD(texture_name);
-            if (td == null) { xNum = yNum = width = height = -1; Console.Write("Invaild TextureName: " + texture_name); }
-            else
-            {
-                xNum = td.x_max;
-                yNum = td.y_max;
-                width = td.w_single;
-                height = td.h_single;
-            }
-
+            max_texture_index = frames.Length - 1;
             if (max_texture_index >= xNum * yNum) { max_texture_index = xNum * yNum - 1; }//限界と突破するのであれば、収まらせる
         }
 
@@ -101,9 +86,9 @@ namespace CommonPart
         /// 画像は指定コマから
         /// </summary>
         /// <param name="min_index">指定のコマ</param>
-        public AnimationDataAdvanced(string name,int[] _frames, int min_index,string _texture_name,bool _repeat=false)
+        public AnimationDataAdvanced(string name,int[] _frames, int _min_index,string _texture_name,bool _repeat=false)
+            : this(name, _min_index, _texture_name, _repeat)
         {
-            animationDataName = name;
             totalFrame = 0;
             frames = new int[_frames.Length];
             for (int i = 0; i < _frames.Length; i++)
@@ -111,23 +96,7 @@ namespace CommonPart
                 frames[i] = _frames[i];
                 totalFrame += frames[i];
             }
-            texture_name = _texture_name;
 
-            repeat = _repeat;
-
-            min_texture_index = min_index;
-
-            Texture2Ddata td = DataBase.getTexD(texture_name);
-            if (td == null) { xNum = yNum = width = height = -1; Console.Write("Invaild TextureName: " + texture_name); }
-            else
-            {
-                xNum = td.x_max;
-                yNum = td.y_max;
-                width = td.w_single;
-                height = td.h_single;
-            }
-
-            if (min_index >= xNum * yNum) { min_index = xNum * yNum - 1; }
             max_texture_index = min_texture_index + frames.Length - 1;
             if (max_texture_index >= xNum * yNum) { max_texture_index = xNum * yNum - 1; }//限界と突破するのであれば、収まらせる
         }
@@ -136,27 +105,13 @@ namespace CommonPart
         /// DataBaseのTexture2Ddata前提。使われる画像の最初の画像を含め、それからlength個のコマだけを使う。
         /// </summary>
         public AnimationDataAdvanced(string name,int _frame, int length,string _texture_name, bool _repeat = false)
+            : this(name, 0, _texture_name, _repeat)
         {
-
-            animationDataName = name;
             frames = new int[length];
             for(int i = 0; i < length; i++) { frames[i] = _frame; }
             totalFrame = length * frames[0];
-            texture_name = _texture_name;
-            repeat = _repeat;
 
-            min_texture_index = 0;
             max_texture_index = length-1;
-
-            Texture2Ddata td = DataBase.getTexD(texture_name);
-            if (td == null) { xNum = yNum = width = height = -1; Console.Write("Invaild TextureName: " + texture_name); }
-            else
-            {
-                xNum = td.x_max;
-                yNum = td.y_max;
-                width = td.w_single;
-                height = td.h_single;
-            }
             if (max_texture_index >= xNum * yNum) { max_texture_index = xNum * yNum - 1; }
         }
 
@@ -165,17 +120,25 @@ namespace CommonPart
         /// </summary>
         /// <param name="min_index">画像ファイルのコマ番号を指定する</param>
         public AnimationDataAdvanced(string name,int _frame, int length, int min_index,string _texture_name, bool _repeat = false)
+            :this(name,min_index,_texture_name,_repeat)
         {
-
-            animationDataName = name;
             frames = new int[length];
             for (int i = 0; i < length; i++) { frames[i] = _frame; }
             totalFrame = length * frames[0];
-            texture_name = _texture_name;
-            repeat = _repeat;
 
-            min_texture_index = min_index;
-            
+            max_texture_index = min_index + length - 1;
+            if (max_texture_index >= xNum * yNum) { max_texture_index = xNum * yNum - 1; }
+        }
+
+        /// <summary>
+        /// 以上のconstructorの共通部分をまとめたコンストラクターである
+        /// </summary>
+        /// <param name="_min_index">アニメーションの最初のコマが使う画像ファイル上のコマ番号,0から始まる</param>
+        private AnimationDataAdvanced(string _name,int _min_index, string _texture_name,bool _repeat) {
+            animationDataName = _name;
+            texture_name = _texture_name;
+            min_texture_index = _min_index;
+            repeat = _repeat;
             #region from texture2Ddata 
             Texture2Ddata td = DataBase.getTexD(texture_name);
             if (td == null) { xNum = yNum = width = height = -1; Console.Write("Invaild TextureName: " + texture_name); }
@@ -187,12 +150,8 @@ namespace CommonPart
                 height = td.h_single;
             }
             #endregion
-
-            if (min_index >= xNum * yNum) { min_index = xNum * yNum - 1; }
-            max_texture_index = min_index + length - 1;
-            if (max_texture_index >= xNum * yNum) { max_texture_index = xNum * yNum - 1; }
+            if (_min_index >= xNum * yNum) { _min_index = xNum * yNum - 1; }
         }
-
         #endregion
 
         #region draw method
@@ -201,23 +160,39 @@ namespace CommonPart
         /// </summary>
         /// <param name="f">今のアニメーションを必要とする物体のframe</param>
         /// <param name="d"></param>
-        /// <param name="pos"></param>
+        /// <param name="pos">画像の左上の位置。回転はこれを中心としている。</param>
         /// <param name="depth"></param>
         /// <param name="size"></param>
-        /// <param name="angle"></param>
+        /// <param name="angle">与えられたposを中心に回転する</param>
         public override void Draw(int f, Drawing d, Vector2 pos, DepthID depth, float size = 1, float angle = 0)
         {
             int x = getIndexNow(f);
-            //Console.WriteLine(x);
-            d.Draw(pos, DataBase.getTex(texture_name), DataBase.getRectFromTextureNameAndIndex(texture_name, x), depth, size,angle);
+            d.Draw(pos, DataBase.getTex(texture_name), new Rectangle(x % xNum * width, x / xNum * height, width, height), depth, size, angle);
         }
         public override void Draw(int f, Drawing d, Vector2 pos, DepthID depth, Vector2 size, float angle = 0)
         {
             int x = getIndexNow(f);
-            //Console.WriteLine(x);
-            d.Draw(pos, DataBase.getTex(texture_name), DataBase.getRectFromTextureNameAndIndex(texture_name, x), depth, size,angle);
+            d.Draw(pos, DataBase.getTex(texture_name), new Rectangle(x % xNum * width, x / xNum * height, width, height), depth, size, angle);
         }
         #endregion
+
+        /// <summary>
+        /// DataBaseのAnimationADdataDictionaryの存在が前提になっている. そこから同名アニメーションデータのコピーを作る
+        /// </summary>
+        /// <returns></returns>
+        static public AnimationDataAdvanced getAcopyFromDataBaseByName(string _ani_name) {
+            if (DataBase.existsAniD(_ani_name, null)) {
+                AnimationDataAdvanced aDad = DataBase.getAniD(_ani_name);
+                AnimationDataAdvanced n_aDad=new AnimationDataAdvanced(_ani_name + "_copy", aDad.frames, aDad.min_texture_index, aDad.texture_name, aDad.repeat);
+                n_aDad.assignAnimationName(aDad.pre_animation_name,false);
+                n_aDad.assignAnimationName(aDad.next_animation_name, true);
+                return n_aDad;
+            }
+            else {
+                Console.WriteLine("copy failed. Not Found In Dictionary.");
+                return new AnimationDataAdvanced(_ani_name + "_copy",1000,1,DataBase.defaultBlankTextureName); 
+            }
+        }
 
         /// <summary>
         /// このアニメーションデータの続き/前の　アニメーションデータを登録させる。
@@ -225,14 +200,14 @@ namespace CommonPart
         /// </summary>
         /// <param name="animation_name">animationDataにアクセス用のkey</param>
         /// <param name="next">true=これは続きのアニメーション、false=これは前の</param>
-        public void assignAnimationName(string animation_name,bool next)
+        public void assignAnimationName(string _animation_name,bool next)
         {
             if (next)
             {
-                next_animation_name = animation_name;
+                next_animation_name = _animation_name;
             }
             else {
-                pre_animation_name = animation_name;
+                pre_animation_name = _animation_name;
             }
         }
 
@@ -250,17 +225,11 @@ namespace CommonPart
             int x = 0;// x は今描かれるべきコマの番号の変数である。ここではまだ求まっていない
             //またこれはmin_texture_indexを考慮していない。
             if (!repeat && t > totalFrame) {
-                if (frames.Length <= 0)
-                {
-                    x = 0;
-                    Console.WriteLine("ErrorAniDad: frames length 0");
-                }else {
-                    x = frames.Length - 1;
-                }
+                x = frames.Length - 1;
             }
             else
             {
-                for (int s = frames[x]; s < t; s += frames[++x]) ;//ここで x の値が求まるのである
+                for (int s = frames[0]; s < t; s += frames[++x]) ;//ここで x の値が求まるのである
             }
             x += min_texture_index;
             if (x > max_texture_index) { x = max_texture_index; }
@@ -302,13 +271,36 @@ namespace CommonPart
     {
         public override float X { get { return data.X; } }
         public override float Y { get { return data.Y; } }
-        public new AnimationDataAdvanced data;
-        protected bool repeat;
+        AnimationDataAdvanced data;
         int frame;
         const bool animateWithUpdate = true;
-        public AnimationAdvanced(AnimationDataAdvanced d):base(d)
+        protected bool repeat=false;
+        public AnimationAdvanced(AnimationDataAdvanced d):base(d)// data= dとしているだけ。
         { data = d; repeat = data.repeat; }
 
+        /// <summary>
+        /// アニメーションのループをたどり、最初のアニメーションを見つけるか、このアニメーションにまたループして戻っている場合は自分を見つける。
+        /// </summary>
+        public void backToTop() {
+            if (data.pre_animation_name == null ||data.pre_animation_name==AnimationDataAdvanced.notAnimationName) {
+                frame = 0;
+                return;
+            }
+            string data2_name=data.pre_animation_name; // このループの最初のアニメーションを見つけて記録するための変数
+            string data1_name = data.animationDataName;//この変数は上の変数の次のアニメーションの名前を記録している。
+            while (data2_name != null &&data2_name!=AnimationDataAdvanced.notAnimationName&& DataBase.getAniD(data2_name) != null &&
+                    DataBase.getAniD(data2_name).next_animation_name == data1_name )
+            {
+                data1_name = data2_name;
+                data2_name = DataBase.getAniD(data2_name).pre_animation_name;
+                if (data2_name == data.animationDataName) { break; }
+            }
+            if (data2_name != data.animationDataName)
+            {
+                data = DataBase.getAniD(data2_name);
+            }
+            frame = 0;
+        }
         /// <summary>
         /// Animationではvirtual修辞していないので、newのupdateになるが、これはAnimationの配列では正しく動かないので、
         /// できればAnimationAdvancedの配列にしてください。
@@ -316,23 +308,24 @@ namespace CommonPart
         public new void Update()
         {
             if (animateWithUpdate) frame++;
-            /*
-            if (data.getIndexNow(frame) > data.max_texture_index) {
-                if(repeat) {
+            if (frame>data.totalFrame)
+            {
+                //Console.WriteLine(data.animationDataName+"come to the last frame!");
+                if (repeat && data.next_animation_name==AnimationDataAdvanced.notAnimationName) {
+
                     frame = 0;
                 }
                 else {
-                    if (data.next_animation_name != null && data.next_animation_name != AnimationDataAdvanced.notAnimationName) {
-                        data = DataBase.getAniD(data.next_animation_name); frame = 0;
+                    if (data.next_animation_name != null && data.next_animation_name != AnimationDataAdvanced.notAnimationName)
+                    {
+                        data = DataBase.getAniD(data.next_animation_name);
+                        frame = 0;
                     }
                 }
-                
             }
-            */
-        }//update end
+        }
         public override void Draw(Drawing d, Vector2 pos, DepthID depth, float size = 1, float angle = 0)
         {
-            
             data.Draw(frame, d, pos, depth, size, angle);
             if (!animateWithUpdate && d.Animate)
                 frame++;

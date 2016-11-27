@@ -502,7 +502,7 @@ namespace CommonPart {
         /// <summary>
         /// 数字の色固定
         /// </summary>
-        public bool Numeric = true;
+        public bool Numeric = false;
         /// <summary>
         /// 数字の色固定(テキスト側での指定)
         /// </summary>
