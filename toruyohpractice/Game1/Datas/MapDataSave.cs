@@ -113,7 +113,7 @@ namespace CommonPart
                             }// while reading one unit end
                             if (ints.Count > 0 && strings.Count > 0)
                             {
-                                utList.Add(new Unit(ints, strings));
+                                //utList.Add(new Unit(ints, strings));
                             }else { Console.WriteLine("MapDataS: ints "+ints.Count+" strs "+strings.Count); }
                         }//while reading all unit end
 
@@ -204,12 +204,13 @@ namespace CommonPart
             #region Write Units
             if (utList.Count > 0) {
                 Console.WriteLine("no Units On the MapDataS");
+                /*
                 for(int i = 0; i < utList.Count; i++)
                 {
                     if (PosInsideMap(new Vector(utList[i].x_index, utList[i].y_index)))
                     {
-                        List<int> ints = utList[i].getListIntData();
-                        string[] strings = utList[i].getStringData();
+                        //List<int> ints = utList[i].getListIntData();
+                        //string[] strings = utList[i].getStringData();
                         for (int j = 0; j < ints.Count; j++)
                         {
                             bw.Write(ints[j]);
@@ -222,6 +223,7 @@ namespace CommonPart
                         bw.Write(DataBase.interval_of_each_type);// like Unit[i] , Unit[i+1],
                     }
                 }
+                */
             }
             #endregion
             bw.Close();

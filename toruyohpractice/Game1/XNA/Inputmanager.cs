@@ -101,16 +101,13 @@ namespace CommonPart
     {
         KeyboardState now;
         KeyboardState old;
-        int index;
         public override void Update_()
         {
             old = now;
             now = Keyboard.GetState();
-            
-            index++;
         }
-        public override bool IsKeyDown(KeyID k) { return now.IsKeyDown(GetKey(k)); }
-        public override bool IsKeyDownOld(KeyID k) { return old.IsKeyDown(GetKey(k)); }
+        public override bool IsKeyDown(KeyID k) { return now.IsKeyDown(GetKey(k)) ||( JoyPadManager.Enable() && JoyPadManager.IsKeyPressed(k) ); }
+        public override bool IsKeyDownOld(KeyID k) { return old.IsKeyDown(GetKey(k)) || (JoyPadManager.Enable() && JoyPadManager.IsKeyPressedOld(k) ); }
         // 離されている状態から押した状態になった時にtrueになる。
         public override bool IsKeyDownOnce(KeyID k) { return IsKeyDown(k) && !IsKeyDownOld(k); }
     }

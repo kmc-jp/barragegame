@@ -287,6 +287,7 @@ namespace CommonPart
         public override void update(KeyManager k, MouseManager m)
         {
             base.update(k, m);
+            //現在注目のcoloumに対して、deal with command
             for (int i = 0; i < coloums.Count; i++)
             {
                 if (i == now_coloums_index)
@@ -340,15 +341,21 @@ namespace CommonPart
         {
             if (coloums.Count > 0)
             {
-                bool mouseInsideColoums = false;
+                //bool mouseInsideColoums = false;
                 for (int ii = 0; ii < coloums.Count; ii++)
                 {
                     if (coloums[ii].PosInside(m.MousePosition(), x, y))
                     // PosInsideは画面上の絶対座標を使って判定している。windowの位置によって描画位置が変わるcoloumsにはx,y補正が必要 
                     {
-                        mouseInsideColoums = true;
-                        if (now_coloums_index < coloums.Count && now_coloums_index >= 0 && now_coloums_index != ii) { coloums[now_coloums_index].is_left(); }
-                        now_coloums_index = ii;
+                        //mouseInsideColoums = true;
+                        if (m.MousePosition() != m.OldMousePosition())
+                        {
+                            if (now_coloums_index < coloums.Count && now_coloums_index >= 0 && now_coloums_index != ii)
+                            {
+                                coloums[now_coloums_index].is_left();
+                            }
+                            now_coloums_index = ii;
+                        }
                         if (m.IsButtomDownOnce(MouseButton.Left))
                         {
                             selectColoum();
@@ -356,10 +363,12 @@ namespace CommonPart
                         return; // coloumsの上だと、mouse dragableの処理を飛ばす
                     }
                 }
+                /*
                 if (!mouseInsideColoums)
                 {
                     left_coloum();
                 }
+                */
             }//if has any coloum or not
             base.update_with_mouse_manager(m); // mouse dragableの処理だけと思われる
         }//update_with_mouse_manager end

@@ -6,10 +6,6 @@ using System.Threading.Tasks;
 
 namespace CommonPart
 {
-    /// <summary>
-    /// default_posesの意味
-    /// </summary>
-    public enum PointType { notused=-1,default_pos = 0, displacement,pos_on_screen, }
 
     class ActiveAniSkiedUnitType:SkilledAnimatedUnitType
     {
