@@ -135,8 +135,8 @@ namespace CommonPart
                 case MoveType.go_straight:
                     speed_x += acceleration_x;
                     speed_y += acceleration_y;
-                    x -= speed_x;
-                    y -= speed_y;
+                    x += speed_x;
+                    y += speed_y;
                     break;
                 default:
                     break;
