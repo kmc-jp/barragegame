@@ -33,7 +33,7 @@ namespace CommonPart
             {
                 stageAvailable[i] = false;
             }
-            stageAvailable[0] = true;
+            stageAvailable[0] = true; stageAvailable[1] = true;
             for(int j = 0; j < stagesPos.Length; j++)
             {
                 if (stageAvailable[j] == false)
@@ -42,7 +42,7 @@ namespace CommonPart
                 }
                 else
                 {
-                    if (stage_select == j)
+                    if (stage_select == j+1)
                     {
                         animations[j] = new AnimationAdvanced(DataBase.getAniD(stageButtonAniDName, DataBase.aniNameAddOn_spell));
                     }
@@ -92,14 +92,12 @@ namespace CommonPart
             while (add!=0 && number <stagesPos.Length)
             {
                 number++;
-                if (stage_select < stagesPos.Length && stageAvailable[stage_select - 1])
+                stage_select += add;
+                if (stage_select > stagesPos.Length) { stage_select = 1; }
+                if (stage_select < 1) { stage_select = stagesPos.Length; }
+                if (stage_select <= stagesPos.Length && stageAvailable[stage_select - 1])
                 {
                     break;
-                }
-                else {
-                    stage_select += add;
-                    if (stage_select > stagesPos.Length) { stage_select = 1; }
-                    if (stage_select < 1) { stage_select = stagesPos.Length; }
                 }
             }
             if (changed) {
@@ -115,12 +113,12 @@ namespace CommonPart
                     DataBase.aniNameAddOn_spell));
                 }
             }
-            if (Input.GetKeyPressed(KeyID.Select) == true)
+            if (Input.IsKeyDownOnce(KeyID.Select) == true)
             {
                 new MapScene(scenem,stage_select);
             }
 
-            if (Input.GetKeyPressed(KeyID.Escape) == true || Input.GetKeyPressed(KeyID.Cancel))
+            if (Input.IsKeyDownOnce(KeyID.Escape) == true || Input.IsKeyDownOnce(KeyID.Cancel))
             {
                 Delete=true;
                 new TitleSceneWithWindows(scenem);
@@ -136,7 +134,6 @@ namespace CommonPart
         public override void SceneDraw(Drawing d)
         {
             d.Draw(new Vector(0, 0), DataBase.getTex("stageselect"), DepthID.BackGroundWall);
-            d.Draw(player_pos, DataBase.getTex(playerIconName), DepthID.Player);
             for(int i = 0; i < stagesPos.Length-1; i++)
             {
                 d.DrawLine(stagesPos[i], stagesPos[i + 1], 2, Color.Wheat, DepthID.Status);
@@ -144,6 +141,7 @@ namespace CommonPart
             for(int j=0;j<stagesPos.Length;j++){
                 animations[j].Draw(d, new Vector(stagesPos[j].X-animations[j].X/2,stagesPos[j].Y-animations[j].Y/2), DepthID.Status);
             }
+            d.Draw(player_pos, DataBase.getTex(playerIconName), DepthID.Status);
         }
     }
 }
