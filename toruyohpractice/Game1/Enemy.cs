@@ -42,6 +42,7 @@ namespace CommonPart
         protected MoveType mt;
         protected Vector default_pos;
         protected int alltime;
+        protected double speed;
         protected PointType pt;
         /// <summary>
         /// 0が今のルーチン、1が保存したルーチン
@@ -49,9 +50,6 @@ namespace CommonPart
         public int[] times=new int[2];
 
         public int stop_time=0;
-
-        private bool once = false;
-        private Vector displacement4;
 
         /// <summary>
         /// これがfalseでは、motionのループはそもそも考えない
@@ -72,6 +70,8 @@ namespace CommonPart
             motion_index[0] = 0;
             motion_index[1] = -1;
             times[0] =0;
+            speed = unitType.speed;
+            setup_motion(0);
             setup_skill();
         }
         public virtual void update(Player player)
@@ -80,18 +80,8 @@ namespace CommonPart
             if (stop_time <= 0)
             {//敵が行動不能ではない
                 #region about motion
-                if (times[0] >= unitType.times[motion_index[0]])
-                {
-                    if (motion_index[0] < unitType.moveTypes.Count - 1)
-                    {
-                        motion_index[0]++;
-                        //Console.WriteLine("play animation!");
-                        once = false;
-                    }
-                    else { motion_index[0] = 0; }
-                    times[0] = 0;
-                }
                 times[0]++;
+                update_motion_index();
                 switch (unitType.moveTypes[motion_index[0]])
                 {
                     #region 動作
@@ -102,10 +92,8 @@ namespace CommonPart
                         if (texRotate) { angle = Math.Atan2(-displacement.Y, -displacement.X); } //- Math.PI / 2; }
                         break;
                     case MoveType.go_straight:
-                        Vector displacement1 = MotionCalculation.tousokuidouDisplacement(unitType.default_poses[motion_index[0]], unitType.times[motion_index[0]]);
-                        x += displacement1.X;
-                        y += displacement1.Y;
-
+                        x += default_pos.X;
+                        y += default_pos.Y;
                         break;
                     case MoveType.rightcircle:
                         Vector displacement2 = MotionCalculation.rightcircleDisplacement(unitType.speed, unitType.times[motion_index[0]], times[0]);
@@ -117,18 +105,17 @@ namespace CommonPart
                         Vector displacement3 = MotionCalculation.leftcircleDisplacement(unitType.speed, unitType.times[motion_index[0]], times[0]);
                         x += displacement3.X;
                         y += displacement3.Y;
-
                         break;
-                    case MoveType.screen_point_target:
-                        if (once == false)
+                    case MoveType.screen_point_target://スクリーン上の点に移動し、十分近ければその点に移りMoveTypeを次に移す
+                        if (!Function.hitcircle(x, y, 0, default_pos.X, default_pos.Y, unitType.speed/2))
                         {
-                            Vector goal = new Vector(unitType.default_poses[motion_index[0]].X + Map.leftside, unitType.default_poses[motion_index[0]].Y);
-                            displacement4 = new Vector(goal.X - x, goal.Y - y);
-                            once = true;
-                        }
-                        x += displacement4.X / unitType.times[motion_index[0]];
-                        y += displacement4.Y / unitType.times[motion_index[0]];
-                        if (texRotate) { angle = Math.Atan2(displacement4.Y, displacement4.X); }// - Math.PI / 2; }
+                            double ep = Math.Sqrt(Function.distance(x, y, default_pos.X, default_pos.Y));
+                            double speed_x = speed * (default_pos.X - x) / ep;
+                            double speed_y = speed * (default_pos.Y - y) / ep;
+                            x += speed_x;
+                            y += speed_y;
+                            if (texRotate) { angle = Math.Atan2(speed_y, speed_x); }
+                        }else { if (alltime == DataBase.motion_inftyTime) times[0] = alltime; }
                         break;
                     case MoveType.stop:
                         //times[0]フレームだけ停止する
@@ -255,33 +242,55 @@ namespace CommonPart
 
         #region Functions About PointType
         /// <summary>
-        /// 渡された(x,y)とPointTypeで適切なyを返す
+        /// 渡された(x,y)とPointTypeで適切なyを返す.player_posの時player.yを返す
         /// </summary>
         /// <param name="pos"></param>
         /// <param name="_pt"></param>
-        protected double from_PointType_getPosY(double x, double y, PointType _pt)
+        protected double from_PointType_getPosY(double px, double py, PointType _pt, int t = 1, MoveType _mt = MoveType.noMotion)
         {
             switch (_pt)
             {
                 case PointType.notused:
                     return 0;
+                case PointType.player_pos:
+                    switch (_mt)
+                    {
+                        case MoveType.go_straight:
+                            return (Map.player.y - y) / t;
+                        default:
+                            return Map.player.y;
+                    }
+                case PointType.displacement:
+                    return py / t;
                 default:
-                    return y;
+                    return py;
             }
         }
         /// <summary>
-        /// 渡された(x,y)とPointTypeで適切なxを返す
+        /// 渡された(x,y)とPointTypeで適切なxを返す.player_posはこの時点のplayer.xを返す。
         /// </summary>
         /// <param name="pos"></param>
         /// <param name="_pt"></param>
-        protected double from_PointType_getPosX(double x, double y, PointType _pt)
+        protected double from_PointType_getPosX(double px, double py, PointType _pt, int t=1, MoveType _mt = MoveType.noMotion)
         {
             switch (_pt)
             {
                 case PointType.notused:
                     return 0;
+                case PointType.player_pos:
+                    switch (_mt)
+                    {
+                        case MoveType.go_straight:
+                            return (Map.player.x - x)/t;
+                        default:
+                            return Map.player.x;
+                    }
+                case PointType.displacement:
+                    return px / t;
+                case PointType.pos_on_screen:
+                    return px + Map.leftside;
                 default:
-                    return x;
+                    return px;
             }
         }
         #endregion
@@ -310,14 +319,21 @@ namespace CommonPart
         protected void setup_motion(int i) {
             if (i < unitType.moveTypes.Count) {
                 motion_index[0] = i; mt =unitType.moveTypes[i]; alltime = unitType.times[i];
+                pt = unitType.pointTypes[i];
+                default_pos = unitType.default_poses[i];
                 setup_default_pos(i);
+                if (mt == MoveType.screen_point_target && pt==PointType.pos_on_screen) {
+                    speed = Math.Sqrt((default_pos.X - x) * (default_pos.X - x) + (default_pos.Y - y) * (default_pos.Y - y))/alltime;
+                }
+                else { speed = unitType.speed; }
+                Console.WriteLine(default_pos+" "+mt);
             }
             else { Console.Write("setup_motion:Invaild Motion-" + unitType_name + "- i is" + i); }
         }
         protected void update_motion_index() {
             if (motion_index[1] >= 0)
             {//例外が設置された。
-                if (times[0] >= alltime)
+                if ( DataBase.timeExceedMaxDuration(times[0],alltime) )
                 {//例外のmotionから脱出して、元に戻る。
                     get_Motion_from_1();
                     setup_motion(motion_index[0]);
@@ -326,17 +342,15 @@ namespace CommonPart
             }
             else
             {
-                if (times[0] >= unitType.times[motion_index[0]])
+                if (DataBase.timeExceedMaxDuration(times[0],alltime))
                 {
                     if (motion_index[0] < unitType.moveTypes.Count - 1)
                     {
-
-                        motion_index[0]++;
-
-                        once = false;
+                        motion_index[0]++;   
                     }
                     else { motion_index[0] = 0; }
-                    times[0] = 0;
+                    times[0] = 0;//times[0]を0にする,下の関数には組み込めていない。
+                    setup_motion(motion_index[0]);// motion_index[0]に従ってmotionを設置するが、これだけだとtimes[0]が0にならない
                 }
             }
         }
@@ -364,14 +378,17 @@ namespace CommonPart
         /// <param name="i"></param>
         protected void setup_default_pos(int i)
         {
-            default_pos.X = from_PointType_getPosX(default_pos.X, default_pos.Y, unitType.pointTypes[i]);
-            default_pos.Y = from_PointType_getPosY(default_pos.X, default_pos.Y, unitType.pointTypes[i]);
+            default_pos.X = from_PointType_getPosX(default_pos.X, default_pos.Y, unitType.pointTypes[i],unitType.times[i], unitType.moveTypes[i]);
+            default_pos.Y = from_PointType_getPosY(default_pos.X, default_pos.Y, unitType.pointTypes[i],unitType.times[i], unitType.moveTypes[i]);
         }
-
+        /// <summary>
+        /// 現在のPointType, times[0], MoveTypeを使って、default_posを更新する
+        /// </summary>
+        /// <param name="pos"></param>
         protected void setup_default_pos(Vector pos)
         {
-            default_pos.X = from_PointType_getPosX(pos.X, pos.Y, pt);
-            default_pos.Y = from_PointType_getPosY(pos.X, pos.Y, pt);
+            default_pos.X = from_PointType_getPosX(pos.X, pos.Y, pt,alltime,mt);
+            default_pos.Y = from_PointType_getPosY(pos.X, pos.Y, pt,alltime,mt);
         }
 
         #endregion
