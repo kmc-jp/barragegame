@@ -39,10 +39,27 @@ namespace CommonPart
             pointTypes = new List<PointType>();
         }
 
-
+        /// <summary>
+        /// MoveTypeがscreen_pointの時はpointTypeはnotUsedだとscreen_pointになる。go_straightの時はdisplacementになる
+        /// </summary>
+        /// <param name="m">MoveTypeの設定、これによって、PointTypeがnotUsedでも一番使われるものになる</param>
+        /// <param name="t">持続時間</param>
+        /// <param name="v">使うベクトル</param>
+        /// <param name="p">上のベクトルの使い方</param>
         public void add_MoveTypeDataSet(MoveType m, int t, Vector v, PointType p = PointType.notused)
         {
             moveTypes.Add(m);
+            switch (m)
+            {
+                case MoveType.screen_point_target:
+                    if (p == PointType.notused) { p = PointType.pos_on_screen; }
+                    break;
+                case MoveType.go_straight:
+                    if (p == PointType.notused) { p = PointType.displacement; }
+                    break;
+                default:
+                    break;
+            }
             set_ith_MTDataSet(moveTypes.Count - 1, t, v, p);
         }
         public void set_ith_MTDataSet(int id, int t, Vector v, PointType p= PointType.notused)

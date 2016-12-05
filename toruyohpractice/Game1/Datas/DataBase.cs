@@ -20,7 +20,11 @@ namespace CommonPart {
     /// <summary>
     /// MoveTypeを持ち、なんらかのposをも持っている時、そのposの意味
     /// </summary>
-    public enum PointType { notused = -1, default_pos = 0, displacement, pos_on_screen, }
+    public enum PointType { notused = -1, //使われていない
+        displacement,//全部の変位、1 fpsでの変位ではない
+        pos_on_screen,//画面上の座標を示す
+        player_pos, //プレイヤーの座標を指す。
+    }
     public enum Command
     {
         exit = -1000,
@@ -499,6 +503,10 @@ namespace CommonPart {
         #endregion
 
         #region Method
+        public static bool timeExceedMaxDuration( int time, int MaxDuration)
+        {
+            return (MaxDuration == time) || (MaxDuration != motion_inftyTime && time >= MaxDuration);
+        }
         /// <summary>
         /// 渡された時間が無限を意味するか0より大きいならtrue, 0以下で無限でないならfalse
         /// </summary>
