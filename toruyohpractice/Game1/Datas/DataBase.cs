@@ -266,8 +266,8 @@ namespace CommonPart {
         public const string skillUsedAfterDeath = "-after death";
 
         private const int low_speed=2;
-        private const int middle_speed=4;
-        private const int high_speed=7;
+        private const int middle_speed=5;
+        private const int high_speed=9;
         private const int big_radius=10;
         private const int small_radius=5;
         private const int high_cd1 = 5; private const int high_cd2 = 8; private const int high_cd3 = 20; private const int high_cd4 = 30;
