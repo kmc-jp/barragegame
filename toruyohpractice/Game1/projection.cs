@@ -23,6 +23,7 @@ namespace CommonPart
         public Unit target;
         public AnimationAdvanced animation = null;
         public MoveType move_type;
+        public int time; 
         /// <summary>
         /// target_posの意味。これは初期では.notused=-1である。
         /// </summary>
@@ -77,11 +78,13 @@ namespace CommonPart
         /// </summary>
         /// <param name="_pt">_target_posをどのように使用を決める</param>
         /// <param name="_target_pos">このMoveTypeに使用する点</param>
-        public Projection(double _x, double _y, MoveType _move_type, string _anime, Vector _target_pos, PointType _pt,double _speed=0,double _acceleration=0, double _radian=0,int _zoom_rate=100)
+        public Projection(double _x, double _y, MoveType _move_type, string _anime, Vector _target_pos, PointType _pt,int _time,double _speed=0,double _acceleration=0, double _radian=0,int _zoom_rate=100)
             : this(_x, _y, _move_type, _anime,_speed,_acceleration,_radian, _zoom_rate)
         {
             point_type = _pt;
-            target_pos = _target_pos;
+            time = _time;
+            target_pos.X = Motion.from_PointType_getPosX(_target_pos.X, _target_pos.Y, point_type, time, move_type);
+            target_pos.Y = Motion.from_PointType_getPosY(_target_pos.X, _target_pos.Y, point_type, time, move_type);
             double e = Math.Sqrt(Function.distance(x, y, target_pos.X, target_pos.Y));
             acceleration_x = (x - target_pos.X) * acceleration / e;
             acceleration_y = (y - target_pos.Y) * acceleration / e;

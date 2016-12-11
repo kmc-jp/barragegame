@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CommonPart
 {
-    enum Timing { moving, dying,  } //movingは普通の状態、dyingは死んだ瞬間んを意味する
+    enum Timing { moving, dying,  } //movingは普通の状態、dyingは死んだ瞬間を意味する
     class Skill
     {
         public int coolDown=0;
