@@ -409,7 +409,8 @@ namespace CommonPart
                 if (skills[i].coolDown <= 0)
                 {
                     BarrageUsedSkillData sd= (BarrageUsedSkillData)DataBase.SkillDatasDictionary[skills[i].skillName];
-                    bool use = true;
+                    bool used = skills[i].used(Timing.moving);
+                    if (!used) { continue; }
                     switch (sd.sgl) {
                         case SkillGenreL.generation:
                             #region ジャンルの小さい分類
@@ -503,7 +504,7 @@ namespace CommonPart
                             }//switch sgs end
                             #endregion
                             break;
-                        case SkillGenreL.bullet_create:
+                        case SkillGenreL.UseSkilledBullet:
                             GenerateSkilledBulletData gsb= (GenerateSkilledBulletData)sd;
                             #region ジャンルの小さい分類
                             switch (sd.sgs)
