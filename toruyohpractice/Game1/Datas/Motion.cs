@@ -29,6 +29,32 @@ namespace CommonPart
             omega = _omega;
         }
 
+
+
+        public static bool Has_a_Object(MoveType _mt) {
+            switch (_mt)
+            {
+                case MoveType.chase_target:
+                case MoveType.object_target:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        public static double getAngleFromPointType(PointType _pt,double _angle,double px)
+        {
+            switch (_pt)
+            {
+                case PointType.Direction:
+                    return _angle;
+                case PointType.randomDirection:
+                    return _angle + Function.GetRandomDouble(px * 2) - px;
+                default:
+                    return _angle;
+            }
+        }
+
         #region Functions About PointType
         /// <summary>
         /// PointTypeが"ベクトルが点なのか"を判定する、
@@ -55,14 +81,26 @@ namespace CommonPart
         {
             switch (_pt)
             {
-                case PointType.displacement:
+                case PointType.Direction:
                 case PointType.randomDirection:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+        
+        public static bool Is_a_Displacement(PointType _pt)
+        {
+            switch (_pt)
+            {
+                case PointType.displacement:
                 case PointType.randomRange:
                     return true;
                 default:
                     return false;
             }
         }
+
 
         /// <summary>
         /// 渡された(x,y)とPointTypeで適切なyを返す.player_posの時player.yを返す
@@ -110,6 +148,6 @@ namespace CommonPart
         }
         #endregion
 
-
+        public static 
     }
 }
