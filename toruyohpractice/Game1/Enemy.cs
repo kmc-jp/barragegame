@@ -407,7 +407,8 @@ namespace CommonPart
                                 default:
                                     if (ws.way % 2 == 1)
                                     {
-                                        bullets.Add(new Bullet(x, y, sd.moveType, sd.speed, sd.acceleration, sd.aniDName, player_angle, sd.radius, sd.sword, sd.life, sd.score));
+                                        double bx = x; double by = y;
+                                        double _angle = Motion.getAngleFromPointType(ws.pointType, ws.angle, ws.vec.X);
                                         for (int j = 1; j < (ws.way + 1) / 2; j++)
                                         {
                                             bullets.Add(new Bullet(x, y, sd.moveType, sd.speed, sd.acceleration, sd.aniDName, player_angle + j * sd.angle, sd.radius, sd.sword, sd.life, sd.score));
@@ -566,10 +567,6 @@ namespace CommonPart
                             use = false;
                             break;
                     }//switch sgl end
-                    if (use == true)
-                    {
-                        skills[i].used();
-                    }
                 }
             }
         }
@@ -634,7 +631,7 @@ namespace CommonPart
                             else
                             {
                                 //点目標のスキル
-                                bullets.Add(new SkilledBullet(x, y, _ws.moveType, _ws.speed, _ws.acceleration, _ws.aniDName, _ws.vec, _ws.pointType, _ws.motion_time, _ws.angle, _ws.radius, _ws.omega, _ws.sword, _ws.life, _ws.score));
+                                bullets.Add(new SkilledBullet(x, y, _ws.moveType, _ws.speed, _ws.acceleration, _ws.aniDName, _ws.vec, _ws.pointType, _ws.motion_time, _ws.angle, _ws.radius, _ws.omega,wSs.BulletSkillNames ,this,_ws.sword, _ws.life, _ws.score));
                             }
                             break;
                     }

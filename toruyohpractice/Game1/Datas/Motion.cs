@@ -42,6 +42,18 @@ namespace CommonPart
             }
         }
 
+        public static double getAngleFromPointType(PointType _pt,double _angle,double px)
+        {
+            switch (_pt)
+            {
+                case PointType.Direction:
+                    return _angle;
+                case PointType.randomDirection:
+                    return _angle + Function.GetRandomDouble(px * 2) - px;
+                default:
+                    return _angle;
+            }
+        }
 
         #region Functions About PointType
         /// <summary>
