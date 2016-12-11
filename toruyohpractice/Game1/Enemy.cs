@@ -31,7 +31,7 @@ namespace CommonPart
         public override double radius { get { return unitType.radius; } }
         #endregion
         public int life = 1;
-        public int maxLife;
+        public int maxLife=1;
         #region status variables
         public bool delete = false;
         public bool exist = false;
@@ -267,6 +267,7 @@ namespace CommonPart
                 pt = unitType.pointTypes[i];
                 default_pos = unitType.default_poses[i];
                 setup_default_pos(i);
+                #region screen_point_target
                 if (mt == MoveType.screen_point_target && alltime > 0) {
                     if (Motion.Is_a_Point(pt))
                     {
@@ -276,18 +277,41 @@ namespace CommonPart
                         speed = Math.Sqrt( default_pos.X * default_pos.X + default_pos.Y * default_pos.Y ) / alltime;
                     }
                 }
+                #endregion
+                #region go_straight
                 else if (mt==MoveType.go_straight)
                 {
+                    #region is a point
                     if (Motion.Is_a_Point(pt))
                     {
-                        double distance = Math.Sqrt(Function.distance(default_pos.X, default_pos.Y, x, y) );
-                        default_pos.X = (default_pos.X - x) *speed/ distance;
+                        if(alltime > 0)
+                        {
+                            default_pos.X = (default_pos.X - x) / alltime;
+                            default_pos.Y = (default_pos.Y - y) / alltime;
+                        }else
+                        {
+                            double distance = Math.Sqrt(Function.distance(default_pos.X, default_pos.Y, x, y));
+                            default_pos.X = (default_pos.X - x) *speed/ distance;
+                            default_pos.Y = (default_pos.Y - y) *speed/ distance;
+                        }
                     }
-                    else if (Motion.Is_a_Direction(pt))
+                    #endregion
+                    else
                     {
-                        speed = Math.Sqrt(default_pos.X * default_pos.X + default_pos.Y * default_pos.Y) / alltime;
+                        if (alltime > 0)
+                        {
+                            default_pos.X /= alltime;
+                            default_pos.Y /= alltime;
+                        }
+                        else
+                        {
+                            double distance = default_pos.GetLength();
+                            default_pos.X = default_pos.X * speed / distance;
+                            default_pos.Y = default_pos.Y * speed / distance;
+                        }
                     }
                 }
+                #endregion
                 else { speed = unitType.speed; }
                 Console.WriteLine(default_pos+" "+mt);
             }
@@ -386,15 +410,27 @@ namespace CommonPart
                                     #region yanagi setting
                                     for (int j = 1; j <= ws.way + 1; j++)
                                     {
-                                        Bullet bullet1 = new Bullet(x + sd.space * j + sd.radius, y - sd.space * j * j * 2 + 4 + animation.Y / 2, sd.moveType,
+                                        Bullet bullet1, bullet2;
+                                        if (ws.sgl == SkillGenreL.UseSkilledBullet)
+                                        {
+                                            WaySkilledBulletsData wSs = (WaySkilledBulletsData)ws;
+                                            bullet1 = new SkilledBullet(x + sd.space * j + sd.radius, y - sd.space * j * j * 2 + 4 + animation.Y / 2, sd.moveType,
+                                                sd.speed, sd.acceleration, sd.aniDName, sd.angle, sd.radius, wSs.BulletSkillNames, this, sd.sword, sd.life, sd.score);
+                                            bullet2 = new SkilledBullet(x - sd.space * j - sd.radius, y - sd.space * j * j * 2 + 4 + animation.Y / 2, sd.moveType,
+                                                sd.speed, sd.acceleration, sd.aniDName, sd.angle, sd.radius, wSs.BulletSkillNames, this, sd.sword, sd.life, sd.score);
+                                        }
+                                        else
+                                        {
+                                            bullet2 = new Bullet(x - sd.space * j - sd.radius, y - sd.space * j * j * 2 + 4 + animation.Y / 2, sd.moveType,
                                             sd.speed, sd.acceleration, sd.aniDName, sd.angle, sd.radius, sd.sword, sd.life, sd.score);
+                                            bullet1 = new Bullet(x + sd.space * j + sd.radius, y - sd.space * j * j * 2 + 4 + animation.Y / 2, sd.moveType,
+                                                sd.speed, sd.acceleration, sd.aniDName, sd.angle, sd.radius, sd.sword, sd.life, sd.score);
+                                        }
                                         bullet1.speed_x = sd.speed * (j - 1) * 0.25;
                                         bullet1.speed_y = -sd.speed + 0.1 * (sd.space * j);
                                         bullet1.acceleration_x = +sd.acceleration * j * j / 120;
                                         bullet1.acceleration_y = sd.acceleration;
                                         bullets.Add(bullet1);
-                                        Bullet bullet2 = new Bullet(x - sd.space * j - sd.radius, y - sd.space * j * j * 2 + 4 + animation.Y / 2, sd.moveType,
-                                            sd.speed, sd.acceleration, sd.aniDName, sd.angle, sd.radius, sd.sword, sd.life, sd.score);
                                         bullet2.speed_x = -sd.speed * (j - 1) * 0.25;
                                         bullet2.speed_y = -sd.speed + 0.1 * (sd.space * j);
                                         bullet2.acceleration_x = -sd.acceleration * j * j / 120;
@@ -464,7 +500,7 @@ namespace CommonPart
                             else
                             {
                                 //点目標のスキル
-                                bullets.Add(new Bullet(_x, _y, _ws.moveType, _ws.speed, _ws.acceleration, _ws.aniDName, _ws.vec, _ws.pointType, _ws.motion_time, _ws.angle, _ws.omega, _ws.radius, _ws.sword, _ws.life, _ws.score));
+                                bullets.Add(new Bullet(_x, _y, _ws.moveType, _ws.speed, _ws.acceleration, _ws.aniDName, _ws.vec, _ws.pointType, _ws.motion_time, _angle, _ws.omega, _ws.radius, _ws.sword, _ws.life, _ws.score));
                             }
                             break;
                     }
@@ -479,24 +515,24 @@ namespace CommonPart
                             if (Motion.Has_a_Object(_ws.moveType))
                             {
                                 //物体目標のスキル
-                                bullets.Add(new SkilledLaserTop(x, y, _ws.moveType, _ws.speed, _ws.acceleration, Map.player, _ws.aniDName, _ws.angle, _ws.omega, _ws.radius,wSs.BulletSkillNames, this, _ws.color, _ws.sword, _ws.life, _ws.score));
+                                bullets.Add(new SkilledLaserTop(x, y, _ws.moveType, _ws.speed, _ws.acceleration, Map.player, _ws.aniDName, _angle, _ws.omega, _ws.radius,wSs.BulletSkillNames, this, _ws.color, _ws.sword, _ws.life, _ws.score));
                             }
                             else
                             {
                                 //点目標のスキル
-                                bullets.Add(new SkilledLaserTop(x, y, _ws.moveType, _ws.speed, _ws.acceleration, _ws.vec, _ws.pointType, _ws.motion_time, _ws.aniDName, _ws.angle, _ws.omega, _ws.radius, this, _ws.color, _ws.sword, _ws.life, _ws.score));
+                                bullets.Add(new SkilledLaserTop(x, y, _ws.moveType, _ws.speed, _ws.acceleration, _ws.vec, _ws.pointType, _ws.aniDName, _angle, _ws.omega, _ws.radius, _ws.motion_time,wSs.BulletSkillNames, this, _ws.color, _ws.sword, _ws.life, _ws.score));
                             }
                             break;
                         default:
                             if (Motion.Has_a_Object(_ws.moveType))
                             {
                                 //物体目標のスキル
-                                bullets.Add(new SkilledBullet(x, y, _ws.moveType, _ws.speed, _ws.acceleration, _ws.aniDName, Map.player, _ws.angle, _ws.omega, _ws.radius,wSs.BulletSkillNames,this, _ws.sword, _ws.life, _ws.score));
+                                bullets.Add(new SkilledBullet(x, y, _ws.moveType, _ws.speed, _ws.acceleration, _ws.aniDName, Map.player,_ws.motion_time, _angle, _ws.omega, _ws.radius,wSs.BulletSkillNames,this, _ws.sword, _ws.life, _ws.score));
                             }
                             else
                             {
                                 //点目標のスキル
-                                bullets.Add(new SkilledBullet(x, y, _ws.moveType, _ws.speed, _ws.acceleration, _ws.aniDName, _ws.vec, _ws.pointType, _ws.motion_time, _ws.angle, _ws.omega, _ws.radius,wSs.BulletSkillNames ,this,_ws.sword, _ws.life, _ws.score));
+                                bullets.Add(new SkilledBullet(x, y, _ws.moveType, _ws.speed, _ws.acceleration, _ws.aniDName, _ws.vec, _ws.pointType, _ws.motion_time, _angle, _ws.omega, _ws.radius,wSs.BulletSkillNames ,this,_ws.sword, _ws.life, _ws.score));
                             }
                             break;
                     }
@@ -504,6 +540,78 @@ namespace CommonPart
                     #endregion
             }
         }
+
+        public void bulletsAdd(double _x, double _y, double _speed, double _acceleration,double _angle,WayShotSkillData _ws)
+        {
+            switch (_ws.sgl)
+            {
+                #region creat Non-Skilled 
+                case SkillGenreL.generation:
+                    switch (_ws.sgs)
+                    {
+                        case SkillGenreS.laser:
+                            if (Motion.Has_a_Object(_ws.moveType))
+                            {
+                                //物体目標のスキル
+                                bullets.Add(new LaserTop(_x, _y, _ws.moveType, _speed, _acceleration, Map.player, _ws.aniDName, _angle, _ws.radius, _ws.omega, this, _ws.color, _ws.sword, _ws.life, _ws.score));
+                            }
+                            else
+                            {
+                                //点目標のスキル
+                                bullets.Add(new LaserTop(_x, _y, _ws.moveType, _speed, _acceleration, _ws.vec, _ws.pointType, _ws.motion_time, _ws.aniDName, _angle, _ws.radius, _ws.omega, this, _ws.color, _ws.sword, _ws.life, _ws.score));
+                            }
+                            break;
+                        default:
+                            if (Motion.Has_a_Object(_ws.moveType))
+                            {
+                                //物体目標のスキル
+                                bullets.Add(new Bullet(_x, _y, _ws.moveType, _speed, _acceleration, _ws.aniDName, Map.player, _angle, _ws.omega, _ws.radius, _ws.sword, _ws.life, _ws.score));
+                            }
+                            else
+                            {
+                                //点目標のスキル
+                                bullets.Add(new Bullet(_x, _y, _ws.moveType, _speed, _acceleration, _ws.aniDName, _ws.vec, _ws.pointType, _ws.motion_time, _angle, _ws.omega, _ws.radius, _ws.sword, _ws.life, _ws.score));
+                            }
+                            break;
+                    }
+                    break;
+                #endregion
+                #region create Skilled
+                case SkillGenreL.UseSkilledBullet:
+                    WaySkilledBulletsData wSs = (WaySkilledBulletsData)_ws;
+                    switch (_ws.sgs)
+                    {
+                        case SkillGenreS.laser:
+                            if (Motion.Has_a_Object(_ws.moveType))
+                            {
+                                //物体目標のスキル
+                                bullets.Add(new SkilledLaserTop(x, y, _ws.moveType, _speed, _acceleration, Map.player, _ws.aniDName, _angle, _ws.omega, _ws.radius, wSs.BulletSkillNames, this, _ws.color, _ws.sword, _ws.life, _ws.score));
+                            }
+                            else
+                            {
+                                //点目標のスキル
+                                bullets.Add(new SkilledLaserTop(x, y, _ws.moveType, _speed, _acceleration, _ws.vec, _ws.pointType, _ws.aniDName, _angle, _ws.omega, _ws.radius, _ws.motion_time, wSs.BulletSkillNames, this, _ws.color, _ws.sword, _ws.life, _ws.score));
+                            }
+                            break;
+                        default:
+                            if (Motion.Has_a_Object(_ws.moveType))
+                            {
+                                //物体目標のスキル
+                                bullets.Add(new SkilledBullet(x, y, _ws.moveType, _speed, _acceleration, _ws.aniDName, Map.player, _ws.motion_time, _angle, _ws.omega, _ws.radius, wSs.BulletSkillNames, this, _ws.sword, _ws.life, _ws.score));
+                            }
+                            else
+                            {
+                                //点目標のスキル
+                                bullets.Add(new SkilledBullet(x, y, _ws.moveType, _speed, _acceleration, _ws.aniDName, _ws.vec, _ws.pointType, _ws.motion_time, _angle, _ws.omega, _ws.radius, wSs.BulletSkillNames, this, _ws.sword, _ws.life, _ws.score));
+                            }
+                            break;
+                    }
+                    break;
+                    #endregion
+            }
+        }
+
+
         /// <summary>
         /// このenemyのx,yを原点として、このbulletのradius+p_radius半径内にpx,pyがあるかどうか
         /// </summary>

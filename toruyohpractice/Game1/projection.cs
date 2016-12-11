@@ -83,13 +83,66 @@ namespace CommonPart
         {
             point_type = _pt;
             motionTime = _time;
+            speed = _speed;
             target_pos.X = Motion.from_PointType_getPosX(_target_pos.X, _target_pos.Y, point_type, motionTime, move_type);
             target_pos.Y = Motion.from_PointType_getPosY(_target_pos.X, _target_pos.Y, point_type, motionTime, move_type);
-            double e = Math.Sqrt(Function.distance(x, y, target_pos.X, target_pos.Y));
-            acceleration_x = (x - target_pos.X) * acceleration / e;
-            acceleration_y = (y - target_pos.Y) * acceleration / e;
-            speed_x = (x - target_pos.X) * speed / e;
-            speed_y = (y - target_pos.Y) * speed / e;
+            #region screen_point_target
+            if (move_type == MoveType.screen_point_target && motionTime > 0)
+            {
+                if (Motion.Is_a_Point(point_type))
+                {
+                    speed = Math.Sqrt((target_pos.X - x) * (target_pos.X - x) + (target_pos.Y - y) * (target_pos.Y - y)) / motionTime;
+                }
+                else if (Motion.Is_a_Direction(point_type))
+                {
+                    speed = Math.Sqrt(target_pos.X * target_pos.X + target_pos.Y * target_pos.Y) / motionTime;
+                }
+            }
+            #endregion
+            #region go_straight
+            else if (move_type == MoveType.go_straight)
+            {
+                #region is a point
+                if (Motion.Is_a_Point(point_type))
+                {
+                    if (motionTime > 0)
+                    {
+                        speed_x = (target_pos.X - x) / motionTime;
+                        speed_y = (target_pos.Y - y) / motionTime;
+                        double e = Math.Sqrt(speed_x * speed_x + speed_y * speed_y);
+                        acceleration_x = speed_x * acceleration / e;
+                        acceleration_y = speed_y * acceleration / e;
+                    }
+                    else
+                    {
+                        double distance = Math.Sqrt(Function.distance(target_pos.X, target_pos.Y, x, y));
+                        speed_x = (target_pos.X - x) * speed / distance;
+                        speed_y = (target_pos.Y - y) * speed / distance;
+                        acceleration_x = speed_x * acceleration / speed;
+                        acceleration_y = speed_y * acceleration / speed;
+                    }
+                }else
+                {
+                    if (motionTime > 0)
+                    {
+                        speed_x = target_pos.X / motionTime;
+                        speed_y = target_pos.Y / motionTime;
+                        double e = Math.Sqrt(speed_x * speed_x + speed_y * speed_y);
+                        acceleration_x = speed_x * acceleration / e;
+                        acceleration_y = speed_y * acceleration / e;
+                    }
+                    else
+                    {
+                        double distance = target_pos.GetLength();
+                        speed_x = target_pos.X * speed / distance;
+                        speed_y = target_pos.Y * speed / distance;
+                        acceleration_x = speed_x * acceleration / speed;
+                        acceleration_y = speed_y * acceleration / speed;
+                    }
+                }
+                #endregion
+            }
+            #endregion
         }
         /// <summary>
         /// Unitに向かって移動する。MoveTypeによって、_radianは意味をなさないことがある
