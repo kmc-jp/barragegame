@@ -60,6 +60,7 @@
     <Compile Include="Datas\DataBase.cs" />
     <Compile Include="Datas\HitShape.cs" />
     <Compile Include="Datas\MapDataSave.cs" />
+    <Compile Include="Datas\Motion.cs" />
     <Compile Include="Datas\MotionCalculation.cs" />
     <Compile Include="Datas\MusicPlayer.cs" />
     <Compile Include="Datas\MusicPlayer2.cs" />
