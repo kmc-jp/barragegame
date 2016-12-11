@@ -42,7 +42,7 @@ namespace CommonPart {
         public override void SceneDraw(Drawing d) {
             // マップの描画
             nMap.Draw(d);
-            if (gameOver) window.draw(d); 
+            if (window!=null) window.draw(d); 
         }
         public override void SceneUpdate() {
             base.SceneUpdate();
@@ -64,33 +64,24 @@ namespace CommonPart {
             } else if (!MapFulStop && Map.mapState.Contains(Map.backToStageSelection) && Map.stop_time == DataBase.motion_inftyTime && Map.readyToStop_time <= 0)
             {
                 #region win 
-                // #region backToStageSelectionScene
                 MapFulStop = true;
+                window = null;
                 window = new Window_WithColoum(90, 220, 1100, 270);
-                int nx = 520, ny = 80;
+                window.assignBackgroundImage("1100x270メッセージウィンドゥ");
+                int nx = 430, ny = 80;
                 window.AddRichText("STAGE CLEAR", new Vector(nx, ny));
-                ny += 60;
+                nx = 0; ny = 0;
                 window.AddRichText("toal score : " + Map.score, new Vector(nx, ny));
-                ny += 60;
+                nx=430; ny = 180;
                 window.AddColoum(new Button(nx, ny, "Go to next stage", "", Command.buttonPressed3, false));
-                switch (window.commandForTop)
-                {
-                    case Command.buttonPressed3:
-                        close();
-                        new StageSelectScene(scenem);
-                        SoundManager.Music.PlayBGM(BGMID.None, true);
-                        break;
-                    default:
-                        break;
-                }
                 #endregion
 
             }
             else if(!MapFulStop)
             {//gameOverに入っていないのでmapは更新する
                 nMap.update(Input);
-            }else if(gameOver)
-            {// gameOverが確定している、この時はwindowだけを操作する
+            }else if(window!=null)
+            {// この時はwindowだけを操作する
                 #region window update as GameIsOver
                 window.update((KeyManager)Input, mouse);
                 switch (window.commandForTop)
@@ -101,6 +92,11 @@ namespace CommonPart {
                     case Command.buttonPressed2:
                         Delete = true;
                         new TitleSceneWithWindows(scenem);
+                        break;
+                    case Command.buttonPressed3:
+                        close();
+                        new StageSelectScene(scenem);
+                        SoundManager.Music.PlayBGM(BGMID.None, true);
                         break;
                 }
                 #endregion
