@@ -154,7 +154,7 @@ namespace CommonPart
                     return px + Map.leftside;
                 case PointType.randomDirection:
                 case PointType.Direction:
-                    return _speed * Math.Sin(_angle);
+                    return _speed * Math.Cos(_angle);
                 default:
                     return px;
             }
