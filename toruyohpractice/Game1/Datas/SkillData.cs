@@ -354,7 +354,8 @@ namespace CommonPart
 
     class WaySkilledBulletsData: WayShotSkillData
     {
-        public List<string> skillNames;
+        public List<string> BulletSkillNames;
+
         /// <summary>
         /// SkilledBulletは使わない、Motionを使って書き方を簡略化する
         /// </summary>
@@ -377,7 +378,7 @@ namespace CommonPart
             double _radius, Color _c, string _SkillName,int _way, int _duration = DataBase.motion_inftyTime, double _space = 0, int _sword = 1, int _score = 10, int _life = 1)
             : base(_skillName, _conditions, SkillGenreL.UseSkilledBullet, _sgs, _aniDName, _cooldownFps, motion, _radius, _c, _way,_duration, _space, _sword, _score, _life)
         {
-            skillNames.Add(_SkillName);
+            BulletSkillNames.Add(_SkillName);
         }
 
         /// <summary>
@@ -401,7 +402,7 @@ namespace CommonPart
             double _radius, string _SkillName, int _way, int _duration = DataBase.motion_inftyTime, double _space = 0, int _sword = 1, int _score = 10, int _life = 1)
             : base(_skillName, _conditions, SkillGenreL.UseSkilledBullet, _sgs, _aniDName, _cooldownFps, motion, _radius, _way, _duration, _space, _sword, _score, _life)
         {
-            skillNames.Add(_SkillName);
+            BulletSkillNames.Add(_SkillName);
         }
     }
 

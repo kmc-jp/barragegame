@@ -25,35 +25,9 @@ namespace CommonPart
             }
         }
 
-        public bool used( Timing timing,int loop_index=-1,int hp = 0, double hpP =0)
+        public bool used( int _duration,int _loop_index=-1,int _hp = 0, int _maxHp=1)
         {
-            bool succeed = false;
-            bool afterDeath= skillName.Contains(DataBase.skillUsedAfterDeath);
-            int routeConditionIndex = skillName.LastIndexOf(DataBase.Routine);
-            bool LoopIndexCorrect;
-            if (routeConditionIndex == -1)
-            {
-                LoopIndexCorrect = true;
-            }else if (loop_index >= 0)
-            {
-                routeConditionIndex += DataBase.Routine.Length;
-                
-                while ( routeConditionIndex<skillName.Length && 
-                    skillName[routeConditionIndex]-'0'>=0  
-                    ) {
-
-                }
-            }else { LoopIndexCorrect = false; }
-            
-            switch (timing)
-            {
-                case Timing.moving:
-                    succeed = !afterDeath;
-                    break;
-                case Timing.dying:
-                    succeed = afterDeath;
-                    break;
-            }
+            bool succeed = Condition.skillCondition(DataBase.getSkillData(skillName).conditions,_loop_index,_duration,_hp,_hp*100/_maxHp);
             if (succeed) {
                 coolDown = DataBase.getSkillData(skillName).cooldownFps;
             }

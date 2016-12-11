@@ -31,7 +31,7 @@ namespace CommonPart {
         player_pos, //プレイヤーの座標を指す。
         randomRange,//ベクトルがx方向の正負変位,yの正負変位を表しているが、値はその変位内の乱数
         randomDirection,//ベクトルは意味を持たない?初期角度にランダム角度足した方向へ移動する
-
+        Direction,//決まった方向
     }
     public enum Command
     {
