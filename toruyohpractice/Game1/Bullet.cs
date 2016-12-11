@@ -38,9 +38,9 @@ namespace CommonPart
         /// <param name="_target_pos">使われる点</param>
         /// <param name="_pt">その点の使い方</param>
         /// <param name="_radian">初期角度、意味がない場合もある</param>
-        public Bullet(double _x,double _y, MoveType _move_type,double _speed,double _acceleration,string _anime,Vector _target_pos,PointType _pt,
+        public Bullet(double _x,double _y, MoveType _move_type,double _speed,double _acceleration,string _anime,Vector _target_pos,PointType _pt,int _time,
             double _radian,double _radius,int _sword, int _life=1,int _score=0, int _zoom_rate=100)
-            :base(_x,_y,_move_type, _anime, _target_pos,_pt,_speed, _acceleration,_radian,_zoom_rate)
+            :base(_x,_y,_move_type, _anime, _target_pos,_pt,_time,_speed, _acceleration,_radian,_zoom_rate)
         {
             radius = _radius;
             life = _life;
