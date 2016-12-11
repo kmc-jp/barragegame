@@ -55,12 +55,12 @@ namespace CommonPart {
         #region map BackGround variables
         static int total_BackGroundHeight = 0;
         protected static List<string> background_names = new List<string>();
+        protected static List<string> textureNames = new List<string>();
         /// <summary>
         /// 背景画像の描画位置
         /// </summary>
         protected static List<Vector> v = new List<Vector>();
         #endregion
-
         #region about boss
         public static bool boss_mode = false;
         /// <summary>
@@ -528,6 +528,14 @@ namespace CommonPart {
                 total_BackGroundHeight += DataBase.getTex(background_names[i]).Height;
             }
         }
+        public static void setup_textureNames(string[] _textureNames)
+        {
+            foreach(string _textureName in textureNames)
+            {
+                textureNames.Add(_textureName);
+            }
+        }
+        
         private void chargeBarChange(string name,string addOn=null) {
             if (addOn == null) { chargeBar_animation_name = name; }
             else { chargeBar_animation_name = name+addOn; }
@@ -591,21 +599,17 @@ namespace CommonPart {
             scoreboard.Draw(d, score_pos, DepthID.Status);
 
             #region sidebar draw
-            for (int i = 0; i < stagedata.leftsidebar_names.Length; i++)
+            if (inside_of_window(new Vector(leftside - DataBase.getTex(textureNames[0]).Width, 0), DataBase.getTexD(textureNames[0]).w_single, DataBase.getTexD(textureNames[0]).h_single))
             {
-                if (inside_of_window(new Vector(leftside - DataBase.getTex(stagedata.leftsidebar_names[i]).Width, 0), DataBase.getTexD(stagedata.leftsidebar_names[i]).w_single, DataBase.getTexD(stagedata.leftsidebar_names[i]).h_single))
-                {
-                    d.Draw(new Vector(leftside - DataBase.getTex(stagedata.leftsidebar_names[i]).Width, 0), DataBase.getTex(stagedata.leftsidebar_names[i]), DepthID.StateFront);
-                }
+                d.Draw(new Vector(leftside - DataBase.getTex(textureNames[0]).Width, 0), DataBase.getTex(textureNames[0]), DepthID.StateFront);
+
             }
-            for (int i = 0; i < stagedata.rightsidebar_names.Length; i++)
+            if (inside_of_window(new Vector(rightside, 0), DataBase.getTexD(textureNames[1]).w_single, DataBase.getTexD(textureNames[1]).h_single))
             {
-                if (inside_of_window(new Vector(rightside, 0), DataBase.getTexD(stagedata.rightsidebar_names[i]).w_single, DataBase.getTexD(stagedata.rightsidebar_names[i]).h_single))
-                {
-                    d.Draw(new Vector(rightside, 0), DataBase.getTex(stagedata.rightsidebar_names[i]), DepthID.StateFront);
-                }
+                d.Draw(new Vector(rightside, 0), DataBase.getTex(textureNames[1]), DepthID.StateFront);
             }
             #endregion
+
             #region draw sword gauge
             if (player.sword < player.sword_max / 2)
             {

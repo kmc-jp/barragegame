@@ -9,12 +9,15 @@ namespace CommonPart
     {
         protected BGMID[] bgmIDs;
         public string[] background_names;
-        public string[] leftsidebar_names;
-        public string[] rightsidebar_names;
+        /// <summary>
+        /// 現在0がleftside、1がrightside
+        /// </summary>
+        public string[] texture_names;
         public string stageName;
         public StageData(string _stageName)
         {
             stageName = _stageName;
+            Map.setup_textureNames(texture_names);
         }
 
         abstract public void update();
@@ -39,8 +42,8 @@ namespace CommonPart
             bgmIDs = new BGMID[] { BGMID.Stage1onWay,BGMID.Stage1Boss}; //一応こうした、いつでも{}の中身を変更できる。
                                                                   //ただし、MusicPlayer2.cs 30行から登録済でないと流れません。
             background_names = new string[] { "background1"};
-            leftsidebar_names = new string[] { "leftside1" };
-            rightsidebar_names = new string[] { "rightside1" };
+            texture_names[0] = "leftside1";
+            texture_names[1] = "rightside1";
 
             setupAllbackgroundWithNames();//背景を用意する。
         }
@@ -125,8 +128,8 @@ namespace CommonPart
             //ただし、MusicPlayer2.cs 30行から登録済でないと流れません。
             background_names = new string[] { "background2" };
             setupAllbackgroundWithNames();
-            leftsidebar_names = new string[] { "leftside2" };
-            rightsidebar_names = new string[] { "rightside2" };
+            texture_names[0] = "leftside2";
+            texture_names[1] = "rightside2";
         }
         public override void update()
         {
@@ -236,8 +239,8 @@ namespace CommonPart
 
             setupAllbackgroundWithNames();//背景を用意する。
 
-            leftsidebar_names = new string[] { "leftside3" };
-            rightsidebar_names = new string[] { "rightside3" };
+            texture_names[0] = "leftside3";
+            texture_names[1] = "rightside3";
         }
 
         public override void update()
@@ -321,8 +324,8 @@ namespace CommonPart
 
             setupAllbackgroundWithNames();//背景を用意する。
 
-            leftsidebar_names = new string[] { "leftside4" };
-            rightsidebar_names = new string[] { "rightside4" };
+            texture_names[0] = "leftside4";
+            texture_names[1] = "rightside4";
         }
 
         public override void update()
