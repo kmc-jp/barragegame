@@ -203,7 +203,7 @@ namespace CommonPart
                 }
                 #endregion
             }
-            else { // 強制移動中である
+            else { // 強制移動,スクリーン上中央、y=500へ向かう
                 #region In Forced Route. 
                 double e = Math.Sqrt(Function.distance(x, y, DataBase.WindowDefaultSizeX / 2, 500));
                 if (e > 0.1 || e<-0.1)
@@ -304,29 +304,6 @@ namespace CommonPart
             skill_attackStandby = -1;
             playAnimation(DataBase.defaultAnimationNameAddOn);
         }
-        protected void skilltoEnemyEnd()
-        {
-            playAnimation(DataBase.defaultAnimationNameAddOn);
-            InForcedRoute = true;
-            attack_mode = false;
-            add_attack_mode = false;
-            enemyAsTarget = null;
-            Map.numOfskillKilledEnemies = 0;
-            Map.scoreOfskilltoEnemy = 0;
-        }
-        #endregion
-        protected void skilltoBossEnd()
-        {
-            playAnimation(DataBase.defaultAnimationNameAddOn);
-            InForcedRoute = true;
-            attack_mode = false;
-            add_attack_mode = false;
-            enemyAsTarget = null;
-            Map.numOfskillKilledEnemies = 0;
-            Map.scoreOfskilltoEnemy = 0;
-            for(int i = 0; i < prosToBoss.Length; i++) { prosToBoss[i] = null; }
-            nowProsIndex = -1;
-        }
         public void skilltoEnemy(InputManager input)
         {
             //skill開始からstop時間が終わるまで追加攻撃を予約したら、追加攻撃するが
@@ -355,15 +332,18 @@ namespace CommonPart
                         }
                         #endregion
                         #region reached Enemy and attack
-                        if (skill_attackStandby < 0) {
+                        if (skill_attackStandby < 0)
+                        {
                             if (Function.hitcircle(x, y, skill_speed / 2, enemyAsTarget.x, enemyAsTarget.y + enemy_below, enemyAsTarget.radius))
                             {
                                 enemyAsTarget.stop_time = skill_max_attckStandby;
                                 skill_attackStandby = skill_max_attckStandby;
                                 playAnimation(DataBase.aniNameAddOn_spell);
                             }
-                        }else if(skill_attackStandby>0){ skill_attackStandby--; }
-                        else {
+                        }
+                        else if (skill_attackStandby > 0) { skill_attackStandby--; }
+                        else
+                        {
                             enemyAsTarget.damage(swordSkillDamage);
                             enemyAsTarget = null;
                             if (first) { sword -= shouhi_sword; first = false; }
@@ -380,22 +360,23 @@ namespace CommonPart
                 #endregion
                 //追加攻撃を予約した
                 if (input.IsKeyDownOnce(KeyID.Select) == true) add_attack_mode = true;
-                if (stop_time>0 &&stop_time <= 2 && add_attack_mode)
+                if (stop_time > 0 && stop_time <= 2 && add_attack_mode)
                 {//追加攻撃を実行する
                     if (canUseSkilltoEnemyForSecond())
                     {
                         cast_skilltoEnemy();
                         stop_time = 0;
                     }
-                    else { add_attack_mode = false;}
+                    else { add_attack_mode = false; }
                 }
-                if (stop_time > 0 && stop_time <= 2 && !add_attack_mode) {
+                if (stop_time > 0 && stop_time <= 2 && !add_attack_mode)
+                {
                     skilltoEnemyEnd();
                     stop_time--;
                 }
                 #endregion
             }
-            if (Map.enemys_inside_window.Count>=1 && canUseSkilltoEnemyForFirst())
+            if (Map.enemys_inside_window.Count >= 1 && canUseSkilltoEnemyForFirst())
             {//1回目のskill使用可能な状態である
                 if (input.IsKeyDownOnce(KeyID.Select) == true)
                 {
@@ -404,16 +385,44 @@ namespace CommonPart
             }
         }
 
+        protected void skilltoEnemyEnd()
+        {
+            playAnimation(DataBase.defaultAnimationNameAddOn);
+            InForcedRoute = true;
+            attack_mode = false;
+            add_attack_mode = false;
+            enemyAsTarget = null;
+            Map.numOfskillKilledEnemies = 0;
+            Map.scoreOfskilltoEnemy = 0;
+        }
+        #endregion
+
+        protected void skilltoBossEnd()
+        {
+            playAnimation(DataBase.defaultAnimationNameAddOn);
+            InForcedRoute = true;
+            attack_mode = false;
+            add_attack_mode = false;
+            enemyAsTarget = null;
+            Map.numOfskillKilledEnemies = 0;
+            Map.scoreOfskilltoEnemy = 0;
+            for(int i = 0; i < prosToBoss.Length; i++) { prosToBoss[i] = null; }
+            nowProsIndex = -1;
+        }
+        
         public void cast_skilltoBoss()
         {
             search_boss();
-            attack_mode = true;
-            attack_time = 120;
-            shouhi_sword = sword;
-            nowProsIndex = -1;
-            skill_attackStandby = -1;
-            Map.CutInTexture(DataBase.charaCutInTexName,-400,100,100,100,60,10);
-            Map.stopUpdating(50, 0);
+            if (enemyAsTarget != null && enemyAsTarget.selectable())
+            {
+                attack_mode = true;
+                attack_time = 120;
+                shouhi_sword = sword;
+                nowProsIndex = -1;
+                skill_attackStandby = -1;
+                Map.CutInTexture(DataBase.charaCutInTexName, -400, 100, 100, 100, 60, 10);
+                Map.stopUpdating(50, 0);
+            }
         }
 
         public void skilltoBoss(InputManager input)

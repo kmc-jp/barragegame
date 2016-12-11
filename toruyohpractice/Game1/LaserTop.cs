@@ -233,10 +233,15 @@ namespace CommonPart
             dx = (radius*2/3) * Math.Cos(radian - Math.PI / 2) / 2;
             dy = (radius*2 /3) * Math.Sin(radian - Math.PI / 2) / 2;
 
-            d.DrawLine(new Vector(enemy.x+dx, enemy.y+dy), new Vector(x+dx, y+dy), (float)radius*2/3, new Color(color, (int)(color.A * 0.6)), DepthID.Player);
+            d.DrawLine(new V
+                ector(enemy.x+dx, enemy.y+dy), new Vector(x+dx, y+dy), (float)radius*2/3, new Color(color, (int)(color.A * 0.6)), DepthID.Player);
             dx = (radius / 4) * Math.Cos(radian - Math.PI / 2) / 2;
             dy = (radius / 4) * Math.Sin(radian - Math.PI / 2) / 2;
             d.DrawLine(new Vector(enemy.x+dx, enemy.y+dy), new Vector(x+dx, y+dy), (float)radius/4, color, DepthID.Player);
         }
+    }
+
+    class SkilledLaserTop : LaserTop {
+
     }
 }

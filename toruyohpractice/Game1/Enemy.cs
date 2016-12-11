@@ -82,7 +82,7 @@ namespace CommonPart
                 #region about motion
                 times[0]++;
                 update_motion_index();
-                switch (unitType.moveTypes[motion_index[0]])
+                switch (mt)
                 {
                     #region 動作
                     case MoveType.mugen:
@@ -240,61 +240,6 @@ namespace CommonPart
         }
         #endregion
 
-        #region Functions About PointType
-        /// <summary>
-        /// 渡された(x,y)とPointTypeで適切なyを返す.player_posの時player.yを返す
-        /// </summary>
-        /// <param name="pos"></param>
-        /// <param name="_pt"></param>
-        protected double from_PointType_getPosY(double px, double py, PointType _pt, int t = 1, MoveType _mt = MoveType.noMotion)
-        {
-            switch (_pt)
-            {
-                case PointType.notused:
-                    return 0;
-                case PointType.player_pos:
-                    switch (_mt)
-                    {
-                        case MoveType.go_straight:
-                            return (Map.player.y - y) / t;
-                        default:
-                            return Map.player.y;
-                    }
-                case PointType.displacement:
-                    return py / t;
-                default:
-                    return py;
-            }
-        }
-        /// <summary>
-        /// 渡された(x,y)とPointTypeで適切なxを返す.player_posはこの時点のplayer.xを返す。
-        /// </summary>
-        /// <param name="pos"></param>
-        /// <param name="_pt"></param>
-        protected double from_PointType_getPosX(double px, double py, PointType _pt, int t=1, MoveType _mt = MoveType.noMotion)
-        {
-            switch (_pt)
-            {
-                case PointType.notused:
-                    return 0;
-                case PointType.player_pos:
-                    switch (_mt)
-                    {
-                        case MoveType.go_straight:
-                            return (Map.player.x - x)/t;
-                        default:
-                            return Map.player.x;
-                    }
-                case PointType.displacement:
-                    return px / t;
-                case PointType.pos_on_screen:
-                    return px + Map.leftside;
-                default:
-                    return px;
-            }
-        }
-        #endregion
-
         #region Funtions about Motion
         /// <summary>
         /// 例外のmotionを設置する
@@ -322,8 +267,25 @@ namespace CommonPart
                 pt = unitType.pointTypes[i];
                 default_pos = unitType.default_poses[i];
                 setup_default_pos(i);
-                if (mt == MoveType.screen_point_target && pt==PointType.pos_on_screen) {
-                    speed = Math.Sqrt((default_pos.X - x) * (default_pos.X - x) + (default_pos.Y - y) * (default_pos.Y - y))/alltime;
+                if (mt == MoveType.screen_point_target && alltime > 0) {
+                    if (Motion.Is_a_Point(pt))
+                    {
+                        speed = Math.Sqrt((default_pos.X - x) * (default_pos.X - x) + (default_pos.Y - y) * (default_pos.Y - y)) / alltime;
+                    }else if(Motion.Is_a_Direction(pt))
+                    { 
+                        speed = Math.Sqrt( default_pos.X * default_pos.X + default_pos.Y * default_pos.Y ) / alltime;
+                    }
+                }
+                else if (mt==MoveType.go_straight)
+                {
+                    if (Motion.Is_a_Point(pt))
+                    {
+                        speed_x = Math.Sqrt((default_pos.X - x) * (default_pos.X - x) + (default_pos.Y - y) * (default_pos.Y - y)) / alltime;
+                    }
+                    else if (Motion.Is_a_Direction(pt))
+                    {
+                        speed = Math.Sqrt(default_pos.X * default_pos.X + default_pos.Y * default_pos.Y) / alltime;
+                    }
                 }
                 else { speed = unitType.speed; }
                 Console.WriteLine(default_pos+" "+mt);
@@ -378,8 +340,8 @@ namespace CommonPart
         /// <param name="i"></param>
         protected void setup_default_pos(int i)
         {
-            default_pos.X = from_PointType_getPosX(default_pos.X, default_pos.Y, unitType.pointTypes[i],unitType.times[i], unitType.moveTypes[i]);
-            default_pos.Y = from_PointType_getPosY(default_pos.X, default_pos.Y, unitType.pointTypes[i],unitType.times[i], unitType.moveTypes[i]);
+            default_pos.X = Motion.from_PointType_getPosX(default_pos.X, default_pos.Y, unitType.pointTypes[i],unitType.times[i], unitType.moveTypes[i]);
+            default_pos.Y = Motion.from_PointType_getPosY(default_pos.X, default_pos.Y, unitType.pointTypes[i],unitType.times[i], unitType.moveTypes[i]);
         }
         /// <summary>
         /// 現在のPointType, times[0], MoveTypeを使って、default_posを更新する
@@ -387,8 +349,8 @@ namespace CommonPart
         /// <param name="pos"></param>
         protected void setup_default_pos(Vector pos)
         {
-            default_pos.X = from_PointType_getPosX(pos.X, pos.Y, pt,alltime,mt);
-            default_pos.Y = from_PointType_getPosY(pos.X, pos.Y, pt,alltime,mt);
+            default_pos.X = Motion.from_PointType_getPosX(pos.X, pos.Y, pt,alltime,mt);
+            default_pos.Y = Motion.from_PointType_getPosY(pos.X, pos.Y, pt,alltime,mt);
         }
 
         #endregion
@@ -396,7 +358,7 @@ namespace CommonPart
         public void FadeOut()
         {
             label += unitLabel_FadeOut;
-            backup_Motion_into_1();
+            //backup_Motion_into_1();
             if (x < Map.rightside / 2 + Map.leftside / 2)
             {
 
@@ -409,39 +371,28 @@ namespace CommonPart
                 if (skills[i].coolDown <= 0)
                 {
                     BarrageUsedSkillData sd= (BarrageUsedSkillData)DataBase.SkillDatasDictionary[skills[i].skillName];
-                    bool use = true;
+                    bool used = skills[i].used(Timing.moving);
+                    if (!used) { continue; }
+                    if (ss.moveType == MoveType.object_target)//これは常に敵を追うパターンである。
+                    {
+                        bullets.Add(new Bullet(x, y, sd.moveType, sd.speed, sd.acceleration, sd.aniDName, player, sd.angle, sd.radius, sd.sword, sd.life, sd.score));
+                    }
+                    else if (sd.moveType == MoveType.screen_point_target)
+                    {
+                        bullets.Add(new Bullet(x, y, sd.moveType, sd.speed, sd.acceleration, sd.aniDName, new Vector(player.x, player.y), PointType.pos_on_screen, sd.angle, sd.radius, sd.sword, sd.life, sd.score));
+                    }
+                    else { bullets.Add(new Bullet(x, y, sd.moveType, sd.speed, sd.acceleration, sd.aniDName, sd.angle, sd.radius, sd.sword, sd.life, sd.score)); }
                     switch (sd.sgl) {
                         case SkillGenreL.generation:
+                            WayShotSkillData ws = (WayShotSkillData)sd;
                             #region ジャンルの小さい分類
                             switch (sd.sgs)
                             {
-                                #region genre small. shot
-                                case SkillGenreS.shot:
-                                    SingleShotSkillData ss = (SingleShotSkillData)sd;
-                                    if (ss.moveType == MoveType.object_target)//これは常に敵を追うパターンである。
-                                    {
-                                        bullets.Add(new Bullet(x, y, sd.moveType, sd.speed, sd.acceleration, sd.aniDName, player,sd.angle, sd.radius, sd.sword,sd.life, sd.score));
-                                    }else if(sd.moveType==MoveType.screen_point_target)
-                                    {
-                                        bullets.Add(new Bullet(x, y, sd.moveType, sd.speed, sd.acceleration, sd.aniDName,new Vector(player.x,player.y),PointType.pos_on_screen,sd.angle, sd.radius, sd.sword,sd.life, sd.score));
-                                    }else { bullets.Add(new Bullet(x, y, sd.moveType, sd.speed, sd.acceleration, sd.aniDName, sd.angle, sd.radius, sd.sword, sd.life, sd.score) ); }
-                                    break;
-                                #endregion
-                                #region genre small. circle
-                                case SkillGenreS.circle:
-                                    for (int j = 0; j < 2*Math.PI/sd.angle; j++)
-                                    {
-                                        bullets.Add(new Bullet(x, y, sd.moveType, sd.speed, sd.acceleration, sd.aniDName, (Math.PI / 2) + j * sd.angle, sd.radius,sd.sword, sd.life, sd.score));
-                                        if (sd.duration>0) { bullets[bullets.Count - 1].setup_exist_time(sd.duration); }
-                                    }
-                                    break;
-                                #endregion
                                 #region genre small. laser
                                 case SkillGenreS.laser:
-                                    LaserTopData lt = (LaserTopData)sd;
-                                    if (lt.moveType == MoveType.chase_target)
+                                    if (ws.moveType == MoveType.chase_target)
                                     {
-                                        bullets.Add(new LaserTop(x, y, lt.moveType, lt.speed, lt.acceleration, player, lt.aniDName, lt.angle, lt.radius, lt.omega, this, lt.color, lt.sword, lt.life, lt.score));
+                                        bullets.Add(new LaserTop(x, y, sd.moveType, sd.speed, sd.acceleration, player, sd.aniDName, lt.angle, lt.radius, lt.omega, this, lt.color, lt.sword, lt.life, lt.score));
                                     }
                                     else
                                     {
@@ -503,8 +454,8 @@ namespace CommonPart
                             }//switch sgs end
                             #endregion
                             break;
-                        case SkillGenreL.bullet_create:
-                            GenerateSkilledBulletData gsb= (GenerateSkilledBulletData)sd;
+                        case SkillGenreL.UseSkilledBullet:
+                            WaySkilledBulletsData gsb= (WaySkilledBulletsData)sd;
                             #region ジャンルの小さい分類
                             switch (sd.sgs)
                             {
