@@ -12,7 +12,7 @@ namespace CommonPart
         /// <summary>
         /// 現在0がleftside、1がrightside
         /// </summary>
-        public string[] texture_names;
+        public List<string> texture_names = new List<string>();
         public string stageName;
         public StageData(string _stageName)
         {
