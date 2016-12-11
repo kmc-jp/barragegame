@@ -53,22 +53,38 @@ namespace CommonPart {
                 MapFulStop = true;
                 gameOver = true;
                 window = null;
-                window = new Window_WithColoum(90,220,1100,270);
+                window = new Window_WithColoum(90, 220, 1100, 270);
                 window.assignBackgroundImage("1100x270メッセージウィンドゥ");
                 int nx = 520, ny = 100;
-                window.AddColoum(new Button(nx, ny,"Retry","",Command.buttonPressed1,false));
-                ny +=60;
+                window.AddColoum(new Button(nx, ny, "Retry", "", Command.buttonPressed1, false));
+                ny += 60;
                 window.AddColoum(new Button(nx, ny, "BackToTitle", "", Command.buttonPressed2, false));
                 #endregion
-                SoundManager.Music.PlayBGM(BGMID.None,true);
-            }else if (!MapFulStop && Map.mapState.Contains(Map.backToStageSelection) && Map.stop_time == DataBase.motion_inftyTime && Map.readyToStop_time <= 0)
-            {
-                #region backToStageSelectionScene
-                MapFulStop = true;
-                Delete = true;
-                new StageSelectScene(scenem);
-                #endregion
                 SoundManager.Music.PlayBGM(BGMID.None, true);
+            } else if (!MapFulStop && Map.mapState.Contains(Map.backToStageSelection) && Map.stop_time == DataBase.motion_inftyTime && Map.readyToStop_time <= 0)
+            {
+                #region win 
+                // #region backToStageSelectionScene
+                MapFulStop = true;
+                window = new Window_WithColoum(90, 220, 1100, 270);
+                int nx = 520, ny = 80;
+                window.AddRichText("STAGE CLEAR", new Vector(nx, ny));
+                ny += 60;
+                window.AddRichText("toal score : " + Map.score, new Vector(nx, ny));
+                ny += 60;
+                window.AddColoum(new Button(nx, ny, "Go to next stage", "", Command.buttonPressed3, false));
+                switch (window.commandForTop)
+                {
+                    case Command.buttonPressed3:
+                        close();
+                        new StageSelectScene(scenem);
+                        SoundManager.Music.PlayBGM(BGMID.None, true);
+                        break;
+                    default:
+                        break;
+                }
+                #endregion
+
             }
             else if(!MapFulStop)
             {//gameOverに入っていないのでmapは更新する
@@ -92,5 +108,10 @@ namespace CommonPart {
             if (Map.step[0] < 0) { Delete = true; }
         }
         #endregion
+
+        protected void close()
+        {
+            Delete = true;
+        }
     }// class end
 }// namespace end
