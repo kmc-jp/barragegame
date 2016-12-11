@@ -153,6 +153,7 @@ namespace CommonPart
                             case SkillGenreS.yanagi:
                                 WayShotSkillData ws2 = (WayShotSkillData)sd;
                                 #region yanagi setting
+                                Console.Write(sd.aniDName + DataBase.existsAniD(sd.aniDName,null));
                                 for (int j = 1; j < ws2.way + 1; j++)
                                 {
                                     Bullet bullet1 = new Bullet(x + sd.space * j + sd.radius, y - sd.space * j * j * 2 + 4 + animation.Y / 2, sd.moveType,
@@ -170,6 +171,7 @@ namespace CommonPart
                                     bullet2.acceleration_y = sd.acceleration;
                                     myboss.bullets.Add(bullet2);
                                 }
+                                Console.Write(myboss.bullets.Count);
                                 #endregion
                                 break;
                             #endregion
@@ -179,7 +181,7 @@ namespace CommonPart
                         }//switch sgs end
                         #endregion
                         break;
-                    case SkillGenreL.bullet_create:
+                    case SkillGenreL.UseSkilledBullet:
                         GenerateSkilledBulletData gsb = (GenerateSkilledBulletData)sd;
                         #region ジャンルの小さい分類
                         switch (sd.sgs)

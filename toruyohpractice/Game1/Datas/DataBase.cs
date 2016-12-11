@@ -94,6 +94,37 @@ namespace CommonPart {
         public const int motion_inftyTime =-99999;
         #endregion
 
+
+        #region string As condition.  "+co" is or, "*co" is and,
+        public const string skillUsedAfterDeath = "-after death";// 死亡した場合に使われるスキル。
+        /// <summary>
+        /// 条件以上であれば有効。
+        /// </summary>
+        public const string UsedFrom_I = "-froM ";
+        /// <summary>
+        /// //条件が満たさない時に有効。
+        /// </summary>
+        public const string UsedTill_I = "-tiL ";
+        /// <summary>
+        /// //条件が満たされた時のみ有効。
+        /// </summary>
+        public const string UsedExact_I = "-eXaC ";
+        /// <summary>
+        /// Enemy,Bossなどが持つ Routine を指している. Routine+"1"は第 1 段階を指す
+        /// </summary>
+        public const string Routine = "roUtiNe ";
+        /// <summary>
+        /// Enemy,Bossなどが持つ hpの値 を指している. HP+"500"は"hpが500"を意味する
+        /// </summary>
+        public const string HP = "hP ";
+        /// <summary>
+        /// Enemy,Bossなどが持つ hpのパーセント を指している. HPP+"50%"は"hpのパーセントが50%"を意味する
+        /// </summary>
+        public const string HPp = "hPP ";
+
+        #endregion
+
+
         #region UTD
         public static string utFileName = "uts.dat";
         public static FileStream ut_file;
@@ -236,7 +267,6 @@ namespace CommonPart {
             aniD_file.Close();
         }
         #endregion
-
         private static ContentManager Content;
         public static string DirectoryWhenGameStart;
         /// <summary>
@@ -263,8 +293,6 @@ namespace CommonPart {
         #endregion
 
         #region SkillData
-        public const string skillUsedAfterDeath = "-after death";
-
         private const int low_speed=2;
         private const int middle_speed=4;
         private const int high_speed=7;
@@ -281,9 +309,9 @@ namespace CommonPart {
         public static Dictionary<string, SkillData> SkillDatasDictionary = new Dictionary<string, SkillData>();
         public static void setupSkillData()
         {
-            addSkillData(new GenerateSkilledBulletData("createbullet",SkillGenreS.shot,MoveType.go_straight,"bullet1", low_cd3, 2, 0, Math.PI/2, 8,"yanagi"));
+            addSkillData(new GenerateSkilledBulletData("createbullet",SkillGenreS.shot,MoveType.go_straight,"bullet1", low_cd3, 2, 0, Math.PI/2, 8,"yanagi-s",60));
 
-            addSkillData(new SingleShotSkillData("yanagi",SkillGenreS.yanagi ,MoveType.go_straight,"bullet1", low_cd1, 2, 0.2,0.25,8,1));
+            addSkillData(new WayShotSkillData("yanagi-s",SkillGenreS.yanagi ,MoveType.go_straight,"bullet1", 20, 2, 0.2,0.25,8,4,motion_inftyTime,1));
             
             
             addSkillData(new WayShotSkillData("5wayshot", SkillGenreS.wayshot,MoveType.go_straight,"bulletsmall", high_cd3, 6, 0, highangle1, 8,5));
@@ -597,11 +625,12 @@ namespace CommonPart {
         }
         public static bool existsAniD(string name, string addOn)
         {
-            if (addOn == null) return AnimationAdDataDictionary.ContainsKey(name);
+            if (addOn == null) return AnimationAdDataDictionary.ContainsKey(name) || AnimationAdDataDictionary.ContainsKey(name+defaultAnimationNameAddOn);
             else return AnimationAdDataDictionary.ContainsKey(name + addOn);
         }
         public static AnimationDataAdvanced getAniD(string name, string addOn = null)
         {
+            if (name == null && addOn == null) return null;
             if (addOn == null && AnimationAdDataDictionary.ContainsKey(name))
             {
                 return AnimationAdDataDictionary[name];

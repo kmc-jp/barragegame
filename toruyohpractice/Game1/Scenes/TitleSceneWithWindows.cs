@@ -41,6 +41,8 @@ namespace CommonPart
             nx = 100;
             windows[0].AddColoum(new AnimationButton(nx, ny, "高級向け", DataBase.getAniD("NewGame-selected"), Command.buttonPressed1,80,0));
             ny += 2*dy;
+            windows[0].AddColoum(new AnimationButton(nx, ny, "TestMap", DataBase.getAniD("NewGame-selected"), Command.buttonPressed3, 80, 0));
+            ny += 2 * dy;
             windows[0].AddColoum(new AnimationButton(nx, ny, "ノーマル", DataBase.getAniD("NewGame-selected"), Command.buttonPressed2, 80, 0));
             ny += dy;
             //windows[0].AddColoum(new AnimationButton(nx, ny, "", DataBase.getAniD("LoadGame-selected"), Command.buttonPressed2,0,0));
@@ -74,6 +76,9 @@ namespace CommonPart
                     Game1.enemyBullets_update_fps = 45;
                     Game1.enemySkills_update_fps = 40;
                     openStageSelectScene();
+                    break;
+                case Command.buttonPressed3:
+                    new MapScene(scenem, -1);
                     break;
                 case Command.nothing:
                     break;

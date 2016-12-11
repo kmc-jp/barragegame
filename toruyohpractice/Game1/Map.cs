@@ -161,6 +161,10 @@ namespace CommonPart {
                 case 4:
                     stagedata = new Stage4Data("stage4");
                     break;
+                case -1:
+                    stagedata = new stageData_forTestMap("test");
+                    stage = 1;
+                    break;
                 default:
                     stage = 1;
                     stagedata = new Stage1Data("stage1");
