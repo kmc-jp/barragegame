@@ -15,8 +15,13 @@ namespace CommonPart {
     /// </summary>
     public enum existTimesIndex{    InvisibleStill = 0, InvisibleActive, VisibleStill, VisibleActive    }
     public enum Unit_state { fadeout=0,dead,out_of_window,bulletDamagedPlayer,exist_timeOut };
-    public enum MoveType {noMotion=0, screen_point_target = 1,object_target=2,go_straight,mugen,rightcircle,leftcircle,stop,
-        chase_target };
+    public enum MoveType {noMotion=0,
+        screen_point_target = 1,//その点に近づこうとする、正の時間が指定されていると動き始めるとき速度が[距離/時間]変わります。
+        object_target =2,//速度のみを使った追いかけ,方向転換は一瞬
+        go_straight,//これは実際は方向を決めて、その向きに突っ走るだけです。
+        mugen,rightcircle,leftcircle,stop, //周期が必要
+        chase_target,//omega角速度使用の追いかけ
+    };
     /// <summary>
     /// MoveTypeを持ち、なんらかのposをも持っている時、そのposの意味
     /// </summary>
@@ -24,6 +29,9 @@ namespace CommonPart {
         displacement,//全部の変位、1 fpsでの変位ではない
         pos_on_screen,//画面上の座標を示す
         player_pos, //プレイヤーの座標を指す。
+        randomRange,//ベクトルがx方向の正負変位,yの正負変位を表しているが、値はその変位内の乱数
+        randomDirection,//ベクトルは意味を持たない?初期角度にランダム角度足した方向へ移動する
+
     }
     public enum Command
     {
