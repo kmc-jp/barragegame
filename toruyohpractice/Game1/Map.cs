@@ -591,8 +591,20 @@ namespace CommonPart {
             scoreboard.Draw(d, score_pos, DepthID.Status);
 
             #region sidebar draw
-            d.Draw(new Vector(leftside-DataBase.getTex("leftside"+stage.ToString()).Width, 0), DataBase.getTex("leftside"+stage.ToString()), DepthID.StateFront);
-            d.Draw(new Vector(rightside, 0), DataBase.getTex("rightside"+stage.ToString()), DepthID.StateFront);
+            for (int i = 0; i < stagedata.leftsidebar_names.Length; i++)
+            {
+                if (inside_of_window(new Vector(leftside - DataBase.getTex(stagedata.leftsidebar_names[i]).Width, 0), DataBase.getTexD(stagedata.leftsidebar_names[i]).w_single, DataBase.getTexD(stagedata.leftsidebar_names[i]).h_single))
+                {
+                    d.Draw(new Vector(leftside - DataBase.getTex(stagedata.leftsidebar_names[i]).Width, 0), DataBase.getTex(stagedata.leftsidebar_names[i]), DepthID.StateFront);
+                }
+            }
+            for (int i = 0; i < stagedata.rightsidebar_names.Length; i++)
+            {
+                if (inside_of_window(new Vector(rightside, 0), DataBase.getTexD(stagedata.rightsidebar_names[i]).w_single, DataBase.getTexD(stagedata.rightsidebar_names[i]).h_single))
+                {
+                    d.Draw(new Vector(rightside, 0), DataBase.getTex(stagedata.rightsidebar_names[i]), DepthID.StateFront);
+                }
+            }
             #endregion
             #region draw sword gauge
             if (player.sword < player.sword_max / 2)
