@@ -17,7 +17,6 @@ namespace CommonPart
         public StageData(string _stageName)
         {
             stageName = _stageName;
-            Map.setup_textureNames(texture_names);
         }
 
         abstract public void update();
@@ -106,11 +105,11 @@ namespace CommonPart
                     Map.create_enemy(300, 0, "E1a-4");
                     Map.create_enemy(420, 0, "E1a-5");
                     break;
-                case 4700:
+                case 70:
                     Map.boss_mode = true;
                     Map.EngagingTrueBoss();
                     break;
-                case 4720:
+                case 72:
                     playBGM(bgmIDs[1]);//BGMを流す。
                     Map.create_boss1(360, 10, "boss1");
                     break;

@@ -530,11 +530,11 @@ namespace CommonPart {
         }
         public static void setup_textureNames(List<string> _textureNames)
         {
-            foreach(string _textureName in textureNames)
+            foreach(string _textureName in _textureNames)
             {
                 textureNames.Add(_textureName);
             }
-            Console.WriteLine(textureNames.Count);
+            Console.WriteLine("ssd"+textureNames.Count);
         }
         
         private void chargeBarChange(string name,string addOn=null) {
@@ -611,7 +611,6 @@ namespace CommonPart {
                 {
                     d.Draw(new Vector(rightside, 0), DataBase.getTex(textureNames[1]), DepthID.StateFront);
                 }
-                DataBase.getTex(textureNames[3]);
             }
             #endregion
 
