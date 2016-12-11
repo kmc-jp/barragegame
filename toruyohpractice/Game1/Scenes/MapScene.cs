@@ -64,8 +64,8 @@ namespace CommonPart {
             } else if (!MapFulStop && Map.mapState.Contains(Map.backToStageSelection) && Map.stop_time == DataBase.motion_inftyTime && Map.readyToStop_time <= 0)
             {
                 #region win 
-                // #region backToStageSelectionScene
                 MapFulStop = true;
+                window = null;
                 window = new Window_WithColoum(90, 220, 1100, 270);
                 int nx = 520, ny = 80;
                 window.AddRichText("STAGE CLEAR", new Vector(nx, ny));
