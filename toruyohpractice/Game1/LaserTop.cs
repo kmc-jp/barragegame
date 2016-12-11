@@ -38,9 +38,9 @@ namespace CommonPart
         /// <param name="_omega">レーザーが回転するならば、毎フレーム回転する度合い</param>
         /// <param name="_enemy">レーザーを使用したもの</param>
         /// <param name="_color">レーザーの色</param>
-        public LaserTop(double _x, double _y, MoveType _move_type, double _speed, double _acceleration, Vector _target_pos, PointType _pt,
+        public LaserTop(double _x, double _y, MoveType _move_type, double _speed, double _acceleration, Vector _target_pos, PointType _pt,int _motion_time,
   string _anime, double _radian, double _radius, double _omega, Unit _enemy, Color _color, int _sword, int _life = 1, int _score = 0, int _zoom_rate = 100)
-            : base(_x, _y, _move_type, _speed, _acceleration, _anime,_target_pos,_pt, _radian, _radius, _sword, _life, _score, _zoom_rate)
+            : base(_x, _y, _move_type, _speed, _acceleration, _anime,_target_pos,_pt, _motion_time,_radian, _radius, _sword, _life, _score, _zoom_rate)
         {
             omega = _omega;
             enemy = _enemy;
@@ -250,8 +250,8 @@ namespace CommonPart
         /// <param name="_omega">レーザーが回転するならば、毎フレーム回転する度合い</param>
         /// <param name="_enemy">レーザーを使用したもの</param>
         /// <param name="_color">レーザーの色</param>
-        public SkilledLaserTop(double _x, double _y, MoveType _move_type, double _speed, double _acceleration, double _radian, string _anime, double _radius,
-            double _omega, List<string> _skillNames,Unit _enemy, Color _color, int _sword, int _life = 1, int _score = 0, int _zoom_rate = 100)
+        public SkilledLaserTop(double _x, double _y, MoveType _move_type, double _speed, double _acceleration, string _anime, double _radian, double _omega,
+            double _radius, string[] _skillNames,Unit _enemy, Color _color, int _sword, int _life = 1, int _score = 0, int _zoom_rate = 100)
             : base(_x, _y, _move_type, _speed, _acceleration, _radian, _anime, _radius,_omega,_enemy,_color, _sword, _life, _score, _zoom_rate)
         {
             addSkills(_skillNames);
@@ -264,8 +264,8 @@ namespace CommonPart
         /// <param name="_enemy">レーザーを使用したもの</param>
         /// <param name="_color">レーザーの色</param>
         public SkilledLaserTop(double _x, double _y, MoveType _move_type, double _speed, double _acceleration, Vector _target_pos, PointType _pt,
-  string _anime, double _radian, double _radius, double _omega, List<string> _skillNames,Unit _enemy, Color _color, int _sword, int _life = 1, int _score = 0, int _zoom_rate = 100)
-            : base(_x, _y, _move_type, _speed, _acceleration, _target_pos,_pt, _anime, _radian, _radius,_omega,_enemy,_color, _sword, _life, _score, _zoom_rate)
+  string _anime, double _radian, double _omega, double _radius, int _motion_time, string[] _skillNames,Unit _enemy, Color _color, int _sword, int _life = 1, int _score = 0, int _zoom_rate = 100)
+            : base(_x, _y, _move_type, _speed, _acceleration, _target_pos,_pt,_motion_time, _anime, _radian, _radius,_omega,_enemy,_color, _sword, _life, _score, _zoom_rate)
         {
             addSkills(_skillNames);
         }
@@ -278,10 +278,18 @@ namespace CommonPart
         /// <param name="_enemy">レーザーを使用したもの</param>
         /// <param name="_color">レーザーの色</param>
         public SkilledLaserTop(double _x, double _y, MoveType _move_type, double _speed, double _acceleration, Unit _target, string _anime
-            , double _radian, double _radius, double _omega, List<string> _skillNames,Unit _enemy, Color _color, int _sword, int _life = 1, int _score = 0, int _zoom_rate = 100)
+            , double _radian, double _omega, double _radius, string[] _skillNames,Unit _enemy, Color _color, int _sword, int _life = 1, int _score = 0, int _zoom_rate = 100)
             : base(_x, _y, _move_type, _speed, _acceleration, _target, _anime, _radian, _radius,_omega,_enemy,_color, _sword, _life, _score, _zoom_rate)
         {
             addSkills(_skillNames);
+        }
+
+        public void addSkills(string[] _skillNames)
+        {
+            foreach (string _skillName in _skillNames)
+            {
+                skills.Add(new Skill(_skillName));
+            }
         }
     }
 }

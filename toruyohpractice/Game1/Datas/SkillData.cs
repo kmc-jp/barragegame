@@ -286,7 +286,7 @@ namespace CommonPart
         /// <param name="_score">弾丸が吸収される時の点数</param>
         /// <param name="_life">弾丸のhp</param>
         public WayShotSkillData(string _skillName, string _conditions,SkillGenreS _sgs, string _aniDName, int _cooldownFps, MoveType mt, PointType pt, Vector v, int _motion_fps, double _speed, double _acceleration, double _angle, double _omega,
-            double _radius, Color _c, int _way,int _duration = DataBase.motion_inftyTime, double _space = 0, int _sword = 1, int _score = 10, int _life = 1)
+            double _radius, Color _c, int _way=1,int _duration = DataBase.motion_inftyTime, double _space = 0, int _sword = 1, int _score = 10, int _life = 1)
             :base(_skillName,_conditions,SkillGenreL.generation,_sgs,_aniDName,_cooldownFps,mt,pt,v,_motion_fps,_speed,_acceleration,_angle,_omega,_radius,_c,_duration,_space,_sword,_score,_life)
         {
             way = _way;
@@ -295,7 +295,7 @@ namespace CommonPart
         /// これは使わないでください。
         /// </summary>
         public WayShotSkillData(string _skillName,string _conditions,SkillGenreS _sgs, MoveType mt,string _aniDName, int _cooldownFps, double _speed, 
-            double _acceleration, double _angle, double _radius, int _way, int _duration=DataBase.motion_inftyTime,double _space=0, int _sword=1,int _score=10,int _life=1)
+            double _acceleration, double _angle, double _radius, int _way=1, int _duration=DataBase.motion_inftyTime,double _space=0, int _sword=1,int _score=10,int _life=1)
             : base(_skillName,_conditions,SkillGenreL.generation,_sgs,_aniDName,_cooldownFps, mt, PointType.notused, new Vector(),0,_speed, _acceleration,_angle,0,_radius,_duration,_space,_sword,_score,_life)
         {
             way = _way;
@@ -320,7 +320,7 @@ namespace CommonPart
         /// <param name="_score">弾丸が吸収される時の点数</param>
         /// <param name="_life">弾丸のhp</param>
         public WayShotSkillData(string _skillName, string _conditions, SkillGenreL _sgL,SkillGenreS _sgs, string _aniDName, int _cooldownFps, Motion motion,
-            double _radius, Color _c, int _way, int _duration = DataBase.motion_inftyTime, double _space = 0, int _sword = 1, int _score = 10, int _life = 1)
+            double _radius, Color _c, int _way=1, int _duration = DataBase.motion_inftyTime, double _space = 0, int _sword = 1, int _score = 10, int _life = 1)
             : base(_skillName, _conditions, _sgL, _sgs, _aniDName, _cooldownFps, motion, _radius, _c, _duration, _space, _sword, _score, _life)
         {
             way = _way;
@@ -344,7 +344,7 @@ namespace CommonPart
         /// <param name="_score">弾丸が吸収される時の点数</param>
         /// <param name="_life">弾丸のhp</param>
         public WayShotSkillData(string _skillName, string _conditions, SkillGenreL _sgL, SkillGenreS _sgs, string _aniDName, int _cooldownFps, Motion motion,
-            double _radius, int _way, int _duration = DataBase.motion_inftyTime, double _space = 0, int _sword = 1, int _score = 10, int _life = 1)
+            double _radius, int _way=1, int _duration = DataBase.motion_inftyTime, double _space = 0, int _sword = 1, int _score = 10, int _life = 1)
             : base(_skillName, _conditions, _sgL, _sgs, _aniDName, _cooldownFps, motion, _radius, _duration, _space, _sword, _score, _life)
         {
             way = _way;
@@ -375,7 +375,7 @@ namespace CommonPart
         /// <param name="_score">弾丸が吸収される時の点数</param>
         /// <param name="_life">弾丸のhp</param>
         public WaySkilledBulletsData(string _skillName, string _conditions, SkillGenreS _sgs, string _aniDName, int _cooldownFps, Motion motion,
-            double _radius, Color _c, string _SkillName,int _way, int _duration = DataBase.motion_inftyTime, double _space = 0, int _sword = 1, int _score = 10, int _life = 1)
+            double _radius, Color _c, string _SkillName,int _way=1, int _duration = DataBase.motion_inftyTime, double _space = 0, int _sword = 1, int _score = 10, int _life = 1)
             : base(_skillName, _conditions, SkillGenreL.UseSkilledBullet, _sgs, _aniDName, _cooldownFps, motion, _radius, _c, _way,_duration, _space, _sword, _score, _life)
         {
             BulletSkillNames.Add(_SkillName);
@@ -399,7 +399,7 @@ namespace CommonPart
         /// <param name="_score">弾丸が吸収される時の点数</param>
         /// <param name="_life">弾丸のhp</param>
         public WaySkilledBulletsData(string _skillName, string _conditions, SkillGenreS _sgs, string _aniDName, int _cooldownFps, Motion motion,
-            double _radius, string _SkillName, int _way, int _duration = DataBase.motion_inftyTime, double _space = 0, int _sword = 1, int _score = 10, int _life = 1)
+            double _radius, string _SkillName, int _way=1, int _duration = DataBase.motion_inftyTime, double _space = 0, int _sword = 1, int _score = 10, int _life = 1)
             : base(_skillName, _conditions, SkillGenreL.UseSkilledBullet, _sgs, _aniDName, _cooldownFps, motion, _radius, _way, _duration, _space, _sword, _score, _life)
         {
             BulletSkillNames.Add(_SkillName);
