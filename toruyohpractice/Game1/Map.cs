@@ -530,10 +530,11 @@ namespace CommonPart {
         }
         public static void setup_textureNames(List<string> _textureNames)
         {
-            foreach(string _textureName in textureNames)
+            foreach(string _textureName in _textureNames)
             {
                 textureNames.Add(_textureName);
             }
+            Console.WriteLine("ssd"+textureNames.Count);
         }
         
         private void chargeBarChange(string name,string addOn=null) {
