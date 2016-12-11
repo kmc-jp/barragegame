@@ -479,7 +479,7 @@ namespace CommonPart
                             if (Motion.Has_a_Object(_ws.moveType))
                             {
                                 //物体目標のスキル
-                                bullets.Add(new SkilledLaserTop(x, y, _ws.moveType, _ws.speed, _ws.acceleration, Map.player, _ws.aniDName, _ws.angle, _ws.omega, _ws.radius, this, _ws.color, _ws.sword, _ws.life, _ws.score));
+                                bullets.Add(new SkilledLaserTop(x, y, _ws.moveType, _ws.speed, _ws.acceleration, Map.player, _ws.aniDName, _ws.angle, _ws.omega, _ws.radius,wSs.BulletSkillNames, this, _ws.color, _ws.sword, _ws.life, _ws.score));
                             }
                             else
                             {
