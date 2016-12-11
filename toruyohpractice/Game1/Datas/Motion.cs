@@ -107,7 +107,7 @@ namespace CommonPart
         /// </summary>
         /// <param name="pos"></param>
         /// <param name="_pt"></param>
-        public static double from_PointType_getPosY(double px, double py, PointType _pt, int t = 1, MoveType _mt = MoveType.noMotion)
+        public static double from_PointType_getPosY(double px, double py, PointType _pt, int t = 1,MoveType _mt = MoveType.noMotion)
         {
             switch (_pt)
             {
@@ -139,6 +139,13 @@ namespace CommonPart
                 case PointType.randomRange:
                     return (Function.GetRandomDouble(2.0) - 1) * px;
                 case PointType.displacement:
+                    /*
+                    if (t > 0) return px / t;
+                    else
+                    {
+                        double dis = Math.Sqrt(px * px + py * py);
+                        return px *= _speed / dis;
+                    }*/
                     return px;
                 case PointType.pos_on_screen:
                     return px + Map.leftside;
@@ -148,6 +155,5 @@ namespace CommonPart
         }
         #endregion
 
-        public static 
     }
 }

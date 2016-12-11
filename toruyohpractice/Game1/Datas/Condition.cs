@@ -50,6 +50,7 @@ namespace CommonPart
         /// <returns></returns>
         public static bool skillCondition( string c,int _routeSet,int _duration,int _hp,int _hpP, int indexShift=0)
         {
+            if (c == null) return true;
             Condition con = new Condition(c);
             bool ans=con.analyze(new int[] { _routeSet, _duration, _hp, _hpP }, indexShift,false,true);
             con.Dispose();
@@ -67,6 +68,8 @@ namespace CommonPart
         protected virtual bool analyze (int[] ints, int labelIndexShift = 0, bool readpast=false,bool theFirst=false)
         {
             bool ans=true;
+            if(conditions==null)
+                return true;
             int nowIndex = -1;//今、比較に使われるはずのints[]の引数番号. これはlabelからの指定の時だけ修正するのがいいでしょう。
             while (pos < conditions.Length)
             {

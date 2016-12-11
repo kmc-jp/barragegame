@@ -599,14 +599,17 @@ namespace CommonPart {
             scoreboard.Draw(d, score_pos, DepthID.Status);
 
             #region sidebar draw
-            if (inside_of_window(new Vector(leftside - DataBase.getTex(textureNames[0]).Width, 0), DataBase.getTexD(textureNames[0]).w_single, DataBase.getTexD(textureNames[0]).h_single))
+            if (textureNames.Count >= 2)
             {
-                d.Draw(new Vector(leftside - DataBase.getTex(textureNames[0]).Width, 0), DataBase.getTex(textureNames[0]), DepthID.StateFront);
+                if (inside_of_window(new Vector(leftside - DataBase.getTex(textureNames[0]).Width, 0), DataBase.getTexD(textureNames[0]).w_single, DataBase.getTexD(textureNames[0]).h_single))
+                {
+                    d.Draw(new Vector(leftside - DataBase.getTex(textureNames[0]).Width, 0), DataBase.getTex(textureNames[0]), DepthID.StateFront);
 
-            }
-            if (inside_of_window(new Vector(rightside, 0), DataBase.getTexD(textureNames[1]).w_single, DataBase.getTexD(textureNames[1]).h_single))
-            {
-                d.Draw(new Vector(rightside, 0), DataBase.getTex(textureNames[1]), DepthID.StateFront);
+                }
+                if (inside_of_window(new Vector(rightside, 0), DataBase.getTexD(textureNames[1]).w_single, DataBase.getTexD(textureNames[1]).h_single))
+                {
+                    d.Draw(new Vector(rightside, 0), DataBase.getTex(textureNames[1]), DepthID.StateFront);
+                }
             }
             #endregion
 
