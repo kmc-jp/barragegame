@@ -56,15 +56,18 @@
     <Compile Include="Boss.cs" />
     <Compile Include="Bullet.cs" />
     <Compile Include="Datas\BGMdata.cs" />
+    <Compile Include="Datas\Condition.cs" />
     <Compile Include="Datas\DataBase.cs" />
     <Compile Include="Datas\HitShape.cs" />
     <Compile Include="Datas\MapDataSave.cs" />
+    <Compile Include="Datas\Motion.cs" />
     <Compile Include="Datas\MotionCalculation.cs" />
     <Compile Include="Datas\MusicPlayer.cs" />
     <Compile Include="Datas\MusicPlayer2.cs" />
     <Compile Include="Datas\RandomXS.cs" />
     <Compile Include="Datas\SEPlayer.cs" />
     <Compile Include="Datas\SkillData.cs" />
+    <Compile Include="Datas\stageData forTestMap .cs" />
     <Compile Include="Datas\StageData.cs" />
     <Compile Include="Datas\TextureManager.cs" />
     <Compile Include="Datas\UnitType.cs" />
@@ -293,6 +296,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Stage2_Boss.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\stage3_boss.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\stage3_way.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Stage4_Journey_short.wav">

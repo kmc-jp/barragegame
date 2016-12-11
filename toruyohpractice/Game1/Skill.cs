@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace CommonPart
 {
+    enum Timing { moving, dying,  } //movingは普通の状態、dyingは死んだ瞬間んを意味する
     class Skill
     {
         public int coolDown=0;
@@ -24,12 +25,39 @@ namespace CommonPart
             }
         }
 
-        public void used(int i = 0)
+        public bool used( Timing timing,int loop_index=-1,int hp = 0, double hpP =0)
         {
-            if (i == 0)
+            bool succeed = false;
+            bool afterDeath= skillName.Contains(DataBase.skillUsedAfterDeath);
+            int routeConditionIndex = skillName.LastIndexOf(DataBase.Routine);
+            bool LoopIndexCorrect;
+            if (routeConditionIndex == -1)
             {
+                LoopIndexCorrect = true;
+            }else if (loop_index >= 0)
+            {
+                routeConditionIndex += DataBase.Routine.Length;
+                
+                while ( routeConditionIndex<skillName.Length && 
+                    skillName[routeConditionIndex]-'0'>=0  
+                    ) {
+
+                }
+            }else { LoopIndexCorrect = false; }
+            
+            switch (timing)
+            {
+                case Timing.moving:
+                    succeed = !afterDeath;
+                    break;
+                case Timing.dying:
+                    succeed = afterDeath;
+                    break;
+            }
+            if (succeed) {
                 coolDown = DataBase.getSkillData(skillName).cooldownFps;
             }
+            return succeed;
         }
     }
 }

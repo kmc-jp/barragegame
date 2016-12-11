@@ -153,7 +153,6 @@ namespace CommonPart
             if (_min_index >= xNum * yNum) { _min_index = xNum * yNum - 1; }
         }
         #endregion
-
         #region draw method
         /// <summary>
         /// 
@@ -269,19 +268,20 @@ namespace CommonPart
     
     class AnimationAdvanced : Animation
     {
-        public override float X { get { return data.X; } }
-        public override float Y { get { return data.Y; } }
-        AnimationDataAdvanced data;
+        public override float X { get { if (data == null) return 0;else return data.X; } }
+        public override float Y { get { if (data == null) return 0; else return data.Y; } }
+        new AnimationDataAdvanced data;
         int frame;
         const bool animateWithUpdate = true;
         protected bool repeat=false;
         public AnimationAdvanced(AnimationDataAdvanced d):base(d)// data= dとしているだけ。
-        { data = d; repeat = data.repeat; }
+        { data = d; if(data!=null)repeat = data.repeat; }
 
         /// <summary>
         /// アニメーションのループをたどり、最初のアニメーションを見つけるか、このアニメーションにまたループして戻っている場合は自分を見つける。
         /// </summary>
         public void backToTop() {
+            if (data == null) return;
             if (data.pre_animation_name == null ||data.pre_animation_name==AnimationDataAdvanced.notAnimationName) {
                 frame = 0;
                 return;
@@ -307,6 +307,7 @@ namespace CommonPart
         /// </summary>
         public new void Update()
         {
+            if (data == null) return;
             if (animateWithUpdate) frame++;
             if (frame>data.totalFrame)
             {
@@ -326,12 +327,14 @@ namespace CommonPart
         }
         public override void Draw(Drawing d, Vector2 pos, DepthID depth, float size = 1, float angle = 0)
         {
+            if (data == null) return;
             data.Draw(frame, d, pos, depth, size, angle);
             if (!animateWithUpdate && d.Animate)
                 frame++;
         }
         public override void Draw(Drawing d, Vector2 pos, DepthID depth, Vector2 size, float angle = 0)
         {
+            if (data == null) return;
             data.Draw(frame, d, pos, depth, size, angle);
             if (d.Animate)
                 frame++;

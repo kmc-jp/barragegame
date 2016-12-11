@@ -15,8 +15,13 @@ namespace CommonPart {
     /// </summary>
     public enum existTimesIndex{    InvisibleStill = 0, InvisibleActive, VisibleStill, VisibleActive    }
     public enum Unit_state { fadeout=0,dead,out_of_window,bulletDamagedPlayer,exist_timeOut };
-    public enum MoveType {noMotion=0, screen_point_target = 1,object_target=2,go_straight,mugen,rightcircle,leftcircle,stop,
-        chase_target };
+    public enum MoveType {noMotion=0,
+        screen_point_target = 1,//その点に近づこうとする、正の時間が指定されていると動き始めるとき速度が[距離/時間]変わります。
+        object_target =2,//速度のみを使った追いかけ,方向転換は一瞬
+        go_straight,//これは実際は方向を決めて、その向きに突っ走るだけです。
+        mugen,rightcircle,leftcircle,stop, //周期が必要
+        chase_target,//omega角速度使用の追いかけ
+    };
     /// <summary>
     /// MoveTypeを持ち、なんらかのposをも持っている時、そのposの意味
     /// </summary>
@@ -24,6 +29,9 @@ namespace CommonPart {
         displacement,//全部の変位、1 fpsでの変位ではない
         pos_on_screen,//画面上の座標を示す
         player_pos, //プレイヤーの座標を指す。
+        randomRange,//ベクトルがx方向の正負変位,yの正負変位を表しているが、値はその変位内の乱数
+        randomDirection,//ベクトルは意味を持たない?初期角度にランダム角度足した方向へ移動する
+
     }
     public enum Command
     {
@@ -93,6 +101,37 @@ namespace CommonPart {
         /// </summary>
         public const int motion_inftyTime =-99999;
         #endregion
+
+
+        #region string As condition.  "+co" is or, "*co" is and,
+        public const string skillUsedAfterDeath = "-after death";// 死亡した場合に使われるスキル。
+        /// <summary>
+        /// 条件以上であれば有効。
+        /// </summary>
+        public const string UsedFrom_I = "-froM ";
+        /// <summary>
+        /// //条件が満たさない時に有効。
+        /// </summary>
+        public const string UsedTill_I = "-tiL ";
+        /// <summary>
+        /// //条件が満たされた時のみ有効。
+        /// </summary>
+        public const string UsedExact_I = "-eXaC ";
+        /// <summary>
+        /// Enemy,Bossなどが持つ Routine を指している. Routine+"1"は第 1 段階を指す
+        /// </summary>
+        public const string Routine = "roUtiNe ";
+        /// <summary>
+        /// Enemy,Bossなどが持つ hpの値 を指している. HP+"500"は"hpが500"を意味する
+        /// </summary>
+        public const string HP = "hP ";
+        /// <summary>
+        /// Enemy,Bossなどが持つ hpのパーセント を指している. HPP+"50%"は"hpのパーセントが50%"を意味する
+        /// </summary>
+        public const string HPp = "hPP ";
+
+        #endregion
+
 
         #region UTD
         public static string utFileName = "uts.dat";
@@ -236,7 +275,6 @@ namespace CommonPart {
             aniD_file.Close();
         }
         #endregion
-
         private static ContentManager Content;
         public static string DirectoryWhenGameStart;
         /// <summary>
@@ -263,11 +301,9 @@ namespace CommonPart {
         #endregion
 
         #region SkillData
-        public const string skillUsedAfterDeath = "-after death";
-
         private const int low_speed=2;
-        private const int middle_speed=4;
-        private const int high_speed=7;
+        private const int middle_speed=5;
+        private const int high_speed=9;
         private const int big_radius=10;
         private const int small_radius=5;
         private const int high_cd1 = 5; private const int high_cd2 = 8; private const int high_cd3 = 20; private const int high_cd4 = 30;
@@ -281,9 +317,9 @@ namespace CommonPart {
         public static Dictionary<string, SkillData> SkillDatasDictionary = new Dictionary<string, SkillData>();
         public static void setupSkillData()
         {
-            addSkillData(new GenerateSkilledBulletData("createbullet",SkillGenreS.shot,MoveType.go_straight,"bullet1", low_cd3, 2, 0, Math.PI/2, 8,"yanagi"));
+            addSkillData(new GenerateSkilledBulletData("createbullet",SkillGenreS.shot,MoveType.go_straight,"bullet1", low_cd3, 2, 0, Math.PI/2, 8,"yanagi-s",60));
 
-            addSkillData(new SingleShotSkillData("yanagi",SkillGenreS.yanagi ,MoveType.go_straight,"bullet1", low_cd1, 2, 0.2,0.25,8,1));
+            addSkillData(new WayShotSkillData("yanagi-s",SkillGenreS.yanagi ,MoveType.go_straight,"bullet1", 20, 2, 0.2,0.25,8,4,motion_inftyTime,1));
             
             
             addSkillData(new WayShotSkillData("5wayshot", SkillGenreS.wayshot,MoveType.go_straight,"bulletsmall", high_cd3, 6, 0, highangle1, 8,5));
@@ -597,11 +633,12 @@ namespace CommonPart {
         }
         public static bool existsAniD(string name, string addOn)
         {
-            if (addOn == null) return AnimationAdDataDictionary.ContainsKey(name);
+            if (addOn == null) return AnimationAdDataDictionary.ContainsKey(name) || AnimationAdDataDictionary.ContainsKey(name+defaultAnimationNameAddOn);
             else return AnimationAdDataDictionary.ContainsKey(name + addOn);
         }
         public static AnimationDataAdvanced getAniD(string name, string addOn = null)
         {
+            if (name == null && addOn == null) return null;
             if (addOn == null && AnimationAdDataDictionary.ContainsKey(name))
             {
                 return AnimationAdDataDictionary[name];

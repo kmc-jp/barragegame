@@ -28,6 +28,7 @@ namespace CommonPart
 
         public StageSelectScene(SceneManager scenem) : base(scenem) {
             stageAvailable = new bool[stagesPos.Length];
+            SoundManager.Music.PlayBGM(BGMID.map, true);
             animations = new AnimationAdvanced[stagesPos.Length];
             for(int i = 0; i < stagesPos.Length; i++)
             {
