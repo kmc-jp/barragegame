@@ -528,7 +528,7 @@ namespace CommonPart {
                 total_BackGroundHeight += DataBase.getTex(background_names[i]).Height;
             }
         }
-        public static void setup_textureNames(string[] _textureNames)
+        public static void setup_textureNames(List<string> _textureNames)
         {
             foreach(string _textureName in textureNames)
             {
