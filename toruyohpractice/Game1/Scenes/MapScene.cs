@@ -77,13 +77,14 @@ namespace CommonPart {
                 {
                     case Command.buttonPressed3:
                         close();
+                        new StageSelectScene(scenem);
+                        SoundManager.Music.PlayBGM(BGMID.None, true);
                         break;
                     default:
                         break;
                 }
-                new StageSelectScene(scenem);
                 #endregion
-                SoundManager.Music.PlayBGM(BGMID.None, true);
+
             }
             else if(!MapFulStop)
             {//gameOverに入っていないのでmapは更新する
