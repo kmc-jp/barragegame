@@ -30,7 +30,7 @@ namespace CommonPart {
         /// <summary>
         /// 残機表示の左上の座標
         /// </summary>
-        public Vector life_pos = new Vector(1070, 105);
+        public Vector life_pos = new Vector(1070, 120);
         #endregion
         /// <summary>
         /// playerがskilltoEnemyで倒した敵の個体数を記録
