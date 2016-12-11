@@ -339,6 +339,8 @@ namespace CommonPart
             if (d.Animate)
                 frame++;
         }
+
+        public bool dataIsNull() { return data == null; }
     }
     
 }//namespace end

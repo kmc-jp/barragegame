@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Game1.Datas
+namespace CommonPart
 {
     /// <summary>
     /// a class with various static methods that interprets the string as condition . Comparison inside Number
@@ -14,7 +14,7 @@ namespace Game1.Datas
         // ----    Be Careful!!    ----
         // following words are already used:
         /*  &: and;  |: or;  <,>,=: left bigger,smaller,equal to right;  (,):right,left parenthesis;
-         *  
+         *  ,: or other number
         */
 
         #region static
@@ -106,11 +106,11 @@ namespace Game1.Datas
                         pos++;
                         if (pos + 1 < conditions.Length && conditions[pos]=='='){
                             pos++;
-                            ans = ints[nowIndex] <= readOneInt();
+                            ans = compareIntsWithInt(ints[nowIndex], smallerOrEqaul);
                         }
                         else
                         {
-                            ans = ints[nowIndex] < readOneInt();
+                            ans = compareIntsWithInt(ints[nowIndex], smallerThan);
                         }
                         break;
                     case '>':
@@ -118,16 +118,18 @@ namespace Game1.Datas
                         if (pos + 1 < conditions.Length && conditions[pos] == '=')
                         {
                             pos++;
-                            ans = ints[nowIndex] >= readOneInt();
-                        }else
+                            ans = compareIntsWithInt(ints[nowIndex], biggerOrEqaul);
+                        }
+                        else
                         {
-                            ans = ints[nowIndex] > readOneInt();
+                            ans = compareIntsWithInt(ints[nowIndex], biggerThan);
                         }
                         break;
                     case '=':
                         pos++;
-                        ans = ints[nowIndex] == readOneInt();
+                        ans = compareIntsWithInt(ints[nowIndex], equalWith);
                         break;
+                    
                     default:
                         // label を読もうとしている
                         for(int i = 0; i < label.Length-labelIndexShift; i++)
@@ -147,7 +149,39 @@ namespace Game1.Datas
             }
             return ans;
         }
+        /// <summary>
+        /// ここは右辺が読み終わってその次になる
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="compare"></param>
+        /// <returns></returns>
+        protected virtual bool compareIntsWithInt(int left,Func< int, int, bool> compare)
+        {
+            bool ans = compare(left, readOneInt());
+            while (pos < conditions.Length)
+            {
+                if (conditions[pos] == ',')
+                {
+                    pos++;
+                    if (ans == false)
+                    {
+                        ans = compare(left, readOneInt());
+                    }
+                    else { readOneInt(); }
+                }else { pos--; break; }
+            }
+            return ans;
+        }
+        protected virtual bool equalWith(int left, int right) { return left == right; }
+        protected virtual bool biggerThan(int left,int right) { return left > right; }
+        protected virtual bool biggerOrEqaul(int left, int right) { return left >= right; }
+        protected virtual bool smallerThan(int left,int right) { return left < right; }
+        protected virtual bool smallerOrEqaul(int left, int right) { return left <= right; }
 
+        /// <summary>
+        /// これが実行されたら数字の次である
+        /// </summary>
+        /// <returns></returns>
         protected virtual int readOneInt()
         {
             int ansI = 0;
