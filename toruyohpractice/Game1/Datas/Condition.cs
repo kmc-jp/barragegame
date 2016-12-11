@@ -16,23 +16,19 @@ namespace CommonPart
         /*  &: and;  |: or;  <,>,=: left bigger,smaller,equal to right;  (,):right,left parenthesis;
          *  ,: or other number
         */
-
+        public const string route_set = "-rs";
+        public const string duration = "-dr";
+        public const string hP = "-hp";
+        public const string hPp = "-hpp";
         #region static
         /// <summary>
         /// 構文解析時にこれらの文字列は対応した番号の引数を意味する,今は"-rs"は0番目の引数の値を意味する
         /// </summary>
         static readonly string[] label = new string[]
         {
-            "-rs","-dr","-hp","-hpp",
+            route_set, duration, hP,hPp,
         };
-        /// <summary>
-        /// 文字列対応をずらした場合に備えて
-        /// </summary>
-        const int shifts = 0;
-        static string route_set { get { return label[ 0 + shifts]; } }
-        static string duration  { get { return label[ 1 + shifts]; } }
-        static string hP        { get { return label[ 2 + shifts]; } }
-        static string hPp       { get { return label[ 3 + shifts]; } }
+        
         #endregion
 
 

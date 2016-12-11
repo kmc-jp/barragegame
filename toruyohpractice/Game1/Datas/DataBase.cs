@@ -318,7 +318,12 @@ namespace CommonPart {
         public static void setupSkillData()
         {
             Motion goStraightToPlayer = new Motion(MoveType.go_straight,PointType.player_pos,new Vector(),middle_speed,0,0);
-            addSkillData(new WaySkilledBulletsData("createbullet",null,SkillGenreS.wayshot,null,low_cd3,goStraightToPlayer,small_radius,"yanagi-s",1,60));
+            Motion goStraightWithDirection = new Motion(MoveType.go_straight, PointType.Direction, new Vector(), middle_speed, 0,0);
+            Motion rCircle = new Motion(MoveType.rightcircle, PointType.notused, new Vector(), middle_speed, 0, 60, Math.PI / 30);
+            //addSkillData(new WaySkilledBulletsData("createbullet",null,SkillGenreS.wayshot,null,low_cd3,goStraightToPlayer,small_radius,"yanagi-s",1,60));
+
+            addSkillData(new WaySkilledBulletsData("createbullet",null, SkillGenreS.wayshot, "bulletsmall", low_cd6, goStraightWithDirection,small_radius,"yanagi-s",1,180));
+            addSkillData(new WaySkilledBulletsData("crossSplit", Condition.hP + "<0",SkillGenreS.wayshot,"bulletsmall",low_cd1,goStraightWithDirection,small_radius,"crossSplit",4,180,lowangle1));
 
             addSkillData(new WayShotSkillData("yanagi-s", null, SkillGenreS.yanagi ,MoveType.go_straight,"bullet1",15,middle_speed, 0.2,lowangle1,small_radius,4,motion_inftyTime,1));
             

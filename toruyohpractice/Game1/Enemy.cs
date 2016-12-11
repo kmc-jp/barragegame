@@ -365,8 +365,8 @@ namespace CommonPart
         /// <param name="i"></param>
         protected void setup_default_pos(int i)
         {
-            default_pos.X = Motion.from_PointType_getPosX(default_pos.X, default_pos.Y, unitType.pointTypes[i],unitType.times[i], unitType.moveTypes[i]);
-            default_pos.Y = Motion.from_PointType_getPosY(default_pos.X, default_pos.Y, unitType.pointTypes[i],unitType.times[i], unitType.moveTypes[i]);
+            default_pos.X = Motion.from_PointType_getPosX(default_pos.X, default_pos.Y, unitType.pointTypes[i],unitType.times[i], speed, angle, unitType.moveTypes[i]);
+            default_pos.Y = Motion.from_PointType_getPosY(default_pos.X, default_pos.Y, unitType.pointTypes[i],unitType.times[i], speed, angle, unitType.moveTypes[i]);
         }
         /// <summary>
         /// 現在のPointType, times[0], MoveTypeを使って、default_posを更新する
@@ -374,8 +374,8 @@ namespace CommonPart
         /// <param name="pos"></param>
         protected void setup_default_pos(Vector pos)
         {
-            default_pos.X = Motion.from_PointType_getPosX(pos.X, pos.Y, pt,alltime,mt);
-            default_pos.Y = Motion.from_PointType_getPosY(pos.X, pos.Y, pt,alltime,mt);
+            default_pos.X = Motion.from_PointType_getPosX(pos.X, pos.Y, pt, alltime, speed, angle,mt);
+            default_pos.Y = Motion.from_PointType_getPosY(pos.X, pos.Y, pt,alltime, speed, angle,mt);
         }
 
         #endregion

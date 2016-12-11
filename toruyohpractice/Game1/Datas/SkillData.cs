@@ -382,7 +382,7 @@ namespace CommonPart
         }
 
         /// <summary>
-        /// SkilledBulletは使わない、レーザーは作れない、Motionを使って書き方を簡略化する
+        /// SkilledBulletを使い、レーザーは作れない、Motionを使って書き方を簡略化する
         /// </summary>
         /// <param name="_skillName">スキルの名前，唯一であることを確認してください</param>
         /// <param name="_conditions">スキルの使用条件やその他に使われる</param>

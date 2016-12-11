@@ -107,7 +107,7 @@ namespace CommonPart
         /// </summary>
         /// <param name="pos"></param>
         /// <param name="_pt"></param>
-        public static double from_PointType_getPosY(double px, double py, PointType _pt, int t = 1,MoveType _mt = MoveType.noMotion)
+        public static double from_PointType_getPosY(double px, double py, PointType _pt, int t = 1, double _speed = 1, double _angle = Math.PI / 2, MoveType _mt = MoveType.noMotion)
         {
             switch (_pt)
             {
@@ -119,6 +119,9 @@ namespace CommonPart
                     return (Function.GetRandomDouble(2.0) - 1) * py;
                 case PointType.displacement:
                     return py;
+                case PointType.randomDirection:
+                case PointType.Direction:
+                    return _speed * Math.Sin(_angle);
                 default:
                     return py;
             }
@@ -128,7 +131,7 @@ namespace CommonPart
         /// </summary>
         /// <param name="pos"></param>
         /// <param name="_pt"></param>
-        public static double from_PointType_getPosX(double px, double py, PointType _pt, int t = 1, MoveType _mt = MoveType.noMotion)
+        public static double from_PointType_getPosX(double px, double py, PointType _pt, int t = 1, double _speed=1, double _angle=Math.PI/2, MoveType _mt = MoveType.noMotion)
         {
             switch (_pt)
             {
@@ -149,6 +152,9 @@ namespace CommonPart
                     return px;
                 case PointType.pos_on_screen:
                     return px + Map.leftside;
+                case PointType.randomDirection:
+                case PointType.Direction:
+                    return _speed * Math.Sin(_angle);
                 default:
                     return px;
             }
