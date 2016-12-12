@@ -100,14 +100,14 @@ namespace CommonPart
         public bool avoid_mode = false;
         public bool avoid_InPlusAcceleration = true;
         //大体のフレーム数は (avoid_speed-default_speed)/avoid_acceleration *2 + avoid_stop_time
-        public int avoid_speed = 11;
+        public int avoid_speed = 9;
         public int avoid_acceleration = 1;
         public int avoid_stop_time = 15;
         private SoundEffectID avoid_SEid =SoundEffectID.playerattack1;
         /// <summary>
         /// 回避時に敵弾を消せる半円の半径
         /// </summary>
-        public int avoid_radius = 115;
+        public int avoid_radius = 110;
 
         #endregion
 
@@ -594,7 +594,7 @@ namespace CommonPart
                                (input.IsKeyDown(KeyID.Right) == true && ((Boss)Map.enemys_inside_window[i]).bodys[j].x >= x))
                         )
                             {
-                                Map.enemys_inside_window[i].damage(atk/2);
+                                Map.enemys_inside_window[i].damage(atk/4);
                             }
                         }
                     }

@@ -17,10 +17,11 @@ namespace CommonPart {
     public enum Unit_state { fadeout=0,dead,out_of_window,bulletDamagedPlayer,exist_timeOut };
     public enum MoveType {noMotion=0,
         screen_point_target = 1,//その点に近づこうとする、正の時間が指定されていると動き始めるとき速度が[距離/時間]変わります。
-        object_target =2,//速度のみを使った追いかけ,方向転換は一瞬
+        player_target =2,//速度のみを使った追いかけ,方向転換は一瞬
         go_straight,//これは実際は方向を決めて、その向きに突っ走るだけです。
         mugen,rightcircle,leftcircle,stop, //周期が必要
-        chase_target,//omega角速度使用の追いかけ
+        chase_player_target,//omega角速度使用の追いかけ
+        rotateAndGo,//角速度で回転しながら今自分の向きに進む
     };
     /// <summary>
     /// MoveTypeを持ち、なんらかのposをも持っている時、そのposの意味
@@ -97,41 +98,14 @@ namespace CommonPart {
         public static string charaCutInTexName = "カットインfin";
         public const string bossLifeBar_default_aniName = "1280x150体力ゲージ";
         /// <summary>
-        /// すべてのstop_timeとかに使われる。普通0より小さくならないtimeがこの値だと無限と認識する。
+        /// すべてのstop_timeとかに使われる。普通0より小さくならないtimeがこの値だと無限と認識する。Conditionでは99999と認識する
         /// </summary>
         public const int motion_inftyTime =-99999;
+        /// <summary>
+        /// この角度はその時点でのプレイヤーへの向きを意味する。
+        /// </summary>
+        public const double AngleToPlayer = -666;
         #endregion
-
-
-        #region string As condition.  "+co" is or, "*co" is and,
-        public const string skillUsedAfterDeath = "-after death";// 死亡した場合に使われるスキル。
-        /// <summary>
-        /// 条件以上であれば有効。
-        /// </summary>
-        public const string UsedFrom_I = "-froM ";
-        /// <summary>
-        /// //条件が満たさない時に有効。
-        /// </summary>
-        public const string UsedTill_I = "-tiL ";
-        /// <summary>
-        /// //条件が満たされた時のみ有効。
-        /// </summary>
-        public const string UsedExact_I = "-eXaC ";
-        /// <summary>
-        /// Enemy,Bossなどが持つ Routine を指している. Routine+"1"は第 1 段階を指す
-        /// </summary>
-        public const string Routine = "roUtiNe ";
-        /// <summary>
-        /// Enemy,Bossなどが持つ hpの値 を指している. HP+"500"は"hpが500"を意味する
-        /// </summary>
-        public const string HP = "hP ";
-        /// <summary>
-        /// Enemy,Bossなどが持つ hpのパーセント を指している. HPP+"50%"は"hpのパーセントが50%"を意味する
-        /// </summary>
-        public const string HPp = "hPP ";
-
-        #endregion
-
 
         #region UTD
         public static string utFileName = "uts.dat";
@@ -318,34 +292,39 @@ namespace CommonPart {
         public static void setupSkillData()
         {
             Motion goStraightToPlayer = new Motion(MoveType.go_straight,PointType.player_pos,new Vector(),middle_speed,0,0);
-            addSkillData(new WaySkilledBulletsData("createbullet",null,SkillGenreS.wayshot,null,low_cd3,goStraightToPlayer,small_radius,"yanagi-s",1,60));
+            Motion goStraightWithDirection = new Motion(MoveType.go_straight, PointType.Direction, new Vector(), low_speed, 0,0);
+            Motion rCircle = new Motion(MoveType.rightcircle, PointType.notused, new Vector(), low_speed, 0, 60, Math.PI / 30);
+            //addSkillData(new WaySkilledBulletsData("createbullet",null,SkillGenreS.wayshot,null,low_cd3,goStraightToPlayer,small_radius,"yanagi-s",1,60));
+            const string bulletTimeOut = Condition.hP + "<0";
+            addSkillData(new WaySkilledBulletsData("createbullet",null, SkillGenreS.wayshot, "bulletsmall", low_cd3, goStraightWithDirection,small_radius,"cs",1,10));
+            addSkillData(new WaySkilledBulletsData("cs", bulletTimeOut,SkillGenreS.wayshot,"bulletsmall",low_cd1,goStraightWithDirection,small_radius,new string[] { "cs" },2,40,lowangle1));
 
             addSkillData(new WayShotSkillData("yanagi-s", null, SkillGenreS.yanagi ,MoveType.go_straight,"bullet1",15,middle_speed, 0.2,lowangle1,small_radius,4,motion_inftyTime,1));
             
             
-            addSkillData(new WayShotSkillData("5wayshot", null, SkillGenreS.wayshot,MoveType.go_straight,"bulletsmall", high_cd3, 6, 0, highangle1, 8,5));
+            addSkillData(new WayShotSkillData("5wayshot", null, SkillGenreS.wayshot,MoveType.go_straight,"bulletsmall", high_cd3, middle_speed, 0, highangle1, small_radius,5));
             addSkillData(new WayShotSkillData("3wayshot-0", null, SkillGenreS.wayshot,MoveType.go_straight,"bulletsmall", middle_cd1,middle_speed, 0, middleangle2, small_radius, 3));
             addSkillData(new WayShotSkillData("3wayshot-1", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", middle_cd2, middle_speed, 0, middleangle2, small_radius, 3));
             addSkillData(new WayShotSkillData("boss1wayshot-0", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", 200, middle_speed, 0, middleangle2, small_radius, 3));
             addSkillData(new WayShotSkillData("boss1wayshot-1", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletlarge", 270, middle_speed, 0, middleangle2, small_radius, 3));
-            addSkillData(new WayShotSkillData("boss2wayshot-0", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", 270, middle_speed, 0, middleangle2, small_radius, 3));
-            addSkillData(new WayShotSkillData("16circle-0", null,SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", low_cd2, low_speed, 0, highangle1, small_radius));
-            addSkillData(new WayShotSkillData("boss8circle-0", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", low_cd3, low_speed, 0, middleangle2, small_radius));
+            addSkillData(new WayShotSkillData("boss2wayshot-0", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", 270, middle_speed, 0, middleangle2, small_radius,3));
+            addSkillData(new WayShotSkillData("16circle-0", null,SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", low_cd2, low_speed, 0, highangle1, small_radius,16,lowangle1));
+            addSkillData(new WayShotSkillData("boss8circle-0", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", low_cd3, low_speed, 0, middleangle2, small_radius,8,lowangle1));
             addSkillData(new WayShotSkillData("downshot-0", null, SkillGenreS.wayshot,MoveType.go_straight, "bulletsmall", low_cd1, middle_speed, 0, lowangle1, small_radius));
             addSkillData(new WayShotSkillData("downshot-1", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletline", middle_cd1, middle_speed, 0, lowangle1, small_radius));
             addSkillData(new WayShotSkillData("1wayshot-1", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", middle_cd2, high_speed, 0, 0, small_radius,1));
-            addSkillData(new WayShotSkillData("1chaseShot-1", null, SkillGenreS.wayshot,MoveType.object_target,"bulletsmall", middle_cd2, middle_speed, 0, 0,small_radius,120));
-            addSkillData(new WayShotSkillData("1chaseShot-2", null, SkillGenreS.wayshot, MoveType.object_target, "bulletsmall", middle_cd2, high_speed, 0, 0, small_radius,120));
+            addSkillData(new WayShotSkillData("1chaseShot-1", null, SkillGenreS.wayshot,MoveType.player_target,"bulletsmall", middle_cd2, middle_speed, 0, 0,small_radius,1,120));
+            addSkillData(new WayShotSkillData("1chaseShot-2", null, SkillGenreS.wayshot, MoveType.player_target, "bulletsmall", middle_cd2, high_speed, 0, 0, small_radius,1,120));
             addSkillData(new WayShotSkillData("2wayshot-0", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletlarge", middle_cd1, middle_speed, 0, middleangle1, big_radius, 2));
             addSkillData(new WayShotSkillData("4wayshot-0", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletlarge", middle_cd1, middle_speed, 0, middleangle1, big_radius, 4));
             addSkillData(new WayShotSkillData("4wayshot-1", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", low_cd1, middle_speed, 0, middleangle2, big_radius, 4));
-            addSkillData(new WayShotSkillData("4wayshot-2", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", high_cd3, middle_speed, 0, middleangle1, small_radius, 4));
-            addSkillData(new WayShotSkillData("laser-once-1", null,SkillGenreS.laser,  "bulletsmall", 600, MoveType.go_straight,PointType.player_pos,new Vector(),0, high_speed, 0, lowangle1, small_radius, 0, Color.Maroon,600,0,3));
+            addSkillData(new WayShotSkillData("4wayshot-2", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", high_cd3, middle_speed, 0, middleangle1, small_radius,4));
+            addSkillData(new WayShotSkillData("laser-once-1", null,SkillGenreS.laser, "bulletsmall", 600, MoveType.go_straight,PointType.player_pos,new Vector(),0, high_speed, 0, lowangle1, 0,small_radius, Color.Maroon,1,600));
 
-            addSkillData(new WayShotSkillData("laser-down-1", null, SkillGenreS.laser,  "bulletsmall", 360, MoveType.go_straight, PointType.Direction, new Vector(),0, high_speed, 0, lowangle1, small_radius, 0, Color.Maroon, 180, 0, 3));
+            addSkillData(new WayShotSkillData("laser-down-1", null, SkillGenreS.laser,  "bulletsmall", 360, MoveType.go_straight, PointType.Direction, new Vector(),0, high_speed, 0, lowangle1, 0,small_radius, Color.Maroon, 1,180));
 
-            addSkillData(new WayShotSkillData("laser-1", null, SkillGenreS.laser, "bulletsmall", low_cd6, MoveType.chase_target, PointType.player_pos, new Vector(),0,high_speed, 0, lowangle1, small_radius, 0.005, Color.Chocolate,140,0,10));
-            addSkillData(new WayShotSkillData("zyuzi-0", null, SkillGenreS.wayshot ,MoveType.go_straight,"bulletsmall", middle_cd2, low_speed,0, lowangle1,small_radius));
+            addSkillData(new WayShotSkillData("laser-1", null, SkillGenreS.laser, "bulletsmall", low_cd6, MoveType.chase_player_target, PointType.player_pos, new Vector(),0,high_speed, 0, lowangle1, 0.003,small_radius, Color.Chocolate,1,140));
+            addSkillData(new WayShotSkillData("zyuzi-0", null, SkillGenreS.wayshot ,MoveType.go_straight,"bulletsmall", middle_cd2, low_speed,0, lowangle1,small_radius,4,lowangle1));
             
         }
         #endregion
@@ -385,9 +364,9 @@ namespace CommonPart {
             texD_br.Close(); texD_file.Close();
             tda(defaultBlankTextureName);
 #endregion
-#region animation
+            #region animation
             setup_Animation();
-#endregion
+            #endregion
             goToStartDirectory();
             #region tda as program
             /*

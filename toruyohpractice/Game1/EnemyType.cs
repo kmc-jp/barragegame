@@ -14,6 +14,7 @@ namespace CommonPart
         public double acceleration;
         public double radius;
         public double angle;
+        public double omega;
         public int score;
         public int sword;
         public List<Vector> default_poses;
@@ -84,12 +85,12 @@ namespace CommonPart
             if (pointTypes.Count > id) { pointTypes[id] = p; } else { pointTypes.Add(p); }
         }
 
-        public void Initialize(List<MoveType> _moveTypes, List<Vector> _default_poses, List<int> _times, double _speed, double _acceleration, double _radius,double _angle, int _score, int _sword)
+        public void Initialize(List<MoveType> _moveTypes, List<Vector> _default_poses, List<int> _times, double _speed, double _acceleration, double _radius,double _angle,double _omega, int _score, int _sword)
         {
             setup_moveType(_moveTypes);
             setup_default_pos(_default_poses);
             setup_time(_times);
-            setup_standard(_speed, _acceleration, _radius,_angle, _score, _sword);
+            setup_standard(_speed, _acceleration, _radius,_angle,_omega, _score, _sword);
         }
 
         public void setup_moveType(List<MoveType> _moveTypes)
@@ -113,12 +114,13 @@ namespace CommonPart
                 times.Add(_times[i]);
             }
         }
-        public void setup_standard(double _speed,double _acceleration,double _radius,double _angle,int _score=10,int _sword=1)
+        public void setup_standard(double _speed,double _acceleration,double _radius,double _angle,double _omega=Math.PI/60,int _score=10,int _sword=1)
         {
             speed = _speed;
             acceleration = _acceleration;
             radius = _radius;
             angle = _angle;
+            omega = _omega;
             score = _score;
             sword = _sword;
         }

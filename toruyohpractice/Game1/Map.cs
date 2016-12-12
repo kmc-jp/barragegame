@@ -277,6 +277,7 @@ namespace CommonPart {
                     enemys_inside_window[i].clear();
                     enemys.Remove(enemys_inside_window[i]);
                     enemys_inside_window.Remove(enemys_inside_window[i]);
+                    i--;
                 }
             }
             
@@ -304,6 +305,7 @@ namespace CommonPart {
                 if (pros[j].delete)
                 {
                     pros.Remove(pros[j]);
+                    j--;
                 }
             }
         }
