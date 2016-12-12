@@ -35,18 +35,20 @@ namespace CommonPart
             switch (_mt)
             {
                 case MoveType.chase_target:
-                case MoveType.object_target:
+                case MoveType.player_target:
                     return true;
                 default:
                     return false;
             }
         }
 
-        public static double getAngleFromPointType(PointType _pt,double _angle,double px)
+        public static double getAngleFromPointType(PointType _pt,double _angle,double px,double sx=0,double sy=0)
         {
             switch (_pt)
             {
                 case PointType.Direction:
+                    if (_angle == DataBase.AngleToPlayer)
+                        _angle = Math.Atan2(Map.player.y-sy,Map.player.x-sx);
                     return _angle;
                 case PointType.randomDirection:
                     return _angle + Function.GetRandomDouble(px * 2) - px;

@@ -63,24 +63,25 @@ namespace CommonPart
         /// <returns></returns>
         protected virtual bool analyze (int[] ints, int labelIndexShift = 0, bool readpast=false,bool theFirst=false)
         {
-            bool ans=true;
+            bool ans=false;
             if(conditions==null)
                 return true;
-            int nowIndex = -1;//今、比較に使われるはずのints[]の引数番号. これはlabelからの指定の時だけ修正するのがいいでしょう。
+            int nowIndex = 0;//今、比較に使われるはずのints[]の引数番号. これはlabelからの指定の時だけ修正するのがいいでしょう。
             while (pos < conditions.Length)
             {
+                //Console.Write(conditions[pos]);
                 switch (conditions[pos])
                 {
                     case ' ':
                         break;
                     case '(':
-                        pos++;// '('を読んだことにする
+                        addPos();// '('を読んだことにする
                         // '('があるから、')'までが一区切りで一つのboolが帰ってくるので,
                         // analyze()してその区切りを一つの条件文として読み取る
                         ans = analyze(ints, labelIndexShift, readpast);
                         break;
                     case ')':
-                        pos++;// ')'を読んだことにする
+                        addPos();// ')'を読んだことにする
                         //一つの区切りの終わりなので値を返す。 これは'('とセットになっているはずで、
                         if (theFirst && pos < conditions.Length) { //'('によって一区切りになっていない かつ ')'が文の最後ではない時
                             // つまり、')'が一つ余った時、エラーを出力する
@@ -90,33 +91,36 @@ namespace CommonPart
                         }
                         return ans;
                     case '&':
-                        pos++;// '&'を読んだことにする、これからも"pos++;"は"読んだことにする"と意味する
+                        addPos();// '&'を読んだことにする、これからも"addPos();"は"読んだことにする"と意味する
 
                         // and 条件に対して、すでにansがfalseなら、その後の条件は読まなくても答えはfalseと決まった
                         if (ans == false) analyze(null, 0, true);//ansと=しないことで、ただ読み飛ばすになる
                         else ans = analyze(ints, labelIndexShift, readpast);//readpastを付けるのは、読み飛ばし状態でこれに入っても読み飛ばしである。
                         break;
                     case '|':
-                        pos++;
+                        addPos();
                         if (ans == true) analyze(null, 0, true);
                         else ans = analyze(ints, labelIndexShift, readpast);//readpastを付けるのは、読み飛ばし状態でこれに入っても読み飛ばしである。
                         break;
                     case '<':
-                        pos++;
-                        if (pos + 1 < conditions.Length && conditions[pos]=='='){
-                            pos++;
+                        addPos();
+                        if (pos < conditions.Length && conditions[pos]=='='){
+                            addPos();
+
                             ans = compareIntsWithInt(ints[nowIndex], smallerOrEqaul);
+                            //Console.WriteLine("##" + ans + "##");
                         }
                         else
                         {
                             ans = compareIntsWithInt(ints[nowIndex], smallerThan);
+                            //Console.WriteLine("##smaller Than" + ans + "##");
                         }
                         break;
                     case '>':
-                        pos++;
+                        addPos();
                         if (pos + 1 < conditions.Length && conditions[pos] == '=')
                         {
-                            pos++;
+                            addPos();
                             ans = compareIntsWithInt(ints[nowIndex], biggerOrEqaul);
                         }
                         else
@@ -125,8 +129,9 @@ namespace CommonPart
                         }
                         break;
                     case '=':
-                        pos++;
+                        addPos();
                         ans = compareIntsWithInt(ints[nowIndex], equalWith);
+                        //Console.WriteLine("## Equal" + ans + "##");
                         break;
                     
                     default:
@@ -141,12 +146,21 @@ namespace CommonPart
                         //ここでnowIndexを修正するといいでしょう.
                         if (nowIndex < 0) nowIndex = 0;
                         else if (nowIndex >= ints.Length) nowIndex = ints.Length - 1;
-
+                        //Console.Write(ints[nowIndex]);
                         break;
                 }
-                pos++;
+                addPos();
             }
             return ans;
+        }
+        protected void addPos()
+        {
+            if (pos < conditions.Length)
+            {
+                //Console.Write(conditions[pos]);
+            }
+            pos++;
+            
         }
         /// <summary>
         /// ここは右辺が読み終わってその次になる
@@ -156,12 +170,14 @@ namespace CommonPart
         /// <returns></returns>
         protected virtual bool compareIntsWithInt(int left,Func< int, int, bool> compare)
         {
+            //Console.Write("left:"+left);
+            if (left == DataBase.motion_inftyTime) { left *= -1; }
             bool ans = compare(left, readOneInt());
             while (pos < conditions.Length)
             {
                 if (conditions[pos] == ',')
                 {
-                    pos++;
+                    addPos();
                     if (ans == false)
                     {
                         ans = compare(left, readOneInt());
@@ -171,11 +187,18 @@ namespace CommonPart
             }
             return ans;
         }
-        protected virtual bool equalWith(int left, int right) { return left == right; }
-        protected virtual bool biggerThan(int left,int right) { return left > right; }
-        protected virtual bool biggerOrEqaul(int left, int right) { return left >= right; }
-        protected virtual bool smallerThan(int left,int right) { return left < right; }
-        protected virtual bool smallerOrEqaul(int left, int right) { return left <= right; }
+        protected virtual bool equalWith(int left, int right) { //Console.WriteLine(left + "==" + right + " ; " + (left <= right));
+            return left == right; }
+        protected virtual bool biggerThan(int left,int right) { //Console.WriteLine(left + ">" + right + " ; " + (left <= right));
+            return left > right; }
+        protected virtual bool biggerOrEqaul(int left, int right) { //Console.WriteLine(left + ">=" + right + " ; " + (left <= right));
+            return left >= right; }
+        protected virtual bool smallerThan(int left,int right) {
+            //Console.WriteLine(left + "<" + right + " ; " + (left <= right));
+            return left < right; }
+        protected virtual bool smallerOrEqaul(int left, int right) {
+            //Console.WriteLine(left + "<=" + right + " ; " + (left <= right));
+            return left <= right; }
 
         /// <summary>
         /// これが実行されたら数字の次である
@@ -186,16 +209,17 @@ namespace CommonPart
             int ansI = 0;
             while (pos < conditions.Length)
             {
-                if(conditions[pos]>='0' && conditions[pos] <= '9')
+                if (conditions[pos]>='0' && conditions[pos] <= '9')
                 {
                     ansI = ansI * 10 + conditions[pos] - '0';
                 }else if( conditions[pos]!= ' ')
                 {
                     break;
                 }
-                pos++;
+                addPos();
 
             }
+            //Console.Write("right:"+ansI);
             return ansI;
         }
 
@@ -215,7 +239,7 @@ namespace CommonPart
             {
                 if (conditions[pos+i] != l[i]) return false;
             }
-            pos += l.Length;
+            pos += l.Length-1;
             return true;
         }
         protected Condition(string _c,int _p=0)

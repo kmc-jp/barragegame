@@ -12,6 +12,7 @@ namespace CommonPart
 {
     class Enemy:Unit
     {
+        const int MaximumOfBullets = 200;
         #region const labels
         public const string unitLabel_FadeOut = "fadeout";
         #endregion
@@ -43,6 +44,7 @@ namespace CommonPart
         protected Vector default_pos;
         protected int alltime;
         protected double speed;
+        protected double omega;
         protected PointType pt;
         /// <summary>
         /// 0が今のルーチン、1が保存したルーチン
@@ -71,6 +73,7 @@ namespace CommonPart
             motion_index[1] = -1;
             times[0] =0;
             speed = unitType.speed;
+            omega = unitType.omega;
             setup_motion(0);
             setup_skill();
         }
@@ -99,12 +102,38 @@ namespace CommonPart
                         Vector displacement2 = MotionCalculation.rightcircleDisplacement(unitType.speed, unitType.times[motion_index[0]], times[0]);
                         x += displacement2.X;
                         y += displacement2.Y;
-
                         break;
                     case MoveType.leftcircle:
                         Vector displacement3 = MotionCalculation.leftcircleDisplacement(unitType.speed, unitType.times[motion_index[0]], times[0]);
                         x += displacement3.X;
                         y += displacement3.Y;
+                        break;
+                    case MoveType.chase_player_target:
+                        if (!Function.hitcircle(x, y, 0, player.x, player.y, speed / 2))
+                        {
+                            angle = Function.towardValue(angle, Math.Atan2(player.y - y, player.x - x), omega);
+                            x += speed*Math.Cos(angle);
+                            y += speed*Math.Sin(angle);
+                        }
+                        else { if (alltime == DataBase.motion_inftyTime) times[0] = alltime; }
+                        break;
+                    case MoveType.player_target:
+                        if (!Function.hitcircle(x, y, 0, player.x, player.y, speed / 2))
+                        {
+                            double ep = Math.Sqrt(Function.distance(x, y, player.x, player.y));
+                            double speed_x = speed * (player.x - x) / ep;
+                            double speed_y = speed * (player.y - y) / ep;
+                            x += speed_x;
+                            y += speed_y;
+                            if (texRotate) { angle = Math.Atan2(speed_y, speed_x); }
+                        }
+                        else { if (alltime == DataBase.motion_inftyTime) times[0] = alltime; }
+                        break;
+                    case MoveType.rotateAndGo:
+                        speed += unitType.acceleration;
+                        angle += omega;
+                        x += speed * Math.Cos(angle);
+                        y += speed * Math.Sin(angle);
                         break;
                     case MoveType.screen_point_target://スクリーン上の点に移動し、十分近ければその点に移りMoveTypeを次に移す
                         if (!Function.hitcircle(x, y, 0, default_pos.X, default_pos.Y, unitType.speed/2))
@@ -140,13 +169,18 @@ namespace CommonPart
                 }
 
                 #region bulletのupdate
-                for (int i = 0; i < bullets.Count; i++)//update 専用
+                for (int i = bullets.Count-1; i >= 0; i--)//update 専用
                 {
                     bullets[i].update(player,bulletsMove);
                 }
-                for (int i = 0; i < bullets.Count; i++)//消す専用
+                for (int i = 0; i < bullets.Count; i++)//update 専用
                 {
-                    if (bullets[i].delete == true) { bullets.Remove(bullets[i]); }
+                    if (bullets[i].delete)
+                    {
+                        bullets.Remove(bullets[i]);
+                        i--;
+                        //Console.Write(i+" ");
+                    }
                 }
                 #endregion
                 update_skills();
@@ -443,7 +477,8 @@ namespace CommonPart
                                 default:
                                     #region bulletsAdd
                                     double bx = x; double by = y;
-                                    double _angle = Motion.getAngleFromPointType(ws.pointType, ws.angle, ws.vec.X);
+                                    //Console.WriteLine("in Enemy angle "+ws.skillName+" " + ws.angle+"#");
+                                    double _angle = Motion.getAngleFromPointType(ws.pointType, ws.angle, ws.vec.X,x,y);
                                     if (ws.way % 2 == 1)
                                     {
                                         bulletsAdd(x, y, _angle, ws);
@@ -455,8 +490,8 @@ namespace CommonPart
                                     }else{
                                         for (int j = 0; j < ws.way / 2; j++)
                                         {
-                                            bulletsAdd(bx, by, _angle + j * sd.space, ws);
-                                            bulletsAdd(bx, by, _angle - j * sd.space, ws);
+                                            bulletsAdd(bx, by, _angle + (j+0.5) * sd.space, ws);
+                                            bulletsAdd(bx, by, _angle - (j+0.5) * sd.space, ws);
                                         }
                                     }
                                     if (sd.duration > 0) { for (int kk = 0; kk < ws.way; kk++) { bullets[bullets.Count - 1 - kk].setup_exist_time(ws.duration); } }
@@ -472,8 +507,13 @@ namespace CommonPart
             }
         }
 
-        public void bulletsAdd(double _x, double _y, double _angle,WayShotSkillData _ws)
+        public void bulletsAdd(double _x, double _y, double _angle, WayShotSkillData _ws)
         {
+            if (bullets.Count > MaximumOfBullets)
+            {
+                //Console.WriteLine(bullets.Count);
+                return;
+            }
             switch (_ws.sgl)
             {
                 #region creat Non-Skilled 
@@ -515,24 +555,24 @@ namespace CommonPart
                             if (Motion.Has_a_Object(_ws.moveType))
                             {
                                 //物体目標のスキル
-                                bullets.Add(new SkilledLaserTop(x, y, _ws.moveType, _ws.speed, _ws.acceleration, Map.player, _ws.aniDName, _angle, _ws.omega, _ws.radius,wSs.BulletSkillNames, this, _ws.color, _ws.sword, _ws.life, _ws.score));
+                                bullets.Add(new SkilledLaserTop(_x, _y, _ws.moveType, _ws.speed, _ws.acceleration, Map.player, _ws.aniDName, _angle, _ws.omega, _ws.radius,wSs.BulletSkillNames, this, _ws.color, _ws.sword, _ws.life, _ws.score));
                             }
                             else
                             {
                                 //点目標のスキル
-                                bullets.Add(new SkilledLaserTop(x, y, _ws.moveType, _ws.speed, _ws.acceleration, _ws.vec, _ws.pointType, _ws.aniDName, _angle, _ws.omega, _ws.radius, _ws.motion_time,wSs.BulletSkillNames, this, _ws.color, _ws.sword, _ws.life, _ws.score));
+                                bullets.Add(new SkilledLaserTop(_x, _y, _ws.moveType, _ws.speed, _ws.acceleration, _ws.vec, _ws.pointType, _ws.aniDName, _angle, _ws.omega, _ws.radius, _ws.motion_time,wSs.BulletSkillNames, this, _ws.color, _ws.sword, _ws.life, _ws.score));
                             }
                             break;
                         default:
                             if (Motion.Has_a_Object(_ws.moveType))
                             {
                                 //物体目標のスキル
-                                bullets.Add(new SkilledBullet(x, y, _ws.moveType, _ws.speed, _ws.acceleration, _ws.aniDName, Map.player,_ws.motion_time, _angle, _ws.omega, _ws.radius,wSs.BulletSkillNames,this, _ws.sword, _ws.life, _ws.score));
+                                bullets.Add(new SkilledBullet(_x, _y, _ws.moveType, _ws.speed, _ws.acceleration, _ws.aniDName, Map.player,_ws.motion_time, _angle, _ws.omega, _ws.radius,wSs.BulletSkillNames,this, _ws.sword, _ws.life, _ws.score));
                             }
                             else
                             {
                                 //点目標のスキル
-                                bullets.Add(new SkilledBullet(x, y, _ws.moveType, _ws.speed, _ws.acceleration, _ws.aniDName, _ws.vec, _ws.pointType, _ws.motion_time, _angle, _ws.omega, _ws.radius,wSs.BulletSkillNames ,this,_ws.sword, _ws.life, _ws.score));
+                                bullets.Add(new SkilledBullet(_x, _y, _ws.moveType, _ws.speed, _ws.acceleration, _ws.aniDName, _ws.vec, _ws.pointType, _ws.motion_time, _angle, _ws.omega, _ws.radius,wSs.BulletSkillNames ,this,_ws.sword, _ws.life, _ws.score));
                             }
                             break;
                     }

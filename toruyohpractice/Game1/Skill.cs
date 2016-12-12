@@ -31,6 +31,7 @@ namespace CommonPart
             if (succeed) {
                 coolDown = DataBase.getSkillData(skillName).cooldownFps;
             }
+            //Console.Write(skillName+" is "+succeed);
             return succeed;
         }
     }

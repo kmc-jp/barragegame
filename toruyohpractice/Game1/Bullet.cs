@@ -75,7 +75,7 @@ namespace CommonPart
                 remove(Unit_state.out_of_window);
             }
 
-            if (hit_jugde(player) == true)
+            if (!animation.dataIsNull() &&hit_jugde(player) == true)
             {
                 player.damage(atk);
                 remove(Unit_state.bulletDamagedPlayer);
@@ -84,7 +84,7 @@ namespace CommonPart
 
         public override bool hit_jugde(Unit player)
         {
-            return Function.hitcircle(x, y, radius, player.x, player.y, player.radius);
+            return !animation.dataIsNull() && Function.hitcircle(x, y, radius, player.x, player.y, player.radius);
         }
         /// <summary>
         /// このbulletのx,yを原点として、このbulletのradius+p_radius半径内にpx,pyがあるかどうか
@@ -99,12 +99,12 @@ namespace CommonPart
         }
         public virtual void damage(int d) {
             life -= d;
-            if (life <= 0)  remove(Unit_state.dead);
+            if (life <= 0) { life = 0; remove(Unit_state.dead); }
         }
         protected virtual void dead()
         {
             delete = true;
-            Map.make_chargePro(x, y, sword, Map.caculateBulletScore(sword));
+            //Map.make_chargePro(x, y, sword, Map.caculateBulletScore(sword));
         }
         protected virtual void killed()
         {
@@ -116,6 +116,7 @@ namespace CommonPart
             switch (us)
             {
                 case Unit_state.exist_timeOut:
+                    life = -1;
                     dead();
                     break;
                 case Unit_state.dead: //弾丸がダメージを受けてなくなったか、発射したものが消えたからなくなった。
@@ -128,7 +129,7 @@ namespace CommonPart
                     delete = true;
                     break;
                 case Unit_state.out_of_window:
-                    delete = true;
+                    dead();
                     break;
                 default:
                     break;
