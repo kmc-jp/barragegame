@@ -30,7 +30,7 @@ namespace CommonPart {
         /// <summary>
         /// 残機表示の左上の座標
         /// </summary>
-        public Vector life_pos = new Vector(1070, 105);
+        public Vector life_pos = new Vector(1070, 120);
         #endregion
         /// <summary>
         /// playerがskilltoEnemyで倒した敵の個体数を記録
@@ -55,12 +55,12 @@ namespace CommonPart {
         #region map BackGround variables
         static int total_BackGroundHeight = 0;
         protected static List<string> background_names = new List<string>();
+        protected static List<string> textureNames = new List<string>();
         /// <summary>
         /// 背景画像の描画位置
         /// </summary>
         protected static List<Vector> v = new List<Vector>();
         #endregion
-
         #region about boss
         public static bool boss_mode = false;
         /// <summary>
@@ -160,6 +160,10 @@ namespace CommonPart {
                     break;
                 case 4:
                     stagedata = new Stage4Data("stage4");
+                    break;
+                case -1:
+                    stagedata = new stageData_forTestMap("test");
+                    stage = 1;
                     break;
                 default:
                     stage = 1;
@@ -273,6 +277,7 @@ namespace CommonPart {
                     enemys_inside_window[i].clear();
                     enemys.Remove(enemys_inside_window[i]);
                     enemys_inside_window.Remove(enemys_inside_window[i]);
+                    i--;
                 }
             }
             
@@ -300,6 +305,7 @@ namespace CommonPart {
                 if (pros[j].delete)
                 {
                     pros.Remove(pros[j]);
+                    j--;
                 }
             }
         }
@@ -524,6 +530,15 @@ namespace CommonPart {
                 total_BackGroundHeight += DataBase.getTex(background_names[i]).Height;
             }
         }
+        public static void setup_textureNames(List<string> _textureNames)
+        {
+            foreach(string _textureName in _textureNames)
+            {
+                textureNames.Add(_textureName);
+            }
+            Console.WriteLine("ssd"+textureNames.Count);
+        }
+        
         private void chargeBarChange(string name,string addOn=null) {
             if (addOn == null) { chargeBar_animation_name = name; }
             else { chargeBar_animation_name = name+addOn; }
@@ -587,9 +602,20 @@ namespace CommonPart {
             scoreboard.Draw(d, score_pos, DepthID.Status);
 
             #region sidebar draw
-            d.Draw(new Vector(leftside-DataBase.getTex("leftside"+stage.ToString()).Width, 0), DataBase.getTex("leftside"+stage.ToString()), DepthID.StateFront);
-            d.Draw(new Vector(rightside, 0), DataBase.getTex("rightside"+stage.ToString()), DepthID.StateFront);
+            if (textureNames.Count >= 2)
+            {
+                if (inside_of_window(new Vector(leftside - DataBase.getTex(textureNames[0]).Width, 0), DataBase.getTexD(textureNames[0]).w_single, DataBase.getTexD(textureNames[0]).h_single))
+                {
+                    d.Draw(new Vector(leftside - DataBase.getTex(textureNames[0]).Width, 0), DataBase.getTex(textureNames[0]), DepthID.StateFront);
+
+                }
+                if (inside_of_window(new Vector(rightside, 0), DataBase.getTexD(textureNames[1]).w_single, DataBase.getTexD(textureNames[1]).h_single))
+                {
+                    d.Draw(new Vector(rightside, 0), DataBase.getTex(textureNames[1]), DepthID.StateFront);
+                }
+            }
             #endregion
+
             #region draw sword gauge
             if (player.sword < player.sword_max / 2)
             {

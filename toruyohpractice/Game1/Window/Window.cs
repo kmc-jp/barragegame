@@ -102,11 +102,12 @@ namespace CommonPart
             if (richTexts.Count() > 0)
             {
                 richTexts[0].Draw(d, new Vector(x + richTextsRelativePos[0].X, y + richTextsRelativePos[0].Y), DepthID.Message);
-                double ix = x + richTextsRelativePos[0].X;
+                double ix = x + richTextsRelativePos[0].X; double iy = y + richTextsRelativePos[0].Y;
                 for (int i = 1; i < richTexts.Count(); i++)
                 {
                     ix += richTextsRelativePos[i].X;
-                    richTexts[i].Draw(d, new Vector(ix, richTexts[i - 1].Y + richTextsRelativePos[i].Y), DepthID.Message);
+                    iy += richTextsRelativePos[i].Y+ richTexts[i-1].Y;
+                    richTexts[i].Draw(d, new Vector(ix, iy), DepthID.Message);
                 }
             }
             if (texturePaths.Count() > 0)

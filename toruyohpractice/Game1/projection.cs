@@ -23,6 +23,7 @@ namespace CommonPart
         public Unit target;
         public AnimationAdvanced animation = null;
         public MoveType move_type;
+        public int motionTime=1; public int nowMotionTime = 0;
         /// <summary>
         /// target_posの意味。これは初期では.notused=-1である。
         /// </summary>
@@ -77,16 +78,71 @@ namespace CommonPart
         /// </summary>
         /// <param name="_pt">_target_posをどのように使用を決める</param>
         /// <param name="_target_pos">このMoveTypeに使用する点</param>
-        public Projection(double _x, double _y, MoveType _move_type, string _anime, Vector _target_pos, PointType _pt,double _speed=0,double _acceleration=0, double _radian=0,int _zoom_rate=100)
+        public Projection(double _x, double _y, MoveType _move_type, string _anime, Vector _target_pos, PointType _pt,int _time,double _speed=0,double _acceleration=0, double _radian=0,int _zoom_rate=100)
             : this(_x, _y, _move_type, _anime,_speed,_acceleration,_radian, _zoom_rate)
         {
             point_type = _pt;
-            target_pos = _target_pos;
-            double e = Math.Sqrt(Function.distance(x, y, target_pos.X, target_pos.Y));
-            acceleration_x = (x - target_pos.X) * acceleration / e;
-            acceleration_y = (y - target_pos.Y) * acceleration / e;
-            speed_x = (x - target_pos.X) * speed / e;
-            speed_y = (y - target_pos.Y) * speed / e;
+            motionTime = _time;
+            target_pos.X = Motion.from_PointType_getPosX(_target_pos.X, _target_pos.Y, point_type, motionTime, speed,radian,move_type);
+            target_pos.Y = Motion.from_PointType_getPosY(_target_pos.X, _target_pos.Y, point_type, motionTime, speed, radian, move_type);
+            #region screen_point_target
+            if (move_type == MoveType.screen_point_target && motionTime > 0)
+            {
+                if (Motion.Is_a_Point(point_type))
+                {
+                    speed = Math.Sqrt((target_pos.X - x) * (target_pos.X - x) + (target_pos.Y - y) * (target_pos.Y - y)) / motionTime;
+                }
+                else if (Motion.Is_a_Direction(point_type))
+                {
+                    speed = Math.Sqrt(target_pos.X * target_pos.X + target_pos.Y * target_pos.Y) / motionTime;
+                }
+            }
+            #endregion
+            #region go_straight
+            else if (move_type == MoveType.go_straight)
+            {
+                #region is a point
+                if (Motion.Is_a_Point(point_type))
+                {
+                    if (motionTime > 0)
+                    {
+                        speed_x = (target_pos.X - x) / motionTime;
+                        speed_y = (target_pos.Y - y) / motionTime;
+                        double e = Math.Sqrt(speed_x * speed_x + speed_y * speed_y);
+                        acceleration_x = speed_x * acceleration / e;
+                        acceleration_y = speed_y * acceleration / e;
+                    }
+                    else
+                    {
+                        double distance = Math.Sqrt(Function.distance(target_pos.X, target_pos.Y, x, y));
+                        speed_x = (target_pos.X - x) * speed / distance;
+                        speed_y = (target_pos.Y - y) * speed / distance;
+                        acceleration_x = speed_x * acceleration / speed;
+                        acceleration_y = speed_y * acceleration / speed;
+                    }
+                }
+                #endregion
+                else
+                {
+                    if (motionTime > 0)
+                    {
+                        speed_x = target_pos.X / motionTime;
+                        speed_y = target_pos.Y / motionTime;
+                        double e = Math.Sqrt(speed_x * speed_x + speed_y * speed_y);
+                        acceleration_x = speed_x * acceleration / e;
+                        acceleration_y = speed_y * acceleration / e;
+                    }
+                    else
+                    {
+                        double distance = target_pos.GetLength();
+                        speed_x = target_pos.X * speed / distance;
+                        speed_y = target_pos.Y * speed / distance;
+                        acceleration_x = speed_x * acceleration / speed;
+                        acceleration_y = speed_y * acceleration / speed;
+                    }
+                }
+            }
+            #endregion
         }
         /// <summary>
         /// Unitに向かって移動する。MoveTypeによって、_radianは意味をなさないことがある
@@ -103,7 +159,7 @@ namespace CommonPart
             target = _target;
             switch (move_type)
             {
-                case MoveType.chase_target:
+                case MoveType.chase_player_target:
                     radian = Math.Atan2(target.y - y, target.x - x);
                     break;
                 default:
@@ -155,12 +211,15 @@ namespace CommonPart
             }
             if (bulletMove)
             {
+                nowMotionTime++;
+                if (nowMotionTime > motionTime) nowMotionTime = 0;
                 #region switch move_type
                 switch (move_type)
                 {
                     case MoveType.noMotion:
                         break;
-                    case MoveType.object_target:
+                    #region object_target,chase_object_target,point,go straight
+                    case MoveType.player_target:
                         if (!Function.hitcircle(x, y, radius, target.x, target.y, speed / 3))
                         {
                             speed += acceleration;
@@ -170,6 +229,15 @@ namespace CommonPart
                             x += speed_x;
                             y += speed_y;
                         }
+                        break;
+                    case MoveType.chase_player_target:
+                        if (!Function.hitcircle(x, y, 0, target.x, target.y, speed / 2))
+                        {
+                            radian = Function.towardValue(radian, Math.Atan2(target.y - y, target.x - x), omega);
+                            x += speed * Math.Cos(radian);
+                            y += speed * Math.Sin(radian);
+                        }
+                        //else { if (motionTime == DataBase.motion_inftyTime) nowMotionTime = motionTime; }
                         break;
                     case MoveType.screen_point_target:
                         if (!Function.hitcircle(x, y, radius, target_pos.X, target_pos.Y, speed / 3))
@@ -188,6 +256,18 @@ namespace CommonPart
                         speed_y += acceleration_y;
                         x += speed_x;
                         y += speed_y;
+                        break;
+                    #endregion
+                    case MoveType.rightcircle:
+                        Vector displacement2 = MotionCalculation.rightcircleDisplacement(speed,motionTime,nowMotionTime, radian);
+                        x += displacement2.X;
+                        y += displacement2.Y;
+                        break;
+                    case MoveType.rotateAndGo:
+                        speed += acceleration;
+                        radian += omega;
+                        x += speed * Math.Cos(radian);
+                        y += speed * Math.Sin(radian);
                         break;
                     default:
                         break;
@@ -250,6 +330,7 @@ namespace CommonPart
             switch (us)
             {
                 case Unit_state.exist_timeOut:
+                    
                     delete = true;
                     break;
                 case Unit_state.fadeout:
@@ -299,7 +380,7 @@ namespace CommonPart
             : base(_x, _y, _move_type, _anime, _target, _speed,_acceleration,_zoom_rate)
         { sword = _sword; }
         public ChargeProjection(double _x, double _y, string _anime, int _sword, double _speed, double _acceleration, Player _target)
-            : this(_x, _y, _anime,_sword,MoveType.object_target, _speed, _acceleration, _target, 100)
+            : this(_x, _y, _anime,_sword,MoveType.player_target, _speed, _acceleration, _target, 100)
         { }
         public override bool hit_jugde(double px, double py, double p_radius = 0)
         {

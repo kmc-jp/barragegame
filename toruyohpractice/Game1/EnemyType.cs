@@ -14,6 +14,7 @@ namespace CommonPart
         public double acceleration;
         public double radius;
         public double angle;
+        public double omega;
         public int score;
         public int sword;
         public List<Vector> default_poses;
@@ -39,10 +40,27 @@ namespace CommonPart
             pointTypes = new List<PointType>();
         }
 
-
+        /// <summary>
+        /// MoveTypeがscreen_pointの時はpointTypeはnotUsedだとscreen_pointになる。go_straightの時はdisplacementになる
+        /// </summary>
+        /// <param name="m">MoveTypeの設定、これによって、PointTypeがnotUsedでも一番使われるものになる</param>
+        /// <param name="t">持続時間</param>
+        /// <param name="v">使うベクトル</param>
+        /// <param name="p">上のベクトルの使い方</param>
         public void add_MoveTypeDataSet(MoveType m, int t, Vector v, PointType p = PointType.notused)
         {
             moveTypes.Add(m);
+            switch (m)
+            {
+                case MoveType.screen_point_target:
+                    if (p == PointType.notused) { p = PointType.pos_on_screen; }
+                    break;
+                case MoveType.go_straight:
+                    if (p == PointType.notused) { p = PointType.displacement; }
+                    break;
+                default:
+                    break;
+            }
             set_ith_MTDataSet(moveTypes.Count - 1, t, v, p);
         }
         public void set_ith_MTDataSet(int id, int t, Vector v, PointType p= PointType.notused)
@@ -67,12 +85,12 @@ namespace CommonPart
             if (pointTypes.Count > id) { pointTypes[id] = p; } else { pointTypes.Add(p); }
         }
 
-        public void Initialize(List<MoveType> _moveTypes, List<Vector> _default_poses, List<int> _times, double _speed, double _acceleration, double _radius,double _angle, int _score, int _sword)
+        public void Initialize(List<MoveType> _moveTypes, List<Vector> _default_poses, List<int> _times, double _speed, double _acceleration, double _radius,double _angle,double _omega, int _score, int _sword)
         {
             setup_moveType(_moveTypes);
             setup_default_pos(_default_poses);
             setup_time(_times);
-            setup_standard(_speed, _acceleration, _radius,_angle, _score, _sword);
+            setup_standard(_speed, _acceleration, _radius,_angle,_omega, _score, _sword);
         }
 
         public void setup_moveType(List<MoveType> _moveTypes)
@@ -96,12 +114,13 @@ namespace CommonPart
                 times.Add(_times[i]);
             }
         }
-        public void setup_standard(double _speed,double _acceleration,double _radius,double _angle,int _score=10,int _sword=1)
+        public void setup_standard(double _speed,double _acceleration,double _radius,double _angle,double _omega=Math.PI/60,int _score=10,int _sword=1)
         {
             speed = _speed;
             acceleration = _acceleration;
             radius = _radius;
             angle = _angle;
+            omega = _omega;
             score = _score;
             sword = _sword;
         }
