@@ -210,7 +210,8 @@ namespace CommonPart
         {
             if (k.IsKeyDown(KeyID.Select))
             {
-                coloums[now_coloum_index].is_selected();
+                if(now_coloum_index>=0 && now_coloum_index<coloums.Count)
+                    coloums[now_coloum_index].is_selected();
                 return is_applied();
             }
             return Command.nothing;

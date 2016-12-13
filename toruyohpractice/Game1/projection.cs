@@ -23,7 +23,7 @@ namespace CommonPart
         public Unit target;
         public AnimationAdvanced animation = null;
         public MoveType move_type;
-        public int motionTime; 
+        public int motionTime=1; public int nowMotionTime = 0;
         /// <summary>
         /// target_posの意味。これは初期では.notused=-1である。
         /// </summary>
@@ -83,9 +83,8 @@ namespace CommonPart
         {
             point_type = _pt;
             motionTime = _time;
-            speed = _speed;
-            target_pos.X = Motion.from_PointType_getPosX(_target_pos.X, _target_pos.Y, point_type, motionTime, move_type);
-            target_pos.Y = Motion.from_PointType_getPosY(_target_pos.X, _target_pos.Y, point_type, motionTime, move_type);
+            target_pos.X = Motion.from_PointType_getPosX(_target_pos.X, _target_pos.Y, point_type, motionTime, speed,radian,move_type);
+            target_pos.Y = Motion.from_PointType_getPosY(_target_pos.X, _target_pos.Y, point_type, motionTime, speed, radian, move_type);
             #region screen_point_target
             if (move_type == MoveType.screen_point_target && motionTime > 0)
             {
@@ -121,7 +120,9 @@ namespace CommonPart
                         acceleration_x = speed_x * acceleration / speed;
                         acceleration_y = speed_y * acceleration / speed;
                     }
-                }else
+                }
+                #endregion
+                else
                 {
                     if (motionTime > 0)
                     {
@@ -140,7 +141,6 @@ namespace CommonPart
                         acceleration_y = speed_y * acceleration / speed;
                     }
                 }
-                #endregion
             }
             #endregion
         }
@@ -159,7 +159,7 @@ namespace CommonPart
             target = _target;
             switch (move_type)
             {
-                case MoveType.chase_target:
+                case MoveType.chase_player_target:
                     radian = Math.Atan2(target.y - y, target.x - x);
                     break;
                 default:
@@ -211,12 +211,15 @@ namespace CommonPart
             }
             if (bulletMove)
             {
+                nowMotionTime++;
+                if (nowMotionTime > motionTime) nowMotionTime = 0;
                 #region switch move_type
                 switch (move_type)
                 {
                     case MoveType.noMotion:
                         break;
-                    case MoveType.object_target:
+                    #region object_target,chase_object_target,point,go straight
+                    case MoveType.player_target:
                         if (!Function.hitcircle(x, y, radius, target.x, target.y, speed / 3))
                         {
                             speed += acceleration;
@@ -226,6 +229,15 @@ namespace CommonPart
                             x += speed_x;
                             y += speed_y;
                         }
+                        break;
+                    case MoveType.chase_player_target:
+                        if (!Function.hitcircle(x, y, 0, target.x, target.y, speed / 2))
+                        {
+                            radian = Function.towardValue(radian, Math.Atan2(target.y - y, target.x - x), omega);
+                            x += speed * Math.Cos(radian);
+                            y += speed * Math.Sin(radian);
+                        }
+                        //else { if (motionTime == DataBase.motion_inftyTime) nowMotionTime = motionTime; }
                         break;
                     case MoveType.screen_point_target:
                         if (!Function.hitcircle(x, y, radius, target_pos.X, target_pos.Y, speed / 3))
@@ -244,6 +256,18 @@ namespace CommonPart
                         speed_y += acceleration_y;
                         x += speed_x;
                         y += speed_y;
+                        break;
+                    #endregion
+                    case MoveType.rightcircle:
+                        Vector displacement2 = MotionCalculation.rightcircleDisplacement(speed,motionTime,nowMotionTime, radian);
+                        x += displacement2.X;
+                        y += displacement2.Y;
+                        break;
+                    case MoveType.rotateAndGo:
+                        speed += acceleration;
+                        radian += omega;
+                        x += speed * Math.Cos(radian);
+                        y += speed * Math.Sin(radian);
                         break;
                     default:
                         break;
@@ -306,6 +330,7 @@ namespace CommonPart
             switch (us)
             {
                 case Unit_state.exist_timeOut:
+                    
                     delete = true;
                     break;
                 case Unit_state.fadeout:
@@ -355,7 +380,7 @@ namespace CommonPart
             : base(_x, _y, _move_type, _anime, _target, _speed,_acceleration,_zoom_rate)
         { sword = _sword; }
         public ChargeProjection(double _x, double _y, string _anime, int _sword, double _speed, double _acceleration, Player _target)
-            : this(_x, _y, _anime,_sword,MoveType.object_target, _speed, _acceleration, _target, 100)
+            : this(_x, _y, _anime,_sword,MoveType.player_target, _speed, _acceleration, _target, 100)
         { }
         public override bool hit_jugde(double px, double py, double p_radius = 0)
         {

@@ -254,7 +254,94 @@ namespace CommonPart
             duration = _duration;
             space = _space;
         }
+        /// <summary>
+        /// 恐らく最も詳しいスキルデータを一つ構成する.これで作ったものには　初期化していないものがないようにするべき
+        /// </summary>
+        /// <param name="_skillName">スキルの名前，唯一であることを確認してください</param>
+        /// <param name="_conditions">スキルの使用条件やその他に使われる</param>
+        /// <param name="_sgL">このスキルがどのように解釈されるかを決める</param>
+        /// <param name="_sgs">このスキルが生成する弾丸の種類</param>
+        /// <param name="motion">Motionを使って、省略する</param>
+        /// <param name="_aniDName">弾丸のアニメーション</param>
+        /// <param name="_cooldownFps">スキルの使用間隔</param>
+        /// <param name="_radius">弾丸の半径</param>
+        /// <param name="_c">レーザーに限り、レーザーの直線の色を指定する</param>
+        /// <param name="_duration">弾丸が見えるかつ動ける状態の持続時間</param>
+        /// <param name="_space">弾丸と弾丸の差、場合によって角度差、距離差</param>
+        /// <param name="_sword">弾丸が吸収される時回復するエネルギー</param>
+        /// <param name="_score">弾丸が吸収される時の点数</param>
+        /// <param name="_life">弾丸のhp</param>
+        public BarrageUsedSkillData(string _skillName, string _conditions, SkillGenreL _sgL, SkillGenreS _sgs, string _aniDName, int _cooldownFps, Motion motion,
+            double _speed, double _acceleration, double _angle, double _omega,int _motion_time,
+            double _radius, Color _c, int _duration = DataBase.motion_inftyTime, double _space = 0, int _sword = 1, int _score = 10, int _life = 1)
+            : base(_skillName, _sgL, _sgs, _cooldownFps, _conditions)
+        {
+            #region standard variables
+            aniDName = _aniDName;
+            radius = _radius;
+            life = _life;
+            score = _score;
+            sword = _sword;
+            #endregion
+            #region about motion
+            speed = _speed;
+            acceleration = _acceleration;
+            motion_time = _motion_time;
+            moveType = motion.mt;
+            pointType = motion.pt;
+            vec = motion.pos;
+            omega = _omega;
+            #endregion
+            angle = _angle;
+            if (_sgs == SkillGenreS.laser) color = _c;
+            else Console.WriteLine(_skillName + ":not a laser but has a color.");
+            duration = _duration;
+            space = _space;
+        }
 
+        /// <summary>
+        /// 恐らく最も詳しいスキルデータを一つ構成する.これで作ったものには　初期化していないものがないようにするべき
+        /// </summary>
+        /// <param name="_skillName">スキルの名前，唯一であることを確認してください</param>
+        /// <param name="_conditions">スキルの使用条件やその他に使われる</param>
+        /// <param name="_sgL">このスキルがどのように解釈されるかを決める</param>
+        /// <param name="_sgs">このスキルが生成する弾丸の種類</param>
+        /// <param name="motion">Motionを使って、省略する</param>
+        /// <param name="_aniDName">弾丸のアニメーション</param>
+        /// <param name="_cooldownFps">スキルの使用間隔</param>
+        /// <param name="_radius">弾丸の半径</param>
+        /// <param name="_duration">弾丸が見えるかつ動ける状態の持続時間</param>
+        /// <param name="_space">弾丸と弾丸の差、場合によって角度差、距離差</param>
+        /// <param name="_sword">弾丸が吸収される時回復するエネルギー</param>
+        /// <param name="_score">弾丸が吸収される時の点数</param>
+        /// <param name="_life">弾丸のhp</param>
+        public BarrageUsedSkillData(string _skillName, string _conditions, SkillGenreL _sgL, SkillGenreS _sgs, string _aniDName, int _cooldownFps, Motion motion,
+            double _speed, double _acceleration, double _angle, double _omega, int _motion_time,
+            double _radius, int _duration = DataBase.motion_inftyTime, double _space = 0, int _sword = 1, int _score = 10, int _life = 1)
+            : base(_skillName, _sgL, _sgs, _cooldownFps, _conditions)
+        {
+            #region standard variables
+            aniDName = _aniDName;
+            radius = _radius;
+            life = _life;
+            score = _score;
+            sword = _sword;
+            #endregion
+            #region about motion
+            speed = _speed;
+            acceleration = _acceleration;
+            motion_time = _motion_time;
+            moveType = motion.mt;
+            pointType = motion.pt;
+            vec = motion.pos;
+            omega = _omega;
+            #endregion
+            angle = motion.angle;
+            if (_sgs == SkillGenreS.laser)
+                Console.WriteLine(_skillName + ": laser with default Color!");
+            duration = _duration;
+            space = _space;
+        }
     }
 
     class WayShotSkillData : BarrageUsedSkillData
@@ -295,8 +382,8 @@ namespace CommonPart
         /// これは使わないでください。
         /// </summary>
         public WayShotSkillData(string _skillName,string _conditions,SkillGenreS _sgs, MoveType mt,string _aniDName, int _cooldownFps, double _speed, 
-            double _acceleration, double _angle, double _radius, int _way=1, int _duration=DataBase.motion_inftyTime,double _space=0, int _sword=1,int _score=10,int _life=1)
-            : base(_skillName,_conditions,SkillGenreL.generation,_sgs,_aniDName,_cooldownFps, mt, PointType.notused, new Vector(),0,_speed, _acceleration,_angle,0,_radius,_duration,_space,_sword,_score,_life)
+            double _acceleration, double _space, double _radius, int _way=1, double _angle=DataBase.AngleToPlayer, int _duration = DataBase.motion_inftyTime, int _sword=1,int _score=10,int _life=1)
+            : base(_skillName,_conditions,SkillGenreL.generation,_sgs,_aniDName,_cooldownFps, mt, PointType.Direction, new Vector(),0,_speed, _acceleration,_angle,0,_radius,_duration,_space,_sword,_score,_life)
         {
             way = _way;
         }
@@ -320,14 +407,14 @@ namespace CommonPart
         /// <param name="_score">弾丸が吸収される時の点数</param>
         /// <param name="_life">弾丸のhp</param>
         public WayShotSkillData(string _skillName, string _conditions, SkillGenreL _sgL,SkillGenreS _sgs, string _aniDName, int _cooldownFps, Motion motion,
-            double _radius, Color _c, int _way=1, int _duration = DataBase.motion_inftyTime, double _space = 0, int _sword = 1, int _score = 10, int _life = 1)
+            double _radius, Color _c, int _way=1, double _space = 0, int _duration = DataBase.motion_inftyTime, int _sword = 1, int _score = 10, int _life = 1)
             : base(_skillName, _conditions, _sgL, _sgs, _aniDName, _cooldownFps, motion, _radius, _c, _duration, _space, _sword, _score, _life)
         {
             way = _way;
         }
 
         /// <summary>
-        /// SkilledBulletは使わない、Motionを使って書き方を簡略化する
+        /// SkilledBulletは使わない、レーザー作らない、Motionを使って書き方を簡略化する
         /// </summary>
         /// <param name="_skillName">スキルの名前，唯一であることを確認してください</param>
         /// <param name="_conditions">スキルの使用条件やその他に使われる</param>
@@ -344,8 +431,59 @@ namespace CommonPart
         /// <param name="_score">弾丸が吸収される時の点数</param>
         /// <param name="_life">弾丸のhp</param>
         public WayShotSkillData(string _skillName, string _conditions, SkillGenreL _sgL, SkillGenreS _sgs, string _aniDName, int _cooldownFps, Motion motion,
-            double _radius, int _way=1, int _duration = DataBase.motion_inftyTime, double _space = 0, int _sword = 1, int _score = 10, int _life = 1)
+            double _radius, int _way=1, double _space = 0, int _duration = DataBase.motion_inftyTime, int _sword = 1, int _score = 10, int _life = 1)
             : base(_skillName, _conditions, _sgL, _sgs, _aniDName, _cooldownFps, motion, _radius, _duration, _space, _sword, _score, _life)
+        {
+            way = _way;
+        }
+
+        /// <summary>
+        /// SkilledBulletは使わない、Motionを使って書き方を簡略化する
+        /// </summary>
+        /// <param name="_skillName">スキルの名前，唯一であることを確認してください</param>
+        /// <param name="_conditions">スキルの使用条件やその他に使われる</param>
+        /// <param name="_sgL">このスキルがどのように解釈されるかを決める</param>
+        /// <param name="_sgs">このスキルが生成する弾丸の種類</param>
+        /// <param name="motion">Motionを使って、省略する</param>
+        /// <param name="_aniDName">弾丸のアニメーション</param>
+        /// <param name="_cooldownFps">スキルの使用間隔</param>
+        /// <param name="_radius">弾丸の半径</param>
+        /// <param name="_way">同時に発する弾丸の個数</param>
+        /// <param name="_c">レーザーに限り、レーザーの直線の色を指定する</param>
+        /// <param name="_duration">弾丸が見えるかつ動ける状態の持続時間</param>
+        /// <param name="_space">弾丸と弾丸の差、場合によって角度差、距離差</param>
+        /// <param name="_sword">弾丸が吸収される時回復するエネルギー</param>
+        /// <param name="_score">弾丸が吸収される時の点数</param>
+        /// <param name="_life">弾丸のhp</param>
+        public WayShotSkillData(string _skillName, string _conditions, SkillGenreL _sgL, SkillGenreS _sgs, string _aniDName, int _cooldownFps, Motion motion,
+            double _speed, double _acceleration,double _angle,double _omega,int _motion_time,
+            double _radius, Color _c, int _way = 1, double _space = 0, int _duration = DataBase.motion_inftyTime, int _sword = 1, int _score = 10, int _life = 1)
+            : base(_skillName, _conditions, _sgL, _sgs, _aniDName, _cooldownFps, motion,_speed,_acceleration,_angle,_omega,_motion_time, _radius, _c, _duration, _space, _sword, _score, _life)
+        {
+            way = _way;
+        }
+
+        /// <summary>
+        /// SkilledBulletは使わない、レーザー作らない、Motionを使って書き方を簡略化する
+        /// </summary>
+        /// <param name="_skillName">スキルの名前，唯一であることを確認してください</param>
+        /// <param name="_conditions">スキルの使用条件やその他に使われる</param>
+        /// <param name="_sgL">このスキルがどのように解釈されるかを決める</param>
+        /// <param name="_sgs">このスキルが生成する弾丸の種類</param>
+        /// <param name="motion">Motionを使って、省略する</param>
+        /// <param name="_aniDName">弾丸のアニメーション</param>
+        /// <param name="_cooldownFps">スキルの使用間隔</param>
+        /// <param name="_radius">弾丸の半径</param>
+        /// <param name="_way">同時に発する弾丸の個数</param>
+        /// <param name="_duration">弾丸が見えるかつ動ける状態の持続時間</param>
+        /// <param name="_space">弾丸と弾丸の差、場合によって角度差、距離差</param>
+        /// <param name="_sword">弾丸が吸収される時回復するエネルギー</param>
+        /// <param name="_score">弾丸が吸収される時の点数</param>
+        /// <param name="_life">弾丸のhp</param>
+        public WayShotSkillData(string _skillName, string _conditions, SkillGenreL _sgL, SkillGenreS _sgs, string _aniDName, int _cooldownFps, Motion motion,
+            double _speed, double _acceleration, double _angle, double _omega, int _motion_time,
+            double _radius, int _way = 1, double _space = 0, int _duration = DataBase.motion_inftyTime, int _sword = 1, int _score = 10, int _life = 1)
+            : base(_skillName, _conditions, _sgL, _sgs, _aniDName, _cooldownFps, motion,_speed,_acceleration,_angle,_omega,_motion_time, _radius, _duration, _space, _sword, _score, _life)
         {
             way = _way;
         }
@@ -376,13 +514,13 @@ namespace CommonPart
         /// <param name="_life">弾丸のhp</param>
         public WaySkilledBulletsData(string _skillName, string _conditions, SkillGenreS _sgs, string _aniDName, int _cooldownFps, Motion motion,
             double _radius, Color _c, string _SkillName,int _way=1, int _duration = DataBase.motion_inftyTime, double _space = 0, int _sword = 1, int _score = 10, int _life = 1)
-            : base(_skillName, _conditions, SkillGenreL.UseSkilledBullet, _sgs, _aniDName, _cooldownFps, motion, _radius, _c, _way,_duration, _space, _sword, _score, _life)
+            : base(_skillName, _conditions, SkillGenreL.UseSkilledBullet, _sgs, _aniDName, _cooldownFps, motion, _radius, _c, _way, _space, _duration, _sword, _score, _life)
         {
             BulletSkillNames= new string[] { _SkillName };
         }
 
         /// <summary>
-        /// SkilledBulletは使わない、レーザーは作れない、Motionを使って書き方を簡略化する
+        /// SkilledBulletを使い、レーザーは作れない、Motionを使って書き方を簡略化する
         /// </summary>
         /// <param name="_skillName">スキルの名前，唯一であることを確認してください</param>
         /// <param name="_conditions">スキルの使用条件やその他に使われる</param>
@@ -400,7 +538,7 @@ namespace CommonPart
         /// <param name="_life">弾丸のhp</param>
         public WaySkilledBulletsData(string _skillName, string _conditions, SkillGenreS _sgs, string _aniDName, int _cooldownFps, Motion motion,
             double _radius, string _SkillName, int _way=1, int _duration = DataBase.motion_inftyTime, double _space = 0, int _sword = 1, int _score = 10, int _life = 1)
-            : base(_skillName, _conditions, SkillGenreL.UseSkilledBullet, _sgs, _aniDName, _cooldownFps, motion, _radius, _way, _duration, _space, _sword, _score, _life)
+            : base(_skillName, _conditions, SkillGenreL.UseSkilledBullet, _sgs, _aniDName, _cooldownFps, motion, _radius, _way, _space, _duration, _sword, _score, _life)
         {
             BulletSkillNames = new string[] { _SkillName };
         }
@@ -425,7 +563,7 @@ namespace CommonPart
         /// <param name="_life">弾丸のhp</param>
         public WaySkilledBulletsData(string _skillName, string _conditions, SkillGenreS _sgs, string _aniDName, int _cooldownFps, Motion motion,
             double _radius, Color _c, string[] _SkillNames, int _way = 1, int _duration = DataBase.motion_inftyTime, double _space = 0, int _sword = 1, int _score = 10, int _life = 1)
-            : base(_skillName, _conditions, SkillGenreL.UseSkilledBullet, _sgs, _aniDName, _cooldownFps, motion, _radius, _c, _way, _duration, _space, _sword, _score, _life)
+            : base(_skillName, _conditions, SkillGenreL.UseSkilledBullet, _sgs, _aniDName, _cooldownFps, motion, _radius, _c, _way, _space, _duration, _sword, _score, _life)
         {
             BulletSkillNames = _SkillNames;
         }
@@ -449,7 +587,58 @@ namespace CommonPart
         /// <param name="_life">弾丸のhp</param>
         public WaySkilledBulletsData(string _skillName, string _conditions, SkillGenreS _sgs, string _aniDName, int _cooldownFps, Motion motion,
             double _radius, string[] _SkillNames, int _way = 1, int _duration = DataBase.motion_inftyTime, double _space = 0, int _sword = 1, int _score = 10, int _life = 1)
-            : base(_skillName, _conditions, SkillGenreL.UseSkilledBullet, _sgs, _aniDName, _cooldownFps, motion, _radius, _way, _duration, _space, _sword, _score, _life)
+            : base(_skillName, _conditions, SkillGenreL.UseSkilledBullet, _sgs, _aniDName, _cooldownFps, motion, _radius, _way, _space, _duration, _sword, _score, _life)
+        {
+            BulletSkillNames = _SkillNames;
+        }
+
+        /// <summary>
+        /// SkilledBulletは使わない、Motionを使って書き方を簡略化する
+        /// </summary>
+        /// <param name="_skillName">スキルの名前，唯一であることを確認してください</param>
+        /// <param name="_conditions">スキルの使用条件やその他に使われる</param>
+        /// <param name="_sgL">このスキルがどのように解釈されるかを決める</param>
+        /// <param name="_sgs">このスキルが生成する弾丸の種類</param>
+        /// <param name="motion">Motionを使って、省略する</param>
+        /// <param name="_aniDName">弾丸のアニメーション</param>
+        /// <param name="_cooldownFps">スキルの使用間隔</param>
+        /// <param name="_radius">弾丸の半径</param>
+        /// <param name="_way">同時に発する弾丸の個数</param>
+        /// <param name="_c">レーザーに限り、レーザーの直線の色を指定する</param>
+        /// <param name="_duration">弾丸が見えるかつ動ける状態の持続時間</param>
+        /// <param name="_space">弾丸と弾丸の差、場合によって角度差、距離差</param>
+        /// <param name="_sword">弾丸が吸収される時回復するエネルギー</param>
+        /// <param name="_score">弾丸が吸収される時の点数</param>
+        /// <param name="_life">弾丸のhp</param>
+        public WaySkilledBulletsData(string _skillName, string _conditions, SkillGenreS _sgs, string _aniDName, int _cooldownFps, Motion motion,
+            double _speed, double _acceleration, double _angle, double _omega, int _motion_time,
+            double _radius, Color _c, string[] _SkillNames, int _way = 1, int _duration = DataBase.motion_inftyTime, double _space = 0, int _sword = 1, int _score = 10, int _life = 1)
+            : base(_skillName, _conditions, SkillGenreL.UseSkilledBullet, _sgs, _aniDName, _cooldownFps, motion, _speed, _acceleration, _angle, _omega, _motion_time, _radius, _c, _way, _space, _duration, _sword, _score, _life)
+        {
+            BulletSkillNames = _SkillNames;
+        }
+
+        /// <summary>
+        /// SkilledBulletは使わない、レーザーは作れない、Motionを使って書き方を簡略化する
+        /// </summary>
+        /// <param name="_skillName">スキルの名前，唯一であることを確認してください</param>
+        /// <param name="_conditions">スキルの使用条件やその他に使われる</param>
+        /// <param name="_sgL">このスキルがどのように解釈されるかを決める</param>
+        /// <param name="_sgs">このスキルが生成する弾丸の種類</param>
+        /// <param name="motion">Motionを使って、省略する</param>
+        /// <param name="_aniDName">弾丸のアニメーション</param>
+        /// <param name="_cooldownFps">スキルの使用間隔</param>
+        /// <param name="_radius">弾丸の半径</param>
+        /// <param name="_way">同時に発する弾丸の個数</param>
+        /// <param name="_duration">弾丸が見えるかつ動ける状態の持続時間</param>
+        /// <param name="_space">弾丸と弾丸の差、場合によって角度差、距離差</param>
+        /// <param name="_sword">弾丸が吸収される時回復するエネルギー</param>
+        /// <param name="_score">弾丸が吸収される時の点数</param>
+        /// <param name="_life">弾丸のhp</param>
+        public WaySkilledBulletsData(string _skillName, string _conditions, SkillGenreS _sgs, string _aniDName, int _cooldownFps, Motion motion,
+            double _speed, double _acceleration, double _angle, double _omega, int _motion_time,
+            double _radius, string[] _SkillNames, int _way = 1, int _duration = DataBase.motion_inftyTime, double _space = 0, int _sword = 1, int _score = 10, int _life = 1)
+            : base(_skillName, _conditions, SkillGenreL.UseSkilledBullet, _sgs, _aniDName, _cooldownFps, motion,_speed,_acceleration,_angle,_omega,_motion_time, _radius, _way, _space, _duration, _sword, _score, _life)
         {
             BulletSkillNames = _SkillNames;
         }
