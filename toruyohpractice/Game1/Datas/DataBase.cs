@@ -10,16 +10,37 @@ using Microsoft.Xna.Framework;
 
 namespace CommonPart {
 
-    public enum Unit_state { fadeout=0,dead,out_of_window,bulletDamagedPlayer, };
-    public enum MoveType {non_target=0,point_target=1,object_target=2,go_straight,mugen,rightcircle,leftcircle,stop,
-        chase_angle,screen_point_target };
+    /// <summary>
+    /// projectionなどに使われる exist_timesの各インデックスが代表するもの
+    /// </summary>
+    public enum existTimesIndex{    InvisibleStill = 0, InvisibleActive, VisibleStill, VisibleActive    }
+    public enum Unit_state { fadeout=0,dead,out_of_window,bulletDamagedPlayer,exist_timeOut };
+    public enum MoveType {noMotion=0,
+        screen_point_target = 1,//その点に近づこうとする、正の時間が指定されていると動き始めるとき速度が[距離/時間]変わります。
+        player_target =2,//速度のみを使った追いかけ,方向転換は一瞬
+        go_straight,//これは実際は方向を決めて、その向きに突っ走るだけです。
+        mugen,rightcircle,leftcircle,stop, //周期が必要
+        chase_player_target,//omega角速度使用の追いかけ
+        rotateAndGo,//角速度で回転しながら今自分の向きに進む
+    };
+    /// <summary>
+    /// MoveTypeを持ち、なんらかのposをも持っている時、そのposの意味
+    /// </summary>
+    public enum PointType { notused = -1, //使われていない
+        displacement,//全部の変位、1 fpsでの変位ではない
+        pos_on_screen,//画面上の座標を示す
+        player_pos, //プレイヤーの座標を指す。
+        randomRange,//ベクトルがx方向の正負変位,yの正負変位を表しているが、値はその変位内の乱数
+        randomDirection,//ベクトルは意味を持たない?初期角度にランダム角度足した方向へ移動する
+        Direction,//決まった方向
+    }
     public enum Command
     {
         exit = -1000,
         left_and_go_back = -101, nothing = -100,
         apply_int = 110, apply_string = 111,
         button_on = 112, button_off = 113, previousPage = 114, nextPage = 115, Scroll = 116, tru_fals = 117,
-        selectInScroll = 118, closeThis = 119, reloadScroll = 120, buttonPressed1 = 121, buttonPressed2 = 122,
+        selectInScroll = 118, closeThis = 119, reloadScroll = 120, buttonPressed1 = 121, buttonPressed2 = 122, buttonPressed3 = 123,
         openUTD = 200, UTDutButtonPressed = 201,
         openAniD = 202, addTex = 203, playAnimation = 206, newAniD = 207, applyAniD = 208,// open animation DataBase, add Texture,play animation,
         openMusicGallery = 204, openMapEditor = 205,
@@ -77,9 +98,13 @@ namespace CommonPart {
         public static string charaCutInTexName = "カットインfin";
         public const string bossLifeBar_default_aniName = "1280x150体力ゲージ";
         /// <summary>
-        /// すべてのstop_timeとかに使われる。普通0より小さくならないtimeがこの値だと無限と認識する。
+        /// すべてのstop_timeとかに使われる。普通0より小さくならないtimeがこの値だと無限と認識する。Conditionでは99999と認識する
         /// </summary>
         public const int motion_inftyTime =-99999;
+        /// <summary>
+        /// この角度はその時点でのプレイヤーへの向きを意味する。
+        /// </summary>
+        public const double AngleToPlayer = -666;
         #endregion
 
         #region UTD
@@ -146,7 +171,7 @@ namespace CommonPart {
         #region Animation
         public static AnimationDataAdvanced defaultBlankAnimationData;
         public const string defaultAnimationNameAddOn = "-stand";
-        public const string aniNameAddOn_spell = "-spell", 
+        public const string aniNameAddOn_spell = "-spell", aniNameAddOn_spellOff = "-spell off",
             aniNameAddOn_evadeL= "-evadeL", aniNameAddOn_evadeR = "-evadeR";
         static string aniDFileName = "animationNames.dat";
         public static Dictionary<string, AnimationDataAdvanced> AnimationAdDataDictionary = new Dictionary<string, AnimationDataAdvanced>();
@@ -190,14 +215,18 @@ namespace CommonPart {
                     string nexN = aniD_br.ReadString();
                     //Console.WriteLine("nexname:" + nexN);
                     addAniD(new AnimationDataAdvanced(animeName, frames, min_index,textureName, repeat));
-                    getAniD(aniDFileName).assignAnimationName(preName, false);
-                    getAniD(aniDFileName).assignAnimationName(nexN, true);
-                    Console.Write(aniD_br.BaseStream.Position+" ");
+                    if(preName!=AnimationDataAdvanced.notAnimationName || nexN != AnimationDataAdvanced.notAnimationName)
+                    {
+                        //Console.Write(preName+" "+nexN+" ; ");
+                    }
+                    getAniD(animeName).assignAnimationName(preName, false);
+                    getAniD(animeName).assignAnimationName(nexN, true);
+                    //Console.Write(aniD_br.BaseStream.Position+" ");
                 }
                 catch (EndOfStreamException e) { Console.WriteLine("setup animation: EndOfStream"); break; }
             }
             Console.WriteLine(aniD_br.BaseStream.Position);
-            Console.WriteLine("AnimationDataAdvanced setup finished.");
+            //Console.WriteLine("AnimationDataAdvanced setup finished.");
             aniD_br.Close(); aniD_file.Close();
 
         }
@@ -211,12 +240,15 @@ namespace CommonPart {
             {
                 aniD_bw.Write(ad.repeat);
                 foreach (int d in ad.getIntsData()) { aniD_bw.Write(d); }
-                foreach (string str in ad.getStringsData()) { aniD_bw.Write(str); }
+                foreach (string str in ad.getStringsData()) {
+                    //if (str != AnimationDataAdvanced.notAnimationName) { Console.Write(str); }
+                    aniD_bw.Write(str);
+                }
             }
-            aniD_bw.Close(); aniD_file.Close();
+            aniD_bw.Close();
+            aniD_file.Close();
         }
         #endregion
-
         private static ContentManager Content;
         public static string DirectoryWhenGameStart;
         /// <summary>
@@ -244,46 +276,61 @@ namespace CommonPart {
 
         #region SkillData
         private const int low_speed=2;
-        private const int middle_speed=4;
-        private const int high_speed=7;
+        private const int middle_speed=5;
+        private const int high_speed=9;
         private const int big_radius=10;
         private const int small_radius=5;
         private const int high_cd1 = 5; private const int high_cd2 = 8; private const int high_cd3 = 20; private const int high_cd4 = 30;
         private const int middle_cd1 = 45; private const int middle_cd2 = 60;
-        private const int low_cd1 = 90; private const int low_cd2 = 100; private const int low_cd3 = 120;
+        private const int low_cd1 = 90; private const int low_cd2 = 100; private const int low_cd3 = 120; private const int low_cd6 = 240;
         private const double highangle1 = Math.PI / 10;
         private const double middleangle1 = Math.PI / 6; private const double middleangle2= Math.PI / 5;
-        private const double lowangle1 = Math.PI / 2;
+        private const double lowangle1 = Math.PI / 2; private const double lowangle2 = Math.PI;
 
         
         public static Dictionary<string, SkillData> SkillDatasDictionary = new Dictionary<string, SkillData>();
         public static void setupSkillData()
         {
+            Motion goStraightToPlayer = new Motion(MoveType.go_straight,PointType.player_pos,new Vector(),middle_speed,0,0);
+            Motion goStraightWithDirection = new Motion(MoveType.go_straight, PointType.Direction, new Vector(), low_speed, 0,0);
+            Motion rCircle = new Motion(MoveType.rightcircle, PointType.notused, new Vector(), low_speed, 0, 60, Math.PI / 30);
+            //addSkillData(new WaySkilledBulletsData("createbullet",null,SkillGenreS.wayshot,null,low_cd3,goStraightToPlayer,small_radius,"yanagi-s",1,60));
+            const string bulletTimeOut = Condition.hP + "<0";
+            addSkillData(new WaySkilledBulletsData("createbullet",null, SkillGenreS.wayshot, "bulletsmall", low_cd3, goStraightWithDirection,small_radius,"cs",1,10));
+            addSkillData(new WaySkilledBulletsData("cs", bulletTimeOut,SkillGenreS.wayshot,"bulletsmall",low_cd1,goStraightWithDirection,small_radius,new string[] { "cs" },2,40,lowangle1));
+
+            addSkillData(new WayShotSkillData("yanagi-s", null, SkillGenreS.yanagi ,MoveType.go_straight,"bullet1",15,middle_speed, 0.2,lowangle1,small_radius,4,motion_inftyTime,1));
             
-            addSkillData(new LaserTopData("laser",MoveType.chase_angle,"bullet1", 100000, 5, 0, lowangle1, high_cd2, 0.008, Color.MediumVioletRed));
-            addSkillData(new GenerateUnitSkillData("createbullet",SkillGenreS.shot,MoveType.go_straight,"bullet1", low_cd3, 2, 0, Math.PI/2, 8,"yanagi"));
+            
+            addSkillData(new WayShotSkillData("5wayshot", null, SkillGenreS.wayshot,MoveType.go_straight,"bulletsmall", high_cd3, middle_speed, 0, highangle1, small_radius,5));
+            addSkillData(new WayShotSkillData("3wayshot-0", null, SkillGenreS.wayshot,MoveType.go_straight,"bulletsmall", middle_cd1,middle_speed, 0, middleangle2, small_radius, 3));
+            addSkillData(new WayShotSkillData("3wayshot-1", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", middle_cd2, middle_speed, 0, middleangle2, small_radius, 3));
+            addSkillData(new WayShotSkillData("boss1wayshot-0", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", 200, middle_speed, 0, middleangle2, small_radius, 3));
+            addSkillData(new WayShotSkillData("boss1wayshot-1", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletlarge", 270, middle_speed, 0, middleangle2, small_radius, 3));
+            addSkillData(new WayShotSkillData("boss2wayshot-0", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", 270, middle_speed, 0, middleangle2, small_radius,3));
+            addSkillData(new WayShotSkillData("16circle-0", null,SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", low_cd2, low_speed, 0, highangle1, small_radius,16,lowangle1));
+            addSkillData(new WayShotSkillData("boss8circle-0", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", low_cd3, low_speed, 0, middleangle2, small_radius,8,lowangle1));
+            addSkillData(new WayShotSkillData("downshot-0", null, SkillGenreS.wayshot,MoveType.go_straight, "bulletsmall", low_cd1, middle_speed, 0, lowangle1, small_radius));
+            addSkillData(new WayShotSkillData("downshot-1", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletline", middle_cd1, middle_speed, 0, lowangle1, small_radius));
+            addSkillData(new WayShotSkillData("1wayshot-1", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", middle_cd2, high_speed, 0, 0, small_radius,1));
+            addSkillData(new WayShotSkillData("1chaseShot-1", null, SkillGenreS.wayshot,MoveType.player_target,"bulletsmall", middle_cd2, middle_speed, 0, 0,small_radius,1,120));
+            addSkillData(new WayShotSkillData("1chaseShot-2", null, SkillGenreS.wayshot, MoveType.player_target, "bulletsmall", middle_cd2, high_speed, 0, 0, small_radius,1,120));
+            addSkillData(new WayShotSkillData("2wayshot-0", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletlarge", middle_cd1, middle_speed, 0, middleangle1, big_radius, 2));
+            addSkillData(new WayShotSkillData("4wayshot-0", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletlarge", middle_cd1, middle_speed, 0, middleangle1, big_radius, 4));
+            addSkillData(new WayShotSkillData("4wayshot-1", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", low_cd1, middle_speed, 0, middleangle2, big_radius, 4));
+            addSkillData(new WayShotSkillData("4wayshot-2", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", high_cd3, middle_speed, 0, middleangle1, small_radius,4));
+            addSkillData(new WayShotSkillData("laser-once-1", null,SkillGenreS.laser, "bulletsmall", 600, MoveType.go_straight,PointType.player_pos,new Vector(),0, high_speed, 0, lowangle1, 0,small_radius, Color.Maroon,1,600));
 
-            addSkillData(new SingleShotSkillData("yanagi",SkillGenreS.yanagi ,MoveType.go_straight,"bullet1", low_cd1, 2, 0.2,0.25,8,1));
+            addSkillData(new WayShotSkillData("laser-down-1", null, SkillGenreS.laser,  "bulletsmall", 360, MoveType.go_straight, PointType.Direction, new Vector(),0, high_speed, 0, lowangle1, 0,small_radius, Color.Maroon, 1,180));
 
-            addSkillData(new WayShotSkillData("5wayshot", SkillGenreS.wayshot,MoveType.go_straight,"bullet1", high_cd3, 6, 0, highangle1, 8,5));
-            addSkillData(new WayShotSkillData("3wayshot-0", SkillGenreS.wayshot,MoveType.go_straight,"bullet1", middle_cd1,middle_speed, 0, middleangle2, small_radius, 3));
-            addSkillData(new WayShotSkillData("3wayshot-1", SkillGenreS.wayshot, MoveType.go_straight, "bullet1", middle_cd2, middle_speed, 0, middleangle2, small_radius, 3));
-            addSkillData(new SingleShotSkillData("16circle-0", SkillGenreS.circle, MoveType.go_straight, "bullet1", low_cd2, low_speed, 0, highangle1, small_radius));
-            addSkillData(new SingleShotSkillData("downshot-0", SkillGenreS.shot,MoveType.go_straight, "bullet1", low_cd1, middle_speed, 0, lowangle1, small_radius));
-            addSkillData(new SingleShotSkillData("1wayshot-0",SkillGenreS.shot,MoveType.go_straight,"bullet1", middle_cd2, middle_speed, 0, 0,small_radius));
-            addSkillData(new SingleShotSkillData("1wayshot-1", SkillGenreS.shot, MoveType.go_straight, "bullet1", middle_cd2, high_speed, 0, 0, small_radius));
-            addSkillData(new WayShotSkillData("4wayshot-0", SkillGenreS.wayshot, MoveType.go_straight, "bullet1", middle_cd1, middle_speed, 0, middleangle1, big_radius, 4));
-            addSkillData(new WayShotSkillData("4wayshot-1", SkillGenreS.wayshot, MoveType.go_straight, "bullet1", low_cd1, middle_speed, 0, middleangle2, big_radius, 4));
-            addSkillData(new WayShotSkillData("4wayshot-2", SkillGenreS.wayshot, MoveType.go_straight, "bullet1", high_cd3, middle_speed, 0, middleangle1, small_radius, 4));
-            addSkillData(new LaserTopData("laser-0", MoveType.go_straight, "bullet1", low_cd3, high_speed, 0, lowangle1, small_radius, 0, Color.Maroon));
-            addSkillData(new LaserTopData("laser-1", MoveType.chase_angle, "bullet1", low_cd3, high_speed, 0, lowangle1, small_radius, 0.005, Color.MediumVioletRed));
-            addSkillData(new SingleShotSkillData("zyuzi-0",SkillGenreS.zyuzi ,MoveType.go_straight,"bullet1", middle_cd2, low_speed, 0, 0,small_radius));
-
+            addSkillData(new WayShotSkillData("laser-1", null, SkillGenreS.laser, "bulletsmall", low_cd6, MoveType.chase_player_target, PointType.player_pos, new Vector(),0,high_speed, 0, lowangle1, 0.003,small_radius, Color.Chocolate,1,140));
+            addSkillData(new WayShotSkillData("zyuzi-0", null, SkillGenreS.wayshot ,MoveType.go_straight,"bulletsmall", middle_cd2, low_speed,0, lowangle1,small_radius,4,lowangle1));
+            
         }
         #endregion
         #region GameScreen
-        public static readonly int WindowDefaultSizeX = 1280;
-        public static readonly int WindowDefaultSizeY = 960;
+        public const int WindowDefaultSizeX = 1280;
+        public const int WindowDefaultSizeY = 960;
         public static readonly int WindowSlimSizeY = 720;
 
         #endregion
@@ -316,13 +363,16 @@ namespace CommonPart {
             }
             texD_br.Close(); texD_file.Close();
             tda(defaultBlankTextureName);
-            #endregion
+#endregion
             #region animation
             setup_Animation();
             #endregion
             goToStartDirectory();
+            #region tda as program
+            /*
             tda(bossLifeBar_default_aniName);
             tda(charaCutInTexName);
+            tda("150x150Mapアイコン");
             tda("1280x2000背景用グレー画像");
             tda("1100x270メッセージウィンドゥ");
             tda("333x226扇ゲージ");
@@ -332,8 +382,6 @@ namespace CommonPart {
             tda("130x149右横回避");
             tda("130x149左横回避");
             tda("130x149刀モーション");
-            #region tda as program
-            /*
                         tda("16-16 tama1");
                         tda("leftside1");
                         tda("130 149-player");
@@ -364,6 +412,11 @@ namespace CommonPart {
             */
             #endregion
             setupSkillData();
+            
+            addAniD(new AnimationDataAdvanced("stageSelectButton"+defaultAnimationNameAddOn,14,4,0,"150x150Mapアイコン",true));
+            addAniD(new AnimationDataAdvanced("stageSelectButton" + aniNameAddOn_spell, 14, 4, 4, "150x150Mapアイコン", true));
+            addAniD(new AnimationDataAdvanced("stageSelectButton" + aniNameAddOn_spellOff, 14, 4, 8, "150x150Mapアイコン", true));
+            
             addAniD(new AnimationDataAdvanced(charaName +aniNameAddOn_evadeL,new int[] { 2,2,8,2,2},"130x149左横回避"));
             addAniD(new AnimationDataAdvanced(charaName + aniNameAddOn_evadeR, new int[] { 2, 2, 8, 2, 2 }, "130x149右横回避"));
             getAniD(charaName + aniNameAddOn_evadeR).assignAnimationName(charaName + defaultAnimationNameAddOn, true);
@@ -375,7 +428,7 @@ namespace CommonPart {
             addAniD(new AnimationDataAdvanced(bossLifeBar_default_aniName+defaultAnimationNameAddOn,10,1,bossLifeBar_default_aniName));
             addAniD(new AnimationDataAdvanced(bossLifeBar_default_aniName + aniNameAddOn_spell, 10, 4,2, bossLifeBar_default_aniName));
             getAniD(bossLifeBar_default_aniName + aniNameAddOn_spell).assignAnimationName(bossLifeBar_default_aniName + defaultAnimationNameAddOn, true);
-            #region addAniD in program
+#region addAniD in program
             /*
             addAniD( new AnimationDataAdvanced("boss1" + defaultAnimationNameAddOn,
                 10, 3, "90 270-boss1", true));
@@ -407,7 +460,7 @@ namespace CommonPart {
             addAniD(new AnimationDataAdvanced("E1-1" + defaultAnimationNameAddOn,
                 10, 4, 0, "120×68 E1-1", true));
             */
-            #endregion
+#endregion
             addAniD(new AnimationDataAdvanced(charaName + defaultAnimationNameAddOn, 10, 1, "130 149-player", false));
 
             
@@ -434,11 +487,12 @@ namespace CommonPart {
             #endregion
             #region anime
             save_Animation();
-            #endregion
+#endregion
             AnimationAdDataDictionary.Clear();
             TexturesDataDictionary.Clear();
 
             Content = null;
+            database_singleton = null;
         }
         #endregion
 
@@ -465,6 +519,19 @@ namespace CommonPart {
         #endregion
 
         #region Method
+        public static bool timeExceedMaxDuration( int time, int MaxDuration)
+        {
+            return (MaxDuration == time) || (MaxDuration != motion_inftyTime && time >= MaxDuration);
+        }
+        /// <summary>
+        /// 渡された時間が無限を意味するか0より大きいならtrue, 0以下で無限でないならfalse
+        /// </summary>
+        /// <param name="time"></param>
+        /// <returns></returns>
+        public static bool timeEffective(int time)
+        {
+            return (time == motion_inftyTime || time > 0);
+        }
         /// <summary>
         /// ファイルパスからファイル名を取得する
         /// </summary>
@@ -523,7 +590,7 @@ namespace CommonPart {
         }
         public static void addAniD(AnimationDataAdvanced ad)
         {
-            Console.WriteLine(ad.animationDataName);
+            //Console.WriteLine(ad.animationDataName);
             if (AnimationAdDataDictionary.ContainsKey(ad.animationDataName))
             {
                 Console.WriteLine("addAniD: " + ad.animationDataName + " exists.");
@@ -546,11 +613,12 @@ namespace CommonPart {
         }
         public static bool existsAniD(string name, string addOn)
         {
-            if (addOn == null) return AnimationAdDataDictionary.ContainsKey(name);
+            if (addOn == null) return AnimationAdDataDictionary.ContainsKey(name) || AnimationAdDataDictionary.ContainsKey(name+defaultAnimationNameAddOn);
             else return AnimationAdDataDictionary.ContainsKey(name + addOn);
         }
         public static AnimationDataAdvanced getAniD(string name, string addOn = null)
         {
+            if (name == null && addOn == null) return null;
             if (addOn == null && AnimationAdDataDictionary.ContainsKey(name))
             {
                 return AnimationAdDataDictionary[name];

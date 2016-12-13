@@ -102,11 +102,12 @@ namespace CommonPart
             if (richTexts.Count() > 0)
             {
                 richTexts[0].Draw(d, new Vector(x + richTextsRelativePos[0].X, y + richTextsRelativePos[0].Y), DepthID.Message);
-                double ix = x + richTextsRelativePos[0].X;
+                double ix = x + richTextsRelativePos[0].X; double iy = y + richTextsRelativePos[0].Y;
                 for (int i = 1; i < richTexts.Count(); i++)
                 {
                     ix += richTextsRelativePos[i].X;
-                    richTexts[i].Draw(d, new Vector(ix, richTexts[i - 1].Y + richTextsRelativePos[i].Y), DepthID.Message);
+                    iy += richTextsRelativePos[i].Y+ richTexts[i-1].Y;
+                    richTexts[i].Draw(d, new Vector(ix, iy), DepthID.Message);
                 }
             }
             if (texturePaths.Count() > 0)
@@ -287,6 +288,7 @@ namespace CommonPart
         public override void update(KeyManager k, MouseManager m)
         {
             base.update(k, m);
+            //現在注目のcoloumに対して、deal with command
             for (int i = 0; i < coloums.Count; i++)
             {
                 if (i == now_coloums_index)
@@ -347,10 +349,14 @@ namespace CommonPart
                     // PosInsideは画面上の絶対座標を使って判定している。windowの位置によって描画位置が変わるcoloumsにはx,y補正が必要 
                     {
                         //mouseInsideColoums = true;
-                        if (now_coloums_index < coloums.Count && now_coloums_index >= 0 && now_coloums_index != ii) {
-                            coloums[now_coloums_index].is_left();
+                        if (m.MousePosition() != m.OldMousePosition())
+                        {
+                            if (now_coloums_index < coloums.Count && now_coloums_index >= 0 && now_coloums_index != ii)
+                            {
+                                coloums[now_coloums_index].is_left();
+                            }
+                            now_coloums_index = ii;
                         }
-                        now_coloums_index = ii;
                         if (m.IsButtomDownOnce(MouseButton.Left))
                         {
                             selectColoum();

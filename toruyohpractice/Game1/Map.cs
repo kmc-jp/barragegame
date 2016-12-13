@@ -30,7 +30,7 @@ namespace CommonPart {
         /// <summary>
         /// 残機表示の左上の座標
         /// </summary>
-        public Vector life_pos = new Vector(1070, 105);
+        public Vector life_pos = new Vector(1070, 120);
         #endregion
         /// <summary>
         /// playerがskilltoEnemyで倒した敵の個体数を記録
@@ -55,12 +55,12 @@ namespace CommonPart {
         #region map BackGround variables
         static int total_BackGroundHeight = 0;
         protected static List<string> background_names = new List<string>();
+        protected static List<string> textureNames = new List<string>();
         /// <summary>
         /// 背景画像の描画位置
         /// </summary>
         protected static List<Vector> v = new List<Vector>();
         #endregion
-
         #region about boss
         public static bool boss_mode = false;
         /// <summary>
@@ -161,6 +161,10 @@ namespace CommonPart {
                 case 4:
                     stagedata = new Stage4Data("stage4");
                     break;
+                case -1:
+                    stagedata = new stageData_forTestMap("test");
+                    stage = 1;
+                    break;
                 default:
                     stage = 1;
                     stagedata = new Stage1Data("stage1");
@@ -168,7 +172,7 @@ namespace CommonPart {
             }
             #endregion
             scroll_speed = new Vector(defaultspeed_x, defaultspeed_y);
-            Map.player = new Player(DataBase.WindowDefaultSizeX/2, 500, 6, 10, 5*lifesPerPiece,DataBase.charaName);
+            Map.player = new Player(DataBase.WindowDefaultSizeX/2, 500, 6, 10, 6*lifesPerPiece,DataBase.charaName);
 
             bossLifeGaugeSize.X=0;
             leftside = 280;
@@ -180,6 +184,7 @@ namespace CommonPart {
         private void setMapAsNewlyCreated()
         {
             Map.mapState = "";
+            stagedata = null;
             Map.player = null;
             chargeBar = null;
             Map.bossLifeBarAnime = null;
@@ -190,8 +195,14 @@ namespace CommonPart {
             Map.stop_time = Map.readyToStop_time = 0;
             Map.cutIn_texName = null;
             Map.cutIn_texTime = 0;
+            #region enemys clear
             Map.enemys.Clear(); Map.enemys_inside_window.Clear();
-            Map.v.Clear(); Map.background_names.Clear();
+            enemys = null; enemys_inside_window = null;
+            enemys = new List<Enemy>(); enemys_inside_window = new List<Enemy>();
+            #endregion
+            #region about background 
+            v.Clear(); background_names.Clear(); total_BackGroundHeight = 0;
+            #endregion
             Map.pros.Clear();
         }
         /// <summary>
@@ -241,10 +252,16 @@ namespace CommonPart {
         }
         private void update_enemys()
         {
+            bool bulletsMove = ((int)(step[0] * Game1.enemyBullets_update_fps / Game1.fps)
+                - (int)((step[0] - 1) * Game1.enemyBullets_update_fps / Game1.fps)) >= 1;
+            bool skillsUpdate = ((int)(step[0] * Game1.enemySkills_update_fps / Game1.fps)
+                - (int)((step[0] - 1) * Game1.enemySkills_update_fps / Game1.fps)) >= 1;
             if (enemys.Count > 0)
             {
                 for (int i = 0; i < enemys.Count; i++)
                 {
+                    enemys[i].bulletsMove = bulletsMove;
+                    enemys[i].skillsUpdate = skillsUpdate;
                     enemys[i].update(player);
                 }
             }
@@ -260,8 +277,10 @@ namespace CommonPart {
                     enemys_inside_window[i].clear();
                     enemys.Remove(enemys_inside_window[i]);
                     enemys_inside_window.Remove(enemys_inside_window[i]);
+                    i--;
                 }
             }
+            
         }
         private void update_chargeProjections()
         {
@@ -286,6 +305,7 @@ namespace CommonPart {
                 if (pros[j].delete)
                 {
                     pros.Remove(pros[j]);
+                    j--;
                 }
             }
         }
@@ -304,14 +324,17 @@ namespace CommonPart {
             Map.cutIn_texPosNowX = Function.towardValue(Map.cutIn_texPosNowX, Map.cutIn_texPosToX, Map.cutIn_speed);
             Map.cutIn_texPosNowY = Function.towardValue(Map.cutIn_texPosNowY, Map.cutIn_texPosToY, Map.cutIn_speed);
             #endregion
-            if (Map.readyToStop_time <=0)
+            if (!DataBase.timeEffective(Map.readyToStop_time) )
             {
-                if (Map.stop_time > 0)
+                if (DataBase.timeEffective(Map.stop_time))
                 {
-                    Map.stop_time--;
+                    if (Map.stop_time != DataBase.motion_inftyTime)
+                    {
+                        Map.stop_time--;
+                    }
                     return;
-                }else if(Map.stop_time == DataBase.motion_inftyTime) { return; }
-            }else { Map.readyToStop_time--; }
+                }
+            }else if(Map.readyToStop_time!=DataBase.motion_inftyTime){ Map.readyToStop_time--; }
             chargeBar.Update();
             stagedata.update();
             #region 画面上に見える敵を"見える敵たち"に入れる
@@ -374,7 +397,7 @@ namespace CommonPart {
             //Console.Write("score:" + _score);
             if (player.attack_mode) {
                 numOfskillKilledEnemies++;
-                int s = _score * 100 + (numOfskillKilledEnemies - 1) * _score * 100;
+                int s = _score * 100 + (numOfskillKilledEnemies - 1) * _score * 40;
                 scoreOfskilltoEnemy += s;
                 //Console.Write(" to " + s.ToString() + "\n");
                 return s;
@@ -405,14 +428,14 @@ namespace CommonPart {
         public static void game_over_start()
         {
             Console.Write("gameOver");
-            stopUpdating(DataBase.motion_inftyTime, 400);
-            //CutInTexture("1280x2000背景用グレー画像", 0,-2000,0,0,DataBase.motion_inftyTime,10);
+            stopUpdating(DataBase.motion_inftyTime, 180);
+            CutInTexture("1280x2000背景用グレー画像", 0,-2000,0,0,DataBase.motion_inftyTime,30);
             mapState +=gameOver;
         }
         public static void game_win_start()
         {
-            stopUpdating(DataBase.motion_inftyTime, 400);
-            CutInTexture("1280x2000背景用グレー画像", 0, -2000, 0, 0, DataBase.motion_inftyTime, 10);
+            stopUpdating(DataBase.motion_inftyTime, 180);
+            CutInTexture("1280x2000背景用グレー画像", 0, -2000, 0, 0, DataBase.motion_inftyTime, 30);
             mapState += backToStageSelection;
         }
         #endregion
@@ -445,6 +468,21 @@ namespace CommonPart {
             else
             {
                 enemys.Insert(enemysIndexOfBoss, new Boss1(leftside + _x, _y, _unitType_name));
+            }
+            bossLifeBarTextureName = _bossLifeBarName;
+            bossLifeBarAnime = new AnimationAdvanced(DataBase.getAniD(bossLifeBarTextureName + DataBase.defaultAnimationNameAddOn));
+        }
+        public static void create_boss2(double _x, double _y, string _unitType_name, string _bossLifeBarName = DataBase.bossLifeBar_default_aniName)
+        {
+            enemys.Clear();
+            enemys_inside_window.Clear();
+            if (enemys.Count <= enemysIndexOfBoss)
+            {
+                enemys.Add(new Boss2(leftside + _x, _y, _unitType_name));
+            }
+            else
+            {
+                enemys.Insert(enemysIndexOfBoss, new Boss2(leftside + _x, _y, _unitType_name));
             }
             bossLifeBarTextureName = _bossLifeBarName;
             bossLifeBarAnime = new AnimationAdvanced(DataBase.getAniD(bossLifeBarTextureName + DataBase.defaultAnimationNameAddOn));
@@ -486,13 +524,21 @@ namespace CommonPart {
             for (int i = 1; i < background_names.Count; i++)
             {
                 v.Add(new Vector(v[i-1].X, v[i - 1].Y - DataBase.getTex(background_names[i]).Height));
-
             }
             for (int i = 0; i < background_names.Count; i++)
             {
                 total_BackGroundHeight += DataBase.getTex(background_names[i]).Height;
             }
         }
+        public static void setup_textureNames(List<string> _textureNames)
+        {
+            foreach(string _textureName in _textureNames)
+            {
+                textureNames.Add(_textureName);
+            }
+            Console.WriteLine("ssd"+textureNames.Count);
+        }
+        
         private void chargeBarChange(string name,string addOn=null) {
             if (addOn == null) { chargeBar_animation_name = name; }
             else { chargeBar_animation_name = name+addOn; }
@@ -524,7 +570,7 @@ namespace CommonPart {
                 }
             }
             #endregion
-            if (bossLifeBarAnime != null)
+            if (bossLifeBarAnime != null&& BOSS!=null)
             {
                 bossLifeGaugeSize.X = Function.towardValue(bossLifeGaugeSize.X,(bossLifeGaugeSizeMaximum.X * BOSS.life*1.0/BOSS.maxLife),100);
                 d.DrawBox(bossLifeGaugeLeftTopPos, bossLifeGaugeSize, bossLifeGaugeColor, DepthID.Status);
@@ -556,9 +602,20 @@ namespace CommonPart {
             scoreboard.Draw(d, score_pos, DepthID.Status);
 
             #region sidebar draw
-            d.Draw(new Vector(leftside-DataBase.getTex("leftside"+stage.ToString()).Width, 0), DataBase.getTex("leftside"+stage.ToString()), DepthID.StateFront);
-            d.Draw(new Vector(rightside, 0), DataBase.getTex("rightside"+stage.ToString()), DepthID.StateFront);
+            if (textureNames.Count >= 2)
+            {
+                if (inside_of_window(new Vector(leftside - DataBase.getTex(textureNames[0]).Width, 0), DataBase.getTexD(textureNames[0]).w_single, DataBase.getTexD(textureNames[0]).h_single))
+                {
+                    d.Draw(new Vector(leftside - DataBase.getTex(textureNames[0]).Width, 0), DataBase.getTex(textureNames[0]), DepthID.StateFront);
+
+                }
+                if (inside_of_window(new Vector(rightside, 0), DataBase.getTexD(textureNames[1]).w_single, DataBase.getTexD(textureNames[1]).h_single))
+                {
+                    d.Draw(new Vector(rightside, 0), DataBase.getTex(textureNames[1]), DepthID.StateFront);
+                }
+            }
             #endregion
+
             #region draw sword gauge
             if (player.sword < player.sword_max / 2)
             {
@@ -588,21 +645,20 @@ namespace CommonPart {
             d.DrawLine(bar_pos, new Vector(bar_pos.X + player.sword * 3.8, bar_pos.Y), 17, Color.Violet, DepthID.Status);//剣ゲージ
             #endregion
 
-            #region draw CutIn
-            if(Map.cutIn_texTime >0 && Map.cutIn_texName !=null && Map.cutIn_texName != "")
+            #region draw CutIns
+            if(DataBase.timeEffective(Map.cutIn_texTime) && Map.cutIn_texName !=null && Map.cutIn_texName != "")
             {
-                Console.Write("drawCutIn");
-                d.Draw(new Vector(Map.cutIn_texPosNowX, Map.cutIn_texPosNowY),DataBase.getTex(Map.cutIn_texName),DepthID.Status);
+                d.Draw(new Vector(Map.cutIn_texPosNowX, Map.cutIn_texPosNowY),DataBase.getTex(Map.cutIn_texName),DepthID.Message);
             }
             #endregion
         }//draw end
 
         static public bool inside_window(Enemy enemy)
         {
-            return enemy.animation.X > leftside - enemy.animation.X / 2 ||
-                    enemy.animation.X < rightside + enemy.animation.X / 2 ||
-                    enemy.animation.Y < DataBase.WindowSlimSizeY + enemy.animation.Y / 2 ||
-                    enemy.animation.Y > 0 - enemy.animation.Y / 2;
+            return enemy.x > leftside - enemy.animation.X / 2 &&
+                    enemy.x < rightside + enemy.animation.X / 2 &&
+                    enemy.y < DataBase.WindowSlimSizeY + enemy.animation.Y / 2 &&
+                    enemy.y > 0 - enemy.animation.Y / 2;
         }
         #endregion
     }// class end

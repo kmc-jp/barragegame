@@ -153,7 +153,6 @@ namespace CommonPart
             if (_min_index >= xNum * yNum) { _min_index = xNum * yNum - 1; }
         }
         #endregion
-
         #region draw method
         /// <summary>
         /// 
@@ -183,7 +182,10 @@ namespace CommonPart
         static public AnimationDataAdvanced getAcopyFromDataBaseByName(string _ani_name) {
             if (DataBase.existsAniD(_ani_name, null)) {
                 AnimationDataAdvanced aDad = DataBase.getAniD(_ani_name);
-                return new AnimationDataAdvanced(_ani_name + "_copy", aDad.frames, aDad.min_texture_index, aDad.texture_name, aDad.repeat);
+                AnimationDataAdvanced n_aDad=new AnimationDataAdvanced(_ani_name + "_copy", aDad.frames, aDad.min_texture_index, aDad.texture_name, aDad.repeat);
+                n_aDad.assignAnimationName(aDad.pre_animation_name,false);
+                n_aDad.assignAnimationName(aDad.next_animation_name, true);
+                return n_aDad;
             }
             else {
                 Console.WriteLine("copy failed. Not Found In Dictionary.");
@@ -197,14 +199,14 @@ namespace CommonPart
         /// </summary>
         /// <param name="animation_name">animationDataにアクセス用のkey</param>
         /// <param name="next">true=これは続きのアニメーション、false=これは前の</param>
-        public void assignAnimationName(string animation_name,bool next)
+        public void assignAnimationName(string _animation_name,bool next)
         {
             if (next)
             {
-                next_animation_name = animation_name;
+                next_animation_name = _animation_name;
             }
             else {
-                pre_animation_name = animation_name;
+                pre_animation_name = _animation_name;
             }
         }
 
@@ -266,19 +268,20 @@ namespace CommonPart
     
     class AnimationAdvanced : Animation
     {
-        public override float X { get { return data.X; } }
-        public override float Y { get { return data.Y; } }
-        AnimationDataAdvanced data;
+        public override float X { get { if (data == null) return 0;else return data.X; } }
+        public override float Y { get { if (data == null) return 0; else return data.Y; } }
+        new AnimationDataAdvanced data;
         int frame;
         const bool animateWithUpdate = true;
         protected bool repeat=false;
         public AnimationAdvanced(AnimationDataAdvanced d):base(d)// data= dとしているだけ。
-        { data = d; repeat = data.repeat; }
+        { data = d; if(data!=null)repeat = data.repeat; }
 
         /// <summary>
         /// アニメーションのループをたどり、最初のアニメーションを見つけるか、このアニメーションにまたループして戻っている場合は自分を見つける。
         /// </summary>
         public void backToTop() {
+            if (data == null) return;
             if (data.pre_animation_name == null ||data.pre_animation_name==AnimationDataAdvanced.notAnimationName) {
                 frame = 0;
                 return;
@@ -304,6 +307,7 @@ namespace CommonPart
         /// </summary>
         public new void Update()
         {
+            if (data == null) return;
             if (animateWithUpdate) frame++;
             if (frame>data.totalFrame)
             {
@@ -323,16 +327,20 @@ namespace CommonPart
         }
         public override void Draw(Drawing d, Vector2 pos, DepthID depth, float size = 1, float angle = 0)
         {
+            if (data == null) return;
             data.Draw(frame, d, pos, depth, size, angle);
             if (!animateWithUpdate && d.Animate)
                 frame++;
         }
         public override void Draw(Drawing d, Vector2 pos, DepthID depth, Vector2 size, float angle = 0)
         {
+            if (data == null) return;
             data.Draw(frame, d, pos, depth, size, angle);
             if (d.Animate)
                 frame++;
         }
+
+        public bool dataIsNull() { return data == null; }
     }
     
 }//namespace end

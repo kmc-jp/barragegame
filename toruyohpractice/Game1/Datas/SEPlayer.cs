@@ -62,8 +62,8 @@ namespace CommonPart {
             SetSE(SoundEffectID.Cursor_Move, "Content/icon3.mp3");
             SetSE(SoundEffectID.Cursor_Cancel, "Content/icon4.mp3");
             SetSE(SoundEffectID.Cursor_OK, "Content/icon1.mp3");
-            SetSE(SoundEffectID.stageselect, "Content/stageselect.mp3");
-            SetSE(SoundEffectID.enemyattack, "Content/enemyattack2.mp3	");
+            SetSE(SoundEffectID.stageselect, "Content/stageselect1.mp3");
+            SetSE(SoundEffectID.enemyattack, "Content/enemyattack2.mp3");
             SetSE(SoundEffectID.laser, "Content/enemylaser1.mp3");
             SetSE(SoundEffectID.bossdamage, "Content/bossdamaged2.mp3");
             SetSE(SoundEffectID.playerattack1, "Content/playerattack4.mp3");
