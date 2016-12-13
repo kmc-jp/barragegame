@@ -277,6 +277,7 @@ namespace CommonPart {
                     enemys_inside_window[i].clear();
                     enemys.Remove(enemys_inside_window[i]);
                     enemys_inside_window.Remove(enemys_inside_window[i]);
+                    i--;
                 }
             }
             
@@ -304,6 +305,7 @@ namespace CommonPart {
                 if (pros[j].delete)
                 {
                     pros.Remove(pros[j]);
+                    j--;
                 }
             }
         }
@@ -530,10 +532,11 @@ namespace CommonPart {
         }
         public static void setup_textureNames(List<string> _textureNames)
         {
-            foreach(string _textureName in textureNames)
+            foreach(string _textureName in _textureNames)
             {
                 textureNames.Add(_textureName);
             }
+            Console.WriteLine("ssd"+textureNames.Count);
         }
         
         private void chargeBarChange(string name,string addOn=null) {

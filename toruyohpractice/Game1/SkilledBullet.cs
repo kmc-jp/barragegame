@@ -75,7 +75,6 @@ namespace CommonPart
         protected override void dead()
         {
             base.dead();
-            shot(Map.player);
         }
         public override void update(Player player,bool bulletMove)
         {
@@ -94,7 +93,7 @@ namespace CommonPart
                 if (skills[i].coolDown<=0 )
                 {
                     BarrageUsedSkillData sd = (BarrageUsedSkillData)DataBase.SkillDatasDictionary[skills[i].skillName];
-                    if (!skills[i].used(motionTime,-1, life, maxLife)) { continue; }
+                    if (!skills[i].used(nowMotionTime,-1, life, maxLife)) { continue; }
                     switch (sd.sgl)
                     {
                         case SkillGenreL.generation:
@@ -140,9 +139,11 @@ namespace CommonPart
                                 default:
                                     #region bulletsAdd
                                     double bx = x; double by = y;
-                                    double _angle = Motion.getAngleFromPointType(ws.pointType, ws.angle, ws.vec.X);
+                                    //Console.WriteLine(ws.skillName + " is " + ws.way);
+                                    double _angle = Motion.getAngleFromPointType(ws.pointType, ws.angle, ws.vec.X ,x,y);
                                     if (ws.way % 2 == 1)
                                     {
+                                        //Console.WriteLine("single");
                                         myboss.bulletsAdd(x, y, _angle, ws);
                                         for (int j = 1; j < (ws.way + 1) / 2; j++)
                                         {
@@ -152,10 +153,11 @@ namespace CommonPart
                                     }
                                     else
                                     {
+                                        //Console.WriteLine("sfsf"+ws.way/2);
                                         for (int j = 0; j < ws.way / 2; j++)
                                         {
-                                            myboss.bulletsAdd(bx, by, _angle + j * sd.space, ws);
-                                            myboss.bulletsAdd(bx, by, _angle - j * sd.space, ws);
+                                            myboss.bulletsAdd(bx, by, _angle + (j+1) * sd.space, ws);
+                                            myboss.bulletsAdd(bx, by, _angle - (j+1) * sd.space, ws);
                                         }
                                     }
                                     if (sd.duration > 0) { for (int kk = 0; kk < ws.way; kk++) { myboss.bullets[myboss.bullets.Count - 1 - kk].setup_exist_time(ws.duration); } }

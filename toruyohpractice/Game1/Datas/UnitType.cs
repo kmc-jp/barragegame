@@ -121,6 +121,7 @@ namespace CommonPart
 
         private void setup_unitType()
         {
+            const double normalOmega = Math.PI / 60;
             #region Boss1
             UnitTypeList.Add(new ActiveAniSkiedUnitType("boss1", "boss1", "boss"));
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).textureTurn = true;
@@ -129,7 +130,7 @@ namespace CommonPart
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.screen_point_target, 100, new Vector(100, 620));
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.screen_point_target, 100, new Vector(1180, 620));
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.screen_point_target, 100, new Vector(1180, 100));
-            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(4, 0, 30, 0, 10000, 10);
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(4, 0, 30, 0, normalOmega,10000, 10);
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames("boss8circle-0");
             //((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames("5wayshot");
             UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
@@ -137,35 +138,35 @@ namespace CommonPart
             UnitTypeList.Add(new ActiveAniSkiedUnitType("boss1body0", "boss1body0", "boss"));
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.noMotion, 100, new Vector(50, 50));
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).textureTurn = true;
-            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(0, 0, 30, 0, 1000, 0);
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(0, 0, 30, 0, normalOmega, 1000, 0);
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames("boss1wayshot-0");
             UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
 
             UnitTypeList.Add(new ActiveAniSkiedUnitType("boss1body1", "boss1body1", "boss"));
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.noMotion, 100, new Vector(50, 50));
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).textureTurn = true;
-            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(0, 0, 30, 0, 1000, 0);
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(0, 0, 30, 0, normalOmega,1000, 0);
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames("boss1wayshot-1");
             UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
 
             UnitTypeList.Add(new ActiveAniSkiedUnitType("boss1body2", "boss1body2", "boss"));
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.noMotion, 100, new Vector(50, 50));
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).textureTurn = true;
-            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(0, 0, 30, 0, 1000, 0);
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(0, 0, 30, 0, normalOmega,1000, 0);
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames("boss1wayshot-0");
             UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
 
             UnitTypeList.Add(new ActiveAniSkiedUnitType("boss1tail", "boss1tail", "boss"));
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.noMotion, 100, new Vector(50, 50));
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames("laser-1");
-            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(0, 0, 30, 0, 1000, 0);
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(0, 0, 30, 0, normalOmega,1000, 0);
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).textureTurn = true;
             UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
             #endregion
 
             #region Boss2
             UnitTypeList.Add(new ActiveAniSkiedUnitType("boss2", "boss2", "boss"));
-            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(5, 0, 100, 0, 1000, 0);
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(5, 0, 100, 0, normalOmega,1000, 0);
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.screen_point_target, 60, new Vector(DataBase.WindowDefaultSizeX/2, 160));
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.stop, 240, new Vector());
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.go_straight, 180, new Vector(0, -90));
@@ -180,7 +181,7 @@ namespace CommonPart
             UnitTypeList.Add(new ActiveAniSkiedUnitType("funnnel0", "E6", "boss"));
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.noMotion, 100, new Vector());
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames("laser-down-1");
-            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(0, 0, 50, 0, 1000, 0);
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(0, 0, 50, 0, normalOmega, 1000, 0);
             UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
 
             UnitTypeList.Add(new ActiveAniSkiedUnitType("funnnel1", "E6", "boss"));

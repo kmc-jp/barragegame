@@ -23,7 +23,7 @@ namespace CommonPart
         /// <param name="_color">レーザーの色</param>
         public LaserTop(double _x, double _y, MoveType _move_type, double _speed, double _acceleration, double _radian, string _anime,double _radius, 
             double _omega,Unit _enemy,Color _color, int _sword, int _life=1, int _score=0,  int _zoom_rate=100)
-            : base(_x, _y, _move_type, _speed, _acceleration, _anime,_radian, _radius, _sword, _life, _score, _zoom_rate)
+            : base(_x, _y, _move_type, _speed, _acceleration, _anime,_radian, _omega,_radius, _sword, _life, _score, _zoom_rate)
         {
             omega = _omega;
             enemy = _enemy;
@@ -40,7 +40,7 @@ namespace CommonPart
         /// <param name="_color">レーザーの色</param>
         public LaserTop(double _x, double _y, MoveType _move_type, double _speed, double _acceleration, Vector _target_pos, PointType _pt,int _motion_time,
   string _anime, double _radian, double _radius, double _omega, Unit _enemy, Color _color, int _sword, int _life = 1, int _score = 0, int _zoom_rate = 100)
-            : base(_x, _y, _move_type, _speed, _acceleration, _anime,_target_pos,_pt, _motion_time,_radian, _radius, _sword, _life, _score, _zoom_rate)
+            : base(_x, _y, _move_type, _speed, _acceleration, _anime,_target_pos,_pt, _motion_time,_radian,_omega, _radius, _sword, _life, _score, _zoom_rate)
         {
             omega = _omega;
             enemy = _enemy;
@@ -58,7 +58,7 @@ namespace CommonPart
         /// <param name="_color">レーザーの色</param>
         public LaserTop(double _x, double _y, MoveType _move_type, double _speed, double _acceleration, Unit _target, string _anime
             , double _radian, double _radius, double _omega, Unit _enemy, Color _color, int _sword, int _life = 1, int _score = 0, int _zoom_rate = 100)
-            : base(_x, _y, _move_type, _speed, _acceleration, _anime,_target, _radian, _radius, _sword, _life, _score, _zoom_rate)
+            : base(_x, _y, _move_type, _speed, _acceleration, _anime,_target, _radian, _omega,_radius, _sword, _life, _score, _zoom_rate)
         {
             omega = _omega;
             enemy = _enemy;
@@ -74,9 +74,10 @@ namespace CommonPart
             #region Laser Motion: length is not changed here!
             switch (move_type)
             {
-                case MoveType.chase_target:
+                case MoveType.chase_player_target:
                     speed += acceleration;
-                    int fix;
+                    radian = Function.towardValue(radian, Math.Atan2(target.y-enemy.y,target.x-enemy.x), omega);
+                    /*int fix;
                     if (Math.Abs(x - enemy.x) < 0.01)
                     {
                         fix = y > enemy.y ? 1 : -1;
@@ -102,7 +103,7 @@ namespace CommonPart
                         {
                             radian += omega*fix;
                         }
-                    }
+                    }*/
 
                     x = enemy.x+length * Math.Cos(radian);
                     y = enemy.y+length * Math.Sin(radian);
@@ -241,7 +242,7 @@ namespace CommonPart
     }
 
     class SkilledLaserTop : LaserTop {
-        public List<Skill> skills;
+        public List<Skill> skills=new List<Skill>();
 
         /// <summary>
         /// 目標がない場合に使う

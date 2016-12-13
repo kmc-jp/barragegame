@@ -27,7 +27,11 @@ namespace CommonPart
                     Map.boss_mode = false;
                     break;
                 case 5:
-                    Map.create_enemy(360, 100, "testE1");
+                    Map.create_enemy(320, 100, "testE1");
+                    Map.enemys.Last().add_skill("createbullet");
+                    break;
+                case 60:
+                    Map.create_enemy(400, 100, "testE1");
                     Map.enemys.Last().add_skill("createbullet");
                     break;
                 case 4700:
