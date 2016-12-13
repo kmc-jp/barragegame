@@ -173,16 +173,17 @@ namespace CommonPart
                 {
                     bullets[i].update(player,bulletsMove);
                 }
-                for (int i = 0; i < bullets.Count; i++)//update 専用
+                for (int i = bullets.Count - 1; i >= 0; i--)//update 専用
                 {
                     if (bullets[i].delete)
                     {
                         bullets.Remove(bullets[i]);
-                        i--;
+                        
                         //Console.Write(i+" ");
                     }
                 }
                 #endregion
+                //Console.WriteLine(bullets.Count);
                 update_skills();
                 shot(player);
             }else { stop_time--; return; }
