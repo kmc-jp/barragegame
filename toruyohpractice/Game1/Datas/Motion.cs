@@ -34,7 +34,7 @@ namespace CommonPart
         public static bool Has_a_Object(MoveType _mt) {
             switch (_mt)
             {
-                case MoveType.chase_target:
+                case MoveType.chase_player_target:
                 case MoveType.player_target:
                     return true;
                 default:
