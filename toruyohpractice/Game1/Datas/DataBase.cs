@@ -317,7 +317,7 @@ namespace CommonPart {
         public static Dictionary<string, SkillData> SkillDatasDictionary = new Dictionary<string, SkillData>();
         public static void setupSkillData()
         {
-            Motion goStraightToPlayer = new Motion(MoveType.go_straight,PointType.player_pos,new Vector(),middle_speed,0,0);
+            Motion goStraightToPlayer = new Motion(MoveType.go_straight,PointType.randomDirection,new Vector(lowangle1,0),middle_speed,0,0);
             addSkillData(new WaySkilledBulletsData("createbullet",null,SkillGenreS.wayshot,null,low_cd3,goStraightToPlayer,small_radius,"yanagi-s",1,60));
 
             addSkillData(new WayShotSkillData("yanagi-s", null, SkillGenreS.yanagi ,MoveType.go_straight,"bullet1",15,middle_speed, 0.2,lowangle1,small_radius,4,motion_inftyTime,1));
@@ -338,13 +338,13 @@ namespace CommonPart {
             addSkillData(new WayShotSkillData("1chaseShot-2", null, SkillGenreS.wayshot, MoveType.object_target, "bulletsmall", middle_cd2, high_speed, 0, 0, small_radius,120));
             addSkillData(new WayShotSkillData("2wayshot-0", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletlarge", middle_cd1, middle_speed, 0, middleangle1, big_radius, 2));
             addSkillData(new WayShotSkillData("4wayshot-0", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletlarge", middle_cd1, middle_speed, 0, middleangle1, big_radius, 4));
-            addSkillData(new WayShotSkillData("4wayshot-1", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", low_cd1, middle_speed, 0, middleangle2, big_radius, 4));
+            addSkillData(new WayShotSkillData("4wayshot-1", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", low_cd1, middle_speed, 0, middleangle2, big_radius, 4,motion_inftyTime,middleangle1));
             addSkillData(new WayShotSkillData("4wayshot-2", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", high_cd3, middle_speed, 0, middleangle1, small_radius, 4));
-            addSkillData(new WayShotSkillData("laser-once-1", null,SkillGenreS.laser,  "bulletsmall", 600, MoveType.go_straight,PointType.player_pos,new Vector(),0, high_speed, 0, lowangle1, small_radius, 0, Color.Maroon,600,0,3));
+            addSkillData(new WayShotSkillData("laser-once-1", null,SkillGenreS.laser,  "bulletsmall", 600, MoveType.go_straight,PointType.player_pos,new Vector(),0, high_speed, 0, lowangle1, small_radius, 0, Color.Maroon,1,600,0,3));
 
-            addSkillData(new WayShotSkillData("laser-down-1", null, SkillGenreS.laser,  "bulletsmall", 360, MoveType.go_straight, PointType.Direction, new Vector(),0, high_speed, 0, lowangle1, small_radius, 0, Color.Maroon, 180, 0, 3));
+            addSkillData(new WayShotSkillData("laser-down-1", null, SkillGenreS.laser,  "bulletsmall", 360, MoveType.go_straight, PointType.Direction, new Vector(),0, high_speed, 0, lowangle1, small_radius, 0, Color.Maroon,1, 180, 0, 3));
 
-            addSkillData(new WayShotSkillData("laser-1", null, SkillGenreS.laser, "bulletsmall", low_cd6, MoveType.chase_target, PointType.player_pos, new Vector(),0,high_speed, 0, lowangle1, small_radius, 0.005, Color.Chocolate,140,0,10));
+            addSkillData(new WayShotSkillData("laser-1", null, SkillGenreS.laser, "bulletsmall", low_cd6, MoveType.chase_target, PointType.player_pos, new Vector(),0,high_speed, 0, lowangle1, small_radius, 0.005, Color.Chocolate,1,140,0,10));
             addSkillData(new WayShotSkillData("zyuzi-0", null, SkillGenreS.wayshot ,MoveType.go_straight,"bulletsmall", middle_cd2, low_speed,0, lowangle1,small_radius));
             
         }

@@ -296,7 +296,7 @@ namespace CommonPart
         /// </summary>
         public WayShotSkillData(string _skillName,string _conditions,SkillGenreS _sgs, MoveType mt,string _aniDName, int _cooldownFps, double _speed, 
             double _acceleration, double _angle, double _radius, int _way=1, int _duration=DataBase.motion_inftyTime,double _space=0, int _sword=1,int _score=10,int _life=1)
-            : base(_skillName,_conditions,SkillGenreL.generation,_sgs,_aniDName,_cooldownFps, mt, PointType.notused, new Vector(),0,_speed, _acceleration,_angle,0,_radius,_duration,_space,_sword,_score,_life)
+            : base(_skillName,_conditions,SkillGenreL.generation,_sgs,_aniDName,_cooldownFps, mt, PointType.player_pos, new Vector(),0,_speed, _acceleration,_angle,0,_radius,_duration,_space,_sword,_score,_life)
         {
             way = _way;
         }

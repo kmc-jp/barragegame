@@ -444,6 +444,7 @@ namespace CommonPart
                                     #region bulletsAdd
                                     double bx = x; double by = y;
                                     double _angle = Motion.getAngleFromPointType(ws.pointType, ws.angle, ws.vec.X);
+                                    Console.Write(_angle);
                                     if (ws.way % 2 == 1)
                                     {
                                         bulletsAdd(x, y, _angle, ws);
