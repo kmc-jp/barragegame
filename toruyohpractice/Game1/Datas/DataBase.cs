@@ -304,8 +304,12 @@ namespace CommonPart {
             addSkillData(new WaySkilledBulletsData("cs", bulletTimeOut,SkillGenreS.wayshot,"bulletsmall",low_cd1,goStraightWithDirection,small_radius,new string[] { "cs" },2,40,lowangle1));
 
             addSkillData(new WayShotSkillData("yanagi-s", null, SkillGenreS.yanagi ,MoveType.go_straight,"bullet1",15,middle_speed, 0.2,lowangle1,small_radius,4,motion_inftyTime,1));
-            
-            
+
+            addSkillData(new WaySkilledBulletsData("5way*3shot", null, SkillGenreS.wayshot, "bulletsmall", low_cd3, goStraightWithDirection,0,0,AngleToPlayer,0,0, small_radius,new string[] { "5wayshot-test" }, 1, 13));
+            addSkillData(new WayShotSkillData("5wayshot-test", null,SkillGenreL.generation ,SkillGenreS.wayshot, "bulletsmall", 5, goStraightWithDirection, small_radius,5 , middleangle1));
+
+
+
             addSkillData(new WayShotSkillData("5wayshot", null, SkillGenreS.wayshot,MoveType.go_straight,"bulletsmall", high_cd3, middle_speed, 0, highangle1, small_radius,5));
             addSkillData(new WayShotSkillData("3wayshot-0", null, SkillGenreS.wayshot,MoveType.go_straight,"bulletsmall", middle_cd1,middle_speed, 0, middleangle2, small_radius, 3));
             addSkillData(new WayShotSkillData("3wayshot-1", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", middle_cd2, middle_speed, 0, middleangle2, small_radius, 3));
@@ -335,7 +339,7 @@ namespace CommonPart {
         #region GameScreen
         public const int WindowDefaultSizeX = 1280;
         public const int WindowDefaultSizeY = 960;
-        public static readonly int WindowSlimSizeY = 720;
+        public const int WindowSlimSizeY = 720;
 
         #endregion
        

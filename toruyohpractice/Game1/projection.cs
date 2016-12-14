@@ -174,7 +174,7 @@ namespace CommonPart
                         }
                         break;
                     case MoveType.chase_player_target:
-                        if (!Function.hitcircle(x, y, 0, target.x, target.y, speed / 2))
+                        if (!Function.hitcircle(x, y, 0, target.x, target.y, speed / 2))//target=null
                         {
                             speed += acceleration;
                             radian = Function.towardValue(radian, Math.Atan2(target.y - y, target.x - x), omega);
