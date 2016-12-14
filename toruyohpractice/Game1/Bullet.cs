@@ -69,16 +69,18 @@ namespace CommonPart
         public virtual void update(Player player,bool bulletMove=true)
         {
             base.update(bulletMove);
-            if (x < Map.leftside - animation.X / 2 || x > Map.rightside + animation.X / 2
+            if (x < Map.leftside- animation.X / 2 || x > Map.rightside + animation.X / 2
                 || y > DataBase.WindowSlimSizeY + animation.Y / 2 || y < 0 - animation.Y / 2)
             {
                 remove(Unit_state.out_of_window);
+                return;
             }
 
             if (!animation.dataIsNull() &&hit_jugde(player) == true)
             {
                 player.damage(atk);
                 remove(Unit_state.bulletDamagedPlayer);
+                return;
             }
         }
 

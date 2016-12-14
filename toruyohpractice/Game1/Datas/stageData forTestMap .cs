@@ -28,9 +28,9 @@ namespace CommonPart
                     break;
                 case 5:
                     Map.create_enemy(320, 100, "testE1");
-                    Map.enemys.Last().add_skill("createbullet");
+                    Map.enemys.Last().add_skill("5way*3shot");
                     break;
-                case 60:
+               /* case 60:
                     Map.create_enemy(400, 100, "testE1");
                     Map.enemys.Last().add_skill("createbullet");
                     break;
@@ -41,7 +41,7 @@ namespace CommonPart
                 case 4720:
                     playBGM(bgmIDs[1]);//BGMを流す。
                     Map.create_boss1(360, 10, "boss1");
-                    break;
+                    break;*/
             }
             #endregion
         }
