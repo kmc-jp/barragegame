@@ -105,6 +105,10 @@ namespace CommonPart {
         /// この角度はその時点でのプレイヤーへの向きを意味する。
         /// </summary>
         public const double AngleToPlayer = -666;
+        /// <summary>
+        /// この角度はその時点での自分の向きを意味する。
+        /// </summary>
+        public const double SelfAngle = -888;
         #endregion
 
         #region UTD
