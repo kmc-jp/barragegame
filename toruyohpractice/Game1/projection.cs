@@ -19,8 +19,8 @@ namespace CommonPart
         /// <summary>
         /// x,yを持つenemyかplayer
         /// </summary>
-        public Vector target_pos;
         public Unit target;
+        public Vector target_pos;
         public AnimationAdvanced animation = null;
         public MoveType move_type;
         public int motionTime=1; public int nowMotionTime = 0;
@@ -83,7 +83,7 @@ namespace CommonPart
         {
             point_type = _point_type;
             motionTime = _time;
-            target_pos.X = Motion.from_PointType_getPosX(_target_pos.X, _target_pos.Y, point_type, motionTime, speed,radian,move_type);
+            target_pos.X = Motion.from_PointType_getPosX(_target_pos.X, _target_pos.Y, point_type, motionTime, speed, radian, move_type);
             target_pos.Y = Motion.from_PointType_getPosY(_target_pos.X, _target_pos.Y, point_type, motionTime, speed, radian, move_type);
             set_from_moveTypeAndPointType_2();
         }
@@ -195,11 +195,11 @@ namespace CommonPart
                         }
                         break;
                     case MoveType.go_straight: //角度変化がない前提である。
-                        speed += acceleration;
-                        speed_x += acceleration_x;
-                        speed_y += acceleration_y;
-                        x += speed_x;
-                        y += speed_y;
+                        speed += acceleration; 
+                        target_pos.X += acceleration_x;
+                        target_pos.Y += acceleration_y;
+                        x += target_pos.X;
+                        y += target_pos.Y;
                         break;
                     #endregion
                     case MoveType.rightcircle:
@@ -317,6 +317,12 @@ namespace CommonPart
                 }
                 #endregion
                 // is a direction ではspeedはそのまま
+                double dis = target_pos.GetLength();
+                if (dis != 0)
+                {
+                    acceleration_x = acceleration * target_pos.X / dis;
+                    acceleration_y = acceleration * target_pos.Y / dis;
+                }
             }
             #endregion
         }

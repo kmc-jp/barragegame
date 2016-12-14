@@ -30,11 +30,11 @@ namespace CommonPart
                     Map.create_enemy(320, 100, "testE1");
                     Map.enemys.Last().add_skill("5way*3shot");
                     break;
-               /* case 60:
-                    Map.create_enemy(400, 100, "testE1");
-                    Map.enemys.Last().add_skill("createbullet");
+                case 60:
+                    Map.create_enemy(400, 50, "testE1");
+                    Map.enemys.Last().add_skill("4wayshot-test");
                     break;
-                case 4700:
+                /*case 4700:
                     Map.boss_mode = true;
                     Map.EngagingTrueBoss();
                     break;
