@@ -325,7 +325,7 @@ namespace CommonPart
                 }
             }
             #endregion
-            Console.Write("bullet:" + speed +" " +target_pos);
+            //Console.Write("bullet:" + speed +" " +target_pos);
         }
 
         /// <summary>

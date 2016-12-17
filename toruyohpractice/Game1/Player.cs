@@ -27,11 +27,11 @@ namespace CommonPart
         /// <summary>
         /// 刀エネルギーの初期値
         /// </summary>
-        public int sword = 100;
+        public int sword = 80;
         /// <summary>
         /// かなたエネルギーの最大値
         /// </summary>
-        public int sword_max = 200;
+        public int sword_max = 160;
         #endregion
         /// <summary>
         /// 通常時の速度
@@ -71,15 +71,15 @@ namespace CommonPart
         /// <summary>
         /// 1回目のskill消費
         /// </summary>
-        public int shouhi_sword = 50;
+        public int shouhi_sword { get { return sword_max / 4; } }
         /// <summary>
         /// 2回目以降のskill消費
         /// </summary>
-        public int nextSwordSkill_Cost = 30;
+        public int nextSwordSkill_Cost { get { return sword_max / 8; } }
         /// <summary>
         /// skillを使うに最低限のエネルギー
         /// </summary>
-        public int sword_condition = 100;
+        public int sword_condition { get { return sword_max / 2; } }
         /// <summary>
         /// 敵のどれくらいしたまで移動するか
         /// </summary>
@@ -234,8 +234,8 @@ namespace CommonPart
             if (y < 0+ percent*texH / 2) { y = 0+ percent * texH / 2; }
             #endregion
             #region Limit Sword energy out of range
-            if (sword >= sword_max) { sword = sword_max; }
-            if (sword <= 0) { sword = 0; }
+            if (sword > sword_max) { sword = sword_max; }
+            if (sword < 0) { sword = 0; }
             #endregion
         }
 
@@ -426,7 +426,6 @@ namespace CommonPart
             {
                 attack_mode = true;
                 attack_time = 120;
-                shouhi_sword = sword;
                 nowProsIndex = -1;
                 skill_attackStandby = -1;
                 Map.CutInTexture(DataBase.charaCutInTexName, -400, 100, 100, 100, 60, 10);
@@ -516,9 +515,10 @@ namespace CommonPart
                             enemyAsTarget.damage(swordSkillDamage);
                             if (sword == sword_max)
                             {
-                                SoundManager.PlaySE(SoundEffectID.player100gauge);
+                                //SoundManager.PlaySE(SoundEffectID.player100gauge);
                                 enemyAsTarget.damage(bonusDamage);
-                            }else { SoundManager.PlaySE(SoundEffectID.player50gauge); }
+                            }else { //SoundManager.PlaySE(SoundEffectID.player50gauge); 
+                            }
                             sword = 0;
                             enemyAsTarget = null;
                             stop_time = skill_stop_time + 2;
@@ -652,7 +652,12 @@ namespace CommonPart
             }
             #endregion
         }// avoid end
-
+        public void addEnergy(int value)
+        {
+            sword += value;
+            if (sword < 0) sword = 0;
+            else if (sword > sword_max) sword = sword_max;
+        }
         public void damage(int atk)
         {
             if (life>0 && !Invincible()) 

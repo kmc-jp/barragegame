@@ -167,6 +167,15 @@ namespace CommonPart {
                 case 4:
                     stagedata = new Stage4Data("stage4");
                     break;
+                case 3:
+                    stagedata = new Stage3Data("stage3");
+                    break;
+                case 5:
+                    stagedata = new Stage6Data("stage6");
+                    break;
+                case 6:
+                    stagedata = new Stage6Data("stage6");
+                    break;
                 case -1:
                     stagedata = new stageData_forTestMap("test");
                     stage = 1;
@@ -178,7 +187,7 @@ namespace CommonPart {
             }
             #endregion
             scroll_speed = new Vector(defaultspeed_x, defaultspeed_y);
-            Map.player = new Player(DataBase.WindowDefaultSizeX/2, 500, 6, 25, 6*lifesPerPiece,DataBase.charaName);
+            Map.player = new Player(DataBase.WindowDefaultSizeX/2, 500, 6, 25, 11*lifesPerPiece,DataBase.charaName);
 
             bossLifeGaugeSize.X=0;
             leftside = 280;
@@ -401,7 +410,7 @@ namespace CommonPart {
                     }
                     #endregion
                 }
-            }
+            }else { maxRadiusOfCleaningBullets = now_radiusOfCleaningBullets = -1; }
             if (player.attack_mode)
             {
                 if(Map.scoreOfskilltoEnemy / 10000>=1) {
@@ -535,13 +544,17 @@ namespace CommonPart {
         public static void bossDamaged()
         {
             bossLifeBarAnime = new AnimationAdvanced(DataBase.getAniD(bossLifeBarTextureName+DataBase.aniNameAddOn_spell));
+            
         }
         #endregion
         #region about Player   damaged
         public static void clearBullets(int _maxRadius=300)
         {
-            now_radiusOfCleaningBullets = 10;
-            maxRadiusOfCleaningBullets = _maxRadius;
+            if (player.isAlive())
+            {
+                now_radiusOfCleaningBullets = 10;
+                maxRadiusOfCleaningBullets = _maxRadius;
+            }
         }
         #endregion
         #region standard Map Functions
@@ -700,7 +713,7 @@ namespace CommonPart {
             }
             
             chargeBar.Draw(d, new Vector(bar_pos.X-197, bar_pos.Y-chargeBar.Y/2-28), DepthID.Map);
-            d.DrawLine(bar_pos, new Vector(bar_pos.X + player.sword * 3.8, bar_pos.Y), 17, Color.Violet, DepthID.Status);//剣ゲージ
+            d.DrawLine(bar_pos, new Vector(bar_pos.X + 380*player.sword/player.sword_max, bar_pos.Y), 17, Color.Violet, DepthID.Status);//剣ゲージ
             #endregion
 
             #region draw CutIns
