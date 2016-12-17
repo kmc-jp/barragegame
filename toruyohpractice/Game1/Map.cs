@@ -36,9 +36,11 @@ namespace CommonPart {
         public Vector life_pos = new Vector(1070, 120);
         #endregion
         #region player- clean bullets
+        public static bool damageEnemys;
         public static int maxRadiusOfCleaningBullets;
         public static int speed_radiusOfCleaningBullets =8;
         public static int now_radiusOfCleaningBullets = -1;
+        public static int frames_CleaningBullets = 80;
         #endregion
         /// <summary>
         /// playerがskilltoEnemyで倒した敵の個体数を記録
@@ -311,7 +313,7 @@ namespace CommonPart {
                     }
                     if (Function.hitcircle(pros[i].x, pros[i].y, 0, player.x, player.y, 20))
                     {
-                        player.sword += pros[i].sword;
+                        player.addEnergy(pros[i].sword);
                         pros[i].delete = true;
                     }
                 }
@@ -340,6 +342,7 @@ namespace CommonPart {
             Map.cutIn_texPosNowX = Function.towardValue(Map.cutIn_texPosNowX, Map.cutIn_texPosToX, Map.cutIn_speed);
             Map.cutIn_texPosNowY = Function.towardValue(Map.cutIn_texPosNowY, Map.cutIn_texPosToY, Map.cutIn_speed);
             #endregion
+            #region about stop time
             if (!DataBase.timeEffective(Map.readyToStop_time) )
             {
                 if (DataBase.timeEffective(Map.stop_time))
@@ -351,6 +354,7 @@ namespace CommonPart {
                     return;
                 }
             }else if(Map.readyToStop_time!=DataBase.motion_inftyTime){ Map.readyToStop_time--; }
+            #endregion
             chargeBar.Update();
             stagedata.update();
             #region 画面上に見える敵を"見える敵たち"に入れる
@@ -372,9 +376,11 @@ namespace CommonPart {
             update_enemys();
             update_chargeProjections();
 
+            #region player update
             if (player.isAlive())
             {
                 player.update(input, this);
+                #region cleaning bullets enemys 
                 if (now_radiusOfCleaningBullets != -1)
                 {
                     now_radiusOfCleaningBullets = Function.towardValue(now_radiusOfCleaningBullets,
@@ -389,39 +395,58 @@ namespace CommonPart {
                         {
                             if (Map.enemys[jj].bullets[j].hit_jugde(player.x, player.y, now_radiusOfCleaningBullets))
                             {
-                                Map.enemys[jj].bullets[j].damage(player.atk);
+                                Map.enemys[jj].bullets[j].damage(player.atk/frames_CleaningBullets);
                             }
                         }
                         #endregion
-                        #region its bodys' bullets
-                        if (Map.enemys[jj].label.Contains("boss")){
+                        if (Map.enemys[jj].label.Contains("boss"))
+                        {
                             for (int j = 0; j < ((Boss)(Map.enemys[jj])).bodys.Length; j++)
                             {
+                                #region its bodys' bullets
                                 for (int k = 0; k < ((Boss)(Map.enemys[jj])).bodys[j].bullets.Count; k++)
                                 {
                                     if (((Boss)Map.enemys[jj]).bodys[j].bullets[k].hit_jugde(player.x, player.y, now_radiusOfCleaningBullets))
                                     {
-                                        ((Boss)Map.enemys[jj]).bodys[j].bullets[k].damage(player.atk);
+                                        ((Boss)Map.enemys[jj]).bodys[j].bullets[k].damage(player.atk/frames_CleaningBullets);
                                     }
                                 }
+                                #endregion
+                                #region its bodys
+                                if (damageEnemys)
+                                    if (((Boss)Map.enemys_inside_window[jj]).bodys[j].hit_jugde(player.x, player.y, now_radiusOfCleaningBullets))
+                                    {
+                                        Map.enemys_inside_window[jj].damage(player.atk / (4*frames_CleaningBullets));
+                                    }
+                                #endregion
                             }
                         }
-                        #endregion
+                        if(damageEnemys)
+                            if (Map.enemys_inside_window[jj].hit_jugde(player.x, player.y, now_radiusOfCleaningBullets))
+                            {
+                                Map.enemys_inside_window[jj].damage(player.atk / frames_CleaningBullets);
+                            }
                     }
                     #endregion
                 }
-            }else { maxRadiusOfCleaningBullets = now_radiusOfCleaningBullets = -1; }
-            if (player.attack_mode)
-            {
-                if(Map.scoreOfskilltoEnemy / 10000>=1) {
-                    player.life += Map.scoreOfskilltoEnemy / 10000;
-                    Map.scoreOfskilltoEnemy %= 10000;
+                #endregion
+                #region player attack skill - translate point into life
+                if (player.attack_mode)
+                {
+                    if (Map.scoreOfskilltoEnemy / 10000 >= 1)
+                    {
+                        player.life += Map.scoreOfskilltoEnemy / 10000;
+                        Map.scoreOfskilltoEnemy %= 10000;
+                    }
                 }
+                #endregion
             }
+            #endregion
+            else { maxRadiusOfCleaningBullets = now_radiusOfCleaningBullets = -1; }
             if (boss_mode == true)
             {
                 barslide();
-                if (BOSS!=null && BOSS.life <= 0 && !mapState.Contains(backToStageSelection) )
+                if (BOSS!=null && BOSS.label.Contains("boss")&&BOSS.life <= 0 && !mapState.Contains(backToStageSelection) )
                 {
                     game_win_start();
                 }
@@ -548,12 +573,15 @@ namespace CommonPart {
         }
         #endregion
         #region about Player   damaged
-        public static void clearBullets(int _maxRadius=300)
+        public static void clearBullets(int _maxRadius=440,int _frames=80,bool _cleanEnemys=false, int _nowRadius=10)
         {
             if (player.isAlive())
             {
-                now_radiusOfCleaningBullets = 10;
+                now_radiusOfCleaningBullets = _nowRadius;
+                frames_CleaningBullets = _frames;
                 maxRadiusOfCleaningBullets = _maxRadius;
+                speed_radiusOfCleaningBullets = (_maxRadius * 2 - now_radiusOfCleaningBullets)/frames_CleaningBullets;
+                damageEnemys = _cleanEnemys;
             }
         }
         #endregion
@@ -652,8 +680,8 @@ namespace CommonPart {
             #region cleaning bullets draw
             if (now_radiusOfCleaningBullets != -1 && player.isAlive())
             {
-                d.DrawCircle(new Vector(player.x, player.y), now_radiusOfCleaningBullets, 5, 20, Color.BlueViolet, DepthID.Player);
-                d.DrawCircle(new Vector(player.x, player.y), now_radiusOfCleaningBullets-8, 3, 20, Color.LightBlue, DepthID.Player);
+                d.DrawCircle(new Vector(player.x, player.y), now_radiusOfCleaningBullets, 4, 20, Color.Purple, DepthID.Player);
+                d.DrawCircle(new Vector(player.x, player.y), now_radiusOfCleaningBullets-4, 2, 20, Color.PeachPuff, DepthID.Player);
             }
             #endregion
             #region life piece draw

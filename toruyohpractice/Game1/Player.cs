@@ -37,7 +37,7 @@ namespace CommonPart
         /// 通常時の速度
         /// </summary>
         public int default_speed = 6;
-        public int atk = 500; //一度の回避によって切り付けるダメージ。またスキル使用時は3倍になる。
+        public int atk = 1000; //一度の回避によって切り付けるダメージ。またスキル使用時は3倍になる。
         #region about Animation and tex
         /// <summary>
         /// animationDataAdvancedのnameの前半を使用しています。使う時はaddOnと一緒に.
@@ -108,7 +108,7 @@ namespace CommonPart
         /// <summary>
         /// 回避後静止する時間
         /// </summary>
-        public int avoid_stop_time = 19;
+        public int avoid_stop_time = 22;
         private SoundEffectID avoid_SEid =SoundEffectID.playerattack1;
         /// <summary>
         /// 回避時に敵弾を消せる半円の半径
@@ -125,7 +125,7 @@ namespace CommonPart
         /// <summary>
         /// ダメージ受けてから無敵になる時間
         /// </summary>
-        public int default_muteki_time = 35;
+        public int default_muteki_time = 90;
         /// <summary>
         /// ダメージを受けたか/強制移動中なのか
         /// </summary>
@@ -556,6 +556,8 @@ namespace CommonPart
                 speed = 0;
                 //SoundManager.PlaySE(avoid_SEid);
 
+                #region old evasion
+                /*
                 #region　上下左右の回避によって、ダメージを受けるものたち
                 for (int i = 0; i < Map.enemys_inside_window.Count; i++)
                 {
@@ -570,9 +572,6 @@ namespace CommonPart
                                (input.IsKeyDown(KeyID.Right) == true && Map.enemys_inside_window[i].bullets[j].x >= x))
                         )
                         {
-                            /*Map.make_chargePro(Map.enemys_inside_window[i].bullets[j].x, Map.enemys_inside_window[i].bullets[j].y,
-                                Map.enemys_inside_window[i].bullets[j].sword, Map.enemys_inside_window[i].bullets[j].score);
-                            Map.score += Map.enemys_inside_window[i].bullets[j].score;*/
                             Map.enemys_inside_window[i].bullets[j].damage(atk);
                         }
                     }
@@ -620,6 +619,9 @@ namespace CommonPart
                     }
                 }
                 #endregion
+                */
+                #endregion
+                Map.clearBullets(avoid_radius,avoid_stop_time,true,avoid_radius/2);
                 if(input.IsKeyDown(KeyID.Up) || input.IsKeyDown(KeyID.Right) ) { playAnimation(DataBase.aniNameAddOn_evadeR); }
                 else if (input.IsKeyDown(KeyID.Down) || input.IsKeyDown(KeyID.Left)) { playAnimation(DataBase.aniNameAddOn_evadeL); }
             }
@@ -665,7 +667,7 @@ namespace CommonPart
                 SoundManager.PlaySE(SoundEffectID.playerdamage);
                 life -= atk;
                 InForcedRoute = true;
-                Map.clearBullets(avoid_radius*3);
+                Map.clearBullets(avoid_radius*4);
             }
             if (life>-5 && life <= 0) { life = -6; Map.game_over_start(); }
         }
