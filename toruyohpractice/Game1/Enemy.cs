@@ -168,7 +168,7 @@ namespace CommonPart
                 #endregion
                 if (Function.hitcircle(x, y, unitType.radius, player.x, player.y, player.radius))
                 {
-                    player.damage(1);
+                    player.damage(3);
                 }
 
                 #region bulletのupdate

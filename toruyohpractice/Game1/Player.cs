@@ -33,6 +33,10 @@ namespace CommonPart
         /// </summary>
         public int sword_max = 100;
         #endregion
+        /// <summary>
+        /// 通常時の速度
+        /// </summary>
+        public int default_speed = 6;
         public int atk = 500; //一度の回避によって切り付けるダメージ。またスキル使用時は3倍になる。
         #region about Animation and tex
         /// <summary>
@@ -76,7 +80,6 @@ namespace CommonPart
         /// skillを使うに最低限のエネルギー
         /// </summary>
         public int sword_condition = 50;
-        public int default_speed = 6;
         /// <summary>
         /// 敵のどれくらいしたまで移動するか
         /// </summary>
@@ -100,8 +103,11 @@ namespace CommonPart
         public bool avoid_mode = false;
         public bool avoid_InPlusAcceleration = true;
         //大体のフレーム数は (avoid_speed-default_speed)/avoid_acceleration *2 + avoid_stop_time
-        public int avoid_speed = 9;
-        public int avoid_acceleration = 1;
+        public double avoid_speed = 9;
+        public double avoid_acceleration = 1.0;
+        /// <summary>
+        /// 回避後静止する時間
+        /// </summary>
         public int avoid_stop_time = 15;
         private SoundEffectID avoid_SEid =SoundEffectID.playerattack1;
         /// <summary>
@@ -545,7 +551,7 @@ namespace CommonPart
                 avoid_mode = true;
                 avoid_InPlusAcceleration = true;
                 speed = 0;
-                SoundManager.PlaySE(avoid_SEid);
+                //SoundManager.PlaySE(avoid_SEid);
 
                 #region　上下左右の回避によって、ダメージを受けるものたち
                 for (int i = 0; i < Map.enemys_inside_window.Count; i++)
@@ -630,7 +636,7 @@ namespace CommonPart
                 {
                     if (speed > default_speed)
                     {
-                        speed -= (avoid_acceleration/2+1);
+                        speed -= (avoid_acceleration/2);
                     }
                     if (speed <= default_speed)
                     {

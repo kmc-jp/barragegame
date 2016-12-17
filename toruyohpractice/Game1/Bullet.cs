@@ -16,7 +16,7 @@ namespace CommonPart
         public int score;
         public int sword;
         public bool lasered;
-        public int atk = 1;
+        public const int atk = 3;
 
         /// <summary>
         /// 目標物体がある場合に使う
