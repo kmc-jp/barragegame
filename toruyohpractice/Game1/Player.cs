@@ -27,12 +27,16 @@ namespace CommonPart
         /// <summary>
         /// 刀エネルギーの初期値
         /// </summary>
-        public int sword = 50;
+        public int sword = 80;
         /// <summary>
         /// かなたエネルギーの最大値
         /// </summary>
-        public int sword_max = 100;
+        public int sword_max = 160;
         #endregion
+        /// <summary>
+        /// 通常時の速度
+        /// </summary>
+        public int default_speed = 6;
         public int atk = 500; //一度の回避によって切り付けるダメージ。またスキル使用時は3倍になる。
         #region about Animation and tex
         /// <summary>
@@ -67,16 +71,15 @@ namespace CommonPart
         /// <summary>
         /// 1回目のskill消費
         /// </summary>
-        public int shouhi_sword = 20;
+        public int shouhi_sword { get { return sword_max / 4; } }
         /// <summary>
         /// 2回目以降のskill消費
         /// </summary>
-        public int nextSwordSkill_Cost = 10;
+        public int nextSwordSkill_Cost { get { return sword_max / 8; } }
         /// <summary>
         /// skillを使うに最低限のエネルギー
         /// </summary>
-        public int sword_condition = 50;
-        public int default_speed = 6;
+        public int sword_condition { get { return sword_max / 2; } }
         /// <summary>
         /// 敵のどれくらいしたまで移動するか
         /// </summary>
@@ -85,7 +88,7 @@ namespace CommonPart
         /// 刀エネルギーが最大になっている時
         /// </summary>
         public int bonusDamage = 1000; 
-        public int swordSkillDamage { get { return atk*3 + 30 * (sword-50 ); } }
+        public int swordSkillDamage { get { return atk*3 + 15 * (sword-sword_max/2 ); } }
         //protected bool skill_attackBoss
         #endregion
         const int prosToBoss_dash_maximum=40;
@@ -100,9 +103,12 @@ namespace CommonPart
         public bool avoid_mode = false;
         public bool avoid_InPlusAcceleration = true;
         //大体のフレーム数は (avoid_speed-default_speed)/avoid_acceleration *2 + avoid_stop_time
-        public int avoid_speed = 9;
-        public int avoid_acceleration = 1;
-        public int avoid_stop_time = 15;
+        public double avoid_speed = 10;
+        public double avoid_acceleration = 1.0;
+        /// <summary>
+        /// 回避後静止する時間
+        /// </summary>
+        public int avoid_stop_time = 19;
         private SoundEffectID avoid_SEid =SoundEffectID.playerattack1;
         /// <summary>
         /// 回避時に敵弾を消せる半円の半径
@@ -228,8 +234,8 @@ namespace CommonPart
             if (y < 0+ percent*texH / 2) { y = 0+ percent * texH / 2; }
             #endregion
             #region Limit Sword energy out of range
-            if (sword >= sword_max) { sword = sword_max; }
-            if (sword <= 0) { sword = 0; }
+            if (sword > sword_max) { sword = sword_max; }
+            if (sword < 0) { sword = 0; }
             #endregion
         }
 
@@ -266,7 +272,8 @@ namespace CommonPart
                 int j = 0;
                 for (int i = 0; i < Map.enemys_inside_window.Count; i++)
                 {
-                    if (Map.enemys_inside_window[i].selectable() == true)
+                    if (Map.enemys_inside_window[i].label.Contains("boss")&&
+                        Map.enemys_inside_window[i].selectable() == true)
                     {
                         enemyAsTarget = Map.enemys_inside_window[i];
                         j = i;
@@ -276,7 +283,8 @@ namespace CommonPart
 
                 for (int i = j+1; i < Map.enemys_inside_window.Count; i++)
                 {
-                    if (Map.enemys_inside_window[i].selectable() == true
+                    if (Map.enemys_inside_window[i].label.Contains("boss") &&
+                        Map.enemys_inside_window[i].selectable() == true
                         && Function.distance(x, y, Map.enemys_inside_window[i].x, Map.enemys_inside_window[i].y) < Function.distance(x, y, enemyAsTarget.x, enemyAsTarget.y))
                     {
                         enemyAsTarget = Map.enemys_inside_window[i];
@@ -387,6 +395,7 @@ namespace CommonPart
 
         protected void skilltoEnemyEnd()
         {
+            first = false;
             playAnimation(DataBase.defaultAnimationNameAddOn);
             InForcedRoute = true;
             attack_mode = false;
@@ -417,7 +426,6 @@ namespace CommonPart
             {
                 attack_mode = true;
                 attack_time = 120;
-                shouhi_sword = sword;
                 nowProsIndex = -1;
                 skill_attackStandby = -1;
                 Map.CutInTexture(DataBase.charaCutInTexName, -400, 100, 100, 100, 60, 10);
@@ -507,9 +515,10 @@ namespace CommonPart
                             enemyAsTarget.damage(swordSkillDamage);
                             if (sword == sword_max)
                             {
-                                SoundManager.PlaySE(SoundEffectID.player100gauge);
+                                //SoundManager.PlaySE(SoundEffectID.player100gauge);
                                 enemyAsTarget.damage(bonusDamage);
-                            }else { SoundManager.PlaySE(SoundEffectID.player50gauge); }
+                            }else { //SoundManager.PlaySE(SoundEffectID.player50gauge); 
+                            }
                             sword = 0;
                             enemyAsTarget = null;
                             stop_time = skill_stop_time + 2;
@@ -545,7 +554,7 @@ namespace CommonPart
                 avoid_mode = true;
                 avoid_InPlusAcceleration = true;
                 speed = 0;
-                SoundManager.PlaySE(avoid_SEid);
+                //SoundManager.PlaySE(avoid_SEid);
 
                 #region　上下左右の回避によって、ダメージを受けるものたち
                 for (int i = 0; i < Map.enemys_inside_window.Count; i++)
@@ -630,7 +639,7 @@ namespace CommonPart
                 {
                     if (speed > default_speed)
                     {
-                        speed -= (avoid_acceleration/2+1);
+                        speed -= (avoid_acceleration/2);
                     }
                     if (speed <= default_speed)
                     {
@@ -643,7 +652,12 @@ namespace CommonPart
             }
             #endregion
         }// avoid end
-
+        public void addEnergy(int value)
+        {
+            sword += value;
+            if (sword < 0) sword = 0;
+            else if (sword > sword_max) sword = sword_max;
+        }
         public void damage(int atk)
         {
             if (life>0 && !Invincible()) 
@@ -651,6 +665,7 @@ namespace CommonPart
                 SoundManager.PlaySE(SoundEffectID.playerdamage);
                 life -= atk;
                 InForcedRoute = true;
+                Map.clearBullets(avoid_radius*3);
             }
             if (life>-5 && life <= 0) { life = -6; Map.game_over_start(); }
         }
@@ -693,6 +708,8 @@ namespace CommonPart
         protected bool EvasionKeySetPressed(InputManager input) {
             return ( input.IsKeyDownOld(KeyID.Cancel) || input.IsKeyDown(KeyID.Cancel) ) && AnyArrowKeyDown(input);
         }
+
+        public bool isAlive() { return life > 0; }
         #endregion
     }
 }

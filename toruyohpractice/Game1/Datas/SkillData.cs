@@ -487,6 +487,7 @@ namespace CommonPart
             : base(_skillName, _conditions, SkillGenreL.generation, _sgs, _aniDName, _cooldownFps, motion, _radius, _duration, _space, _sword, _score, _life)
         {
             way = _way;
+            Console.Write(_skillName+" "+way);
         }
 
         /// <summary>

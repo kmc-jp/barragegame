@@ -32,7 +32,7 @@ namespace CommonPart
             animations = new AnimationAdvanced[stagesPos.Length];
             for(int i = 0; i < stagesPos.Length; i++)
             {
-                stageAvailable[i] = false;
+                stageAvailable[i] = true;
             }
             stageAvailable[0] = true; stageAvailable[1] = true;
             for(int j = 0; j < stagesPos.Length; j++)
