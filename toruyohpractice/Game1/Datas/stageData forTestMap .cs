@@ -27,13 +27,16 @@ namespace CommonPart
                     Map.boss_mode = false;
                     break;
                 case 5:
-                    Map.create_enemy(360, 0, "testE1");
-                    Map.enemys.Last().add_skill("boss6-1");
+                    Map.create_enemy(320, 100, "testE1");
+                    Map.enemys.Last().add_skill("zyuzi-0");
+                    Map.enemys.Last().add_skill("laser-down-1");
+
                     break;
                 /*case 60:
                     Map.create_enemy(400, 50, "testE1");
                     Map.enemys.Last().add_skill("createbullet");
                     break;
+                    */
                 /*case 4700:
                     Map.boss_mode = true;
                     Map.EngagingTrueBoss();

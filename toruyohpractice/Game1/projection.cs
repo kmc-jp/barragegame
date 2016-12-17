@@ -61,7 +61,7 @@ namespace CommonPart
         /// <param name="_move_type"></param>
         /// <param name="_anime"></param>
         /// <param name="_zoom_rate"></param>
-        public Projection(double _x, double _y,MoveType _move_type, string _anime, double _speed=0,double _acceleration=0,double _radian=Math.PI/2,int _zoom_rate=100)
+        public Projection(double _x, double _y,MoveType _move_type, string _anime, double _speed=0,double _acceleration=0,double _radian=Math.PI/2,double _omega=0,int _zoom_rate=100)
             :base(_x,_y)
         {
             x = _x;
@@ -69,7 +69,7 @@ namespace CommonPart
             target = null;
             move_type = _move_type;
             animation = new AnimationAdvanced(DataBase.getAniD(_anime));
-            speed = _speed;      acceleration = _acceleration;      radian = _radian;
+            speed = _speed;      acceleration = _acceleration;      radian = _radian;  omega = _omega;
             zoom_rate = _zoom_rate;
             set_speed_and_acceleration_from_radian();
         }
@@ -78,8 +78,8 @@ namespace CommonPart
         /// </summary>
         /// <param name="_point_type">_target_posをどのように使用を決める</param>
         /// <param name="_target_pos">このMoveTypeに使用する点</param>
-        public Projection(double _x, double _y, MoveType _move_type, string _anime, Vector _target_pos, PointType _point_type,int _time,double _speed=0,double _acceleration=0, double _radian=0,int _zoom_rate=100)
-            : this(_x, _y, _move_type, _anime,_speed,_acceleration,_radian, _zoom_rate)
+        public Projection(double _x, double _y, MoveType _move_type, string _anime, Vector _target_pos, PointType _point_type,int _time,double _speed=0,double _acceleration=0, double _radian=0,double _omega=0,int _zoom_rate=100)
+            : this(_x, _y, _move_type, _anime,_speed,_acceleration,_radian,_omega, _zoom_rate)
         {
             point_type = _point_type;
             motionTime = _time;
@@ -96,8 +96,8 @@ namespace CommonPart
         /// <param name="_target">class Unitの目標</param>
         /// <param name="_acceleration">加速度</param>
         /// <param name="_radian">向き。MoveTypeによって、無意味になることもある</param>
-        public Projection(double _x, double _y, MoveType _move_type, string _anime, Unit _target, double _speed,double _acceleration, double _radian = 0, int _zoom_rate = 100)
-            : this(_x, _y, _move_type, _anime, _speed,_acceleration,_radian,_zoom_rate)
+        public Projection(double _x, double _y, MoveType _move_type, string _anime, Unit _target, double _speed,double _acceleration, double _radian = 0, double _omega=0,int _zoom_rate = 100)
+            : this(_x, _y, _move_type, _anime, _speed,_acceleration,_radian,_omega,_zoom_rate)
         {
             target = _target;
             switch (move_type)
@@ -325,6 +325,7 @@ namespace CommonPart
                 }
             }
             #endregion
+            //Console.Write("bullet:" + speed +" " +target_pos);
         }
 
         /// <summary>

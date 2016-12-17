@@ -13,6 +13,9 @@ namespace CommonPart {
         public int stage;        protected StageData stagedata;
 
         public Vector score_pos = new Vector(1100, 180);
+
+        public static Window window=null;
+
         #region player and Life Piece and chargeBar
         public string life_tex_name = "33x60バッテリーアイコン";
         /// <summary>
@@ -31,6 +34,11 @@ namespace CommonPart {
         /// 残機表示の左上の座標
         /// </summary>
         public Vector life_pos = new Vector(1070, 120);
+        #endregion
+        #region player- clean bullets
+        public static int maxRadiusOfCleaningBullets;
+        public static int speed_radiusOfCleaningBullets =8;
+        public static int now_radiusOfCleaningBullets = -1;
         #endregion
         /// <summary>
         /// playerがskilltoEnemyで倒した敵の個体数を記録
@@ -52,7 +60,7 @@ namespace CommonPart {
         /// </summary>
         const double defaultspeed_x = 0,defaultspeed_y = 1;
         #endregion
-        #region map BackGround variables
+        #region map BackGround/textures variables
         static int total_BackGroundHeight = 0;
         protected static List<string> background_names = new List<string>();
         protected static List<string> textureNames = new List<string>();
@@ -122,9 +130,7 @@ namespace CommonPart {
         public static Player player;
         public static int enemysIndexOfBoss=0;
         public static List<Enemy> enemys = new List<Enemy>();
-        public static List<Enemy> enemys_inside_window = new List<Enemy>();
-
-        
+        public static List<Enemy> enemys_inside_window = new List<Enemy>();      
 
         /// <summary>
         /// 左側のバーの右端のx座標
@@ -161,6 +167,15 @@ namespace CommonPart {
                 case 4:
                     stagedata = new Stage4Data("stage4");
                     break;
+                case 3:
+                    stagedata = new Stage3Data("stage3");
+                    break;
+                case 5:
+                    stagedata = new Stage6Data("stage6");
+                    break;
+                case 6:
+                    stagedata = new Stage6Data("stage6");
+                    break;
                 case -1:
                     stagedata = new stageData_forTestMap("test");
                     stage = 1;
@@ -172,7 +187,7 @@ namespace CommonPart {
             }
             #endregion
             scroll_speed = new Vector(defaultspeed_x, defaultspeed_y);
-            Map.player = new Player(DataBase.WindowDefaultSizeX/2, 500, 6, 10, 6*lifesPerPiece,DataBase.charaName);
+            Map.player = new Player(DataBase.WindowDefaultSizeX/2, 500, 6, 25, 11*lifesPerPiece,DataBase.charaName);
 
             bossLifeGaugeSize.X=0;
             leftside = 280;
@@ -203,6 +218,7 @@ namespace CommonPart {
             #region about background 
             v.Clear(); background_names.Clear(); total_BackGroundHeight = 0;
             #endregion
+            textureNames.Clear();
             Map.pros.Clear();
         }
         /// <summary>
@@ -356,10 +372,45 @@ namespace CommonPart {
             update_enemys();
             update_chargeProjections();
 
-            if (player.life > 0)
+            if (player.isAlive())
             {
                 player.update(input, this);
-            }
+                if (now_radiusOfCleaningBullets != -1)
+                {
+                    now_radiusOfCleaningBullets = Function.towardValue(now_radiusOfCleaningBullets,
+                        maxRadiusOfCleaningBullets, speed_radiusOfCleaningBullets);
+                    if (now_radiusOfCleaningBullets >= maxRadiusOfCleaningBullets && maxRadiusOfCleaningBullets != -1)
+                        maxRadiusOfCleaningBullets = -1;
+                    #region cleaning bullets
+                    for (int jj = 0; jj < enemys.Count; jj++)
+                    {
+                        #region its bullets
+                        for (int j = 0; j < Map.enemys[jj].bullets.Count; j++)
+                        {
+                            if (Map.enemys[jj].bullets[j].hit_jugde(player.x, player.y, now_radiusOfCleaningBullets))
+                            {
+                                Map.enemys[jj].bullets[j].damage(player.atk);
+                            }
+                        }
+                        #endregion
+                        #region its bodys' bullets
+                        if (Map.enemys[jj].label.Contains("boss")){
+                            for (int j = 0; j < ((Boss)(Map.enemys[jj])).bodys.Length; j++)
+                            {
+                                for (int k = 0; k < ((Boss)(Map.enemys[jj])).bodys[j].bullets.Count; k++)
+                                {
+                                    if (((Boss)Map.enemys[jj]).bodys[j].bullets[k].hit_jugde(player.x, player.y, now_radiusOfCleaningBullets))
+                                    {
+                                        ((Boss)Map.enemys[jj]).bodys[j].bullets[k].damage(player.atk);
+                                    }
+                                }
+                            }
+                        }
+                        #endregion
+                    }
+                    #endregion
+                }
+            }else { maxRadiusOfCleaningBullets = now_radiusOfCleaningBullets = -1; }
             if (player.attack_mode)
             {
                 if(Map.scoreOfskilltoEnemy / 10000>=1) {
@@ -406,6 +457,9 @@ namespace CommonPart {
             return _score;
         }
         #region Map Advanced Function
+        public static void DialougeWindow(string[] text,Vector[] vecs) {
+
+        }
         /// <summary>
         /// マップ上のすべての物体の更新を止める。
         /// </summary>
@@ -490,6 +544,17 @@ namespace CommonPart {
         public static void bossDamaged()
         {
             bossLifeBarAnime = new AnimationAdvanced(DataBase.getAniD(bossLifeBarTextureName+DataBase.aniNameAddOn_spell));
+            
+        }
+        #endregion
+        #region about Player   damaged
+        public static void clearBullets(int _maxRadius=300)
+        {
+            if (player.isAlive())
+            {
+                now_radiusOfCleaningBullets = 10;
+                maxRadiusOfCleaningBullets = _maxRadius;
+            }
         }
         #endregion
         #region standard Map Functions
@@ -584,7 +649,13 @@ namespace CommonPart {
             #endregion
 
             player.draw(d);
-
+            #region cleaning bullets draw
+            if (now_radiusOfCleaningBullets != -1 && player.isAlive())
+            {
+                d.DrawCircle(new Vector(player.x, player.y), now_radiusOfCleaningBullets, 5, 20, Color.BlueViolet, DepthID.Player);
+                d.DrawCircle(new Vector(player.x, player.y), now_radiusOfCleaningBullets-8, 3, 20, Color.LightBlue, DepthID.Player);
+            }
+            #endregion
             #region life piece draw
             int ii;
             for(ii = 0; ii < player.life/lifesPerPiece; ii++)
@@ -642,7 +713,7 @@ namespace CommonPart {
             }
             
             chargeBar.Draw(d, new Vector(bar_pos.X-197, bar_pos.Y-chargeBar.Y/2-28), DepthID.Map);
-            d.DrawLine(bar_pos, new Vector(bar_pos.X + player.sword * 3.8, bar_pos.Y), 17, Color.Violet, DepthID.Status);//剣ゲージ
+            d.DrawLine(bar_pos, new Vector(bar_pos.X + 380*player.sword/player.sword_max, bar_pos.Y), 17, Color.Violet, DepthID.Status);//剣ゲージ
             #endregion
 
             #region draw CutIns
