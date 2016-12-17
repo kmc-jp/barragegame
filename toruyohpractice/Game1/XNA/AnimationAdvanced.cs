@@ -270,8 +270,8 @@ namespace CommonPart
     {
         public override float X { get { if (data == null) return 0;else return data.X; } }
         public override float Y { get { if (data == null) return 0; else return data.Y; } }
-        new AnimationDataAdvanced data;
-        int frame;
+        public new AnimationDataAdvanced data;
+        int frame=0;
         const bool animateWithUpdate = true;
         protected bool repeat=false;
         public AnimationAdvanced(AnimationDataAdvanced d):base(d)// data= dとしているだけ。
