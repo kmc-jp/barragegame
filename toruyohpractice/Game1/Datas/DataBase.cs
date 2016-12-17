@@ -279,16 +279,16 @@ namespace CommonPart {
         #endregion
 
         #region SkillData
-        private const int low_speed=2;
-        private const int middle_speed=5;
-        private const int high_speed=9;
-        private const int big_radius=10;
-        private const int small_radius=5;
+        private const double low_speed=2;
+        private const double middle_speed=5;
+        private const double high_speed=9;
+        private const double big_radius=10;
+        private const double small_radius=5;
         private const int high_cd1 = 5; private const int high_cd2 = 8; private const int high_cd3 = 20; private const int high_cd4 = 30;
         private const int middle_cd1 = 45; private const int middle_cd2 = 60;
         private const int low_cd1 = 90; private const int low_cd2 = 100; private const int low_cd3 = 120; private const int low_cd6 = 240;
         private const double highangle1 = Math.PI / 10;
-        private const double middleangle1 = Math.PI / 6; private const double middleangle2= Math.PI / 5;
+        private const double middleangle1 = Math.PI / 6; private const double middleangle2= Math.PI / 5; private const double middleangle4 = Math.PI / 4;
         private const double lowangle1 = Math.PI / 2; private const double lowangle2 = Math.PI;
 
         
@@ -296,8 +296,8 @@ namespace CommonPart {
         public static void setupSkillData()
         {
             Vector nv = new Vector(); double tPI = 2*Math.PI;
-            Motion goStraightToPlayer = new Motion(MoveType.go_straight,PointType.player_pos,new Vector(),middle_speed,0,0);
-            Motion goStraightWithDirection = new Motion(MoveType.go_straight, PointType.Direction, new Vector(), low_speed, 0,0);
+            Motion goStraightToPlayer = new Motion(MoveType.go_straight,PointType.player_pos,nv,middle_speed,0,0);
+            Motion goStraightWithDirection = new Motion(MoveType.go_straight, PointType.Direction, nv, low_speed, 0,0);
             Motion rCircle = new Motion(MoveType.rightcircle, PointType.notused, new Vector(), low_speed, 0, 60, Math.PI / 30);
             //addSkillData(new WaySkilledBulletsData("createbullet",null,SkillGenreS.wayshot,null,low_cd3,goStraightToPlayer,small_radius,"yanagi-s",1,60));
             const string bulletTimeOut = Condition.hP + "<0";
@@ -310,7 +310,7 @@ namespace CommonPart {
             addSkillData(new WaySkilledBulletsData("5way*3shot", null, SkillGenreS.wayshot, "bulletsmall", low_cd3, goStraightWithDirection,0,0,AngleToPlayer,0,0, small_radius,new string[] { "5wayshot-test" }, 1, high_cd2*3+1));
             addSkillData(new WayShotSkillData("5wayshot-test", null ,SkillGenreS.wayshot, "bulletsmall", high_cd2, goStraightWithDirection, small_radius,5 , middleangle1));
 
-            addSkillData(new WayShotSkillData("4wayshot-test", null, SkillGenreS.wayshot, "bulletsmall", low_cd6, MoveType.go_straight,PointType.player_pos,nv,0,low_speed,0.1,SelfAngle,0, small_radius, 4, middleangle1));
+            addSkillData(new WayShotSkillData("4wayshot-test", null, SkillGenreS.wayshot, "bulletsmall", low_cd6, MoveType.rotateAndGo,PointType.player_pos,nv,0,low_speed,0.1,SelfAngle,tPI/100, small_radius, 4, lowangle1));
 
             #region 2016/12/10まで
             addSkillData(new WayShotSkillData("5wayshot", null, SkillGenreS.wayshot,MoveType.go_straight,"bulletsmall", high_cd3, middle_speed, 0, highangle1, small_radius,5));
@@ -321,8 +321,8 @@ namespace CommonPart {
             addSkillData(new WayShotSkillData("boss2wayshot-0", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", 270, middle_speed, 0, middleangle2, small_radius,3));
             addSkillData(new WayShotSkillData("20circle-0", null,SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", low_cd2, low_speed, 0, highangle1, small_radius,(int)(tPI/highangle1),lowangle1));
             addSkillData(new WayShotSkillData("boss10circle-0", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", low_cd3, low_speed, 0, middleangle2, small_radius, (int)(tPI / middleangle2), lowangle1));
-            addSkillData(new WayShotSkillData("downshot-0", null, SkillGenreS.wayshot,MoveType.go_straight, "bulletsmall", low_cd1, middle_speed, 0, lowangle1, small_radius));
-            addSkillData(new WayShotSkillData("downshot-1", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletline", middle_cd1, middle_speed, 0, lowangle1, small_radius));
+            addSkillData(new WayShotSkillData("downshot-0", null, SkillGenreS.wayshot, "bulletsmall", low_cd1, goStraightWithDirection, middle_speed,0.0,lowangle1,0, 0,small_radius));
+            addSkillData(new WayShotSkillData("downshot-1", null, SkillGenreS.wayshot, "bulletline", middle_cd1, goStraightWithDirection, middle_speed, 0, lowangle1, 0,0, small_radius));
             addSkillData(new WayShotSkillData("1wayshot-1", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", middle_cd2, high_speed, 0, 0, small_radius,1));
             addSkillData(new WayShotSkillData("1chaseShot-1", null, SkillGenreS.wayshot,MoveType.player_target,"bulletsmall", middle_cd2, middle_speed, 0, 0,small_radius,1,120));
             addSkillData(new WayShotSkillData("1chaseShot-2", null, SkillGenreS.wayshot, MoveType.player_target, "bulletsmall", middle_cd2, high_speed, 0, 0, small_radius,1,120));
@@ -330,12 +330,12 @@ namespace CommonPart {
             addSkillData(new WayShotSkillData("4wayshot-0", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletlarge", middle_cd1, middle_speed, 0, middleangle1, big_radius, 4));
             addSkillData(new WayShotSkillData("4wayshot-1", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", low_cd1, middle_speed, 0, middleangle2, big_radius, 4));
             addSkillData(new WayShotSkillData("4wayshot-2", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", high_cd3, middle_speed, 0, middleangle1, small_radius,4));
-            addSkillData(new WayShotSkillData("laser-once-1", null,SkillGenreS.laser, "bulletsmall", 600, MoveType.go_straight,PointType.player_pos,new Vector(),0, high_speed, 0, lowangle1, 0,small_radius, Color.Maroon,1,600));
+            addSkillData(new WayShotSkillData("laser-once-1", null,SkillGenreS.laser, "bulletsmall", 600, MoveType.go_straight,PointType.player_pos,new Vector(),0, high_speed, 0, lowangle1, 0,small_radius, Color.Maroon,1,0,600));
 
-            addSkillData(new WayShotSkillData("laser-down-1", null, SkillGenreS.laser,  "bulletsmall", 360, MoveType.go_straight, PointType.Direction, new Vector(),0, high_speed, 0, lowangle1, 0,small_radius, Color.Maroon, 1,180));
+            addSkillData(new WayShotSkillData("laser-down-1", null, SkillGenreS.laser,  "bulletsmall", 360, MoveType.go_straight, PointType.Direction, new Vector(),0, high_speed, 0, lowangle1, 0,small_radius, Color.Maroon, 1,0,180));
 
-            addSkillData(new WayShotSkillData("laser-1", null, SkillGenreS.laser, "bulletsmall", low_cd6, MoveType.chase_player_target, PointType.player_pos, new Vector(),0,high_speed, 0, lowangle1, 0.003,small_radius, Color.Chocolate,1,140));
-            addSkillData(new WayShotSkillData("zyuzi-0", null, SkillGenreS.wayshot ,MoveType.go_straight,"bulletsmall", middle_cd2, low_speed,0, 0,small_radius,4,lowangle1));
+            addSkillData(new WayShotSkillData("laser-1", null, SkillGenreS.laser, "bulletsmall", low_cd6, MoveType.chase_player_target, PointType.player_pos, new Vector(),0,high_speed, 0, lowangle1, 0.003,small_radius, Color.Chocolate,1,0,140));
+            addSkillData(new WayShotSkillData("zyuzi-0", null, SkillGenreS.wayshot ,MoveType.go_straight,"bulletsmall", middle_cd2, low_speed, 0, lowangle1, small_radius, (int)(tPI / lowangle1), middleangle4));
             #endregion
         }
         #endregion
@@ -439,7 +439,7 @@ namespace CommonPart {
             addAniD(new AnimationDataAdvanced(bossLifeBar_default_aniName+defaultAnimationNameAddOn,10,1,bossLifeBar_default_aniName));
             addAniD(new AnimationDataAdvanced(bossLifeBar_default_aniName + aniNameAddOn_spell, 10, 4,2, bossLifeBar_default_aniName));
             getAniD(bossLifeBar_default_aniName + aniNameAddOn_spell).assignAnimationName(bossLifeBar_default_aniName + defaultAnimationNameAddOn, true);
-#region addAniD in program
+            #region addAniD in program
             /*
             addAniD( new AnimationDataAdvanced("boss1" + defaultAnimationNameAddOn,
                 10, 3, "90 270-boss1", true));
