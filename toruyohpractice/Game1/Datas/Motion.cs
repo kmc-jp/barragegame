@@ -34,7 +34,7 @@ namespace CommonPart
         public static bool Has_a_Object(MoveType _mt) {
             switch (_mt)
             {
-                case MoveType.chase_target:
+                case MoveType.chase_player_target:
                 case MoveType.player_target:
                     return true;
                 default:
@@ -42,13 +42,15 @@ namespace CommonPart
             }
         }
 
-        public static double getAngleFromPointType(PointType _pt,double _angle,double px,double sx=0,double sy=0)
+        public static double getAngleFromPointType(PointType _pt,double _angle,double px,double sx=0,double sy=0,double self_angle=0)
         {
+            if (_angle == DataBase.AngleToPlayer)
+                _angle = Math.Atan2(Map.player.y - sy, Map.player.x - sx);
+            else if (_angle == DataBase.SelfAngle)
+                _angle = self_angle;
             switch (_pt)
             {
                 case PointType.Direction:
-                    if (_angle == DataBase.AngleToPlayer)
-                        _angle = Math.Atan2(Map.player.y-sy,Map.player.x-sx);
                     return _angle;
                 case PointType.randomDirection:
                     return _angle + Function.GetRandomDouble(px * 2) - px;
@@ -105,10 +107,11 @@ namespace CommonPart
 
 
         /// <summary>
-        /// 渡された(x,y)とPointTypeで適切なyを返す.player_posの時player.yを返す
+        /// 渡された(x,y)とPointTypeで適切なyを返す.player_posの時player.yを返す.この時点でrandomRangeが計算されるが、directionを使うものはすでに計算したangleを渡すべき。
         /// </summary>
         /// <param name="pos"></param>
         /// <param name="_pt"></param>
+        /// <param name="_angle">directionを使うものはすでに計算したangleを渡す</param>
         public static double from_PointType_getPosY(double px, double py, PointType _pt, int t = 1, double _speed = 1, double _angle = Math.PI / 2, MoveType _mt = MoveType.noMotion)
         {
             switch (_pt)
@@ -129,10 +132,11 @@ namespace CommonPart
             }
         }
         /// <summary>
-        /// 渡された(x,y)とPointTypeで適切なxを返す.player_posはこの時点のplayer.xを返す。
+        /// 渡された(x,y)とPointTypeで適切なxを返す.player_posはこの時点のplayer.xを返す。この時点でrandomRangeが計算されるが、directionを使うものはすでに計算したangleを渡すべき。
         /// </summary>
         /// <param name="pos"></param>
         /// <param name="_pt"></param>
+        /// <param name="_angle">directionを使うものはすでに計算したangleを渡す</param>
         public static double from_PointType_getPosX(double px, double py, PointType _pt, int t = 1, double _speed=1, double _angle=Math.PI/2, MoveType _mt = MoveType.noMotion)
         {
             switch (_pt)

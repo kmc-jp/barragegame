@@ -111,6 +111,7 @@ namespace CommonPart
                     case MoveType.chase_player_target:
                         if (!Function.hitcircle(x, y, 0, player.x, player.y, speed / 2))
                         {
+                            speed += unitType.acceleration;
                             angle = Function.towardValue(angle, Math.Atan2(player.y - y, player.x - x), omega);
                             x += speed*Math.Cos(angle);
                             y += speed*Math.Sin(angle);
@@ -120,6 +121,7 @@ namespace CommonPart
                     case MoveType.player_target:
                         if (!Function.hitcircle(x, y, 0, player.x, player.y, speed / 2))
                         {
+                            speed += unitType.acceleration;
                             double ep = Math.Sqrt(Function.distance(x, y, player.x, player.y));
                             double speed_x = speed * (player.x - x) / ep;
                             double speed_y = speed * (player.y - y) / ep;
@@ -138,6 +140,7 @@ namespace CommonPart
                     case MoveType.screen_point_target://スクリーン上の点に移動し、十分近ければその点に移りMoveTypeを次に移す
                         if (!Function.hitcircle(x, y, 0, default_pos.X, default_pos.Y, unitType.speed/2))
                         {
+                            speed += unitType.acceleration;
                             double ep = Math.Sqrt(Function.distance(x, y, default_pos.X, default_pos.Y));
                             double speed_x = speed * (default_pos.X - x) / ep;
                             double speed_y = speed * (default_pos.Y - y) / ep;
@@ -173,16 +176,17 @@ namespace CommonPart
                 {
                     bullets[i].update(player,bulletsMove);
                 }
-                for (int i = 0; i < bullets.Count; i++)//update 専用
+                for (int i = bullets.Count - 1; i >= 0; i--)//update 専用
                 {
                     if (bullets[i].delete)
                     {
                         bullets.Remove(bullets[i]);
-                        i--;
+                        
                         //Console.Write(i+" ");
                     }
                 }
                 #endregion
+                //Console.WriteLine(bullets.Count);
                 update_skills();
                 shot(player);
             }else { stop_time--; return; }
@@ -301,55 +305,67 @@ namespace CommonPart
                 pt = unitType.pointTypes[i];
                 default_pos = unitType.default_poses[i];
                 setup_default_pos(i);
-                #region screen_point_target
-                if (mt == MoveType.screen_point_target && alltime > 0) {
-                    if (Motion.Is_a_Point(pt))
-                    {
-                        speed = Math.Sqrt((default_pos.X - x) * (default_pos.X - x) + (default_pos.Y - y) * (default_pos.Y - y)) / alltime;
-                    }else if(Motion.Is_a_Direction(pt))
-                    { 
-                        speed = Math.Sqrt( default_pos.X * default_pos.X + default_pos.Y * default_pos.Y ) / alltime;
-                    }
-                }
-                #endregion
-                #region go_straight
-                else if (mt==MoveType.go_straight)
-                {
-                    #region is a point
-                    if (Motion.Is_a_Point(pt))
-                    {
-                        if(alltime > 0)
-                        {
-                            default_pos.X = (default_pos.X - x) / alltime;
-                            default_pos.Y = (default_pos.Y - y) / alltime;
-                        }else
-                        {
-                            double distance = Math.Sqrt(Function.distance(default_pos.X, default_pos.Y, x, y));
-                            default_pos.X = (default_pos.X - x) *speed/ distance;
-                            default_pos.Y = (default_pos.Y - y) *speed/ distance;
-                        }
-                    }
-                    #endregion
-                    else
-                    {
-                        if (alltime > 0)
-                        {
-                            default_pos.X /= alltime;
-                            default_pos.Y /= alltime;
-                        }
-                        else
-                        {
-                            double distance = default_pos.GetLength();
-                            default_pos.X = default_pos.X * speed / distance;
-                            default_pos.Y = default_pos.Y * speed / distance;
-                        }
-                    }
-                }
-                #endregion
-                else { speed = unitType.speed; }
+                speed = unitType.speed;
+                set_from_moveTypeAndPointType_2();
                 Console.WriteLine(default_pos+" "+mt);
             }
             else { Console.Write("setup_motion:Invaild Motion-" + unitType_name + "- i is" + i); }
+        }
+        /// <summary>
+        /// setup_default_pos()の後にあり、moveTypeなどによって、速度の大きさなどを調整する
+        /// </summary>
+        protected void set_from_moveTypeAndPointType_2() {
+            #region screen_point_target
+            if (mt == MoveType.screen_point_target && alltime > 0)
+            {
+                if (Motion.Is_a_Point(pt))
+                {
+                    speed = Math.Sqrt((default_pos.X - x) * (default_pos.X - x) + (default_pos.Y - y) * (default_pos.Y - y)) / alltime;
+                }
+                else if (Motion.Is_a_Direction(pt))
+                {
+                    speed = Math.Sqrt(default_pos.X * default_pos.X + default_pos.Y * default_pos.Y) / alltime;
+                }
+            }
+            #endregion
+            #region go_straight
+            else if (mt == MoveType.go_straight)
+            {
+                #region is a point
+                if (Motion.Is_a_Point(pt))
+                {
+                    if (alltime > 0)
+                    {
+                        default_pos.X = (default_pos.X - x) / alltime;
+                        default_pos.Y = (default_pos.Y - y) / alltime;
+                    }
+                    else
+                    {
+                        double distance = Math.Sqrt(Function.distance(default_pos.X, default_pos.Y, x, y));
+                        default_pos.X = (default_pos.X - x) * speed / distance;
+                        default_pos.Y = (default_pos.Y - y) * speed / distance;
+                    }
+                }
+                #endregion
+                #region is a displacement
+                else if (Motion.Is_a_Displacement(pt))
+                {
+                    if (alltime > 0)
+                    {
+                        default_pos.X /= alltime;
+                        default_pos.Y /= alltime;
+                    }
+                    else
+                    {
+                        double distance = default_pos.GetLength();
+                        default_pos.X = default_pos.X * speed / distance;
+                        default_pos.Y = default_pos.Y * speed / distance;
+                    }
+                }
+                #endregion
+                // is a direction ではspeedはそのまま
+            }
+            #endregion
         }
         protected void update_motion_index() {
             if (motion_index[1] >= 0)
@@ -478,7 +494,7 @@ namespace CommonPart
                                     #region bulletsAdd
                                     double bx = x; double by = y;
                                     //Console.WriteLine("in Enemy angle "+ws.skillName+" " + ws.angle+"#");
-                                    double _angle = Motion.getAngleFromPointType(ws.pointType, ws.angle, ws.vec.X,x,y);
+                                    double _angle = Motion.getAngleFromPointType(ws.pointType, ws.angle, ws.vec.X,x,y,angle);
                                     if (ws.way % 2 == 1)
                                     {
                                         bulletsAdd(x, y, _angle, ws);

@@ -75,6 +75,7 @@ namespace CommonPart
         protected override void dead()
         {
             base.dead();
+            shot(Map.player);
         }
         public override void update(Player player,bool bulletMove)
         {
@@ -83,7 +84,8 @@ namespace CommonPart
             {
                 skills[i].update();
             }
-            shot(player);
+            if(!delete)
+                shot(player);
         }
 
         public void shot(Unit player)
@@ -140,7 +142,7 @@ namespace CommonPart
                                     #region bulletsAdd
                                     double bx = x; double by = y;
                                     //Console.WriteLine(ws.skillName + " is " + ws.way);
-                                    double _angle = Motion.getAngleFromPointType(ws.pointType, ws.angle, ws.vec.X ,x,y);
+                                    double _angle = Motion.getAngleFromPointType(ws.pointType, ws.angle, ws.vec.X ,x,y,radian);
                                     if (ws.way % 2 == 1)
                                     {
                                         //Console.WriteLine("single");
@@ -156,8 +158,8 @@ namespace CommonPart
                                         //Console.WriteLine("sfsf"+ws.way/2);
                                         for (int j = 0; j < ws.way / 2; j++)
                                         {
-                                            myboss.bulletsAdd(bx, by, _angle + (j+1) * sd.space, ws);
-                                            myboss.bulletsAdd(bx, by, _angle - (j+1) * sd.space, ws);
+                                            myboss.bulletsAdd(bx, by, _angle + (j+0.5) * sd.space, ws);
+                                            myboss.bulletsAdd(bx, by, _angle - (j+0.5) * sd.space, ws);
                                         }
                                     }
                                     if (sd.duration > 0) { for (int kk = 0; kk < ws.way; kk++) { myboss.bullets[myboss.bullets.Count - 1 - kk].setup_exist_time(ws.duration); } }
