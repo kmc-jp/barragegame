@@ -54,6 +54,8 @@ namespace CommonPart
                     return _angle;
                 case PointType.randomDirection:
                     return _angle + Function.GetRandomDouble(px * 2) - px;
+                case PointType.player_pos:
+                    return Math.Atan2(Map.player.y - sy, Map.player.x - sx);// +_angle;
                 default:
                     return _angle;
             }
