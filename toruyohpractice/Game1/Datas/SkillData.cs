@@ -336,7 +336,7 @@ namespace CommonPart
             vec = motion.pos;
             omega = _omega;
             #endregion
-            angle = motion.angle;
+            angle = _angle;
             if (_sgs == SkillGenreS.laser)
                 Console.WriteLine(_skillName + ": laser with default Color!");
             duration = _duration;
