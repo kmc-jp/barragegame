@@ -288,7 +288,7 @@ namespace CommonPart {
         private const int middle_cd1 = 45; private const int middle_cd2 = 60;
         private const int low_cd1 = 90; private const int low_cd2 = 100; private const int low_cd3 = 120; private const int low_cd6 = 240;
         private const double highangle1 = Math.PI / 10; private const double highangle2 = Math.PI / 16; private const double highangle3 = Math.PI / 32;
-        private const double middleangle1 = Math.PI / 6; private const double middleangle2= Math.PI / 5;
+        private const double middleangle1 = Math.PI / 6; private const double middleangle2= Math.PI / 5; private const double middleangle4 = Math.PI / 4;
         private const double lowangle1 = Math.PI / 2; private const double lowangle2 = Math.PI / 4;
 
         
