@@ -307,10 +307,13 @@ namespace CommonPart
         public void cast_skilltoEnemy()
         {
             search_OldestEnemy();
-            attack_mode = true;
-            add_attack_mode = false;
-            skill_attackStandby = -1;
-            playAnimation(DataBase.defaultAnimationNameAddOn);
+            if (enemyAsTarget != null)
+            {
+                attack_mode = true;
+                add_attack_mode = false;
+                skill_attackStandby = -1;
+                playAnimation(DataBase.defaultAnimationNameAddOn);
+            }
         }
         public void skilltoEnemy(InputManager input)
         {

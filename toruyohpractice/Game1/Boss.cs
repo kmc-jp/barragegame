@@ -118,6 +118,10 @@ namespace CommonPart
         /// </summary>
         protected double head_rotatePercentY = 1;
         private bool funnelsOut = false;
+
+        private int nowTime=0;//0であれば、パターンの終了を意味する。
+
+
         public Boss2(double _x, double _y, string _unitType_name) : base(_x, _y, _unitType_name)
         {
             body_max_index = 7;

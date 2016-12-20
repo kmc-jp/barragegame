@@ -662,7 +662,7 @@ namespace CommonPart {
         }
         public static AnimationDataAdvanced getAniD(string name, string addOn = null)
         {
-            if (name == null && addOn == null) return null;
+            if (name == null) return null;
             if (addOn == null && AnimationAdDataDictionary.ContainsKey(name))
             {
                 return AnimationAdDataDictionary[name];

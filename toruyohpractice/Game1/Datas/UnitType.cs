@@ -201,7 +201,7 @@ namespace CommonPart
 
             #endregion
             #region test
-            UnitTypeList.Add(new ActiveAniSkiedUnitType("testE1", "E1", "enemy"));
+            UnitTypeList.Add(new ActiveAniSkiedUnitType("testE1", null, "enemy"));
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.go_straight, 120, new Vector(0, 180));
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.noMotion, 120, new Vector(0, 180));
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(5, 0, 30, 0);

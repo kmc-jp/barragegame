@@ -615,7 +615,8 @@ namespace CommonPart
         }
         public virtual void damage(int atk)
         {
-            life -= atk;
+            if(!animation.dataIsNull())
+                life -= atk;
             if (life <= 0)
             {
                 remove(Unit_state.dead);
