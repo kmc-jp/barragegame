@@ -29,7 +29,6 @@ namespace CommonPart
             enemy = _enemy;
             color = _color;
 
-            atk = 1;
         }
         /// <summary>
         /// 目標点だけはある場合に使う
@@ -46,7 +45,6 @@ namespace CommonPart
             enemy = _enemy;
             color = _color;
 
-            atk = 1;
         }
 
         /// <summary>
@@ -64,7 +62,6 @@ namespace CommonPart
             enemy = _enemy;
             color = _color;
 
-            atk = 1;
         }
 
 

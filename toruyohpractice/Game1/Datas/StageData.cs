@@ -19,6 +19,11 @@ namespace CommonPart
             stageName = _stageName;
         }
 
+        protected virtual void commonSetup()
+        {
+            Map.setup_textureNames(texture_names);//サイドの画像とか他の画像を用意する
+            setupAllbackgroundWithNames();//背景を用意する。
+        }
         abstract public void update();
 
         protected virtual void playBGM(BGMID _id)
@@ -44,8 +49,7 @@ namespace CommonPart
             texture_names.Add("leftside1");
             texture_names.Add("rightside1");
 
-            Map.setup_textureNames(texture_names);
-            setupAllbackgroundWithNames();//背景を用意する。
+            commonSetup();
         }
 
         public override void update()
@@ -105,11 +109,11 @@ namespace CommonPart
                     Map.create_enemy(300, 0, "E1a-4");
                     Map.create_enemy(420, 0, "E1a-5");
                     break;
-                case 70:
+                case 4700:
                     Map.boss_mode = true;
                     Map.EngagingTrueBoss();
                     break;
-                case 72:
+                case 4720:
                     playBGM(bgmIDs[1]);//BGMを流す。
                     Map.create_boss1(360, 10, "boss1");
                     break;
@@ -127,9 +131,10 @@ namespace CommonPart
             bgmIDs = new BGMID[] { BGMID.Stage2onWay, BGMID.Stage2Boss }; //一応こうした、いつでも{}の中身を変更できる。
             //ただし、MusicPlayer2.cs 30行から登録済でないと流れません。
             background_names = new string[] { "background2" };
-            setupAllbackgroundWithNames();
-            texture_names.Add( "leftside2");
+            texture_names.Add("leftside2");
             texture_names.Add("rightside2");
+
+            commonSetup();
         }
         public override void update()
         {
@@ -236,11 +241,10 @@ namespace CommonPart
             bgmIDs = new BGMID[] { BGMID.Stage3onWay, BGMID.Stage3Boss }; //一応こうした、いつでも{}の中身を変更できる。
                                                                           //ただし、MusicPlayer2.cs 30行から登録済でないと流れません。
             background_names = new string[] { "background3" };
-
-            setupAllbackgroundWithNames();//背景を用意する。
-
             texture_names.Add("leftside3");
             texture_names.Add("rightside3");
+
+            commonSetup();
         }
 
         public override void update()
@@ -321,11 +325,10 @@ namespace CommonPart
             bgmIDs = new BGMID[] { BGMID.Stage4onWay, BGMID.Stage4Boss }; //一応こうした、いつでも{}の中身を変更できる。
                                                                           //ただし、MusicPlayer2.cs 30行から登録済でないと流れません。
             background_names = new string[] { "background4" };
-
-            setupAllbackgroundWithNames();//背景を用意する。
-
             texture_names.Add("leftside4");
             texture_names.Add("rightside4");
+
+            commonSetup();
         }
 
         public override void update()
@@ -442,7 +445,7 @@ namespace CommonPart
                                                                           //ただし、MusicPlayer2.cs 30行から登録済でないと流れません。
             background_names = new string[] { "background6" };
 
-            setupAllbackgroundWithNames();//背景を用意する。
+            commonSetup();
         }
 
         public override void update()

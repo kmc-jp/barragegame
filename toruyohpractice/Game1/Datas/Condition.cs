@@ -19,7 +19,7 @@ namespace CommonPart
         public const string route_set = "-rs";
         public const string duration = "-dr";
         public const string hP = "-hp";
-        public const string hPp = "-hpp";
+        public const string hPp = "-hPp";
         #region static
         /// <summary>
         /// 構文解析時にこれらの文字列は対応した番号の引数を意味する,今は"-rs"は0番目の引数の値を意味する
