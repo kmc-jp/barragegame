@@ -12,7 +12,7 @@ namespace CommonPart
 {
     class Enemy:Unit
     {
-        const int MaximumOfBullets = 200;
+        const int MaximumOfBullets = 400;
         #region const labels
         public const string unitLabel_FadeOut = "fadeout";
         #endregion
