@@ -87,8 +87,8 @@ namespace CommonPart
         /// <summary>
         /// 刀エネルギーが最大になっている時
         /// </summary>
-        public int bonusDamage = 1000; 
-        public int swordSkillDamage { get { return atk*3 + 15 * (sword-sword_max/2 ); } }
+        public int bonusDamage = 500; 
+        public int swordSkillDamage { get { return atk + 1500 * (2*sword-sword_max )/sword_max; } }
         //protected bool skill_attackBoss
         #endregion
         const int prosToBoss_dash_maximum=40;

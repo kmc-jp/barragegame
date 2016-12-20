@@ -12,7 +12,7 @@ namespace CommonPart
 {
     class Enemy:Unit
     {
-        const int MaximumOfBullets = 200;
+        const int MaximumOfBullets = 500;
         #region const labels
         public const string unitLabel_FadeOut = "fadeout";
         #endregion
@@ -615,7 +615,8 @@ namespace CommonPart
         }
         public virtual void damage(int atk)
         {
-            life -= atk;
+            if (!animation.dataIsNull())
+                life -= atk;
             if (life <= 0)
             {
                 remove(Unit_state.dead);
