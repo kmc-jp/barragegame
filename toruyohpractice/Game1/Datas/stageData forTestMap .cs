@@ -29,7 +29,7 @@ namespace CommonPart
                 case 5:
                     Map.create_enemy(320, 0, "testE1");
                     Map.enemys.Last().add_skill("boss6-hakkyo2");
-                    //Map.enemys.Last().add_skill("createzyuzi-0");
+                    //Map.enemys.Last().add_skill("boss6-createzyuzi");
 
                     break;
                 //case 60:
