@@ -189,7 +189,7 @@ namespace CommonPart {
             }
             #endregion
             scroll_speed = new Vector(defaultspeed_x, defaultspeed_y);
-            Map.player = new Player(DataBase.WindowDefaultSizeX/2, 500, 6, 25, 11*lifesPerPiece,DataBase.charaName);
+            Map.player = new Player(DataBase.WindowDefaultSizeX/2, 500, 6, 13, 11*lifesPerPiece,DataBase.charaName);
 
             bossLifeGaugeSize.X=0;
             leftside = 280;
@@ -739,13 +739,14 @@ namespace CommonPart {
                     }
                 }
             }
-            
-            chargeBar.Draw(d, new Vector(bar_pos.X-197, bar_pos.Y-chargeBar.Y/2-28), DepthID.Map);
-            d.DrawLine(bar_pos, new Vector(bar_pos.X + 380*player.sword/player.sword_max, bar_pos.Y), 17, Color.Violet, DepthID.Status);//剣ゲージ
+
+
+            d.DrawLine(bar_pos, new Vector(bar_pos.X + 380 * player.sword / player.sword_max, bar_pos.Y), 17, Color.Violet, DepthID.StateBack);//剣ゲージ
+            chargeBar.Draw(d, new Vector(bar_pos.X-197, bar_pos.Y-chargeBar.Y/2-28), DepthID.StateBack);
             #endregion
 
             #region draw CutIns
-            if(DataBase.timeEffective(Map.cutIn_texTime) && Map.cutIn_texName !=null && Map.cutIn_texName != "")
+            if (DataBase.timeEffective(Map.cutIn_texTime) && Map.cutIn_texName !=null && Map.cutIn_texName != "")
             {
                 d.Draw(new Vector(Map.cutIn_texPosNowX, Map.cutIn_texPosNowY),DataBase.getTex(Map.cutIn_texName),DepthID.Message);
             }

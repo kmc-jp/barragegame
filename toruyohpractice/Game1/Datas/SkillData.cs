@@ -336,7 +336,7 @@ namespace CommonPart
             vec = motion.pos;
             omega = _omega;
             #endregion
-            angle = motion.angle;
+            angle = _angle;
             if (_sgs == SkillGenreS.laser)
                 Console.WriteLine(_skillName + ": laser with default Color!");
             duration = _duration;
@@ -414,6 +414,7 @@ namespace CommonPart
         public WayShotSkillData(string _skillName,string _conditions,SkillGenreS _sgs, MoveType mt,string _aniDName, int _cooldownFps, double _speed, 
             double _acceleration, double _space, double _radius, int _way=1, double _angle=DataBase.AngleToPlayer, int _duration = DataBase.motion_inftyTime, int _sword=1,int _score=10,int _life=1)
             : base(_skillName,_conditions,SkillGenreL.generation,_sgs,_aniDName,_cooldownFps, mt, PointType.Direction, new Vector(),0,_speed, _acceleration,_angle,0,_radius,_duration,_space,_sword,_score,_life)
+
         {
             way = _way;
         }

@@ -495,6 +495,7 @@ namespace CommonPart
                                     double bx = x; double by = y;
                                     double _angle = Motion.getAngleFromPointType(ws.pointType, ws.angle, ws.vec.X,x,y,angle);
                                     //Console.WriteLine("in Enemy: " + ws.skillName + " ws.angle:" + ws.angle +" angle:"+_angle+" way:"+ws.way+ "#");
+
                                     if (ws.way % 2 == 1)
                                     {
                                         bulletsAdd(x, y, _angle, ws);
