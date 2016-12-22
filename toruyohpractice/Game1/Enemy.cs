@@ -660,6 +660,7 @@ namespace CommonPart
 
         public void playAnimation(string addOn)
         {
+            
             animation = new AnimationAdvanced(DataBase.getAniD(unitType.animation_name, addOn));
         }
 
