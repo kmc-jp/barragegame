@@ -45,7 +45,10 @@ namespace CommonPart
         public static double getAngleFromPointType(PointType _pt,double _angle,double px,double sx=0,double sy=0,double self_angle=0)
         {
             if (_angle == DataBase.AngleToPlayer)
+            {
                 _angle = Math.Atan2(Map.player.y - sy, Map.player.x - sx);
+                //Console.Write(_angle);
+            }
             else if (_angle == DataBase.SelfAngle)
                 _angle = self_angle;
             switch (_pt)

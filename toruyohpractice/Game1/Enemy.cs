@@ -12,7 +12,7 @@ namespace CommonPart
 {
     class Enemy:Unit
     {
-        const int MaximumOfBullets = 200;
+        const int MaximumOfBullets = 500;
         #region const labels
         public const string unitLabel_FadeOut = "fadeout";
         #endregion
@@ -495,6 +495,7 @@ namespace CommonPart
                                     double bx = x; double by = y;
                                     double _angle = Motion.getAngleFromPointType(ws.pointType, ws.angle, ws.vec.X,x,y,angle);
                                     //Console.WriteLine("in Enemy: " + ws.skillName + " ws.angle:" + ws.angle +" angle:"+_angle+" way:"+ws.way+ "#");
+
                                     if (ws.way % 2 == 1)
                                     {
                                         bulletsAdd(x, y, _angle, ws);
@@ -614,7 +615,8 @@ namespace CommonPart
         }
         public virtual void damage(int atk)
         {
-            life -= atk;
+            if (!animation.dataIsNull())
+                life -= atk;
             if (life <= 0)
             {
                 remove(Unit_state.dead);

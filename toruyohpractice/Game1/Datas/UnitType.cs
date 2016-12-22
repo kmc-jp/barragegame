@@ -205,6 +205,12 @@ namespace CommonPart
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.go_straight, 120, new Vector(0, 180));
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.noMotion, 120, new Vector(0, 180));
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(5, 0, 30, 0);
+
+            UnitTypeList.Add(new ActiveAniSkiedUnitType("testE1", "stage6", "enemy"));
+
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.go_straight, 120, new Vector(0, 180));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.noMotion, 120, new Vector(0, 180));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(5, 0, 30, 0);
             UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
 
             #endregion
