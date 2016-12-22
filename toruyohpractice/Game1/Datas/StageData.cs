@@ -324,26 +324,26 @@ namespace CommonPart
                     Map.create_enemy(0, 50, "3E1d");
                     break;
                 case 4360:
-                    Map.create_enemy(720, 50, "3E7c");
+                    Map.create_enemy(720, 50, "3E7d");
                     break;
                 case 4400:
                     Map.create_enemy(0, 50, "3E1d");
                     break;
                 case 4440:
-                    Map.create_enemy(720, 50, "3E7c");
+                    Map.create_enemy(720, 50, "3E7d");
                     break;
                 case 4480:
                     Map.create_enemy(0, 50, "3E1d");
                     break;
                 case 4520:
-                    Map.create_enemy(720, 50, "3E7c");
+                    Map.create_enemy(720, 50, "3E7d");
                     break;
                 case 4560:
                     Map.create_enemy(0, 50, "3E1d");
                     break;
                 case 4800:
-                    Map.create_enemy(605, 0, "3E8b");
-                    Map.create_enemy(115, 0, "3E8b");
+                    Map.create_enemy(605, 0, "3E8c");
+                    Map.create_enemy(115, 0, "3E8c");
                     break;
                 case 5280:
                     Map.create_enemy(180, 0, "3E5a");
@@ -351,7 +351,7 @@ namespace CommonPart
                     Map.create_enemy(540, 0, "3E5a");
                     break;
                 case 6000:
-                    Map.create_enemy(360, 0, "3E7d");
+                    Map.create_enemy(360, 0, "3E7e");
                     break;
                 case 7000:
                     Map.boss_mode = true;
