@@ -141,8 +141,8 @@ namespace CommonPart
                                 default:
                                     #region bulletsAdd
                                     double bx = x; double by = y;
-                                    //Console.WriteLine(ws.skillName + " is " + ws.way);
-                                    double _angle = Motion.getAngleFromPointType(ws.pointType, ws.angle, ws.vec.X ,x,y);
+                                    //Console.WriteLine(ws.skillName + " is " + ws.way+" "+ws.angle);
+                                    double _angle = Motion.getAngleFromPointType(ws.pointType, ws.angle, ws.vec.X ,x,y,radian);
                                     if (ws.way % 2 == 1)
                                     {
                                         //Console.WriteLine("single");
