@@ -95,6 +95,7 @@ namespace CommonPart {
         #endregion
 
         #region about player character / boss character / map stage / enemy motion 
+        public const int basicFramePerSecond = 60; 
         public static string charaName = "chara1";
         public static string charaCutInTexName = "カットインfin";
         public const string bossLifeBar_default_aniName = "1280x150体力ゲージ";
@@ -402,6 +403,7 @@ namespace CommonPart {
             addSkillData(new WayShotSkillData("downshot-1", null, SkillGenreS.wayshot, "bullethalf", middle_cd1, goStraightWithDirection, middle_speed1, 0, lowangle1, 0,0, small_radius));
 
             addSkillData(new WayShotSkillData("1wayshot-1", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", middle_cd2, high_speed1, 0, 0, small_radius,1));
+            addSkillData(new WayShotSkillData("1wayshot-0.75", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", middle_cd1, high_speed1, 0, 0, small_radius, 1));
             addSkillData(new WayShotSkillData("1chaseShot-1", null, SkillGenreS.wayshot,MoveType.player_target,"bulletsmall", middle_cd2, middle_speed1, 0, 0,small_radius,1,120));
             addSkillData(new WayShotSkillData("1chaseShot-2", null, SkillGenreS.wayshot, MoveType.player_target, "bulletsmall", middle_cd2, high_speed1, 0, 0, small_radius,1,120));
             addSkillData(new WayShotSkillData("2wayshot-0", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletlarge", middle_cd1, middle_speed1, 0, middleangle1, big_radius, 2));
