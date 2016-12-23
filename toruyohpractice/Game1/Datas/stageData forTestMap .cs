@@ -28,7 +28,7 @@ namespace CommonPart
                     break;
                 case 5:
                     Map.EngagingTrueBoss();
-                    Map.create_boss2(320, 0, "boss2");
+                    Map.create_boss1(320, 0, "boss1");
                     /*
                     Map.create_enemy(320, 0, "testE1");
                     Map.enemys.Last().add_skill("createbullet2way-2");

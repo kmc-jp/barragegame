@@ -176,6 +176,13 @@ namespace CommonPart
                 for (int i = bullets.Count-1; i >= 0; i--)//update 専用
                 {
                     bullets[i].update(player,bulletsMove,skillsUpdate);
+                    #region chase enemyのみ
+                    if (bullets[i].move_type == MoveType.chase_enemy_target)
+                    {
+                        bullets[i].x = x;
+                        bullets[i].y = y;
+                    }
+                    #endregion
                 }
                 for (int i = bullets.Count - 1; i >= 0; i--)//update 専用
                 {
@@ -486,6 +493,7 @@ namespace CommonPart
 
             }
         }
+
         public void shot(Player player)
         {
             for (int i = 0; i < skills.Count; i++)
