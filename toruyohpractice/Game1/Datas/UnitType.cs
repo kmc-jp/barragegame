@@ -118,7 +118,10 @@ namespace CommonPart
             }
             bw.Write(DataBase.interval_of_each_type);
         }
-
+        private ActiveAniSkiedUnitType lastUT
+        {
+            get { return ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]); }
+        } 
         private void setup_unitType()
         {
             const double normalOmega = Math.PI / 60;
@@ -178,17 +181,16 @@ namespace CommonPart
             //((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames("5wayshot");
             UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
 
-            UnitTypeList.Add(new ActiveAniSkiedUnitType("funnnel0", "E6", "boss"));
+            UnitTypeList.Add(new ActiveAniSkiedUnitType("funnel", "E6", "boss"));
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.noMotion, 100, new Vector());
-            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames("laser-down-1");
-            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(0, 0, 50, 0, normalOmega, 1000, 0);
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(5, 0, 50, 0, normalOmega, 1000, 0);
             UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
-
-            UnitTypeList.Add(new ActiveAniSkiedUnitType("funnnel1", "E6", "boss"));
+            /*
+            UnitTypeList.Add(new ActiveAniSkiedUnitType("funnel1", "E6", "boss"));
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.noMotion, 100, new Vector());
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames("3wayshot-1");
             UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
-             
+            */
             UnitTypeList.Add(new ActiveAniSkiedUnitType("boss2 head", "boss2head", "boss"));
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.noMotion, 100, new Vector());
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames("boss10circle-0");
@@ -201,7 +203,8 @@ namespace CommonPart
 
             #endregion
             #region test
-            UnitTypeList.Add(new ActiveAniSkiedUnitType("testE1", "stage6", "enemy"));
+            UnitTypeList.Add(new ActiveAniSkiedUnitType("testE1", null, "enemy"));
+
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.go_straight, 120, new Vector(0, 180));
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.noMotion, 120, new Vector(0, 180));
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(5, 0, 30, 0);
@@ -519,6 +522,128 @@ namespace CommonPart
             UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
 
             #endregion
+
+            #region Stage3
+            UnitTypeList.Add(new ActiveAniSkiedUnitType("3E7a", "E7", "enemy"));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.screen_point_target, 180, new Vector(100,200));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.screen_point_target, 100, new Vector(640,60));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.screen_point_target, 100, new Vector(80, 60));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.screen_point_target, 100, new Vector(620, 200));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(5, 0, 30, 0);
+            UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
+
+            UnitTypeList.Add(new ActiveAniSkiedUnitType("3E7b", "E7", "enemy"));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.screen_point_target, 180, new Vector(620, 200));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.screen_point_target, 100, new Vector(80, 60));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.screen_point_target, 100, new Vector(640, 60));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.screen_point_target, 100, new Vector(100, 200));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(5, 0, 30, 0);
+            UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
+
+            UnitTypeList.Add(new ActiveAniSkiedUnitType("3E1a", "E1", "enemy"));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.go_straight, 30, new Vector(0, 150));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.noMotion, 120, new Vector(0, 180));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(5, 0, 30, 0);
+            UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
+
+            UnitTypeList.Add(new ActiveAniSkiedUnitType("3E2-f2a", "E2-f2", "enemy"));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.go_straight, 60, new Vector(0, 100));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.noMotion, 120, new Vector(0, 180));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(5, 0, 30, 0);
+            UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
+
+            UnitTypeList.Add(new ActiveAniSkiedUnitType("3E8a", "E8", "enemy"));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.go_straight, 30, new Vector(0, 50));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.noMotion, 120, new Vector(0, 180));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(5, 0, 30, 0);
+            UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
+
+            UnitTypeList.Add(new ActiveAniSkiedUnitType("3E1b", "E1", "enemy"));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.screen_point_target, 60, new Vector(100, 150));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.noMotion, 120, new Vector(0, 180));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(5, 0, 30, 0);
+            UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
+
+            UnitTypeList.Add(new ActiveAniSkiedUnitType("3E1c", "E1", "enemy"));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.screen_point_target, 60, new Vector(620, 150));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.noMotion, 120, new Vector(0, 180));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(5, 0, 30, 0);
+            UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
+
+            UnitTypeList.Add(new ActiveAniSkiedUnitType("3E7c", "E7", "enemy"));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.go_straight, 100, new Vector(620,0));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.go_straight, 20, new Vector(0, -30));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.go_straight, 100, new Vector(-620, 0));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.go_straight, 20, new Vector(0, -30));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(5, 0, 30, 0);
+            UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
+
+            UnitTypeList.Add(new ActiveAniSkiedUnitType("3E3-1a", "E3-1", "enemy"));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.go_straight, 30, new Vector(0, 130));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.noMotion, 120, new Vector(0, 180));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(5, 0, 30, 0);
+            UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
+
+            UnitTypeList.Add(new ActiveAniSkiedUnitType("3E8b", "E8", "enemy"));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.go_straight, 150, new Vector(0, -580));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.noMotion, 120, new Vector(0, 180));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(5, 0, 30, 0);
+            UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
+
+            UnitTypeList.Add(new ActiveAniSkiedUnitType("3E4-2a", "E4-2", "enemy"));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.go_straight, 90, new Vector(0, 180));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.noMotion, 120, new Vector(0, 180));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(5, 0, 30, 0);
+            UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
+
+            UnitTypeList.Add(new ActiveAniSkiedUnitType("3E4-1a", "E4-1", "enemy"));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.go_straight, 45, new Vector(0, 90));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.noMotion, 120, new Vector(0, 180));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(5, 0, 30, 0);
+            UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
+
+            UnitTypeList.Add(new ActiveAniSkiedUnitType("3E1d", "E1", "enemy"));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.screen_point_target, 100, new Vector(20,360));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.screen_point_target, 80, new Vector(360,700));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.screen_point_target, 80, new Vector(700, 360));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.screen_point_target, 100, new Vector(0,50));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(5, 0, 30, 0);
+            UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
+
+            UnitTypeList.Add(new ActiveAniSkiedUnitType("3E7d", "E7", "enemy"));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.screen_point_target, 100, new Vector(700, 360));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.screen_point_target, 80, new Vector(360, 700));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.screen_point_target, 80, new Vector(20, 360));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.screen_point_target, 100, new Vector(720, 50));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(5, 0, 30, 0);
+            UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
+
+            UnitTypeList.Add(new ActiveAniSkiedUnitType("3E8c", "E8", "enemy"));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.go_straight, 60, new Vector(0, 160));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.noMotion, 120, new Vector(0, 180));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(5, 0, 30, 0);
+            UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
+
+            UnitTypeList.Add(new ActiveAniSkiedUnitType("3E5a", "E5", "enemy"));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.go_straight, 50, new Vector(0, 200));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.noMotion, 120, new Vector(0, 180));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(5, 0, 30, 0);
+            UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
+
+            UnitTypeList.Add(new ActiveAniSkiedUnitType("3E5b", "E5", "enemy"));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.go_straight, 50, new Vector(0, 150));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.noMotion, 120, new Vector(0, 180));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(5, 0, 30, 0);
+            UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
+
+            UnitTypeList.Add(new ActiveAniSkiedUnitType("3E7e", "E7", "enemy"));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.go_straight, 100, new Vector(0, 150));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.noMotion, 120, new Vector(0, 180));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(5, 0, 30, 0);
+            UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
+
+            #endregion
+
             #region Stage4
             UnitTypeList.Add(new ActiveAniSkiedUnitType("4E2-f2a", "E2-f2", "enemy"));
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.go_straight, 240, new Vector(0, 200));

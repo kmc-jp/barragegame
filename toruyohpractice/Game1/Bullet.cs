@@ -66,7 +66,7 @@ namespace CommonPart
             lasered = false;
         }
 
-        public virtual void update(Player player,bool bulletMove=true)
+        public virtual void update(Player player,bool bulletMove=true,bool skillsUpdate=false)
         {
             base.update(bulletMove);
             if (x < Map.leftside- animation.X / 2 || x > Map.rightside + animation.X / 2

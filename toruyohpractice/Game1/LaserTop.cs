@@ -65,7 +65,7 @@ namespace CommonPart
         }
 
 
-        public override void update(Player player,bool bulletMove)
+        public override void update(Player player,bool bulletMove,bool skillsUpdate=false)
         {
             update(bulletMove);
             #region Laser Motion: length is not changed here!
@@ -140,6 +140,7 @@ namespace CommonPart
         public override void damage(int d)
         {
             length = 0;
+            Map.make_chargePro(x, y, sword, Map.caculateBulletScore(sword));
             //laserはダメージを受けない
         }
         public override bool hit_jugde(double px, double py, double p_radius = 0)
@@ -287,6 +288,18 @@ namespace CommonPart
             foreach (string _skillName in _skillNames)
             {
                 skills.Add(new Skill(_skillName));
+            }
+        }
+
+        public override void update(Player player, bool bulletMove, bool skillsUpdate = false)
+        {
+            base.update(player, bulletMove, false);
+            if (skillsUpdate)
+            {
+                for (int i = 0; i < skills.Count; i++)
+                {
+                    skills[i].update();
+                }
             }
         }
     }
