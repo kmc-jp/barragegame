@@ -65,7 +65,7 @@ namespace CommonPart
         }
 
 
-        public override void update(Player player,bool bulletMove)
+        public override void update(Player player,bool bulletMove,bool skillsUpdate=false)
         {
             update(bulletMove);
             #region Laser Motion: length is not changed here!
@@ -288,6 +288,18 @@ namespace CommonPart
             foreach (string _skillName in _skillNames)
             {
                 skills.Add(new Skill(_skillName));
+            }
+        }
+
+        public override void update(Player player, bool bulletMove, bool skillsUpdate = false)
+        {
+            base.update(player, bulletMove, false);
+            if (skillsUpdate)
+            {
+                for (int i = 0; i < skills.Count; i++)
+                {
+                    skills[i].update();
+                }
             }
         }
     }

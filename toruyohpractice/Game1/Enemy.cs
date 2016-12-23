@@ -175,7 +175,7 @@ namespace CommonPart
                 #region bulletのupdate
                 for (int i = bullets.Count-1; i >= 0; i--)//update 専用
                 {
-                    bullets[i].update(player,bulletsMove);
+                    bullets[i].update(player,bulletsMove,skillsUpdate);
                 }
                 for (int i = bullets.Count - 1; i >= 0; i--)//update 専用
                 {
@@ -257,13 +257,16 @@ namespace CommonPart
         {
             skills[index].coolDown += (int)(reduceByPercent * DataBase.getSkillData(skills[index].skillName).cooldownFps);
         }
-        public void set_skill_coolDown(string _skillName, int cd)
+        public void set_skill_coolDown(string _skillName, int cd,bool absoluteFrame=false)
         {
             foreach (Skill sk in skills)
             {
                 if (sk.skillName == _skillName)
                 {
-                    sk.coolDown = cd;
+                    if (!absoluteFrame)
+                        sk.coolDown = cd;
+                    else
+                        sk.coolDown =(int)(cd * Game1.enemySkills_update_fps / DataBase.basicFramePerSecond);
                 }
             }
         }
@@ -272,10 +275,15 @@ namespace CommonPart
         /// </summary>
         /// <param name="index">インデックスは常に0から始まている</param>
         /// <param name="cd"></param>
-        public void set_skill_coolDown(int index, int cd)
+        public void set_skill_coolDown(int index, int cd, bool absoluteFrame=false)
         {
             if (index >= skills.Count) { return; }
-            else { skills[index].coolDown = cd; }
+            else {
+                if (!absoluteFrame)
+                    skills[index].coolDown = cd;
+                else
+                    skills[index].coolDown = (int)(cd * Game1.enemySkills_update_fps / DataBase.basicFramePerSecond);
+            }
         }
         #endregion
 
