@@ -285,6 +285,12 @@ namespace CommonPart
                     skills[index].coolDown = (int)(cd * Game1.enemySkills_update_fps / DataBase.basicFramePerSecond);
             }
         }
+
+        public void delete_all_skills()
+        {
+            skills.Clear();
+            
+        }
         #endregion
 
         #region Funtions about Motion
@@ -295,7 +301,7 @@ namespace CommonPart
         /// <param name="_pt"></param>
         /// <param name="_alltime">その動きにかかる時間、不要なら埋めなくてよい</param>
         /// <param name="_pos">その動きに必要な点、不要なら適当に</param>
-        public void setup_extra_motion(MoveType _mt,PointType _pt,Vector _pos, int _alltime=DataBase.motion_inftyTime)
+        public virtual void setup_extra_motion(MoveType _mt,PointType _pt,Vector _pos, int _alltime=DataBase.motion_inftyTime)
         {
             backup_Motion_into_1();
             alltime = _alltime;
@@ -303,12 +309,13 @@ namespace CommonPart
             mt = _mt;
             pt = _pt;
             setup_default_pos(_pos);
+            set_from_moveTypeAndPointType_2();
         }
         /// <summary>
         /// times[0]は変更されず、motion_index[0],mt,alltime,default_posを設置する
         /// </summary>
         /// <param name="i"></param>
-        public void setup_motion(int i) {
+        public virtual void setup_motion(int i) {
             if (i < unitType.moveTypes.Count) {
                 motion_index[0] = i; mt =unitType.moveTypes[i]; alltime = unitType.times[i];
                 pt = unitType.pointTypes[i];
@@ -316,7 +323,7 @@ namespace CommonPart
                 setup_default_pos(i);
                 speed = unitType.speed;
                 set_from_moveTypeAndPointType_2();
-                Console.WriteLine(default_pos+" "+mt);
+                //Console.WriteLine(default_pos+" "+mt);
             }
             else { Console.Write("setup_motion:Invaild Motion-" + unitType_name + "- i is" + i); }
         }
@@ -442,7 +449,7 @@ namespace CommonPart
             default_pos.X = Motion.from_PointType_getPosX(pos.X, pos.Y, pt, alltime, speed, angle,mt);
             default_pos.Y = Motion.from_PointType_getPosY(pos.X, pos.Y, pt,alltime, speed, angle,mt);
         }
-        public void setup_LoopSet(int _loopStart, int _loopEnd, int _loopIndex = -1)
+        public virtual void setup_LoopSet(int _loopStart, int _loopEnd, int _loopIndex = -1)
         {
             if (!motionLooped)
             {
@@ -700,7 +707,7 @@ namespace CommonPart
             skills.Clear();
         }
 
-        public bool selectable()
+        public virtual bool selectable()
         {
             if (delete || fadeout||animation.dataIsNull()||!Map.inside_window(this))
             {

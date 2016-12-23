@@ -95,6 +95,8 @@ namespace CommonPart {
         #endregion
 
         #region about player character / boss character / map stage / enemy motion 
+        public const string halfBlackTextureName = "1280x2000背景用グレー画像";
+
         public const int basicFramePerSecond = 60; 
         public static string charaName = "chara1";
         public static string charaCutInTexName = "カットインfin";
@@ -178,7 +180,7 @@ namespace CommonPart {
         public static AnimationDataAdvanced defaultBlankAnimationData;
         public const string defaultAnimationNameAddOn = "-stand";
         public const string aniNameAddOn_spell = "-spell", aniNameAddOn_spellOff = "-spell off",
-            aniNameAddOn_evadeL= "-evadeL", aniNameAddOn_evadeR = "-evadeR";
+            aniNameAddOn_evadeL= "-evadeL", aniNameAddOn_evadeR = "-evadeR",  aniNameAddOn_alterOn="-alterOn",aniNameAddOn_alterOff="-alterOff";
         static string aniDFileName = "animationNames.dat";
         public static Dictionary<string, AnimationDataAdvanced> AnimationAdDataDictionary = new Dictionary<string, AnimationDataAdvanced>();
 
@@ -297,13 +299,15 @@ namespace CommonPart {
         public static Dictionary<string, SkillData> SkillDatasDictionary = new Dictionary<string, SkillData>();
         public static void setupSkillData()
         {
-            Vector nv = new Vector(); double tPI = 2 * Math.PI;
-            Motion goStraightToPlayer = new Motion(MoveType.go_straight, PointType.player_pos, nv, middle_speed1, 0, 0);
-            Motion goStraightWithDirection = new Motion(MoveType.go_straight, PointType.Direction, nv, low_speed1, 0, 0);
+            Vector nv = new Vector(); double tPI = 2*Math.PI;
+            Motion goStraightToPlayer = new Motion(MoveType.go_straight,PointType.player_pos,nv,middle_speed1,0,0);
+            Motion goStraightWithDirection = new Motion(MoveType.go_straight, PointType.Direction, nv, low_speed1, 0,0);
+            Motion goStraightWithDownDirection = new Motion(MoveType.go_straight, PointType.Direction, nv, high_speed1, 0,0);
+
             Motion rCircle = new Motion(MoveType.rightcircle, PointType.notused, new Vector(), low_speed1, 0, 60, Math.PI / 30);
             Motion rotateAndGoDirection = new Motion(MoveType.rotateAndGo, PointType.Direction, nv, low_speed1, 0, 0);
             Motion rotateAndGoRandom = new Motion(MoveType.rotateAndGo, PointType.randomDirection, new Vector(tPI / 4, 0), low_speed1, 0, 0);
-            Motion fire = new Motion(MoveType.rotateAndGo, PointType.randomDirection, new Vector(tPI / 20, 0), low_speed1, 0, 0);
+            Motion fire = new Motion(MoveType.rotateAndGo, PointType.randomDirection, new Vector(tPI / 24, 0), low_speed1, 0, 0);
             //addSkillData(new WaySkilledBulletsData("createbullet",null,SkillGenreS.wayshot,null,low_cd3,goStraightToPlayer,small_radius,"yanagi-s",1,60));
             const string bulletTimeOut = Condition.hP + "<0";
             const string hppBelowFifty = Condition.hPp + "<=50";
@@ -346,16 +350,39 @@ namespace CommonPart {
             addSkillData(new WaySkilledBulletsData("ransya-3^-1", null, SkillGenreS.wayshot, null, 100, rotateAndGoDirection, 0, 0, lowangle2, -highangle3, 0, small_radius, new string[] { "16circle-1" }, 1, 25));
 
             #region boss3
-            addSkillData(new WaySkilledBulletsData("boss3onfire", Condition.hPp + ">=50", SkillGenreS.wayshot, null, low_cd1, goStraightWithDirection, 0, 0, SelfAngle, 0, 0, big_radius, new string[] { "firesmall", "firelarge", "firemiddle" }, 1, high_cd2 * 3 + 1));
-
+            addSkillData(new WaySkilledBulletsData("boss3onfire-shot", Condition.hPp + ">=50", SkillGenreS.wayshot, null, middle_cd2, goStraightWithDirection, 0, 0, SelfAngle, 0, 0, big_radius, new string[] { "firesmall", "firelarge", "firemiddle" }, 1, high_cd1 * 5 + 1));
+            addSkillData(new WaySkilledBulletsData("boss3onfire-bless", Condition.hPp + ">=50", SkillGenreS.wayshot, null, low_cd3, goStraightWithDirection, 0, 0, SelfAngle, 0, 0, big_radius, new string[] { "firesmall", "firelarge", "firemiddle" }, 1, 100));
+            addSkillData(new WaySkilledBulletsData("boss3onfire-hakkyo", Condition.hPp+"<=20", SkillGenreS.wayshot, null, 60, rotateAndGoDirection, 0, 0, lowangle2, Math.PI / 360, 0, small_radius, new string[] { "boss3onfire-rotate" }, 1, 1000));
+            addSkillData(new WaySkilledBulletsData("boss3onfire-r", Condition.hPp + ">20", SkillGenreS.wayshot, null, 1000, rotateAndGoDirection, 0, 0, lowangle2, Math.PI / 90, 0, small_radius, new string[] { "boss3onfire-rotate2" }, 1, 1000));
             #region forboss3
-            addSkillData(new WayShotSkillData("firesmall", null, SkillGenreS.wayshot, "smallonfire", middle_cd2, fire, high_speed1, 0, AngleToPlayer, 0, 0, small_radius, 1, middleangle1));
-            addSkillData(new WayShotSkillData("firemiddle", null, SkillGenreS.wayshot, "middleonfire", middle_cd2, fire, high_speed1, 0, AngleToPlayer, 0, 0, small_radius, 1, middleangle1));
-            addSkillData(new WayShotSkillData("firelarge", null, SkillGenreS.wayshot, "largeonfire", middle_cd2, fire, high_speed1, 0, AngleToPlayer, 0, 0, small_radius, 1, middleangle1));
+            addSkillData(new WayShotSkillData("firesmall", null, SkillGenreS.wayshot, "smallonfire", high_cd1, fire, high_speed1, 0, AngleToPlayer, 0, 0, small_radius, 1, middleangle1));
+            addSkillData(new WayShotSkillData("firemiddle", null, SkillGenreS.wayshot, "middleonfire", high_cd1, fire, high_speed1, 0, AngleToPlayer, 0, 0, small_radius, 1, middleangle1));
+            addSkillData(new WayShotSkillData("firelarge", null, SkillGenreS.wayshot, "largeonfire", high_cd1, fire, high_speed1, 0, AngleToPlayer, 0, 0, small_radius, 1, middleangle1));
+            addSkillData(new WayShotSkillData("firesmall1", null, SkillGenreS.wayshot, "smallonfire", high_cd1, fire, high_speed1, 0, SelfAngle, 0, 0, small_radius, 1, middleangle1));
+            addSkillData(new WayShotSkillData("firemiddle1", null, SkillGenreS.wayshot, "middleonfire", high_cd1, fire, high_speed1, 0, SelfAngle, 0, 0, small_radius, 1, middleangle1));
+            addSkillData(new WayShotSkillData("firelarge1", null, SkillGenreS.wayshot, "largeonfire", high_cd1, fire, high_speed1, 0, SelfAngle, 0, 0, small_radius, 1, middleangle1));
+            addSkillData(new WaySkilledBulletsData("boss3onfire-rotate", null, SkillGenreS.wayshot, null, middle_cd1, goStraightWithDirection, 0, 0, SelfAngle, 0, 0, big_radius, new string[] { "firesmall1", "firelarge1", "firemiddle1" }, 1, high_cd1 * 1 + 1));
+            addSkillData(new WaySkilledBulletsData("boss3onfire-rotate2", null, SkillGenreS.wayshot, null, high_cd3, goStraightWithDirection, 0, 0, SelfAngle, 0, 0, big_radius, new string[] { "firesmall1", "firelarge1", "firemiddle1" }, 1, high_cd1 * 1 + 1));
             #endregion
 
             #endregion
 
+
+            #region boss2
+            addSkillData(new WayShotSkillData("b2-3wayshot-1", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", middle_cd1, middle_speed1, 0, middleangle2, small_radius, 3));
+            addSkillData(new WayShotSkillData("b2-1wayshot-0.75", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", middle_cd1, high_speed1, 0, 0, small_radius, 1));
+            addSkillData(new WayShotSkillData("b2-2wayshot-0.75", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", middle_cd1, high_speed1, 0, 0, small_radius, 1));
+            addSkillData(new WaySkilledBulletsData("b2-x2shot-1",null,SkillGenreS.wayshot,null,60, goStraightWithDownDirection,small_radius,"b2-sub-1wayshot-1",2, 15 ,Math.PI));
+            addSkillData(new WayShotSkillData("b2-laserDown1-1",null,SkillGenreL.generation,SkillGenreS.laser,"bulletsmall",600,goStraightWithDownDirection,small_radius,Color.Goldenrod,1,0,600));
+            addSkillData(new WayShotSkillData("b2-1wayDown-0.5",null,SkillGenreS.wayshot,"bulletsmall",high_cd4,goStraightWithDownDirection,small_radius));
+            addSkillData(new WayShotSkillData("b2-blaserDown1", null, SkillGenreL.generation, SkillGenreS.laser, "bulletsmall", 700, goStraightWithDownDirection,big_radius*2, Color.Goldenrod, 1, 0, 480));
+            addSkillData(new WayShotSkillData("b2-laser-1", null,  SkillGenreS.laser, "bulletsmall", 600, MoveType.go_straight,PointType.pos_on_screen,new Vector(640,550),0,middle_speed1,0,0,0,big_radius, Color.Goldenrod, 1, 0, 600));
+
+            #region for boss2
+            addSkillData(new WayShotSkillData("b2-sub-1wayshot-1", bulletTimeOut, SkillGenreS.wayshot, "bulletline", 10, goStraightWithDownDirection, small_radius));
+
+            #endregion
+            #endregion
             #region boss6
             addSkillData(new WaySkilledBulletsData("boss6-64way1", Condition.hPp+"<50", SkillGenreS.wayshot, null, low_cd3, goStraightWithDirection, 0, 0, AngleToPlayer, 0, 0, big_radius, new string[] { "64circle-0", "1wayshot-2" }, 1, high_cd2 * 3 + 1));
             addSkillData(new WaySkilledBulletsData("boss6-hakkyo2", Condition.hPp + "<20", SkillGenreS.wayshot, null, high_cd1, goStraightWithDirection, 0, 0, SelfAngle, 0, 0, big_radius, new string[] { "1wayshotofsmall", "1wayshotoflarge", "1wayshotofLL" }, 1, high_cd2 * 3 + 1));
@@ -379,12 +406,14 @@ namespace CommonPart {
             addSkillData(new WayShotSkillData("1wayshot-4", bulletTimeOut, SkillGenreS.wayshot, MoveType.go_straight, "bulletmiddle", low_cd2, middle_speed1, 0, 0, small_radius, 1));
             addSkillData(new WaySkilledBulletsData("cs", bulletTimeOut, SkillGenreS.wayshot, "bulletsmall", low_cd1, goStraightWithDirection, small_radius, new string[] { "cs" }, 2, 40, lowangle1));
             addSkillData(new WayShotSkillData("32-circle-random", null, SkillGenreS.wayshot, "bulletlarge", high_cd1, rotateAndGoRandom, high_speed1, 0, AngleToPlayer, 0, 0, small_radius, 32, highangle2));
+
             addSkillData(new WayShotSkillData("20-circle-random", null, SkillGenreS.wayshot, "bulletsmall", low_cd1, rotateAndGoRandom, high_speed1, 0, AngleToPlayer, 0, 0, small_radius, 20, highangle1));
             addSkillData(new WaySkilledBulletsData("createbullet2way-2", bulletTimeOut, SkillGenreS.wayshot, "bulletsmall", low_cd3, goStraightWithDirection, small_radius, new string[] { "1wayshot-4", "7way*3shot" }, 2, 30, Math.PI));
             addSkillData(new WayShotSkillData("1wayshot-5", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletLL", middle_cd2, low_speed2, 0.05, 0, small_radius, 1));
             addSkillData(new WaySkilledBulletsData("7way*3shot", bulletTimeOut, SkillGenreS.wayshot, "bulletsmall", low_cd3, goStraightWithDirection, 0, 0, AngleToPlayer, 0, 0, big_radius, new string[] { "7wayshot" }, 1, high_cd2 * 3 + 1));
             addSkillData(new WayShotSkillData("7wayshot", null, SkillGenreS.wayshot, "bulletrice", high_cd2, goStraightWithDirection, high_speed1, 0.02, AngleToPlayer, 0, 0, small_radius, 7, highangle1));
             addSkillData(new WayShotSkillData("laser-way17", null, SkillGenreS.laser, "bulletsmall", 180, MoveType.go_straight, PointType.player_pos, new Vector(), 0, high_speed1, 0.03, lowangle2, 0, small_radius, Color.Purple, 17, Math.PI/7, 120));
+
             #endregion
 
             #endregion
@@ -403,7 +432,6 @@ namespace CommonPart {
             addSkillData(new WayShotSkillData("downshot-1", null, SkillGenreS.wayshot, "bullethalf", middle_cd1, goStraightWithDirection, middle_speed1, 0, lowangle1, 0,0, small_radius));
 
             addSkillData(new WayShotSkillData("1wayshot-1", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", middle_cd2, high_speed1, 0, 0, small_radius,1));
-            addSkillData(new WayShotSkillData("1wayshot-0.75", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", middle_cd1, high_speed1, 0, 0, small_radius, 1));
             addSkillData(new WayShotSkillData("1chaseShot-1", null, SkillGenreS.wayshot,MoveType.player_target,"bulletsmall", middle_cd2, middle_speed1, 0, 0,small_radius,1,120));
             addSkillData(new WayShotSkillData("1chaseShot-2", null, SkillGenreS.wayshot, MoveType.player_target, "bulletsmall", middle_cd2, high_speed1, 0, 0, small_radius,1,120));
             addSkillData(new WayShotSkillData("2wayshot-0", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletlarge", middle_cd1, middle_speed1, 0, middleangle1, big_radius, 2));

@@ -163,6 +163,7 @@ namespace CommonPart
             radius = _radius;
             life = _life;
             animationDataKey = a_n;
+            
             ad = new AnimationAdvanced(DataBase.getAniD(animationDataKey, DataBase.defaultAnimationNameAddOn));
         }
 
@@ -503,7 +504,7 @@ namespace CommonPart
                         #endregion
                         if (skill_attackStandby < 0)
                         {
-                            if (Function.hitcircle(x, y, skill_speed / 2, enemyAsTarget.x, enemyAsTarget.y + enemy_below, enemyAsTarget.radius))
+                            if (Function.hitcircle(x, y, skill_speed /2 +1, enemyAsTarget.x, enemyAsTarget.y + enemy_below, enemyAsTarget.radius))
                             {
                                 enemyAsTarget.stop_time = skill_max_attckStandby;
                                 skill_attackStandby = 18;
@@ -691,7 +692,7 @@ namespace CommonPart
             ad = new AnimationAdvanced(DataBase.getAniD(animationDataKey, addOn));
         }
         #region bool 各種状態を返す
-        public bool Invincible() { return InForcedRoute || muteki_time > 0 || attack_mode || avoid_mode; }
+        public bool Invincible() { return true ||InForcedRoute || muteki_time > 0 || attack_mode || avoid_mode; }
         public bool canUseSkilltoBoss()
         {
             return stop_time <= 0 && !attack_mode && sword >= sword_condition;
