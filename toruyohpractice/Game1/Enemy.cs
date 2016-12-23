@@ -499,37 +499,42 @@ namespace CommonPart
                         case SkillGenreL.generation:
                         case SkillGenreL.UseSkilledBullet:
                             WayShotSkillData ws = (WayShotSkillData)sd;
+                            double by;
                             #region ジャンルの小さい分類
                             switch (sd.sgs)
                             {
                                 #region genre small yanagi
                                 case SkillGenreS.yanagi:
                                     #region yanagi setting
-                                    for (int j = 1; j <= ws.way + 1; j++)
+                                    for (int j = 1; j <= ws.way/2 + 1; j++)
                                     {
                                         Bullet bullet1, bullet2;
+                                        by = y - sd.space * j * j*Math.Pow(0.99,j)/2 + animation.Y / 2;
+                                        double bdx = sd.space * j*j/2 + sd.radius;
                                         if (ws.sgl == SkillGenreL.UseSkilledBullet)
                                         {
                                             WaySkilledBulletsData wSs = (WaySkilledBulletsData)ws;
-                                            bullet1 = new SkilledBullet(x + sd.space * j + sd.radius, y - sd.space * j * j * 2 + 4 + animation.Y / 2, sd.moveType,
+                                            bullet1 = new SkilledBullet(x + bdx, by, sd.moveType,
                                                 sd.speed, sd.acceleration, sd.aniDName, sd.angle, sd.radius, wSs.BulletSkillNames, this, sd.sword, sd.life, sd.score);
-                                            bullet2 = new SkilledBullet(x - sd.space * j - sd.radius, y - sd.space * j * j * 2 + 4 + animation.Y / 2, sd.moveType,
+                                            bullet2 = new SkilledBullet(x - bdx, by, sd.moveType,
                                                 sd.speed, sd.acceleration, sd.aniDName, sd.angle, sd.radius, wSs.BulletSkillNames, this, sd.sword, sd.life, sd.score);
                                         }
                                         else
                                         {
-                                            bullet2 = new Bullet(x - sd.space * j - sd.radius, y - sd.space * j * j * 2 + 4 + animation.Y / 2, sd.moveType,
+                                            bullet2 = new Bullet(x - bdx, by, sd.moveType,
                                             sd.speed, sd.acceleration, sd.aniDName, sd.angle, sd.radius, sd.sword, sd.life, sd.score);
-                                            bullet1 = new Bullet(x + sd.space * j + sd.radius, y - sd.space * j * j * 2 + 4 + animation.Y / 2, sd.moveType,
+                                            bullet1 = new Bullet(x + bdx, by, sd.moveType,
                                                 sd.speed, sd.acceleration, sd.aniDName, sd.angle, sd.radius, sd.sword, sd.life, sd.score);
                                         }
-                                        bullet1.speed_x = sd.speed * (j - 1) * 0.25;
-                                        bullet1.speed_y = -sd.speed + 0.1 * (sd.space * j);
+                                        double bspeedX = sd.speed * (j - 1) * 0.01;
+                                        double bspeedY = -sd.speed;// + 0.01 * (sd.space * j); -by+y+animation.Y/2
+                                        bullet1.target_pos.X = bspeedX;
+                                        bullet1.target_pos.Y = bspeedY;
                                         bullet1.acceleration_x = +sd.acceleration * j * j / 120;
                                         bullet1.acceleration_y = sd.acceleration;
                                         bullets.Add(bullet1);
-                                        bullet2.speed_x = -sd.speed * (j - 1) * 0.25;
-                                        bullet2.speed_y = -sd.speed + 0.1 * (sd.space * j);
+                                        bullet2.target_pos.X = -bspeedX;
+                                        bullet2.target_pos.Y = bspeedY;
                                         bullet2.acceleration_x = -sd.acceleration * j * j / 120;
                                         bullet2.acceleration_y = sd.acceleration;
                                         bullets.Add(bullet2);
@@ -539,7 +544,7 @@ namespace CommonPart
                                 #endregion
                                 default:
                                     #region bulletsAdd
-                                    double bx = x; double by = y;
+                                    double bx = x; by = y;
                                     double _angle = Motion.getAngleFromPointType(ws.pointType, ws.angle, ws.vec.X,x,y,angle);
                                     //Console.WriteLine("in Enemy: " + ws.skillName + " ws.angle:" + ws.angle +" angle:"+_angle+" way:"+ws.way+ "#");
 
