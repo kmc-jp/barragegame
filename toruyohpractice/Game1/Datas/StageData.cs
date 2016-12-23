@@ -64,7 +64,9 @@ namespace CommonPart
                     break;
                 case 240:
                     Map.create_enemy(180, 0, "E1a-0");
+                    Map.enemys.Last().set_skill_coolDown(0, 120);
                     Map.create_enemy(540, 0, "E1a-0");
+                    Map.enemys.Last().set_skill_coolDown(0, 120);
                     break;
                 case 840:
                     Map.create_enemy(0, 0, "E2a-0");
@@ -150,9 +152,6 @@ namespace CommonPart
                     Map.create_enemy(540, 0, "E4-1a");
                     Map.create_enemy(180, 0, "E4-1a");
                     break;
-                case 480:
-                    Map.create_enemy(360, 0, "E4-2a");
-                    break;
                 case 660:
                     Map.create_enemy(200, 0, "E4-1c");
                     Map.create_enemy(640, 0, "E4-1c");
@@ -176,26 +175,12 @@ namespace CommonPart
                 case 1740:
                     Map.create_enemy(600, 0, "E4-2c");
                     break;
-                case 1920:
-                    Map.create_enemy(0, 320, "E4-1e");
-                    Map.create_enemy(720, 320, "E4-1f");
-                    break;
-                case 2100:
-                    Map.create_enemy(120, 0, "E5-c");
-                    break;
-                case 2160:
-                    Map.create_enemy(600, 720, "E5-d");
-                    break;
                 case 2340:
                     Map.create_enemy(360, 0, "E4-2d");
                     break;
                 case 2580:
-                    Map.create_enemy(360, 0, "E5-e");
                     Map.create_enemy(600, 0, "E4-1g");
                     Map.create_enemy(120, 0, "E4-2e");
-                    break;
-                case 2820:
-                    Map.create_enemy(700, 0, "E4-2f");
                     break;
                 case 3000:
                     Map.create_enemy(20, 0, "E4-2g");
@@ -212,9 +197,6 @@ namespace CommonPart
                     break;
                 case 3720:
                     Map.create_enemy(540, 0, "E6-d");
-                    break;
-                case 3780:
-                    Map.create_enemy(0, 320, "E5-f");
                     break;
                 case 4020:
                     Map.create_enemy(720, 270, "E5-g");
@@ -259,67 +241,93 @@ namespace CommonPart
                     break;
                 case 240:
                     Map.create_enemy(100, 720, "3E7a");
+                    Map.enemys.Last().add_skill("1shotfrom2point");
                     Map.create_enemy(620, 720, "3E7b");
+                    Map.enemys.Last().add_skill("1shotfrom2point");
                     break;
                 case 300:
                     Map.create_enemy(100, 720, "3E7a");
+                    Map.enemys.Last().add_skill("1shotfrom2point");
                     Map.create_enemy(620, 720, "3E7b");
+                    Map.enemys.Last().add_skill("1shotfrom2point");
                     break;
                 case 360:
                     Map.create_enemy(100, 720, "3E7a");
+                    Map.enemys.Last().add_skill("1shotfrom2point");
                     Map.create_enemy(620, 720, "3E7b");
+                    Map.enemys.Last().add_skill("1shotfrom2point");
                     break;
                 case 780:
                     Map.create_enemy(190, 0, "3E1a");
+                    Map.enemys.Last().add_skill("yanagi-0");
                     break;
                 case 840:
                     Map.create_enemy(530, 0, "3E1a");
-                    break;
-                case 1080:
-                    Map.create_enemy(360, 0, "3E2-f2a");
+                    Map.enemys.Last().add_skill("yanagi-0");
                     break;
                 case 1500:
                     Map.create_enemy(80, 0, "3E8a");
+                    Map.enemys.Last().add_skill("laser-down-1");
                     Map.create_enemy(180, 0, "3E8a");
+                    Map.enemys.Last().add_skill("laser-down-1");
                     Map.create_enemy(280, 0, "3E8a");
+                    Map.enemys.Last().add_skill("laser-down-1");
+                    Map.create_enemy(360, 0, "3E8a");
+                    Map.enemys.Last().add_skill("laser-down-1");
                     Map.create_enemy(440, 0, "3E8a");
+                    Map.enemys.Last().add_skill("laser-down-1");
                     Map.create_enemy(540, 0, "3E8a");
+                    Map.enemys.Last().add_skill("laser-down-1");
                     Map.create_enemy(640, 0, "3E8a");
+                    Map.enemys.Last().add_skill("laser-down-1");
                     break;
                 case 1920:
-                    Map.create_enemy(0, 100, "3E1b");
-                    Map.create_enemy(720, 100, "3E1c");
+                    Map.create_enemy(360, 0, "3E2-f2a");
+                    Map.enemys.Last().add_skill("ransya-3");
                     break;
-                case 2520:
+                case 2620:
                     Map.create_enemy(0, 620, "3E7c");
+                    Map.enemys.Last().add_skill("1wayshot-1");
                     break;
-                case 2550:
+                case 2650:
                     Map.create_enemy(0, 620, "3E7c");
+                    Map.enemys.Last().add_skill("1wayshot-1");
                     break;
-                case 2580:
+                case 2680:
                     Map.create_enemy(0, 620, "3E7c");
+                    Map.enemys.Last().add_skill("1wayshot-1");
                     break;
-                case 2610:
+                case 2710:
                     Map.create_enemy(0, 620, "3E7c");
+                    Map.enemys.Last().add_skill("1wayshot-1");
                     break;
-                case 2640:
+                case 2740:
                     Map.create_enemy(0, 620, "3E7c");
+                    Map.enemys.Last().add_skill("1wayshot-1");
                     break;
-                case 2670:
+                case 2770:
                     Map.create_enemy(0, 620, "3E7c");
+                    Map.enemys.Last().add_skill("1wayshot-1");
                     break;
                 case 3000:
                     Map.create_enemy(400, 0, "3E3-1a");
+                    Map.enemys.Last().add_skill("createbullet3way");
                     break;
                 case 3600:
                     Map.create_enemy(100, 720, "3E8b");
+                    Map.enemys.Last().add_skill("5way*5shot");
                     Map.create_enemy(620, 720, "3E8b");
+                    Map.enemys.Last().add_skill("5way*5shot");
                     break;
                 case 4080:
-                    Map.create_enemy(200, 0, "3E4-2a");
+                    Map.create_enemy(100, 0, "3E4-2a");
+                    Map.enemys.Last().add_skill("1downshotfrom2point");
                     Map.create_enemy(300, 0, "3E4-1a");
+                    Map.enemys.Last().add_skill("1downshotfrom2point");
                     Map.create_enemy(420, 0, "3E4-1a");
-                    Map.create_enemy(520, 0, "3E4-2a");
+                    Map.enemys.Last().add_skill("1downshotfrom2point");
+                    Map.create_enemy(620, 0, "3E4-2a");
+                    Map.enemys.Last().add_skill("1downshotfrom2point");
                     break;
                 case 4320:
                     Map.create_enemy(0, 50, "3E1d");
@@ -342,23 +350,33 @@ namespace CommonPart
                 case 4560:
                     Map.create_enemy(0, 50, "3E1d");
                     break;
-                case 4800:
+                case 5000:
                     Map.create_enemy(605, 0, "3E8c");
+                    Map.enemys.Last().add_skill("ransya-4");
                     Map.create_enemy(115, 0, "3E8c");
+                    Map.enemys.Last().add_skill("ransya-4");
                     break;
-                case 5280:
+                case 5480:
                     Map.create_enemy(180, 0, "3E5a");
+                    Map.enemys.Last().add_skill("laserfrom2point");
                     Map.create_enemy(360, 0, "3E5b");
+                    Map.enemys.Last().add_skill("laerfrom2point");
                     Map.create_enemy(540, 0, "3E5a");
+                    Map.enemys.Last().add_skill("laserfrom2point");
                     break;
-                case 6000:
+                case 6200:
                     Map.create_enemy(360, 0, "3E7e");
+                    Map.enemys.Last().add_skill("ransya-3");
                     break;
-                case 7000:
+                case 6245:
+                    Map.create_enemy(361, 0, "3E7e-N");
+                    Map.enemys.Last().add_skill("ransya-3^-1");
+                    break;
+                case 7200:
                     Map.boss_mode = true;
                     Map.EngagingTrueBoss();
                     break;
-                case 7020:
+                case 7220:
                     playBGM(bgmIDs[1]);//BGMを流す。
                     Map.create_boss1(360, 10, "boss3");
                     break;
