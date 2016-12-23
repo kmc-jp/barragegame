@@ -175,19 +175,12 @@ namespace CommonPart
                 case 1740:
                     Map.create_enemy(600, 0, "E4-2c");
                     break;
-                case 1920:
-                    Map.create_enemy(0, 320, "E4-1e");
-                    Map.create_enemy(720, 320, "E4-1f");
-                    break;
                 case 2340:
                     Map.create_enemy(360, 0, "E4-2d");
                     break;
                 case 2580:
                     Map.create_enemy(600, 0, "E4-1g");
                     Map.create_enemy(120, 0, "E4-2e");
-                    break;
-                case 2820:
-                    Map.create_enemy(700, 0, "E4-2f");
                     break;
                 case 3000:
                     Map.create_enemy(20, 0, "E4-2g");
@@ -204,9 +197,6 @@ namespace CommonPart
                     break;
                 case 3720:
                     Map.create_enemy(540, 0, "E6-d");
-                    break;
-                case 3780:
-                    Map.create_enemy(0, 320, "E5-f");
                     break;
                 case 4020:
                     Map.create_enemy(720, 270, "E5-g");
