@@ -258,60 +258,109 @@ namespace CommonPart
                     Map.boss_mode = false;
                     break;
                 case 240:
-                    Map.create_enemy(180, 0, "E1a-0");
-                    Map.create_enemy(540, 0, "E1a-0");
+                    Map.create_enemy(100, 720, "3E7a");
+                    Map.create_enemy(620, 720, "3E7b");
+                    break;
+                case 300:
+                    Map.create_enemy(100, 720, "3E7a");
+                    Map.create_enemy(620, 720, "3E7b");
+                    break;
+                case 360:
+                    Map.create_enemy(100, 720, "3E7a");
+                    Map.create_enemy(620, 720, "3E7b");
+                    break;
+                case 780:
+                    Map.create_enemy(190, 0, "3E1a");
                     break;
                 case 840:
-                    Map.create_enemy(0, 0, "E2a-0");
-                    Map.create_enemy(720, 0, "E2a-1");
+                    Map.create_enemy(530, 0, "3E1a");
                     break;
-                case 1260:
-                    Map.create_enemy(360, 0, "E3-0");
+                case 1080:
+                    Map.create_enemy(360, 0, "3E2-f2a");
                     break;
-                case 1620:
-                    Map.create_enemy(40, 100, "E1c-0a");
-                    Map.create_enemy(680, 100, "E1c-0b");
+                case 1500:
+                    Map.create_enemy(80, 0, "3E8a");
+                    Map.create_enemy(180, 0, "3E8a");
+                    Map.create_enemy(280, 0, "3E8a");
+                    Map.create_enemy(440, 0, "3E8a");
+                    Map.create_enemy(540, 0, "3E8a");
+                    Map.create_enemy(640, 0, "3E8a");
                     break;
-                case 1980:
-                    Map.create_enemy(200, 0, "E3-1");
-                    Map.create_enemy(520, 0, "E3-1");
+                case 1920:
+                    Map.create_enemy(0, 100, "3E1b");
+                    Map.create_enemy(720, 100, "3E1c");
                     break;
-                case 2480:
-                    Map.create_enemy(720, 120, "E1b-1");
+                case 2520:
+                    Map.create_enemy(0, 620, "3E7c");
                     break;
-                case 2540:
-                    Map.create_enemy(720, 120, "E1b-1");
+                case 2550:
+                    Map.create_enemy(0, 620, "3E7c");
                     break;
-                case 2600:
-                    Map.create_enemy(720, 120, "E1b-1");
+                case 2580:
+                    Map.create_enemy(0, 620, "3E7c");
                     break;
-                case 2660:
-                    Map.create_enemy(720, 120, "E1b-1");
+                case 2610:
+                    Map.create_enemy(0, 620, "3E7c");
                     break;
-                case 2720:
-                    Map.create_enemy(720, 120, "E1b-1");
+                case 2640:
+                    Map.create_enemy(0, 620, "3E7c");
                     break;
-                case 3260:
-                    Map.create_enemy(360, 0, "E1c-1");
+                case 2670:
+                    Map.create_enemy(0, 620, "3E7c");
                     break;
-                case 3580:
-                    Map.create_enemy(180, 0, "E1c-2");
-                    Map.create_enemy(540, 0, "E1c-2");
+                case 3000:
+                    Map.create_enemy(400, 0, "3E3-1a");
                     break;
-                case 3700:
-                    Map.create_enemy(360, 0, "E1a-1");
+                case 3600:
+                    Map.create_enemy(100, 720, "3E8b");
+                    Map.create_enemy(620, 720, "3E8b");
                     break;
-                case 4140:
-                    Map.create_enemy(300, 0, "E1a-4");
-                    Map.create_enemy(420, 0, "E1a-5");
+                case 4080:
+                    Map.create_enemy(200, 0, "3E4-2a");
+                    Map.create_enemy(300, 0, "3E4-1a");
+                    Map.create_enemy(420, 0, "3E4-1a");
+                    Map.create_enemy(520, 0, "3E4-2a");
                     break;
-                case 4700:
+                case 4320:
+                    Map.create_enemy(0, 50, "3E1d");
+                    break;
+                case 4360:
+                    Map.create_enemy(720, 50, "3E7d");
+                    break;
+                case 4400:
+                    Map.create_enemy(0, 50, "3E1d");
+                    break;
+                case 4440:
+                    Map.create_enemy(720, 50, "3E7d");
+                    break;
+                case 4480:
+                    Map.create_enemy(0, 50, "3E1d");
+                    break;
+                case 4520:
+                    Map.create_enemy(720, 50, "3E7d");
+                    break;
+                case 4560:
+                    Map.create_enemy(0, 50, "3E1d");
+                    break;
+                case 4800:
+                    Map.create_enemy(605, 0, "3E8c");
+                    Map.create_enemy(115, 0, "3E8c");
+                    break;
+                case 5280:
+                    Map.create_enemy(180, 0, "3E5a");
+                    Map.create_enemy(360, 0, "3E5b");
+                    Map.create_enemy(540, 0, "3E5a");
+                    break;
+                case 6000:
+                    Map.create_enemy(360, 0, "3E7e");
+                    break;
+                case 7000:
                     Map.boss_mode = true;
                     Map.EngagingTrueBoss();
                     break;
-                case 4720:
+                case 7020:
                     playBGM(bgmIDs[1]);//BGMを流す。
-                    Map.create_boss1(360, 10, "boss1");
+                    Map.create_boss1(360, 10, "boss3");
                     break;
             }
             #endregion

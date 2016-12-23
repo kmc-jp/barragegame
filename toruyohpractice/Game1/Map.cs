@@ -17,7 +17,7 @@ namespace CommonPart {
         public static Window window=null;
 
         #region player and Life Piece and chargeBar
-        public string life_tex_name = "17x31バッテリーアイコン";
+        public string life_tex_name = "24x44バッテリーアイコン";
         /// <summary>
         /// プレイヤーの1残機をlifePerPiece等分する。基本ダメージは1残機削るが、得たスコアーによって残機が(このint)分の1で回復する。
         /// </summary>

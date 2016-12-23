@@ -29,6 +29,11 @@ namespace CommonPart
                 case 5:
                     Map.EngagingTrueBoss();
                     Map.create_boss2(320, 0, "boss2");
+                    /*
+                    Map.create_enemy(320, 0, "testE1");
+                    Map.enemys.Last().add_skill("createbullet2way-2");
+                    //Map.enemys.Last().add_skill("boss6-createzyuzi");
+                    */
                     break;
                 //case 60:
                     //Map.create_enemy(400, 50, "testE1");
