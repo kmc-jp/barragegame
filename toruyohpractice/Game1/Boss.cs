@@ -62,7 +62,14 @@ namespace CommonPart
             while (true)
             {
                 p = minPhaseIndex + Function.GetRandomInt(maxPhaseIndex + 1 - minPhaseIndex);
-                if (p != motionLoopIndex && !phasesAlready[p]) return p;
+                if (p != motionLoopIndex && phasesAlready.Count<p && !phasesAlready[p])
+                {
+                    if (phasesAlready.Count > p)
+                    {
+                        phasesAlready[p] = true;
+                    }
+                    return p;
+                }
             }
         }
         /// <summary>
@@ -76,7 +83,7 @@ namespace CommonPart
                 p = getProperMotionLoopIndex();
             }
             motionLoopIndex = p;
-            Console.Write(motionLoopIndex + " index /");
+            //Console.Write(motionLoopIndex + " index /");
             #region phase
             switch (motionLoopIndex)
             {
@@ -300,7 +307,6 @@ namespace CommonPart
                         {
                             bodys[j].set_skill_coolDown(_3w1, 120, true);
                             bodys[j].set_skill_coolDown(_1w1, 120, true);
-                            bodys[j].playAnimation(DataBase.aniNameAddOn_alterOn);
                         }
                         nowTime = 8 * 60;
                     }
@@ -333,7 +339,6 @@ namespace CommonPart
                             for (int j = 0; j < funnelsNumber; j++)
                             {
                                 bodys[j].set_skill_coolDown(_2w1, 120, true);
-                                bodys[j].playAnimation(DataBase.aniNameAddOn_alterOn);
                             }
                             add_skill(_mis2);
                             nowTime = 11 * 60;
@@ -353,10 +358,10 @@ namespace CommonPart
                 case 5:
                     if (nowTime == -17 * 60-1)
                     {
-                        bodys[0].setup_extra_motion(MoveType.go_straight, PointType.pos_on_screen, new Vector(100, 600), 2);
-                        bodys[1].setup_extra_motion(MoveType.go_straight, PointType.pos_on_screen, new Vector(100, 100), 2);
-                        bodys[4].setup_extra_motion(MoveType.go_straight, PointType.pos_on_screen, new Vector(1080, 600), 2);
-                        bodys[5].setup_extra_motion(MoveType.go_straight, PointType.pos_on_screen, new Vector(1080, 100), 2);
+                        bodys[0].setup_extra_motion(MoveType.go_straight, PointType.pos_on_screen, new Vector(100, 600), 120);
+                        bodys[1].setup_extra_motion(MoveType.go_straight, PointType.pos_on_screen, new Vector(100, 100), 120);
+                        bodys[4].setup_extra_motion(MoveType.go_straight, PointType.pos_on_screen, new Vector(1080, 600), 120);
+                        bodys[5].setup_extra_motion(MoveType.go_straight, PointType.pos_on_screen, new Vector(1080, 100), 120);
                     }
                     else if (nowTime == -15 * 60 - 1)
                     {
@@ -365,25 +370,25 @@ namespace CommonPart
                             if (j != 2 && j != 3)
                                 bodys[j].add_skill(_1w1);
                         }
-                        bodys[0].setup_extra_motion(MoveType.go_straight, PointType.pos_on_screen, new Vector(100, 100), 5);
-                        bodys[5].setup_extra_motion(MoveType.go_straight, PointType.pos_on_screen, new Vector(1080, 600), 5);
+                        bodys[0].setup_extra_motion(MoveType.go_straight, PointType.pos_on_screen, new Vector(100, 100), 5*60);
+                        bodys[5].setup_extra_motion(MoveType.go_straight, PointType.pos_on_screen, new Vector(1080, 600), 5 * 60);
 
                     }
                     else if (nowTime == -13*60-1)
                     { 
-                        bodys[1].setup_extra_motion(MoveType.go_straight, PointType.pos_on_screen, new Vector(1080, 100), 5);
-                        bodys[4].setup_extra_motion(MoveType.go_straight, PointType.pos_on_screen, new Vector(100, 600), 5);
+                        bodys[1].setup_extra_motion(MoveType.go_straight, PointType.pos_on_screen, new Vector(1080, 100), 5 * 60);
+                        bodys[4].setup_extra_motion(MoveType.go_straight, PointType.pos_on_screen, new Vector(100, 600), 5 * 60);
                         
                     }
                     else if (nowTime == -8*60- 1)
                     {
-                        bodys[1].setup_extra_motion(MoveType.go_straight, PointType.pos_on_screen, new Vector(1080, 600), 5);
-                        bodys[4].setup_extra_motion(MoveType.go_straight, PointType.pos_on_screen, new Vector(100, 100), 5);
+                        bodys[1].setup_extra_motion(MoveType.go_straight, PointType.pos_on_screen, new Vector(1080, 600), 5 * 60);
+                        bodys[4].setup_extra_motion(MoveType.go_straight, PointType.pos_on_screen, new Vector(100, 100), 5 * 60);
                     }
                     else if (nowTime == -6 * 60 - 1)
                     {
-                        bodys[0].setup_extra_motion(MoveType.go_straight, PointType.pos_on_screen, new Vector(1080, 100), 5);
-                        bodys[5].setup_extra_motion(MoveType.go_straight, PointType.pos_on_screen, new Vector(100, 600), 5);
+                        bodys[0].setup_extra_motion(MoveType.go_straight, PointType.pos_on_screen, new Vector(1080, 100), 5 * 60);
+                        bodys[5].setup_extra_motion(MoveType.go_straight, PointType.pos_on_screen, new Vector(100, 600), 5 * 60);
                     }
                     else if (nowTime == 0) { changePhase(0); }
                     break;
@@ -423,7 +428,7 @@ namespace CommonPart
         {
             base.damage(atk);
             if (life <= maxLife / 2) { maxPhaseIndex = 5; }
-            if (life <= maxLife * 2 / 3 && !phaseSixUsed) { phaseSixUsed = true; changePhase(6); }
+            if (life <= maxLife * 1 / 3 && !phaseSixUsed) { phaseSixUsed = true; changePhase(6); }
         }
         public override bool selectable()
         {
@@ -449,7 +454,7 @@ namespace CommonPart
             {
                 #region phase 0
                 case 0:
-                    for (int j = 0; j < funnelsNumber; j++)
+                    for (int j = 0; j <= body_max_index; j++)
                     {
                         bodys[j].delete_all_skills();
                     }
@@ -492,6 +497,10 @@ namespace CommonPart
                 #endregion
                 #region phase 5
                 case 5:
+                    for(int j = 0; j < funnelsNumber; j++)
+                    {
+                        bodys[j].playAnimation(DataBase.aniNameAddOn_alterOn);
+                    }
                     bodys[2].add_skill(_2w1);
                     bodys[3].add_skill(_2w1);
                     bodys[funnelsNumber].add_skill(_1w1);

@@ -563,12 +563,12 @@ namespace CommonPart {
             {
                 enemys.Insert(enemysIndexOfBoss, new Boss2(leftside + _x, _y, _unitType_name));
             }
-            Console.Write("boss x:" + (leftside + _x));
             bossLifeBarTextureName = _bossLifeBarName;
             bossLifeBarAnime = new AnimationAdvanced(DataBase.getAniD(bossLifeBarTextureName + DataBase.defaultAnimationNameAddOn));
         }
         public static void bossDamaged()
         {
+            bossLifeBarAnime = null;
             bossLifeBarAnime = new AnimationAdvanced(DataBase.getAniD(bossLifeBarTextureName+DataBase.aniNameAddOn_spell));
             
         }
