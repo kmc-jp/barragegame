@@ -163,6 +163,7 @@ namespace CommonPart
             radius = _radius;
             life = _life;
             animationDataKey = a_n;
+            
             ad = new AnimationAdvanced(DataBase.getAniD(animationDataKey, DataBase.defaultAnimationNameAddOn));
         }
 

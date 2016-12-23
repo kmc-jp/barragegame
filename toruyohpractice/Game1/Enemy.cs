@@ -285,6 +285,12 @@ namespace CommonPart
                     skills[index].coolDown = (int)(cd * Game1.enemySkills_update_fps / DataBase.basicFramePerSecond);
             }
         }
+
+        public void delete_all_skills()
+        {
+            skills.Clear();
+            
+        }
         #endregion
 
         #region Funtions about Motion

@@ -170,8 +170,8 @@ namespace CommonPart
                 bodys[i] = new Enemy(x + bodys_pos[i].X, y + bodys_pos[i].Y, "funnel");// +i%2);
                 bodys[i + funnelsNumber / 2] = new Enemy(x + bodys_pos[i + 3].X, y + bodys_pos[i + 3].Y, "funnel");// + i % 2);
             }
-            bodys[6] = new Enemy(x, y, "boss2 head");
-            bodys[7] = new Enemy(x , y, "boss2 body7");
+            bodys[funnelsNumber] = new Enemy(x, y, "boss2 head");
+            bodys[body_max_index] = new Enemy(x , y, "boss2 body7"); // the green platform
             maxLife = 14000;
             life = maxLife;
 
@@ -208,41 +208,81 @@ namespace CommonPart
             base.changePhase();
             int n = 0;
             #region phase
+            #region record skillNames
+            string _3w1 = "b2-3wayshot-1",_2w1="b2-2wayshot-0.75", _1w1 = "b2-1wayshot-0.75";
+            string _mis2 = "b2-x2shot-1",_las1="b2-laserDown1-1";
+            string _1wd1 = "b2-1wayDown-0.5";
+            #endregion
             switch (motionLoopIndex)
             {
-                case 0:
+                case 1:
                     //phase 1
                     funnelsOut = true;
                     bodys[n].setup_extra_motion(MoveType.go_straight,PointType.pos_on_screen,
                         new Vector(100,360),120);
-                    bodys[n].add_skill("3wayshot-0");
+                    bodys[n].add_skill(_3w1);
                     n++;
                     bodys[funnelsNumber-1].setup_extra_motion(MoveType.go_straight, PointType.pos_on_screen,
                         new Vector(1100, 360), 120);
-                    bodys[funnelsNumber-1].add_skill("3wayshot-0");
+                    bodys[funnelsNumber-1].add_skill(_3w1);
                     for (int j=n ; j < funnelsNumber-1; j++)
                     {
                         bodys[n].setup_extra_motion(MoveType.go_straight, PointType.pos_on_screen,
                         new Vector(x-180*(funnelsNumber/2-n), 100), 120);
-                        bodys[n].add_skill("1wayshot-0.75");
+                        bodys[n].add_skill(_1w1);
                         n++;
                     }
                     for (int j = 0; j < funnelsNumber; j++)
                     {
-                        bodys[j].set_skill_coolDown("3wayshot-0",120, true);
-                        bodys[j].set_skill_coolDown("1wayshot-0.75", 120, true);
+                        bodys[j].set_skill_coolDown(_3w1,120, true);
+                        bodys[j].set_skill_coolDown(_1w1, 120, true);
                     }
                     nowTime = 8 * 60+1;
                     break;
-                case 1:
-                    //phase 2
-
-
-                    break;
                 case 2:
-                    //phase 3
-
+                    //phase 2
+                    funnelsOut = true;
+                    bodys[n].setup_extra_motion(MoveType.go_straight, PointType.pos_on_screen,
+                        new Vector(100, 360), 120);
+                    bodys[n].add_skill(_2w1);
+                    n++;
+                    bodys[funnelsNumber - 1].setup_extra_motion(MoveType.go_straight, PointType.pos_on_screen,
+                        new Vector(1100, 360), 120);
+                    bodys[funnelsNumber - 1].add_skill(_2w1);
+                    for (int j = n; j < funnelsNumber - 1; j++)
+                    {
+                        bodys[n].setup_extra_motion(MoveType.go_straight, PointType.pos_on_screen,
+                        new Vector(x - 180 * (funnelsNumber / 2 - n), 100), 120);
+                        bodys[n].add_skill(_2w1);
+                        n++;
+                    }
+                    for (int j = 0; j < funnelsNumber; j++)
+                    {
+                        bodys[j].set_skill_coolDown(_2w1, 120, true);
+                    }
+                    add_skill(_mis2);
+                    nowTime = 8 * 60 + 1;
                     break;
+                case 3:
+                    //phase 3
+                    bodys[funnelsNumber].add_skill(_las1);
+                    for(int j = 0; j < funnelsNumber; j++)
+                    {
+                        bodys[j].add_skill(_1wd1);
+                    }
+                    nowTime = 10 * 60;
+                    break;
+                case 4:
+                    //phase 4
+                    bodys[funnelsNumber].add_skill(_las1);
+                    for (int j = 0; j < funnelsNumber; j++)
+                    {
+                        bodys[j].add_skill(_2w1);
+                    }
+                    nowTime = 9 * 60;
+                    break;
+                case 5:
+
                 default:
 
                     break;
