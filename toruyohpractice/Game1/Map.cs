@@ -142,7 +142,7 @@ namespace CommonPart {
         public static int topside = 0;
         static protected int leftsideTo = 280; // bothSideMoveの時、左辺がどこに行くのかを決める
         static protected int rightsideTo = 1000; // bothSideMoveの時、右辺がどこに行くのかを決める
-        static protected int sideMoveSpeed = 4; // 両サイドが動くときの速度
+        static protected int sideMoveSpeed = 10; // 両サイドが動くときの速度
         #endregion
 
 
@@ -189,7 +189,7 @@ namespace CommonPart {
             }
             #endregion
             scroll_speed = new Vector(defaultspeed_x, defaultspeed_y);
-            Map.player = new Player(DataBase.WindowDefaultSizeX/2, 500, 6, 13, 11*lifesPerPiece,DataBase.charaName);
+            Map.player = new Player(DataBase.WindowDefaultSizeX/2, 500, 6, 13, 3*lifesPerPiece,DataBase.charaName);
 
             bossLifeGaugeSize.X=0;
             leftside = 280;
@@ -563,6 +563,7 @@ namespace CommonPart {
             {
                 enemys.Insert(enemysIndexOfBoss, new Boss2(leftside + _x, _y, _unitType_name));
             }
+            Console.Write("boss x:" + (leftside + _x));
             bossLifeBarTextureName = _bossLifeBarName;
             bossLifeBarAnime = new AnimationAdvanced(DataBase.getAniD(bossLifeBarTextureName + DataBase.defaultAnimationNameAddOn));
         }

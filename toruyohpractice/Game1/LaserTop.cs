@@ -44,7 +44,7 @@ namespace CommonPart
             omega = _omega;
             enemy = _enemy;
             color = _color;
-
+            
         }
 
         /// <summary>
@@ -71,46 +71,20 @@ namespace CommonPart
             #region Laser Motion: length is not changed here!
             switch (move_type)
             {
-                case MoveType.chase_player_target:
+                /*case MoveType.chase_player_target:
                     speed += acceleration;
                     radian = Function.towardValue(radian, Math.Atan2(target.y-enemy.y,target.x-enemy.x), omega);
-                    /*int fix;
-                    if (Math.Abs(x - enemy.x) < 0.01)
-                    {
-                        fix = y > enemy.y ? 1 : -1;
-                        if (target.x > x)
-                        {
-                            radian -= omega*fix;
-                        }
-                        else
-                        {
-                            radian += omega*fix;
-                        }
-                    }
-                    else
-                    {
-                        double k = (y - enemy.y) / (x - enemy.x);
-                        fix = x > enemy.x ? 1 : -1;
-
-                        if ((k * (target.x - enemy.x) + enemy.y > target.y))
-                        {
-                            radian -= omega*fix;
-                        }
-                        else
-                        {
-                            radian += omega*fix;
-                        }
-                    }*/
-
+                    
                     x = enemy.x+length * Math.Cos(radian);
                     y = enemy.y+length * Math.Sin(radian);
                     break;
                 case MoveType.go_straight: //これはBulletのgo_straightを上書きする
                     speed += acceleration;
                     radian += omega;
-                    x = enemy.x+ length * Math.Cos(radian);
-                    y = enemy.y+ length * Math.Sin(radian);
+                    //x = enemy.x+ length * Math.Cos(radian);
+                    //y = enemy.y+ length * Math.Sin(radian);
                     break;
+                    */
             }
             #endregion
             if (bulletMove)
@@ -133,13 +107,14 @@ namespace CommonPart
                     player.damage(atk);
                     //レーザーはキャラクターにダメージを与えても消えない。
                 }else { //レーザーが回避中のプレイヤーに当たる
-                    length = 0;
+                    damage(player.atk);
                 }
             }
         }
         public override void damage(int d)
         {
             length = 0;
+            x = enemy.x; y = enemy.y;
             Map.make_chargePro(x, y, sword, Map.caculateBulletScore(sword));
             //laserはダメージを受けない
         }

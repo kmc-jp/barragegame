@@ -301,7 +301,7 @@ namespace CommonPart
         /// <param name="_pt"></param>
         /// <param name="_alltime">その動きにかかる時間、不要なら埋めなくてよい</param>
         /// <param name="_pos">その動きに必要な点、不要なら適当に</param>
-        public void setup_extra_motion(MoveType _mt,PointType _pt,Vector _pos, int _alltime=DataBase.motion_inftyTime)
+        public virtual void setup_extra_motion(MoveType _mt,PointType _pt,Vector _pos, int _alltime=DataBase.motion_inftyTime)
         {
             backup_Motion_into_1();
             alltime = _alltime;
@@ -309,12 +309,13 @@ namespace CommonPart
             mt = _mt;
             pt = _pt;
             setup_default_pos(_pos);
+            set_from_moveTypeAndPointType_2();
         }
         /// <summary>
         /// times[0]は変更されず、motion_index[0],mt,alltime,default_posを設置する
         /// </summary>
         /// <param name="i"></param>
-        public void setup_motion(int i) {
+        public virtual void setup_motion(int i) {
             if (i < unitType.moveTypes.Count) {
                 motion_index[0] = i; mt =unitType.moveTypes[i]; alltime = unitType.times[i];
                 pt = unitType.pointTypes[i];
@@ -322,7 +323,7 @@ namespace CommonPart
                 setup_default_pos(i);
                 speed = unitType.speed;
                 set_from_moveTypeAndPointType_2();
-                Console.WriteLine(default_pos+" "+mt);
+                //Console.WriteLine(default_pos+" "+mt);
             }
             else { Console.Write("setup_motion:Invaild Motion-" + unitType_name + "- i is" + i); }
         }
@@ -448,7 +449,7 @@ namespace CommonPart
             default_pos.X = Motion.from_PointType_getPosX(pos.X, pos.Y, pt, alltime, speed, angle,mt);
             default_pos.Y = Motion.from_PointType_getPosY(pos.X, pos.Y, pt,alltime, speed, angle,mt);
         }
-        public void setup_LoopSet(int _loopStart, int _loopEnd, int _loopIndex = -1)
+        public virtual void setup_LoopSet(int _loopStart, int _loopEnd, int _loopIndex = -1)
         {
             if (!motionLooped)
             {
@@ -505,37 +506,42 @@ namespace CommonPart
                         case SkillGenreL.generation:
                         case SkillGenreL.UseSkilledBullet:
                             WayShotSkillData ws = (WayShotSkillData)sd;
+                            double by;
                             #region ジャンルの小さい分類
                             switch (sd.sgs)
                             {
                                 #region genre small yanagi
                                 case SkillGenreS.yanagi:
                                     #region yanagi setting
-                                    for (int j = 1; j <= ws.way + 1; j++)
+                                    for (int j = 1; j <= ws.way/2 + 1; j++)
                                     {
                                         Bullet bullet1, bullet2;
+                                        by = y - sd.space * j * j*Math.Pow(0.99,j)/2 + animation.Y / 2;
+                                        double bdx = sd.space * j*j/2 + sd.radius;
                                         if (ws.sgl == SkillGenreL.UseSkilledBullet)
                                         {
                                             WaySkilledBulletsData wSs = (WaySkilledBulletsData)ws;
-                                            bullet1 = new SkilledBullet(x + sd.space * j + sd.radius, y - sd.space * j * j * 2 + 4 + animation.Y / 2, sd.moveType,
+                                            bullet1 = new SkilledBullet(x + bdx, by, sd.moveType,
                                                 sd.speed, sd.acceleration, sd.aniDName, sd.angle, sd.radius, wSs.BulletSkillNames, this, sd.sword, sd.life, sd.score);
-                                            bullet2 = new SkilledBullet(x - sd.space * j - sd.radius, y - sd.space * j * j * 2 + 4 + animation.Y / 2, sd.moveType,
+                                            bullet2 = new SkilledBullet(x - bdx, by, sd.moveType,
                                                 sd.speed, sd.acceleration, sd.aniDName, sd.angle, sd.radius, wSs.BulletSkillNames, this, sd.sword, sd.life, sd.score);
                                         }
                                         else
                                         {
-                                            bullet2 = new Bullet(x - sd.space * j - sd.radius, y - sd.space * j * j * 2 + 4 + animation.Y / 2, sd.moveType,
+                                            bullet2 = new Bullet(x - bdx, by, sd.moveType,
                                             sd.speed, sd.acceleration, sd.aniDName, sd.angle, sd.radius, sd.sword, sd.life, sd.score);
-                                            bullet1 = new Bullet(x + sd.space * j + sd.radius, y - sd.space * j * j * 2 + 4 + animation.Y / 2, sd.moveType,
+                                            bullet1 = new Bullet(x + bdx, by, sd.moveType,
                                                 sd.speed, sd.acceleration, sd.aniDName, sd.angle, sd.radius, sd.sword, sd.life, sd.score);
                                         }
-                                        bullet1.speed_x = sd.speed * (j - 1) * 0.25;
-                                        bullet1.speed_y = -sd.speed + 0.1 * (sd.space * j);
+                                        double bspeedX = sd.speed * (j - 1) * 0.01;
+                                        double bspeedY = -sd.speed;// + 0.01 * (sd.space * j); -by+y+animation.Y/2
+                                        bullet1.target_pos.X = bspeedX;
+                                        bullet1.target_pos.Y = bspeedY;
                                         bullet1.acceleration_x = +sd.acceleration * j * j / 120;
                                         bullet1.acceleration_y = sd.acceleration;
                                         bullets.Add(bullet1);
-                                        bullet2.speed_x = -sd.speed * (j - 1) * 0.25;
-                                        bullet2.speed_y = -sd.speed + 0.1 * (sd.space * j);
+                                        bullet2.target_pos.X = -bspeedX;
+                                        bullet2.target_pos.Y = bspeedY;
                                         bullet2.acceleration_x = -sd.acceleration * j * j / 120;
                                         bullet2.acceleration_y = sd.acceleration;
                                         bullets.Add(bullet2);
@@ -545,7 +551,7 @@ namespace CommonPart
                                 #endregion
                                 default:
                                     #region bulletsAdd
-                                    double bx = x; double by = y;
+                                    double bx = x; by = y;
                                     double _angle = Motion.getAngleFromPointType(ws.pointType, ws.angle, ws.vec.X,x,y,angle);
                                     //Console.WriteLine("in Enemy: " + ws.skillName + " ws.angle:" + ws.angle +" angle:"+_angle+" way:"+ws.way+ "#");
 
@@ -701,7 +707,7 @@ namespace CommonPart
             skills.Clear();
         }
 
-        public bool selectable()
+        public virtual bool selectable()
         {
             if (delete || fadeout||animation.dataIsNull()||!Map.inside_window(this))
             {
