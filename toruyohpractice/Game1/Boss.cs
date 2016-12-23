@@ -12,7 +12,10 @@ namespace CommonPart
         public Enemy[] bodys;
         protected Vector[] bodys_pos;
         protected double height_percent;
-
+        /// <summary>
+        /// random時とり得るphaseの設定
+        /// </summary>
+        protected int maxPhaseCount;
         public Boss(double _x,double _y,string _unitType_name):base(_x,_y,_unitType_name)
         {   }
 
@@ -21,6 +24,40 @@ namespace CommonPart
         {
             base.damage(atk);
             Map.bossDamaged();
+        }
+
+        /// <summary>
+        /// ボスのmotionLoopIndexを変更させる。またこれでphaseが決まる。
+        /// </summary>
+        /// <param name="p">どのフェースに行くかを決める、p=-1でrandom</param>
+        public virtual void changePhase(int p=-1)
+        {
+            if (p < -1) { return; }
+            else if (p == -1) {
+                motionLoopIndex = Function.GetRandomInt(maxPhaseCount);
+            }else { motionLoopIndex = p; }
+            #region phase
+            switch (motionLoopIndex)
+            {
+                case 0:
+                    //phase 1
+
+
+                    break;
+                case 1:
+                    //phase 2
+
+
+                    break;
+                case 2:
+                    //phase 3
+
+                    break;
+                default:
+
+                    break;
+            }
+            #endregion
         }
     }
     class Boss1:Boss
@@ -118,28 +155,34 @@ namespace CommonPart
         /// </summary>
         protected double head_rotatePercentY = 1;
         private bool funnelsOut = false;
+        private int funnelsNumber = 6;
+        private int nowTime=0;//0であれば、パターンの終了を意味する。
+
         public Boss2(double _x, double _y, string _unitType_name) : base(_x, _y, _unitType_name)
         {
-            body_max_index = 7;
+            body_max_index = funnelsNumber+2 - 1;//funnelsNumber is not index,-1
             bodys = new Enemy[body_max_index+1];
             bodys_pos = new Vector[body_max_index + 1];
-            for(int i = 0; i < 3; i++)
+            for(int i = 0; i < funnelsNumber/2; i++)
             {
-                bodys_pos[i] = new Vector(-110 - 35 * i,-30 + i % 2 * 25);
-                bodys_pos[i + 3] = new Vector(110 + 35 * i, -30 + i % 2 * 25);
-                bodys[i] = new Enemy(x +bodys_pos[i].X, y +bodys_pos[i].Y, "funnnel"+i%2);
-                bodys[i+3] = new Enemy(x + bodys_pos[i+3].X, y + bodys_pos[i+3].Y, "funnnel" + i % 2);
+                bodys_pos[i] = new Vector(-110 - 70 * (2-i),-30 + i % 2 * 25);
+                bodys_pos[i + 3] = new Vector(110 + 70 * i, -30 + i % 2 * 25);
+                bodys[i] = new Enemy(x + bodys_pos[i].X, y + bodys_pos[i].Y, "funnel");// +i%2);
+                bodys[i + funnelsNumber / 2] = new Enemy(x + bodys_pos[i + 3].X, y + bodys_pos[i + 3].Y, "funnel");// + i % 2);
             }
             bodys[6] = new Enemy(x, y, "boss2 head");
             bodys[7] = new Enemy(x , y, "boss2 body7");
             maxLife = 14000;
             life = maxLife;
+
+
         }
 
         public override void update(Player player)
         {
             base.update(player);
 
+            #region move
             for (int i = 0; i <= body_max_index; i++)
             {
                 bodys[i].bulletsMove = bulletsMove;
@@ -151,8 +194,61 @@ namespace CommonPart
                     bodys[i].update(player);
                 }else { bodys[i].moveToScreenPos_now(x,y); bodys[i].update(player); }
             }
+            #endregion
+
+            changePhase();
         }
 
+        /// <summary>
+        /// ボスのmotionLoopIndexを変更させる。またこれでphaseが決まる。
+        /// </summary>
+        /// <param name="p">どのフェースに行くかを決める、p=-1でrandom</param>
+        public override void changePhase(int p = -1)
+        {
+            base.changePhase();
+            int n = 0;
+            #region phase
+            switch (motionLoopIndex)
+            {
+                case 0:
+                    //phase 1
+                    funnelsOut = true;
+                    bodys[n].setup_extra_motion(MoveType.go_straight,PointType.pos_on_screen,
+                        new Vector(100,360),120);
+                    bodys[n].add_skill("3wayshot-0");
+                    n++;
+                    bodys[funnelsNumber-1].setup_extra_motion(MoveType.go_straight, PointType.pos_on_screen,
+                        new Vector(1100, 360), 120);
+                    bodys[funnelsNumber-1].add_skill("3wayshot-0");
+                    for (int j=n ; j < funnelsNumber-1; j++)
+                    {
+                        bodys[n].setup_extra_motion(MoveType.go_straight, PointType.pos_on_screen,
+                        new Vector(x-180*(funnelsNumber/2-n), 100), 120);
+                        bodys[n].add_skill("1wayshot-0.75");
+                        n++;
+                    }
+                    for (int j = 0; j < funnelsNumber; j++)
+                    {
+                        bodys[j].set_skill_coolDown("3wayshot-0",120, true);
+                        bodys[j].set_skill_coolDown("1wayshot-0.75", 120, true);
+                    }
+                    nowTime = 8 * 60+1;
+                    break;
+                case 1:
+                    //phase 2
+
+
+                    break;
+                case 2:
+                    //phase 3
+
+                    break;
+                default:
+
+                    break;
+            }
+            #endregion
+        }
         public override void draw(Drawing d)
         {
             if (!texRotate)
