@@ -140,6 +140,7 @@ namespace CommonPart
         public override void damage(int d)
         {
             length = 0;
+            Map.make_chargePro(x, y, sword, Map.caculateBulletScore(sword));
             //laserはダメージを受けない
         }
         public override bool hit_jugde(double px, double py, double p_radius = 0)

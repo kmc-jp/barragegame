@@ -71,6 +71,7 @@ namespace CommonPart
             playAnimation(DataBase.defaultAnimationNameAddOn);
             motion_index[0] = 0;
             motion_index[1] = -1;
+            motionLoopIndex = 0;
             times[0] =0;
             speed = unitType.speed;
             omega = unitType.omega;
@@ -286,7 +287,7 @@ namespace CommonPart
         /// <param name="_pt"></param>
         /// <param name="_alltime">その動きにかかる時間、不要なら埋めなくてよい</param>
         /// <param name="_pos">その動きに必要な点、不要なら適当に</param>
-        protected void setup_extra_motion(MoveType _mt,PointType _pt,Vector _pos, int _alltime=DataBase.motion_inftyTime)
+        public void setup_extra_motion(MoveType _mt,PointType _pt,Vector _pos, int _alltime=DataBase.motion_inftyTime)
         {
             backup_Motion_into_1();
             alltime = _alltime;
@@ -299,7 +300,7 @@ namespace CommonPart
         /// times[0]は変更されず、motion_index[0],mt,alltime,default_posを設置する
         /// </summary>
         /// <param name="i"></param>
-        protected void setup_motion(int i) {
+        public void setup_motion(int i) {
             if (i < unitType.moveTypes.Count) {
                 motion_index[0] = i; mt =unitType.moveTypes[i]; alltime = unitType.times[i];
                 pt = unitType.pointTypes[i];
@@ -370,7 +371,7 @@ namespace CommonPart
         protected void update_motion_index() {
             if (motion_index[1] >= 0)
             {//例外が設置された。
-                if ( DataBase.timeExceedMaxDuration(times[0],alltime) )
+                if (DataBase.timeExceedMaxDuration(times[0], alltime))
                 {//例外のmotionから脱出して、元に戻る。
                     get_Motion_from_1();
                     setup_motion(motion_index[0]);
@@ -379,11 +380,17 @@ namespace CommonPart
             }
             else
             {
-                if (DataBase.timeExceedMaxDuration(times[0],alltime))
+                if (DataBase.timeExceedMaxDuration(times[0], alltime))
                 {
-                    if (motion_index[0] < unitType.moveTypes.Count - 1)
+                    // motion loops
+                    if (motionLooped &&  
+                            motion_index[0] == motionLoopsEnd[motionLoopIndex])
                     {
-                        motion_index[0]++;   
+                            motion_index[0] = motionLoopsStart[motionLoopIndex];
+                    }
+                    // not yet motion looped 
+                    else if (motion_index[0] < unitType.moveTypes.Count - 1){
+                        motion_index[0]++;
                     }
                     else { motion_index[0] = 0; }
                     times[0] = 0;//times[0]を0にする,下の関数には組み込めていない。
@@ -427,7 +434,39 @@ namespace CommonPart
             default_pos.X = Motion.from_PointType_getPosX(pos.X, pos.Y, pt, alltime, speed, angle,mt);
             default_pos.Y = Motion.from_PointType_getPosY(pos.X, pos.Y, pt,alltime, speed, angle,mt);
         }
+        public void setup_LoopSet(int _loopStart, int _loopEnd, int _loopIndex = -1)
+        {
+            if (!motionLooped)
+            {
+                motionLooped = true;
+                motionLoopsEnd = new List<int>();
+                motionLoopsStart = new List<int>();
+                motionLoopIndex = 0;
+            }
+            if (_loopIndex >= 0) // index 指定
+            {
+                if (motionLoopsStart.Count <= _loopIndex)
+                {
+                    for (int i = 0; i < _loopIndex + 1 - motionLoopsStart.Count; i++)
+                        motionLoopsStart.Add(0);
+                    Console.Write("motionLoopsStart: 0 added due to outOfIndex");
+                }
+                if (motionLoopsEnd.Count <= _loopIndex)
+                {
+                    for (int i = 0; i < _loopIndex + 1 - motionLoopsEnd.Count; i++)
+                        motionLoopsEnd.Add(0);
+                    Console.Write("motionLoopsEnd: 0 added due to outOfIndex");
+                }
+                motionLoopsStart[_loopIndex] = _loopStart;
+                motionLoopsEnd[_loopIndex] = _loopEnd;
 
+            }
+            else
+            {
+                motionLoopsStart.Add(_loopStart);
+                motionLoopsEnd.Add(_loopEnd);
+            }
+        }
         #endregion
 
         public void FadeOut()

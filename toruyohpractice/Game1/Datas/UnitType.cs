@@ -118,7 +118,10 @@ namespace CommonPart
             }
             bw.Write(DataBase.interval_of_each_type);
         }
-
+        private ActiveAniSkiedUnitType lastUT
+        {
+            get { return ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]); }
+        } 
         private void setup_unitType()
         {
             const double normalOmega = Math.PI / 60;
