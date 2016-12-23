@@ -27,6 +27,11 @@ namespace CommonPart
                     Map.boss_mode = false;
                     break;
                 case 5:
+                    //Map.EngagingTrueBoss();
+                    break;
+                case 60:
+                    //Map.create_boss2(DataBase.WindowDefaultSizeX / 2, 0, "boss2");
+                    
                     /*Map.EngagingTrueBoss();
                     Map.create_boss2(320, 0, "boss2");
                     */
