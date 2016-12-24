@@ -139,9 +139,9 @@ namespace CommonPart {
                             if (stage < 3)
                             {
                                 new MapScene(scenem, stage + 1);
-                            }else if (stage == 3)//応急処置 stage4,5がないため
+                            }else if (stage >= 3)//応急処置 stage4,5がないため
                             {
-                                new MapScene(scenem, 6);
+                                nMap=new Map(6);
                             }else
                             {
                                 new TitleSceneWithWindows(scenem);

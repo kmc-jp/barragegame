@@ -43,7 +43,7 @@ namespace CommonPart
             ny += 2 * dy; nx += dx;
             nx = 100;
             ny += 0 * dy;
-	    windows[0].AddColoum(new AnimationButton(nx, ny, "TestMap", DataBase.getAniD("NewGame-selected"), Command.buttonPressed3, 80, 0));
+	        windows[0].AddColoum(new AnimationButton(nx, ny, "TestMap", DataBase.getAniD("NewGame-selected"), Command.buttonPressed3, 80, 0));
             ny += 2 * dy;
             windows[0].AddColoum(new AnimationButton(nx, ny, /*"ＨＡＲＤ"*/"", DataBase.getAniD("NewGame-selected"), Command.buttonPressed1,0,0));
             ny += 2*dy;

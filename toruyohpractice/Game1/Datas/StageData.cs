@@ -543,12 +543,9 @@ namespace CommonPart
             {
                 case 0:
                     Map.set_default_scroll_speed(0,0);
-                    Map.boss_mode = false;
-                    break;
-                case 50:
                     Map.EngagingTrueBoss();
                     break;
-                case 125:
+                case 60:
                     playBGM(bgmIDs[0]);//最初のBGMを流す。
                     Map.create_boss6(640, 220, "boss6");
                     break;

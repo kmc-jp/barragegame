@@ -170,11 +170,11 @@ namespace CommonPart {
                 case 2:
                     stagedata = new Stage2Data("stage2");
                     break;
-                case 4:
-                    stagedata = new Stage4Data("stage4");
-                    break;
                 case 3:
                     stagedata = new Stage3Data("stage3");
+                    break;
+                case 4:
+                    stagedata = new Stage6Data("stage6");
                     break;
                 case 5:
                     stagedata = new Stage6Data("stage6");

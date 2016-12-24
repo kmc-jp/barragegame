@@ -20,7 +20,7 @@ namespace CommonPart
         int ph = DataBase.getTexD(playerIconName).h_single;
         Vector[] stagesPos = new Vector[] {
             new Vector(450, 450), new Vector(100, 200),
-            new Vector(400, 80),new Vector(750, 150),
+            new Vector(400, 80),//new Vector(750, 150),
             new Vector(1080, 25),
         };
         string stageButtonAniDName="stageSelectButton";
@@ -34,7 +34,7 @@ namespace CommonPart
             {
                 stageAvailable[i] = true;
             }
-            stageAvailable[3] = false;
+            //stageAvailable[3] = false;
             for (int j = 0; j < stagesPos.Length; j++)
             {
                 if (stageAvailable[j] == false)
