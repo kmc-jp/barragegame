@@ -13,7 +13,10 @@ namespace CommonPart
         public double length = 0;
         protected Color color;
         protected Unit enemy;
-
+        /// <summary>
+        /// laser's sum of dx, sum of dy;
+        /// </summary>
+        protected double sdx=0,sdy=0;
         /// <summary>
         /// 目標がない場合に使う
         /// </summary>
@@ -71,20 +74,24 @@ namespace CommonPart
             #region Laser Motion: length is not changed here!
             switch (move_type)
             {
-                /*case MoveType.chase_player_target:
+                case MoveType.chase_player_target:
                     speed += acceleration;
                     radian = Function.towardValue(radian, Math.Atan2(target.y-enemy.y,target.x-enemy.x), omega);
-                    
-                    x = enemy.x+length * Math.Cos(radian);
-                    y = enemy.y+length * Math.Sin(radian);
+                    sdx+= length * Math.Cos(radian);
+                    sdy+= Math.Sin(radian);
+                    x = enemy.x + sdx;
+                    y = enemy.y + sdy;
                     break;
                 case MoveType.go_straight: //これはBulletのgo_straightを上書きする
+                    target_pos.X += acceleration_x;
+                    target_pos.Y += acceleration_y;
                     speed += acceleration;
-                    radian += omega;
-                    //x = enemy.x+ length * Math.Cos(radian);
-                    //y = enemy.y+ length * Math.Sin(radian);
+                    sdx += target_pos.X;
+                    sdy += target_pos.Y;
+                    x = enemy.x + sdx;
+                    y = enemy.y + sdy;
                     break;
-                    */
+                
             }
             #endregion
             if (bulletMove)
@@ -115,6 +122,7 @@ namespace CommonPart
         {
             length = 0;
             x = enemy.x; y = enemy.y;
+            sdx = 0;sdy = 0;
             Map.make_chargePro(x, y, sword, Map.caculateBulletScore(sword));
             //laserはダメージを受けない
         }
