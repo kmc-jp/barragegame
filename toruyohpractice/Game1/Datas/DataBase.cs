@@ -399,13 +399,13 @@ namespace CommonPart {
             #endregion
 
             #region boss2
-            addSkillData(new WayShotSkillData("b2-3wayshot-1", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", middle_cd1, middle_speed1, 0, middleangle2, small_radius, 3));
-            addSkillData(new WayShotSkillData("b2-1wayshot-0.75", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", middle_cd1, high_speed1, 0, 0, small_radius, 1));
-            addSkillData(new WayShotSkillData("b2-2wayshot-0.75", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", middle_cd1, high_speed1, 0, 0, small_radius, 1));
+            addSkillData(new WayShotSkillData("b2-3wayshot-1", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletlight", middle_cd1, middle_speed1, 0, middleangle2, small_radius, 3));
+            addSkillData(new WayShotSkillData("b2-1wayshot-0.75", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletmiddle", middle_cd1, high_speed1, 0, 0, small_radius, 1));
+            addSkillData(new WayShotSkillData("b2-2wayshot-0.75", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletlightblue-green", middle_cd1, high_speed1, 0, 0, small_radius, 1));
             addSkillData(new WaySkilledBulletsData("b2-x2shot-1",null,SkillGenreS.wayshot,null,60, goStraightWithDownDirection,small_radius,"b2-sub-1wayshot-1",2, 15 ,Math.PI));
             addSkillData(new WayShotSkillData("b2-laserDown1-1",null,SkillGenreL.generation,SkillGenreS.laser,"bulletsmall",600,goStraightWithDownDirection,small_radius,Color.Goldenrod,1,0,600));
-            addSkillData(new WayShotSkillData("b2-1wayDown-0.5",null,SkillGenreS.wayshot,"bulletsmall",high_cd4,goStraightWithDownDirection,small_radius));
-            addSkillData(new WayShotSkillData("b2-blaserDown1", null, SkillGenreL.generation, SkillGenreS.laser, "bulletsmall", 700, goStraightWithDownDirection,big_radius*2, Color.Goldenrod, 1, 0, 480));
+            addSkillData(new WayShotSkillData("b2-1wayDown-0.5",null,SkillGenreS.wayshot,"bulletLL",high_cd4,goStraightWithDownDirection,small_radius));
+            addSkillData(new WayShotSkillData("b2-blaserDown1", null, SkillGenreL.generation, SkillGenreS.laser, "bulletlightred-yellow", 700, goStraightWithDownDirection,big_radius*2, Color.Goldenrod, 1, 0, 480));
             addSkillData(new WayShotSkillData("b2-laser-1", null,  SkillGenreS.laser, "bulletsmall", 600, MoveType.go_straight,PointType.pos_on_screen,new Vector(640,550),0,middle_speed1,0,0,0,big_radius, Color.Goldenrod, 1, 0, 600));
 
             #region for boss2

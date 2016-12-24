@@ -189,7 +189,7 @@ namespace CommonPart {
             }
             #endregion
             scroll_speed = new Vector(defaultspeed_x, defaultspeed_y);
-            Map.player = new Player(DataBase.WindowDefaultSizeX/2, 500, 6, 13, 3*lifesPerPiece,DataBase.charaName);
+            Map.player = new Player(DataBase.WindowDefaultSizeX/2, 500, 6, 10, 3*lifesPerPiece,DataBase.charaName);
 
             bossLifeGaugeSize.X=0;
             leftside = 280;

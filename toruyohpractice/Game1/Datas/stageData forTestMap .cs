@@ -26,39 +26,41 @@ namespace CommonPart
                     playBGM(bgmIDs[0]);//最初のBGMを流す。
                     Map.boss_mode = false;
                     break;
-                /*case 5:
-                    Map.EngagingTrueBoss();
-                    Map.create_boss1(320, 0, "boss1");
+                case 10:
+                    Map.create_enemy(360, 0, "3E7e");
+                    Map.enemys.Last().add_skill("ransya-3");
                     break;
-                    /*
-                case 60:
-                    Map.create_boss2(DataBase.WindowDefaultSizeX / 2, 0, "boss2");*/                    
-                case 5:
-                    Map.create_enemy(320, 0, "testE1");
-                    Map.enemys.Last().add_skill("boss3onfire-longbless");
-                    //Map.enemys.Last().add_skill("1wayshot-2");
-                    Map.enemys.
-                        Last().set_skill_coolDown(0, 60);
-                    //Map.enemys.Last().add_skill("ransya-3^-1");
-
-                    /*Map.enemys.Last().add_skill("createbullet2way-2");
-                    //Map.enemys.Last().add_skill("boss6-createzyuzi");
-                    break;
-                    */
-                /*case 45:
-                    Map.create_enemy(320, 0, "testE2");
+                case 55:
+                    Map.create_enemy(361, 0, "3E7e-N");
                     Map.enemys.Last().add_skill("ransya-3^-1");
-                    //Map.enemys.Last().add_skill("createzyuzi-0");
-                    break*/
-                    
-                /*case 4700:
-                    Map.boss_mode = true;
-                    Map.EngagingTrueBoss();
                     break;
-                case 4720:
-                    playBGM(bgmIDs[1]);//BGMを流す。
-                    Map.create_boss1(360, 10, "boss1");
-                    break;*/
+                    /*case 5:
+                        Map.create_enemy(320, 0, "testE1");
+                        Map.enemys.Last().add_skill("boss3onfire-longbless");
+                        //Map.enemys.Last().add_skill("1wayshot-2");
+                        Map.enemys.
+                            Last().set_skill_coolDown(0, 60);
+                        break;
+                        //Map.enemys.Last().add_skill("ransya-3^-1");
+
+                        /*Map.enemys.Last().add_skill("createbullet2way-2");
+                        //Map.enemys.Last().add_skill("boss6-createzyuzi");
+                        break;
+                        */
+                    /*case 45:
+                        Map.create_enemy(320, 0, "testE2");
+                        Map.enemys.Last().add_skill("ransya-3^-1");
+                        //Map.enemys.Last().add_skill("createzyuzi-0");
+                        break*/
+
+                    /*case 4700:
+                        Map.boss_mode = true;
+                        Map.EngagingTrueBoss();
+                        break;
+                    case 4720:
+                        playBGM(bgmIDs[1]);//BGMを流す。
+                        Map.create_boss1(360, 10, "boss1");
+                        break;*/
             }
             #endregion
         }
