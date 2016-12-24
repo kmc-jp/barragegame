@@ -34,6 +34,7 @@ namespace CommonPart {
         player_pos, //プレイヤーの座標を指す。
         randomRange,//ベクトルがx方向の正負変位,yの正負変位を表しているが、値はその変位内の乱数
         randomDirection,//ベクトルは意味を持たない?初期角度にランダム角度足した方向へ移動する
+        selfDirection,//スキルを使うものの角度
         Direction,//決まった方向
     }
     public enum Command
@@ -364,7 +365,7 @@ namespace CommonPart {
                 rshot0 = "boss3onfire-r", rshot1 = "boss3onfire-r^-1", yanagi = "boss3onfire-yanagi", hakkyou = "boss3onfire-hakkyo";
             addSkillData(new WaySkilledBulletsData("boss3onfire-shot", Condition.hPp + ">=50"+and+rs+"=1", SkillGenreS.wayshot, null, middle_cd2, goStraightWithDirection, 0, 0, SelfAngle, 0, 0, big_radius, new string[] { "firesmall", "firelarge", "firemiddle" }, 1, high_cd1 * 5 + 1));
             addSkillData(new WaySkilledBulletsData("boss3onfire-breath", Condition.hPp + ">=50"+and + rs + "=3", SkillGenreS.wayshot, null, low_cd3, goStraightWithDirection, 0, 0, SelfAngle, 0, 0, big_radius, new string[] { "firesmall", "firelarge", "firemiddle" }, 1, 100));
-            addSkillData(new WaySkilledBulletsData("boss3onfire-longbreath", Condition.hPp + "<50" + and + rs + "=3", SkillGenreS.wayshot, null, 10000, goStraightWithDirection, 0, 0, SelfAngle, 0, 0, big_radius, new string[] { "firesmall2", "firelarge2", "firemiddle2" }, 1, 10000));
+            addSkillData(new WaySkilledBulletsData("boss3onfire-longbreath", Condition.hPp + "<50" + and + rs + "=3", SkillGenreS.wayshot, null, 1000, goStraightWithDirection, 0, 0, SelfAngle, 0, 0, big_radius, new string[] { "firesmall2", "firelarge2", "firemiddle2" }, 1, 10000));
             addSkillData(new WaySkilledBulletsData("boss3onfire-hakkyo", Condition.hPp+"<=20" + and + rs + "=2", SkillGenreS.wayshot, null, 60, rotateAndGoDirection, 0, 0, lowangle2, Math.PI / 360, 0, small_radius, new string[] { "boss3onfire-rotate" }, 1, 1000));
             addSkillData(new WaySkilledBulletsData("boss3onfire-r", Condition.hPp + ">20" + and + rs + "=2", SkillGenreS.wayshot, null, 1000, rotateAndGoDirection, 0, 0, lowangle2, Math.PI / 45, 0, small_radius, new string[] { "boss3onfire-rotate2" }, 1, 1000));
             addSkillData(new WaySkilledBulletsData("boss3onfire-r^-1", Condition.hPp + ">20" + and + rs + "=2", SkillGenreS.wayshot, null, 1000, rotateAndGoDirection, 0, 0, lowangle2, -Math.PI / 45, 0, small_radius, new string[] { "boss3onfire-rotate2" }, 1, 1000));//上の弾幕と同時使用
@@ -380,7 +381,7 @@ namespace CommonPart {
             addSkillData(new WayShotSkillData("firesmall2", null, SkillGenreS.wayshot, "smallonfire", high_cd1, fire, middle_speed1, 0, AngleToPlayer, 0, 0, small_radius, 1, middleangle1));
             addSkillData(new WayShotSkillData("firemiddle2", null, SkillGenreS.wayshot, "middleonfire", high_cd1, fire, middle_speed1, 0, AngleToPlayer, 0, 0, small_radius, 1, middleangle1));
             addSkillData(new WayShotSkillData("firelarge2", null, SkillGenreS.wayshot, "largeonfire", high_cd1, fire, middle_speed1, 0, AngleToPlayer, 0, 0, small_radius, 1, middleangle1));
-            addSkillData(new WayShotSkillData("boss3onfire-yanagi0", null, SkillGenreS.yanagi, MoveType.go_straight, "middleonfire", low_cd2, middle_speed1, 0.2, 8, small_radius, 6, motion_inftyTime, 1));
+            addSkillData(new WayShotSkillData("boss3onfire-yanagi0", null, SkillGenreS.yanagi, MoveType.go_straight, "middleonfire", low_cd2, middle_speed1, 0.2, 8, small_radius, 6, 0,motion_inftyTime));
 
             addSkillData(new WaySkilledBulletsData("boss3onfire-rotate", null, SkillGenreS.wayshot, null, middle_cd1, goStraightWithDirection, 0, 0, SelfAngle, 0, 0, big_radius, new string[] { "firesmall1", "firelarge1", "firemiddle1" }, 1, high_cd1 * 1 + 1));
             addSkillData(new WaySkilledBulletsData("boss3onfire-rotate2", null, SkillGenreS.wayshot, null, high_cd3, goStraightWithDirection, 0, 0, SelfAngle, 0, 0, big_radius, new string[] { "firesmall1", "firelarge1", "firemiddle1" }, 1, high_cd1 * 1 + 1));
@@ -399,8 +400,10 @@ namespace CommonPart {
             addSkillData(new WaySkilledBulletsData("boss1ransha-0", hppOverFifty, SkillGenreS.wayshot, "bulletglass", low_cd6, chaseEnemy, small_radius, "boss1preransha", 1, 60));
             addSkillData(new WaySkilledBulletsData("boss1ransha-1", hppBelowFifty, SkillGenreS.wayshot, "bulletmoon", low_cd6, chaseEnemy, small_radius, "boss1preransha", 1, 60));
             addSkillData(new WaySkilledBulletsData("boss1preransha", null, SkillGenreS.wayshot, null, high_cd1, goStraightWithDirection, 0, 0, SelfAngle, 0, 0, big_radius, new string[] { "1wayshotofsmall", "1wayshotoflarge", }, 1, high_cd1 * 3 + 1));
-            addSkillData(new WayShotSkillData("boss1downshot-0",hppOverFifty, SkillGenreS.wayshot, "bulletLL", low_cd1, goStraightWithDirection, middle_speed1, 0.0, lowangle1, 0, 0, small_radius));
-            addSkillData(new WayShotSkillData("boss1downshot-1", hppOverFifty, SkillGenreS.wayshot, "bulletLL", low_cd1, goStraightWithDirection, middle_speed1, 0.0, lowangle1+Math.PI, 0, 0, small_radius));
+
+            addSkillData(new WayShotSkillData("boss1downshot-0",hppOverFifty, SkillGenreS.wayshot, "bulletLL", low_cd1, MoveType.go_straight, PointType.selfDirection, nv, 0, middle_speed1, 0.0, lowangle1, 0,  small_radius));
+            addSkillData(new WayShotSkillData("boss1downshot-1", hppOverFifty, SkillGenreS.wayshot, "bulletLL", low_cd1, MoveType.go_straight, PointType.selfDirection, nv, 0, middle_speed1, 0.0, lowangle1+Math.PI, 0, small_radius));
+
             addSkillData(new WayShotSkillData("boss1laser-0", hppBelowFifty, SkillGenreS.laser, "bulletsmall", low_cd6, MoveType.chase_player_target, PointType.player_pos, new Vector(), 0, high_speed1, 0, lowangle1, 0.003, small_radius, Color.Chocolate, 1, 0, 140));
             #endregion
 
@@ -633,7 +636,6 @@ namespace CommonPart {
 
             
         }
-
 
         #region Unload And Save
         public void Dispose()

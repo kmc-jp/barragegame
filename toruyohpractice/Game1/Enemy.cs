@@ -154,7 +154,7 @@ namespace CommonPart
                         //times[0]フレームだけ停止する
                         break;
                     case MoveType.noMotion:
-                        times[0] = DataBase.motion_inftyTime;
+                        times[0] = -1;
                         break;
                     default:
                         break;
@@ -353,15 +353,18 @@ namespace CommonPart
         /// times[0]は変更されず、motion_index[0],mt,alltime,default_posを設置する
         /// </summary>
         /// <param name="i"></param>
-        public virtual void setup_motion(int i) {
+        public virtual void setup_motion(int i,int _time=-2) {
             if (i < unitType.moveTypes.Count) {
-                motion_index[0] = i; mt =unitType.moveTypes[i]; alltime = unitType.times[i];
+                motion_index[0] = i; mt =unitType.moveTypes[i];
+                alltime = unitType.times[i];
                 pt = unitType.pointTypes[i];
                 default_pos = unitType.default_poses[i];
                 setup_default_pos(i);
                 speed = unitType.speed;
                 set_from_moveTypeAndPointType_2();
-                //Console.WriteLine(default_pos+" "+mt);
+                if (_time != -2)
+                    times[0] = _time;
+                //Console.WriteLine(default_pos+" "+mt+" t:"+alltime);
             }
             else { Console.Write("setup_motion:Invaild Motion-" + unitType_name + "- i is" + i); }
         }
@@ -439,14 +442,15 @@ namespace CommonPart
                     if (motionLooped &&  
                             motion_index[0] == motionLoopsEnd[motionLoopIndex])
                     {
-                            motion_index[0] = motionLoopsStart[motionLoopIndex];
+                        motion_index[0] = motionLoopsStart[motionLoopIndex];
+                        
                     }
                     // not yet motion looped 
                     else if (motion_index[0] < unitType.moveTypes.Count - 1){
                         motion_index[0]++;
                     }
                     else { motion_index[0] = 0; }
-                    times[0] = 0;//times[0]を0にする,下の関数には組み込めていない。
+                    times[0] = 0;//times[0]を0にする,下の関数にはこれは実行していない。
                     setup_motion(motion_index[0]);// motion_index[0]に従ってmotionを設置するが、これだけだとtimes[0]が0にならない
                 }
             }
