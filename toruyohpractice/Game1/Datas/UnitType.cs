@@ -800,6 +800,37 @@ namespace CommonPart
             UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
             #endregion
 
+            #region Boss6
+            string _64w1_un50 = "boss6-64way1", _dd_un50 = "boss6-dandan", _32w_un50 = "boss6-32wayransya", _mix2 = "boss6mixbullet2";
+            string _hakyo1_ov20 = "boss6-hakkyo1";
+            string _czj_ov50 = "boss6-createzyuzi", _czj_sub_ov50 = "boss6-createzyuzifor", _mix1_ov50 = "boss6mixbullet1";
+            string _hakyo2_un20 = "boss6-hakkyo2", _mix3 = "boss6mixbullet3";
+
+            UnitTypeList.Add(new ActiveAniSkiedUnitType("boss6", "boss6", "boss"));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(10, 0, 80, 0, normalOmega, 10000, 10);
+            lastUT.add_MoveTypeDataSet(MoveType.noMotion, 0, new Vector());
+            UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
+
+            UnitTypeList.Add(new ActiveAniSkiedUnitType("boss6 up ball", "boss6", "boss"));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(10, 0, 80, 0, normalOmega, 10000, 10);
+            lastUT.add_MoveTypeDataSet(MoveType.noMotion, 0, new Vector());
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames(_hakyo2_un20);
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames(_hakyo1_ov20);
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames(_czj_sub_ov50);
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames(_dd_un50);
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames(_mix1_ov50);
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames(_mix3);
+            UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
+
+            UnitTypeList.Add(new ActiveAniSkiedUnitType("boss6 down ball", "boss6", "boss"));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(10, 0, 80, 0, normalOmega, 10000, 10);
+            lastUT.add_MoveTypeDataSet(MoveType.noMotion, 0, new Vector());
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames(_64w1_un50);
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames(_czj_ov50);
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames(_32w_un50);
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames(_mix2);
+            UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
+            #endregion
         }
 
         #region method

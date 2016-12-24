@@ -415,16 +415,24 @@ namespace CommonPart {
             #endregion
 
             #region boss6
-            addSkillData(new WaySkilledBulletsData("boss6-64way1", Condition.hPp+"<50", SkillGenreS.wayshot, null, low_cd3, goStraightWithDirection, 0, 0, AngleToPlayer, 0, 0, big_radius, new string[] { "64circle-0", "1wayshot-2" }, 1, high_cd2 * 3 + 1));
-            addSkillData(new WaySkilledBulletsData("boss6-hakkyo2", Condition.hPp + "<20", SkillGenreS.wayshot, null, high_cd1, goStraightWithDirection, 0, 0, SelfAngle, 0, 0, big_radius, new string[] { "1wayshotofsmall", "1wayshotoflarge", "1wayshotofLL" }, 1, high_cd2 * 3 + 1));
-            addSkillData(new WaySkilledBulletsData("boss6-hakkyo1", Condition.hPp + ">=20", SkillGenreS.wayshot, null, high_cd1, goStraightWithDirection, 0, 0, SelfAngle, 0, 0, big_radius, new string[] { "1wayshotoflarge-1"}, 1, high_cd2 * 3 + 1));
-            addSkillData(new WaySkilledBulletsData("boss6-createzyuzi", Condition.hPp+">=50", SkillGenreS.wayshot, null, middle_cd2, goStraightWithDirection, low_speed1, 0, lowangle1, 0, 0, small_radius, new string[] { "createzyuzi-1",}, (int)(tPI / lowangle1), 1, lowangle1));//この弾幕と同時に、createzyuziforを出す見えない敵を出現させる。
-            addSkillData(new WaySkilledBulletsData("boss6-createzyuzifor", Condition.hPp+">=50", SkillGenreS.wayshot, "bulletsmall", low_cd3, goStraightWithDirection, small_radius, "1wayshot-4", 2, 70, Math.PI));
-            addSkillData(new WaySkilledBulletsData("boss6-dandan", Condition.hPp+"<50", SkillGenreS.wayshot, "bulletsmall", low_cd3, goStraightWithDirection, small_radius, new string[] { "cs" }, 1, 10));
-            addSkillData(new WaySkilledBulletsData("boss6-32wayransya", Condition.hPp+"<50", SkillGenreS.wayshot, null, low_cd3, rotateAndGoRandom, 0, 0, SelfAngle, 0, 0, big_radius, new string[] { "32-circle-random" }, 1, high_cd2 * 4 + 2));
-            addSkillData(new WaySkilledBulletsData("boss6mixbullet1", Condition.hPp+">=50", SkillGenreS.wayshot, null, low_cd3, goStraightWithDirection, small_radius, new string[] { "createbullet2way-2", "1wayshot-5", "20-circle-random" }, 1, 10));
-            addSkillData(new WaySkilledBulletsData("boss6mixbullet2", Condition.hPp + "<50"+">=20", SkillGenreS.wayshot,"bulletLL", low_cd3, goStraightWithDirection, small_radius, new string[] {  "1wayshot-5", "20-circle-random" }, 2, 150,Math.PI));
-            addSkillData(new WaySkilledBulletsData("boss6mixbullet3", Condition.hPp + "<20", SkillGenreS.wayshot,null, low_cd3, goStraightWithDirection, small_radius, new string[] { "createbullet2way-2", "1wayshot-5", "20-circle-random", "laser-way17" }, 2, 20, Math.PI));
+            string _64w1_un50 = "boss6-64way1", _dd_un50="boss6-dandan",_32w_un50="boss6-32wayransya",_mix2="boss6mixbullet2";
+            string _hakyo1_ov20 = "boss6-hakkyo1";
+            string _czj_ov50 = "boss6-createzyuzi", _czj_sub_ov50="boss6-createzyuzifor", _mix1_ov50="boss6mixbullet1";
+            string _hakyo2_un20="boss6-hakkyo2",_mix3="boss6mixbullet3"; 
+            
+            string rs = Condition.route_set;
+            string and = "&&";
+            addSkillData(new WaySkilledBulletsData("boss6-64way1", Condition.hPp+"<50" + and + rs + "==5", SkillGenreS.wayshot, null, low_cd3, goStraightWithDirection, 0, 0, AngleToPlayer, 0, 0, big_radius, new string[] { "64circle-0", "1wayshot-2" }, 1, high_cd2 * 3 + 1));
+            addSkillData(new WaySkilledBulletsData("boss6-hakkyo2", Condition.hPp + "<20"+and+rs+"==1", SkillGenreS.wayshot, null, high_cd1, goStraightWithDirection, 0, 0, SelfAngle, 0, 0, big_radius, new string[] { "1wayshotofsmall", "1wayshotoflarge", "1wayshotofLL" }, 1, high_cd2 * 3 + 1));
+            addSkillData(new WaySkilledBulletsData("boss6-hakkyo1", Condition.hPp + ">=20" + and + rs + "==1", SkillGenreS.wayshot, null, high_cd1, goStraightWithDirection, 0, 0, SelfAngle, 0, 0, big_radius, new string[] { "1wayshotoflarge-1"}, 1, high_cd2 * 3 + 1));
+            addSkillData(new WaySkilledBulletsData("boss6-createzyuzi", Condition.hPp+">=50" + and + rs + "==2", SkillGenreS.wayshot, null, middle_cd2, goStraightWithDirection, low_speed1, 0, lowangle1, 0, 0, small_radius, new string[] { "createzyuzi-1",}, (int)(tPI / lowangle1), 1, lowangle1));
+            //この弾幕と同時に、createzyuziforを出す見えない敵を出現させる。
+            addSkillData(new WaySkilledBulletsData("boss6-createzyuzifor", Condition.hPp+">=50" + and + rs + "==2", SkillGenreS.wayshot, "bulletsmall", low_cd3, goStraightWithDirection, small_radius, "1wayshot-4", 2, 70, Math.PI));
+            addSkillData(new WaySkilledBulletsData("boss6-dandan", Condition.hPp+"<50" + and + rs + "==2", SkillGenreS.wayshot, "bulletsmall", low_cd3, goStraightWithDirection, small_radius, new string[] { "cs" }, 1, 10));
+            addSkillData(new WaySkilledBulletsData("boss6-32wayransya", Condition.hPp+"<50"+and + rs + "==3", SkillGenreS.wayshot, null, low_cd3, rotateAndGoRandom, 0, 0, SelfAngle, 0, 0, big_radius, new string[] { "32-circle-random" }, 1, high_cd2 * 4 + 2));
+            addSkillData(new WaySkilledBulletsData("boss6mixbullet1", Condition.hPp+">=50"+and + rs + "==3", SkillGenreS.wayshot, null, low_cd3, goStraightWithDirection, small_radius, new string[] { "createbullet2way-2", "1wayshot-5", "20-circle-random" }, 1, 10));
+            addSkillData(new WaySkilledBulletsData("boss6mixbullet2", Condition.hPp + "<50"+">=20" + and + rs + "==4", SkillGenreS.wayshot,"bulletLL", low_cd3, goStraightWithDirection, small_radius, new string[] {  "1wayshot-5", "20-circle-random" }, 2, 150,Math.PI));
+            addSkillData(new WaySkilledBulletsData("boss6mixbullet3", Condition.hPp + "<20"+and + rs + "==4", SkillGenreS.wayshot,null, low_cd3, goStraightWithDirection, small_radius, new string[] { "createbullet2way-2", "1wayshot-5", "20-circle-random", "laser-way17" }, 2, 20, Math.PI));
 
             #region forboss6
             addSkillData(new WayShotSkillData("1wayshotofsmall", null, SkillGenreS.wayshot, "bulletsmall", middle_cd2, rotateAndGoRandom, high_speed1, 0, AngleToPlayer, 0, 0, small_radius, 1, middleangle1));
