@@ -34,7 +34,7 @@ namespace CommonPart
             {
                 stageAvailable[i] = true;
             }
-            stageAvailable[0] = true; stageAvailable[1] = true;
+            stageAvailable[3] = false;
             for(int j = 0; j < stagesPos.Length; j++)
             {
                 if (stageAvailable[j] == false)

@@ -32,7 +32,7 @@ namespace CommonPart
                     break;
                 case 125:
                     playBGM(bgmIDs[0]);//最初のBGMを流す。
-                    Map.create_boss3(640, 0, "boss3");
+                    Map.create_boss6(640, 0, "boss6");
                     break;
                     
             }

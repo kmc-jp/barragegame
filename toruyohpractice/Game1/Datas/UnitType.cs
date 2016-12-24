@@ -831,9 +831,9 @@ namespace CommonPart
             UnitTypeList.Add(new ActiveAniSkiedUnitType("boss6", "stage6", "boss"));
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(10, 0, 10, 0, normalOmega, 10000, 10);
 
-            lastUT.add_MoveTypeDataSet(MoveType.go_straight, 4, new Vector(640, 220), PointType.pos_on_screen);
+            lastUT.add_MoveTypeDataSet(MoveType.go_straight, 1, new Vector(640, 240), PointType.pos_on_screen);
             lastUT.add_MoveTypeDataSet(MoveType.noMotion, 1, new Vector());
-            lastUT.add_MoveTypeDataSet(MoveType.go_straight,4 , new Vector(400,150),PointType.randomRange);
+            lastUT.add_MoveTypeDataSet(MoveType.go_straight,1 , new Vector(400,150),PointType.randomRange);
             lastUT.add_MoveTypeDataSet(MoveType.noMotion, 1, new Vector());
             UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
 
