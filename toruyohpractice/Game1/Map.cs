@@ -12,7 +12,7 @@ namespace CommonPart {
 
         public int stage;        protected StageData stagedata;
 
-        public Vector score_pos = new Vector(1100, 180);
+        public Vector score_pos = new Vector(1100, 220);
 
         public static Window window=null;
 
@@ -34,6 +34,10 @@ namespace CommonPart {
         /// 残機表示の左上の座標
         /// </summary>
         public Vector life_pos = new Vector(1070, 120);
+        /// <summary>
+        /// 扇の描画位置
+        /// </summary>
+        public Vector ougi_pos = new Vector(950,80);
         #endregion
         #region player- clean bullets
         public static bool damageEnemys;
@@ -188,6 +192,7 @@ namespace CommonPart {
                     break;
             }
             #endregion
+            stagedata.update();
             scroll_speed = new Vector(defaultspeed_x, defaultspeed_y);
             Map.player = new Player(DataBase.WindowDefaultSizeX/2, 500, 6, 13, 6*lifesPerPiece,DataBase.charaName);
 
@@ -715,7 +720,12 @@ namespace CommonPart {
                 }
             }
             #endregion
-
+            #region ougi draw
+            if (boss_mode == true)
+            {
+                d.Draw(ougi_pos, DataBase.getTex("ougi"), DepthID.StateFront);
+            }
+            #endregion
             #region draw sword gauge
             if (player.sword < player.sword_max / 2)
             {
