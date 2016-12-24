@@ -598,6 +598,10 @@ namespace CommonPart
                 case 0:
                     if (nowTime == 0)
                     {
+                        for (int k = 0; k < bullets.Count; k++)
+                        {
+                            bullets[k].dead();
+                        }
                         changePhase();
                     }
                     break;
