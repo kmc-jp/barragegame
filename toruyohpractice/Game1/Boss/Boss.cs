@@ -553,4 +553,33 @@ namespace CommonPart
         }
         
     }
+
+    class Boss3:Boss
+    {
+        /// <summary>
+        /// 頭部が回転する時、画像のどこを中心に回転するかを決める。1のときは画像の右側である。1/2の時は画像の中央縦線上となる。
+        /// </summary>
+        protected double head_rotatePercentX = 0.5;
+        /// <summary>
+        /// 頭部が回転する時、画像のどこを中心に回転するかを決める。1のときは画像の底辺である。1/2の時は画像の中央横線上となる。
+        /// </summary>
+        protected double head_rotatePercentY = 1;
+
+        public Boss3(double _x, double _y, string _unitType_name) : base(_x, _y, _unitType_name)
+        {
+            maxLife = 14000;
+            life = maxLife;
+            setup_LoopSet(0, 0);
+            for (int o = 1; o < 7; o++) // 0 - 6番目のLoopSetを作る,実際このボスは動かないのでこれで十分
+            {
+                setup_LoopSet(1, 1);
+            }
+            nowTime = -2 * 60;//これは下のupdateを見たら、funnelがボスに向かう
+            maxPhaseIndex = 4;
+            minPhaseIndex = 1;
+        }
+
+        
+        
+    }
 }
