@@ -111,6 +111,22 @@ namespace CommonPart
             }
             #endregion
         }
+
+        public override void draw(Drawing d)
+        {
+            if (!texRotate)
+            {
+                animation.Draw(d, new Vector((x - animation.X / 2), (y - animation.Y / 2)), DepthID.Enemy);
+            }
+            for (int i = body_max_index; i >= 0; i--)
+            {
+                bodys[i].draw(d);
+            }
+            for (int i = 0; i < bullets.Count; i++)
+            {
+                bullets[i].draw(d);
+            }
+        }
     }
     class Boss1:Boss
     {
@@ -535,21 +551,7 @@ namespace CommonPart
             }
             #endregion
         }
-        public override void draw(Drawing d)
-        {
-            if (!texRotate)
-            {
-                animation.Draw(d, new Vector((x - animation.X / 2), (y - animation.Y / 2)), DepthID.Enemy);
-            }
-            for (int i = body_max_index; i >= 0; i--)
-            {
-                bodys[i].draw(d);
-            }
-            for (int i = 0; i < bullets.Count; i++)
-            {
-                bullets[i].draw(d);
-            }
-        }
+        
     }
 
     class Boss3:Boss

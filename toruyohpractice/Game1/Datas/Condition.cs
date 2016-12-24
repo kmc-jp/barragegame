@@ -26,7 +26,7 @@ namespace CommonPart
         /// </summary>
         static readonly string[] label = new string[]
         {
-            route_set, duration, hP,hPp,
+           route_set,duration, hP,hPp,
         };
         
         #endregion
