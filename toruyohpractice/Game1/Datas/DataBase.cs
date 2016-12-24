@@ -43,7 +43,7 @@ namespace CommonPart {
         left_and_go_back = -101, nothing = -100,
         apply_int = 110, apply_string = 111,
         button_on = 112, button_off = 113, previousPage = 114, nextPage = 115, Scroll = 116, tru_fals = 117,
-        selectInScroll = 118, closeThis = 119, reloadScroll = 120, buttonPressed1 = 121, buttonPressed2 = 122, buttonPressed3 = 123,
+        selectInScroll = 118, closeThis = 119, reloadScroll = 120, buttonPressed1 = 121, buttonPressed2 = 122, buttonPressed3 = 123, buttonPressed4 = 124,
         openUTD = 200, UTDutButtonPressed = 201,
         openAniD = 202, addTex = 203, playAnimation = 206, newAniD = 207, applyAniD = 208,// open animation DataBase, add Texture,play animation,
         openMusicGallery = 204, openMapEditor = 205,

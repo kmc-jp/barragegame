@@ -35,7 +35,8 @@ namespace CommonPart
                 stageAvailable[i] = true;
             }
             stageAvailable[0] = true; stageAvailable[1] = true;
-            for(int j = 0; j < stagesPos.Length; j++)
+            stageAvailable[3] = false;//stage4は未完成 
+            for (int j = 0; j < stagesPos.Length; j++)
             {
                 if (stageAvailable[j] == false)
                 {
