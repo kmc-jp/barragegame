@@ -521,7 +521,7 @@ namespace CommonPart
                         bodys[j].setup_extra_motion(MoveType.go_straight, PointType.displacement, new Vector(0, 60), 1 * 60);
                     }
                     Map.CutInTexture(DataBase.halfBlackTextureName, 0, -DataBase.getTex(DataBase.halfBlackTextureName).Height,
-                        0, 0, 700, DataBase.getTex(DataBase.halfBlackTextureName).Height / 60);
+                        0, 0, 800, DataBase.getTex(DataBase.halfBlackTextureName).Height / 60);
 
                     nowTime = -(1 + 3 + 8) * 60 - 1; //-12*60
                     break;

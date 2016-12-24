@@ -39,7 +39,7 @@ namespace CommonPart
         public bool fadeout = false;
         #endregion
         #region about Motion
-        protected int[] motion_index=new int[2];
+        public int[] motion_index=new int[2];
         protected MoveType mt;
         protected Vector default_pos;
         protected int alltime;

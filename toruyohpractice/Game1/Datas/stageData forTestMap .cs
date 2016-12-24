@@ -26,9 +26,18 @@ namespace CommonPart
                     playBGM(bgmIDs[0]);//最初のBGMを流す。
                     Map.boss_mode = false;
                     break;
+                /*
                 case 5:
                     Map.EngagingTrueBoss();
                     Map.create_boss1(320, 0, "boss1");
+                    break;
+                    */
+                case 50:
+                    Map.EngagingTrueBoss();
+                    break;
+                case 125:
+                    playBGM(bgmIDs[0]);//最初のBGMを流す。
+                    Map.create_boss6(360, 200, "boss6");
                     break;
                     /*
                 case 60:
@@ -45,20 +54,20 @@ namespace CommonPart
                     //Map.enemys.Last().add_skill("boss6-createzyuzi");
                     break;
                     */
-                /*case 45:
-                    Map.create_enemy(320, 0, "testE2");
-                    Map.enemys.Last().add_skill("ransya-3^-1");
-                    //Map.enemys.Last().add_skill("createzyuzi-0");
-                    break*/
-                    
-                /*case 4700:
-                    Map.boss_mode = true;
-                    Map.EngagingTrueBoss();
-                    break;
-                case 4720:
-                    playBGM(bgmIDs[1]);//BGMを流す。
-                    Map.create_boss1(360, 10, "boss1");
-                    break;*/
+                    /*case 45:
+                        Map.create_enemy(320, 0, "testE2");
+                        Map.enemys.Last().add_skill("ransya-3^-1");
+                        //Map.enemys.Last().add_skill("createzyuzi-0");
+                        break*/
+
+                    /*case 4700:
+                        Map.boss_mode = true;
+                        Map.EngagingTrueBoss();
+                        break;
+                    case 4720:
+                        playBGM(bgmIDs[1]);//BGMを流す。
+                        Map.create_boss1(360, 10, "boss1");
+                        break;*/
             }
             #endregion
         }

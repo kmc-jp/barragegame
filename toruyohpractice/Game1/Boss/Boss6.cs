@@ -20,16 +20,24 @@ namespace CommonPart
 
         public Boss6(double _x, double _y, string _unitType_name) : base(_x, _y, _unitType_name)
         {
-            body_max_index = -1;//funnelsNumber is not index,-1
+            body_max_index = 1;//funnelsNumber is not index,-1
             bodys = new Enemy[body_max_index+1];
             bodys_pos = new Vector[body_max_index + 1];
-            
             maxLife = 24000;
             life = maxLife;
             setup_LoopSet(0, 0);
-            for (int o = 1; o < 7; o++) // 0 - 6番目のLoopSetを作る,実際このボスは動かないのでこれで十分
+            bodys_pos[0] = new Vector(-100, -100);
+            bodys_pos[1] = new Vector(100, 100);
+            bodys[0] = new Enemy(x + bodys_pos[0].X, y + bodys_pos[0].Y, "boss6 up ball");
+            bodys[1] = new Enemy(x + bodys_pos[1].X, y + bodys_pos[1].Y, "boss6 down ball");
+            for (int j = 0; j <= body_max_index; j++)
             {
-                setup_LoopSet(1, 1);
+                bodys[j].maxLife = maxLife;
+                bodys[j].life = life;
+            }
+            for (int o = 1; o < 6; o++) // 0 - 5番目のLoopSetを作る
+            {
+                setup_LoopSet(0, 0);
             }
             nowTime = -2 * 60;//
             maxPhaseIndex = 4;
@@ -44,11 +52,9 @@ namespace CommonPart
             for (int i = 0; i <= body_max_index; i++)
             {
                 bodys[i].bulletsMove = bulletsMove;
-                if (i <= 5)
-                {
-                    bodys[i].update(player);
-                }
-                else { bodys[i].moveToScreenPos_now(x, y); bodys[i].update(player); }
+                bodys[i].update(player);
+               
+                bodys[i].moveToScreenPos_now(x, y); bodys[i].update(player);
             }
             #endregion
 
@@ -56,16 +62,19 @@ namespace CommonPart
                 nowTime += nowTime < 0 ? +1 : -1;
 
             int n = 0; int nt = nowTime > 0 ? nowTime : -nowTime;
-            string _3w1 = "b2-3wayshot-1", _2w1 = "b2-2wayshot-0.75", _1w1 = "b2-1wayshot-0.75";
-            string _mis2 = "b2-x2shot-1", _blas1 = "b2-blaserDown1", _mlaP = "b2-laser-1";
+            
             switch (motionLoopIndex)
             {
                 #region phase 0
                 case 0:
-
+                    if (nowTime == 0)
+                    {
+                        changePhase();
+                    }
                     break;
                 #endregion
                 default:
+                    changePhase(0);
                     break;
             }
         }
@@ -73,11 +82,12 @@ namespace CommonPart
         public override void damage(int atk)
         {
             base.damage(atk);
+            for(int j = 0; j <= body_max_index; j++)
+            {
+                bodys[j].life = life;
+            }
             if (life <= maxLife / 2) { maxPhaseIndex = 5; }
-        }
-        public override bool selectable()
-        {
-            return motionLoopIndex != 6 && base.selectable();
+            if (life <= maxLife / 4) { maxPhaseIndex = 4; }
         }
 
         /// <summary>
@@ -88,62 +98,28 @@ namespace CommonPart
         {
             base.changePhase(p);
             int n = 0;
-            #region phase
-            #region record skillNames
-            string _3w1 = "b2-3wayshot-1", _2w1 = "b2-2wayshot-0.75", _1w1 = "b2-1wayshot-0.75";
-            string _mis2 = "b2-x2shot-1", _las1 = "b2-laserDown1-1";
-            string _1wd1 = "b2-1wayDown-0.5";
-            #endregion
+            #region switch phase
             switch (motionLoopIndex)
             {
                 #region phase 0
                 case 0:
-                    for (int j = 0; j <= body_max_index; j++)
-                    {
-                        bodys[j].delete_all_skills();
-                    }
-                    delete_all_skills();
-                    nowTime = 3 * 60;
+                    nowTime = 2 * 60;
                     break;
                 #endregion
-                #region phase 1,2
+                #region phase 1
                 case 1:
-                case 2:
-                    //これはfunnelが展開のために時間を置いた
-                    nowTime = -80 - 1;
-                    
-                    break;
-                #endregion
-                #region phase 3
-                case 3:
-                    //phase 3
-                   
-                    nowTime = 10 * 60;
-                    break;
-                #endregion
-                #region phase 4
-                case 4:
-                    //phase 4
-                    
-                    break;
-                #endregion
-                #region phase 5
-                case 5:
-                    
-                    nowTime = -80 - 17 * 60 - 1;
-                    break;
-                #endregion
-                #region phase 6
-                case 6:
-                    
-                    nowTime = -(1 + 3 + 8) * 60 - 1; //-12*60
+                    nowTime = 120;
                     break;
                 #endregion
                 default:
-
+                    nowTime = 6*60;
                     break;
             }
             #endregion
+            for(int j = 0; j < 2; j++)
+            {
+                bodys[j].motion_index = motion_index;
+            }
         }
         public override void draw(Drawing d)
         {
