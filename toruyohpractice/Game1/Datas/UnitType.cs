@@ -215,7 +215,12 @@ namespace CommonPart
     rshot0 = "boss3onfire-r", rshot1 = "boss3onfire-r^-1", yanagi = "boss3onfire-yanagi", hakkyou = "boss3onfire-hakkyo";
             UnitTypeList.Add(new ActiveAniSkiedUnitType("boss3", "boss3", "boss"));
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(5, 0, 0, 0, normalOmega, 1000, 0);
-            lastUT.add_MoveTypeDataSet(MoveType.noMotion, 0, new Vector());
+            lastUT.add_MoveTypeDataSet(MoveType.go_straight, 25, new Vector(440,250),PointType.pos_on_screen);
+            lastUT.add_MoveTypeDataSet(MoveType.noMotion, 1, new Vector());
+            lastUT.add_MoveTypeDataSet(MoveType.go_straight, 150, new Vector(800, 300),PointType.pos_on_screen);
+            lastUT.add_MoveTypeDataSet(MoveType.go_straight, 240, new Vector(840, 160), PointType.pos_on_screen);
+            lastUT.add_MoveTypeDataSet(MoveType.go_straight, 110, new Vector(440, 250), PointType.pos_on_screen);
+            lastUT.add_MoveTypeDataSet(MoveType.noMotion, 1, new Vector());
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames(shot);
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames(breath);
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames(hibreath);
@@ -826,9 +831,9 @@ namespace CommonPart
             UnitTypeList.Add(new ActiveAniSkiedUnitType("boss6", "stage6", "boss"));
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(10, 0, 10, 0, normalOmega, 10000, 10);
 
-            lastUT.add_MoveTypeDataSet(MoveType.go_straight, 4, new Vector(640, 220), PointType.pos_on_screen);
+            lastUT.add_MoveTypeDataSet(MoveType.go_straight, 1, new Vector(640, 240), PointType.pos_on_screen);
             lastUT.add_MoveTypeDataSet(MoveType.noMotion, 1, new Vector());
-            lastUT.add_MoveTypeDataSet(MoveType.go_straight,4 , new Vector(400,150),PointType.randomRange);
+            lastUT.add_MoveTypeDataSet(MoveType.go_straight,1 , new Vector(400,150),PointType.randomRange);
             lastUT.add_MoveTypeDataSet(MoveType.noMotion, 1, new Vector());
             UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
 
