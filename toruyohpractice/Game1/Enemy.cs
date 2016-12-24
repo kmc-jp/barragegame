@@ -39,7 +39,7 @@ namespace CommonPart
         public bool fadeout = false;
         #endregion
         #region about Motion
-        public int[] motion_index=new int[2];
+        protected int[] motion_index=new int[2];
         protected MoveType mt;
         protected Vector default_pos;
         protected int alltime;
@@ -57,7 +57,7 @@ namespace CommonPart
         /// これがfalseでは、motionのループはそもそも考えない
         /// </summary>
         protected bool motionLooped = false;
-        protected int motionLoopIndex;
+        public int motionLoopIndex;
         /// <summary>
         /// これらはmotionLoopSetUp()が呼ばれた時に作られる.ループの始点と終点を意味する.
         /// </summary>
@@ -540,7 +540,7 @@ namespace CommonPart
                 {
                     BarrageUsedSkillData sd= (BarrageUsedSkillData)DataBase.SkillDatasDictionary[skills[i].skillName];
                     
-                    if (!skills[i].used(alltime, motionLoopIndex, life, maxLife)) { continue; }
+                    if (!skills[i].used(alltime, motionLoopIndex, life, maxLife)) {  continue; }
                     switch (sd.sgl) {
                         case SkillGenreL.generation:
                         case SkillGenreL.UseSkilledBullet:

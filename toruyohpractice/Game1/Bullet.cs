@@ -106,7 +106,7 @@ namespace CommonPart
             life -= d;
             if (life <= 0) { life = 0; remove(Unit_state.dead); }
         }
-        protected virtual void dead()
+        public virtual void dead()
         {
             delete = true;
             //Map.make_chargePro(x, y, sword, Map.caculateBulletScore(sword));
