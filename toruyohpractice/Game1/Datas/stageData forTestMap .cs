@@ -28,7 +28,9 @@ namespace CommonPart
                     break;
                 /*case 5:
                     Map.EngagingTrueBoss();
+                    Map.create_boss1(320, 0, "boss1");
                     break;
+                    /*
                 case 60:
                     Map.create_boss2(DataBase.WindowDefaultSizeX / 2, 0, "boss2");*/                    
                 case 5:
@@ -41,8 +43,8 @@ namespace CommonPart
 
                     /*Map.enemys.Last().add_skill("createbullet2way-2");
                     //Map.enemys.Last().add_skill("boss6-createzyuzi");
-                    */
                     break;
+                    */
                 /*case 45:
                     Map.create_enemy(320, 0, "testE2");
                     Map.enemys.Last().add_skill("ransya-3^-1");

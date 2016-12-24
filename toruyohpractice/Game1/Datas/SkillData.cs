@@ -743,6 +743,35 @@ namespace CommonPart
         {
             BulletSkillNames = _SkillNames;
         }
+
+        /// <summary>
+        /// 点を指定して射出できる。movetypeとvectorを決める。
+        /// </summary>
+        /// <param name="_skillName"></param>
+        /// <param name="_conditions"></param>
+        /// <param name="_sgs"></param>
+        /// <param name="_aniDName"></param>
+        /// <param name="_cooldownFps"></param>
+        /// <param name="motion"></param>
+        /// <param name="_speed"></param>
+        /// <param name="_acceleration"></param>
+        /// <param name="_angle"></param>
+        /// <param name="_omega"></param>
+        /// <param name="_motion_time"></param>
+        /// <param name="_radius"></param>
+        /// <param name="_SkillNames"></param>
+        /// <param name="_way"></param>
+        /// <param name="_duration"></param>
+        /// <param name="_space"></param>
+        /// <param name="_sword"></param>
+        /// <param name="_score"></param>
+        /// <param name="_life"></param>
+        public WaySkilledBulletsData(string _skillName, string _conditions, SkillGenreS _sgs, string _aniDName, int _cooldownFps, MoveType mt, PointType pt, Vector v, int _motion_fps, double _speed, double _acceleration, double _angle, double _omega,
+           double _radius, string[] _SkillNames, int _way = 1, double _space = 0, int _duration = DataBase.motion_inftyTime, int _sword = 1, int _score = 10, int _life = 1)
+            : base(_skillName, _conditions, _sgs, _aniDName, _cooldownFps, mt,pt, v, _motion_fps, _speed, _acceleration, _angle, _omega, _radius,_way,_space, _duration, _sword, _score, _life)
+        {
+            BulletSkillNames = _SkillNames;
+        }
     }
 
 }

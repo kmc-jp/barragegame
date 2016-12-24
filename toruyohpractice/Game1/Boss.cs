@@ -48,7 +48,7 @@ namespace CommonPart
         {
             int p;
             bool hasleft=false;
-            for(int j = 0; j < phasesAlready.Count; j++)
+            for(int j = minPhaseIndex; j <=maxPhaseIndex ; j++)
             {
                 if(!phasesAlready[j])
                     hasleft = true;
@@ -62,7 +62,7 @@ namespace CommonPart
             while (true)
             {
                 p = minPhaseIndex + Function.GetRandomInt(maxPhaseIndex + 1 - minPhaseIndex);
-                if (p != motionLoopIndex && phasesAlready.Count<p && !phasesAlready[p])
+                if (p != motionLoopIndex &&( phasesAlready.Count<p || !phasesAlready[p]))
                 {
                     if (phasesAlready.Count > p)
                     {
@@ -126,8 +126,10 @@ namespace CommonPart
             for (int i = 0; i < body_max_index; i++)
             {
                 bodys[i] = new Enemy(x, y - 0 * i * height_percent, "boss1body" +  i % 3);
+                bodys[i].maxLife = 10000;
             }
             bodys[body_max_index] = new Enemy(x, y, "boss1tail");
+            bodys[body_max_index].maxLife = 10000;
             maxLife = 10000;
             life = maxLife;
         }
@@ -166,6 +168,7 @@ namespace CommonPart
             {
                 bodys[i].bulletsMove = bulletsMove;
                 bodys[i].update(player);
+                bodys[i].life = life;
             }
         }
 
