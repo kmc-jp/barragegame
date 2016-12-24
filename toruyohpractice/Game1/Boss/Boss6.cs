@@ -23,7 +23,7 @@ namespace CommonPart
             body_max_index = 1;//funnelsNumber is not index,-1
             bodys = new Enemy[body_max_index+1];
             bodys_pos = new Vector[body_max_index + 1];
-            maxLife = 24000;
+            maxLife = 20000;
             life = maxLife;
             bodys_pos[0] = new Vector(-90, -100);
             bodys_pos[1] = new Vector(45, 40);
