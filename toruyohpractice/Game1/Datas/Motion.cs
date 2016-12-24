@@ -57,6 +57,8 @@ namespace CommonPart
                     return _angle;
                 case PointType.randomDirection:
                     return _angle + Function.GetRandomDouble(px * 2) - px;
+                case PointType.selfDirection:
+                    return _angle + self_angle;
                 case PointType.player_pos:
                     return Math.Atan2(Map.player.y - sy, Map.player.x - sx);// +_angle;
                 default:
@@ -92,6 +94,7 @@ namespace CommonPart
             {
                 case PointType.Direction:
                 case PointType.randomDirection:
+                case PointType.selfDirection:
                     return true;
                 default:
                     return false;
@@ -130,6 +133,7 @@ namespace CommonPart
                 case PointType.displacement:
                     return py;
                 case PointType.randomDirection:
+                case PointType.selfDirection:
                 case PointType.Direction:
                     return _speed * Math.Sin(_angle);
                 default:
@@ -164,6 +168,7 @@ namespace CommonPart
                 case PointType.pos_on_screen:
                     return px + Map.leftside;
                 case PointType.randomDirection:
+                case PointType.selfDirection:
                 case PointType.Direction:
                     return _speed * Math.Cos(_angle);
                 default:

@@ -519,9 +519,9 @@ namespace CommonPart
                             enemyAsTarget.damage(swordSkillDamage);
                             if (sword == sword_max)
                             {
-                                //SoundManager.PlaySE(SoundEffectID.player100gauge);
+                                SoundManager.PlaySE(SoundEffectID.player100gauge);
                                 enemyAsTarget.damage(bonusDamage);
-                            }else { //SoundManager.PlaySE(SoundEffectID.player50gauge); 
+                            }else { SoundManager.PlaySE(SoundEffectID.player50gauge); 
                             }
                             sword = 0;
                             enemyAsTarget = null;
@@ -558,7 +558,7 @@ namespace CommonPart
                 avoid_mode = true;
                 avoid_InPlusAcceleration = true;
                 speed = 0;
-                //SoundManager.PlaySE(avoid_SEid);
+                SoundManager.PlaySE(avoid_SEid);
 
                 #region old evasion
                 /*
@@ -692,7 +692,7 @@ namespace CommonPart
             ad = new AnimationAdvanced(DataBase.getAniD(animationDataKey, addOn));
         }
         #region bool 各種状態を返す
-        public bool Invincible() { return true||InForcedRoute || muteki_time > 0 || attack_mode || avoid_mode; }
+        public bool Invincible() { return InForcedRoute || muteki_time > 0 || attack_mode || avoid_mode; }
         public bool canUseSkilltoBoss()
         {
             return stop_time <= 0 && !attack_mode && sword >= sword_condition;
