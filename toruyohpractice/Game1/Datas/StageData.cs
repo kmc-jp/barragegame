@@ -209,7 +209,7 @@ namespace CommonPart
                     break;
                 case 4920:
                     playBGM(bgmIDs[1]);//BGMを流す。
-                    Map.create_boss2(720, 10, "boss2");
+                    Map.create_boss2(720, 0, "boss2");
                     break;
             }
             #endregion

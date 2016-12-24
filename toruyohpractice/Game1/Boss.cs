@@ -48,7 +48,7 @@ namespace CommonPart
         {
             int p;
             bool hasleft=false;
-            for(int j = 0; j < phasesAlready.Count; j++)
+            for(int j = minPhaseIndex; j <=maxPhaseIndex ; j++)
             {
                 if(!phasesAlready[j])
                     hasleft = true;
@@ -62,7 +62,7 @@ namespace CommonPart
             while (true)
             {
                 p = minPhaseIndex + Function.GetRandomInt(maxPhaseIndex + 1 - minPhaseIndex);
-                if (p != motionLoopIndex && phasesAlready.Count<p && !phasesAlready[p])
+                if (p != motionLoopIndex &&( phasesAlready.Count<p || !phasesAlready[p]))
                 {
                     if (phasesAlready.Count > p)
                     {
