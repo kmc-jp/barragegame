@@ -27,12 +27,10 @@ namespace CommonPart
                     Map.boss_mode = false;
                     break;
                 case 10:
-                    Map.create_enemy(360, 0, "3E7e");
-                    Map.enemys.Last().add_skill("ransya-3");
-                    break;
-                case 55:
-                    Map.create_enemy(361, 0, "3E7e-N");
-                    Map.enemys.Last().add_skill("ransya-3^-1");
+                    Map.create_enemy(360, 0, "E3-1");
+                    //Map.enemys.Last().add_skill("ransya-3");
+                    //Map.enemys.Last().add_skill("ransya-3^-1");
+                    Map.enemys.Last().set_skill_coolDown(1, 45);
                     break;
                     /*case 5:
                         Map.create_enemy(320, 0, "testE1");
