@@ -126,16 +126,19 @@ namespace CommonPart
         {
             body_max_index = 13;
             height_percent = 0.35;
+            maxLife = 10000;
+            life = maxLife;
             bodys = new Enemy[body_max_index+1];
             for (int i = 0; i < body_max_index; i++)
             {
                 bodys[i] = new Enemy(x, y - 0 * i * height_percent, "boss1body" +  i % 3);
-                bodys[i].maxLife = 10000;
+                bodys[i].maxLife = maxLife;
+                bodys[i].life = maxLife;
             }
             bodys[body_max_index] = new Enemy(x, y, "boss1tail");
-            bodys[body_max_index].maxLife = 10000;
-            maxLife = 10000;
-            life = maxLife;
+            bodys[body_max_index].maxLife = maxLife;
+            bodys[body_max_index].life = maxLife;
+
         }
         public override void update(Player player)
         {

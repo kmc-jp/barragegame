@@ -189,7 +189,7 @@ namespace CommonPart {
             }
             #endregion
             scroll_speed = new Vector(defaultspeed_x, defaultspeed_y);
-            Map.player = new Player(DataBase.WindowDefaultSizeX/2, 500, 6, 13, 6*lifesPerPiece,DataBase.charaName);
+            Map.player = new Player(DataBase.WindowDefaultSizeX/2, 500, 6, 10, 3*lifesPerPiece,DataBase.charaName);
 
             bossLifeGaugeSize.X=0;
             leftside = 280;
@@ -422,9 +422,9 @@ namespace CommonPart {
                             }
                         }
                         if(damageEnemys)
-                            if (Map.enemys_inside_window[jj].hit_jugde(player.x, player.y, now_radiusOfCleaningBullets))
+                            if (Map.enemys[jj].hit_jugde(player.x, player.y, now_radiusOfCleaningBullets))
                             {
-                                Map.enemys_inside_window[jj].damage(player.atk / frames_CleaningBullets);
+                                Map.enemys[jj].damage(player.atk / frames_CleaningBullets);
                             }
                     }
                     #endregion

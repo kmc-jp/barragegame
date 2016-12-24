@@ -64,9 +64,9 @@ namespace CommonPart
                     break;
                 case 240:
                     Map.create_enemy(180, 0, "E1a-0");
-                    Map.enemys.Last().set_skill_coolDown(0, 120);
+                    Map.enemys.Last().set_skill_coolDown(0, 120,true);
                     Map.create_enemy(540, 0, "E1a-0");
-                    Map.enemys.Last().set_skill_coolDown(0, 120);
+                    Map.enemys.Last().set_skill_coolDown(0, 120,true);
                     break;
                 case 840:
                     Map.create_enemy(0, 0, "E2a-0");
@@ -74,6 +74,7 @@ namespace CommonPart
                     break;
                 case 1260:
                     Map.create_enemy(360, 0, "E3-0");
+                    Map.enemys.Last().set_skill_coolDown(0, 200,true);
                     break;
                 case 1620:
                     Map.create_enemy(40, 100,"E1c-0a");
@@ -81,7 +82,9 @@ namespace CommonPart
                     break;
                 case 1980:
                     Map.create_enemy(200, 0, "E3-1");
+                    Map.enemys.Last().set_skill_coolDown(0, 60, true);
                     Map.create_enemy(520, 0, "E3-1");
+                    Map.enemys.Last().set_skill_coolDown(0, 60, true);
                     break;
                 case 2480:
                     Map.create_enemy(720,120,"E1b-1");
@@ -103,20 +106,25 @@ namespace CommonPart
                     break;
                 case 3580:
                     Map.create_enemy(180, 0, "E1c-2");
+                    Map.enemys.Last().set_skill_coolDown(0, 60, true);
                     Map.create_enemy(540, 0, "E1c-2");
+                    Map.enemys.Last().set_skill_coolDown(0, 60, true);
                     break;
                 case 3700:
                     Map.create_enemy(360, 0, "E1a-1");
+                    Map.enemys.Last().set_skill_coolDown(0, 120, true);
                     break;
                 case 4140:
                     Map.create_enemy(300, 0, "E1a-4");
+                    Map.enemys.Last().set_skill_coolDown(0, 60, true);
                     Map.create_enemy(420, 0, "E1a-5");
+                    Map.enemys.Last().set_skill_coolDown(0, 60, true);
                     break;
-                case 4700:
+                case 5000:
                     Map.boss_mode = true;
                     Map.EngagingTrueBoss();
                     break;
-                case 4720:
+                case 5020:
                     playBGM(bgmIDs[1]);//BGMを流す。
                     Map.create_boss1(360, 10, "boss1");
                     break;
@@ -150,14 +158,19 @@ namespace CommonPart
                     break;
                 case 180:
                     Map.create_enemy(540, 0, "E4-1a");
+                    Map.enemys.Last().set_skill_coolDown(0, 180, true);
                     Map.create_enemy(180, 0, "E4-1a");
+                    Map.enemys.Last().set_skill_coolDown(0, 180, true);
                     break;
                 case 660:
                     Map.create_enemy(200, 0, "E4-1c");
+                    Map.enemys.Last().set_skill_coolDown(0, 120, true);
                     Map.create_enemy(640, 0, "E4-1c");
+                    Map.enemys.Last().set_skill_coolDown(0, 120, true);
                     break;
                 case 840:
                     Map.create_enemy(360, 0, "E4-2b");
+                    Map.enemys.Last().set_skill_coolDown(0, 60, true);
                     break;
                 case 960:
                     Map.create_enemy(630, 0, "E5-a");
@@ -177,16 +190,20 @@ namespace CommonPart
                     break;
                 case 2340:
                     Map.create_enemy(360, 0, "E4-2d");
+                    Map.enemys.Last().set_skill_coolDown(0, 60, true);
                     break;
                 case 2580:
                     Map.create_enemy(600, 0, "E4-1g");
+                    Map.enemys.Last().set_skill_coolDown(0, 60, true);
                     Map.create_enemy(120, 0, "E4-2e");
+                    Map.enemys.Last().set_skill_coolDown(0, 60, true);
                     break;
                 case 3000:
                     Map.create_enemy(20, 0, "E4-2g");
                     break;
                 case 3180:
                     Map.create_enemy(360, 0, "E2-3");
+                    Map.enemys.Last().set_skill_coolDown(0, 60, true);
                     break;
                 case 3360:
                     Map.create_enemy(600, 0, "E6-a");
@@ -203,11 +220,12 @@ namespace CommonPart
                     break;
                 case 4200:
                     Map.create_enemy(360, 0, "E4-1h");
+                    Map.enemys.Last().set_skill_coolDown(0, 120, true);
                     break;
-                case 4860:
+                case 5260:
                     Map.EngagingTrueBoss();
                     break;
-                case 4920:
+                case 5320:
                     playBGM(bgmIDs[1]);//BGMを流す。
                     Map.create_boss2(720, 0, "boss2");
                     break;
@@ -376,16 +394,15 @@ namespace CommonPart
                 case 6200:
                     Map.create_enemy(360, 0, "3E7e");
                     Map.enemys.Last().add_skill("ransya-3");
-                    break;
-                case 6245:
-                    Map.create_enemy(361, 0, "3E7e-N");
                     Map.enemys.Last().add_skill("ransya-3^-1");
+                    Map.enemys.Last().set_skill_coolDown(1,45);
+
                     break;
-                case 7200:
+                case 7400:
                     Map.boss_mode = true;
                     Map.EngagingTrueBoss();
                     break;
-                case 7220:
+                case 7420:
                     playBGM(bgmIDs[1]);//BGMを流す。
                     Map.create_boss1(360, 10, "boss1");
                     break;
