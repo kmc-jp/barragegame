@@ -77,8 +77,18 @@ namespace CommonPart
                 case MoveType.chase_player_target:
                     speed += acceleration;
                     radian = Function.towardValue(radian, Math.Atan2(target.y-enemy.y,target.x-enemy.x), omega);
-                    sdx+= length * Math.Cos(radian);
-                    sdy+= Math.Sin(radian);
+                    sdx+= speed * Math.Cos(radian);
+                    sdy+= speed *Math.Sin(radian);
+                    x = enemy.x + sdx;
+                    y = enemy.y + sdy;
+                    break;
+                case MoveType.player_target:
+                    speed += acceleration;
+                    double eu = Math.Sqrt(Function.distance(x, y, target.x, target.y));
+                    double speed_x = (target.x - x) * speed / eu;
+                    double speed_y = (target.y - y) * speed / eu;
+                    sdx += speed_x;
+                    sdy += speed_y;
                     x = enemy.x + sdx;
                     y = enemy.y + sdy;
                     break;
@@ -212,12 +222,12 @@ namespace CommonPart
             dx = (radius) * Math.Cos(radian - Math.PI / 2)/2;
             dy = (radius) * Math.Sin(radian - Math.PI / 2) / 2;
             d.DrawLine(new Vector(enemy.x + dx, enemy.y + dy), new Vector(x + dx, y+dy), (float)radius, new Color(color,(int)(color.A*0.3)), DepthID.Player);
-            dx = (radius*2/3) * Math.Cos(radian - Math.PI / 2) / 2;
-            dy = (radius*2 /3) * Math.Sin(radian - Math.PI / 2) / 2;
+            dx = (radius*3/4) * Math.Cos(radian - Math.PI / 2) / 2;
+            dy = (radius*3 /4) * Math.Sin(radian - Math.PI / 2) / 2;
 
             d.DrawLine(new Vector(enemy.x+dx, enemy.y+dy), new Vector(x+dx, y+dy), (float)radius*2/3, new Color(color, (int)(color.A * 0.6)), DepthID.Player);
-            dx = (radius / 4) * Math.Cos(radian - Math.PI / 2) / 2;
-            dy = (radius / 4) * Math.Sin(radian - Math.PI / 2) / 2;
+            dx = (radius / 2) * Math.Cos(radian - Math.PI / 2) / 2;
+            dy = (radius / 2) * Math.Sin(radian - Math.PI / 2) / 2;
             d.DrawLine(new Vector(enemy.x+dx, enemy.y+dy), new Vector(x+dx, y+dy), (float)radius/4, color, DepthID.Player);
         }
     }

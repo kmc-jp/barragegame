@@ -44,7 +44,7 @@ namespace CommonPart {
             //-------------
             // window_AniD 
             nx =300; ny =5;
-            windows.Add(new Window_Animation(DataBase.defaultBlankAnimationData, nx, ny, 350, 440));
+            windows.Add(new Window_Animation(DataBase.defaultBlankAnimationData, nx, ny, 350, 200));
 
         }
 

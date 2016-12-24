@@ -10,6 +10,7 @@ namespace CommonPart
     {
         private string titleWindowBackGroundNames = "タイトル画面C91";
         string _difficulty, _play_mode;
+        private int difficulty_index,play_mode_index;
         public TitleSceneWithWindows(SceneManager scene) : base(scene) {
             setup_windows();
             SoundManager.Music.PlayBGM(BGMID.title,true);
@@ -30,6 +31,7 @@ namespace CommonPart
         }
         override protected void setup_windows()
         {
+            windows.Clear();
             int nx = 0; int ny = 0;
             int dx = 40; int dy = 50;
             if (Game1.difficulty == -1) { _difficulty = "NORMAL"; }else { _difficulty = "HARD"; }
@@ -44,12 +46,14 @@ namespace CommonPart
             nx = 100;
             ny += 0 * dy;
 	        //windows[0].AddColoum(new AnimationButton(nx, ny, "TestMap", DataBase.getAniD("NewGame-selected"), Command.buttonPressed3, 80, 0));
-            ny += 1 * dy;
+            ny += 0* dy;
             windows[0].AddColoum(new AnimationButton(nx, ny, /*"ＨＡＲＤ"*/"", DataBase.getAniD("NewGame-selected"), Command.buttonPressed1,0,0));
             ny += 2*dy;
             windows[0].AddColoum(new Button(nx, ny, "難易度変更", _difficulty, Command.buttonPressed2, false,80));
+            difficulty_index = ((Window_WithColoum)windows[0]).coloums.Count - 1;
             ny += dy;
             windows[0].AddColoum(new Button(nx, ny, "プレイモード変更", _play_mode, Command.buttonPressed4, false,100));
+            play_mode_index = ((Window_WithColoum)windows[0]).coloums.Count - 1;
             /* ny += 2*dy;
              windows[0].AddColoum(new AnimationButton(nx, ny, "ＮＯＲＭＡＬ", DataBase.getAniD("NewGame-selected"), Command.buttonPressed2, 80, 0));
              */
@@ -107,12 +111,12 @@ namespace CommonPart
                 case Command.buttonPressed2:
                     Game1.difficulty *= -1;
                     if (Game1.difficulty == -1) { _difficulty = "NORMAL"; } else { _difficulty = "HARD"; }
-                    ((Window_WithColoum)windows[i]).coloums[3].content = _difficulty;
+                    ((Window_WithColoum)windows[i]).coloums[difficulty_index].content = _difficulty;
                     break;
                 case Command.buttonPressed4:
                     Game1.play_mode *= -1;
                     if (Game1.play_mode == -1) { _play_mode = "ARCADE"; } else { _play_mode = "PRACTICE"; }
-                    ((Window_WithColoum)windows[i]).coloums[4].content = _play_mode;
+                    ((Window_WithColoum)windows[i]).coloums[play_mode_index].content = _play_mode;
                     break;
                 case Command.buttonPressed3:
                     new MapScene(scenem, -1);

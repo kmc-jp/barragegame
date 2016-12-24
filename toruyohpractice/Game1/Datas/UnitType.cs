@@ -42,7 +42,12 @@ namespace CommonPart
                     UnitTypeDictionary.Add(ut.typename, ut);
                 }//Dictionaryをつくる
             }
-            else { Console.WriteLine("uts is empty"); return; }
+            else {
+#if DEBUG
+                Console.WriteLine("uts is empty");
+#endif
+                return;
+            }
         }// end of setup
         private void load_br_161010(BinaryReader br)
         {

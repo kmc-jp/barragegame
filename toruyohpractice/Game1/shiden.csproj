@@ -52,6 +52,8 @@
   <PropertyGroup>
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup />
   <ItemGroup>
     <Compile Include="Boss\Boss.cs" />
     <Compile Include="Boss\Boss6.cs" />
