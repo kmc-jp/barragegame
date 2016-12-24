@@ -103,7 +103,8 @@ namespace CommonPart
             return Function.hitcircle(x, y, radius, px, py, p_radius);
         }
         public virtual void damage(int d) {
-            life -= d;
+            if(!animation.dataIsNull())
+                life -= d;
             if (life <= 0) { life = 0; remove(Unit_state.dead); }
         }
         public virtual void dead()

@@ -1033,7 +1033,7 @@
 /processorParam:TextureFormat=Color
 /build:stage2boss用グレー画像.png
 
-#begin boss3.png
+#begin 1200x480-boss3.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -1043,5 +1043,17 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:boss3.png
+/build:1200x480-boss3.png
+
+#begin タイトル画面C91.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:タイトル画面C91.png
 

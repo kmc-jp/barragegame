@@ -289,19 +289,13 @@ namespace CommonPart
                     break;
                 case 1500:
                     Map.create_enemy(80, 0, "3E8a");
-                    Map.enemys.Last().add_skill("laser-down-1");
-                    Map.create_enemy(180, 0, "3E8a");
-                    Map.enemys.Last().add_skill("laser-down-1");
-                    Map.create_enemy(280, 0, "3E8a");
-                    Map.enemys.Last().add_skill("laser-down-1");
-                    Map.create_enemy(360, 0, "3E8a");
-                    Map.enemys.Last().add_skill("laser-down-1");
-                    Map.create_enemy(440, 0, "3E8a");
-                    Map.enemys.Last().add_skill("laser-down-1");
-                    Map.create_enemy(540, 0, "3E8a");
-                    Map.enemys.Last().add_skill("laser-down-1");
+                    Map.enemys.Last().add_skill("1downshotfrom2point2");
+                    Map.create_enemy(260, 0, "3E8a");
+                    Map.enemys.Last().add_skill("1downshotfrom2point2");
+                    Map.create_enemy(420, 0, "3E8a");
+                    Map.enemys.Last().add_skill("1downshotfrom2point2");
                     Map.create_enemy(640, 0, "3E8a");
-                    Map.enemys.Last().add_skill("laser-down-1");
+                    Map.enemys.Last().add_skill("1downshotfrom2point2");
                     break;
                 case 1920:
                     Map.create_enemy(360, 0, "3E2-f2a");
@@ -385,11 +379,11 @@ namespace CommonPart
                     break;
                 case 5480:
                     Map.create_enemy(180, 0, "3E5a");
-                    Map.enemys.Last().add_skill("laserfrom2point");
+                    Map.enemys.Last().add_skill("laser-once-1");
                     Map.create_enemy(360, 0, "3E5b");
-                    Map.enemys.Last().add_skill("laerfrom2point");
+                    Map.enemys.Last().add_skill("laser-once-1");
                     Map.create_enemy(540, 0, "3E5a");
-                    Map.enemys.Last().add_skill("laserfrom2point");
+                    Map.enemys.Last().add_skill("laser-once-1");
                     break;
                 case 6200:
                     Map.create_enemy(360, 0, "3E7e");
@@ -404,7 +398,7 @@ namespace CommonPart
                     break;
                 case 7420:
                     playBGM(bgmIDs[1]);//BGMを流す。
-                    Map.create_boss3(640, 150, "boss3");
+                    Map.create_boss3(440, 0, "boss3");
                     break;
             }
             #endregion
@@ -540,7 +534,6 @@ namespace CommonPart
             background_names = new string[] { "background6" };
 
             commonSetup();
-            Map.scroll_speed = new Vector(0, 0);
         }
 
         public override void update()
@@ -549,12 +542,10 @@ namespace CommonPart
             switch (Map.step[0])
             {
                 case 0:
-                    Map.boss_mode = false;
-                    break;
-                case 50:
+                    Map.set_default_scroll_speed(0,0);
                     Map.EngagingTrueBoss();
                     break;
-                case 125:
+                case 60:
                     playBGM(bgmIDs[0]);//最初のBGMを流す。
                     Map.create_boss6(640, 220, "boss6");
                     break;

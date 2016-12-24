@@ -21,7 +21,7 @@ namespace CommonPart {
         /// <summary>
         /// プレイヤーの1残機をlifePerPiece等分する。基本ダメージは1残機削るが、得たスコアーによって残機が(このint)分の1で回復する。
         /// </summary>
-        public int lifesPerPiece = 3;
+        public static int lifesPerPiece = 3;
 
         protected AnimationAdvanced chargeBar;
         protected string chargeBar_animation_name;
@@ -39,6 +39,10 @@ namespace CommonPart {
         /// </summary>
         public Vector ougi_pos = new Vector(950,80);
         #endregion
+        /// <summary>
+        /// 連撃のスキルによって得た点数をライフピースに変換するに使う
+        /// </summary>
+        public int scorePerLifePiece { get { if (Game1.difficulty == 1) { return 15000; } else { return 10000; } } }
         #region player- clean bullets
         public static bool damageEnemys;
         public static int maxRadiusOfCleaningBullets;
@@ -64,7 +68,7 @@ namespace CommonPart {
         /// <summary>
         /// デフォルトのmapのスクロールの速度
         /// </summary>
-        const double defaultspeed_x = 0,defaultspeed_y = 1;
+        public static double defaultspeed_x = 0,defaultspeed_y = 1;
         #endregion
         #region map BackGround/textures variables
         static int total_BackGroundHeight = 0;
@@ -170,11 +174,11 @@ namespace CommonPart {
                 case 2:
                     stagedata = new Stage2Data("stage2");
                     break;
-                case 4:
-                    stagedata = new Stage4Data("stage4");
-                    break;
                 case 3:
                     stagedata = new Stage3Data("stage3");
+                    break;
+                case 4:
+                    stagedata = new Stage6Data("stage6");
                     break;
                 case 5:
                     stagedata = new Stage6Data("stage6");
@@ -194,7 +198,7 @@ namespace CommonPart {
             #endregion
             stagedata.update();
             scroll_speed = new Vector(defaultspeed_x, defaultspeed_y);
-            Map.player = new Player(DataBase.WindowDefaultSizeX/2, 500, 6, 10, 4*lifesPerPiece,DataBase.charaName);
+            Map.player = new Player(DataBase.WindowDefaultSizeX/2, 500, 6, 10, Game1.playerLife,DataBase.charaName);
 
             bossLifeGaugeSize.X=0;
             leftside = 280;
@@ -225,6 +229,7 @@ namespace CommonPart {
             #region about background 
             v.Clear(); background_names.Clear(); total_BackGroundHeight = 0;
             #endregion
+            defaultspeed_x = 0; defaultspeed_y = 1;
             textureNames.Clear();
             Map.pros.Clear();
         }
@@ -239,6 +244,11 @@ namespace CommonPart {
             return leftside < v.X + w || DataBase.WindowDefaultSizeX - leftside > v.X || topside < v.Y || topside + DataBase.WindowSlimSizeY > v.Y + h;
         }
 
+        public static void set_default_scroll_speed(double _speedx=0,double _speedy=1)
+        {
+            defaultspeed_x = _speedx;
+            defaultspeed_y = _speedy;
+        }
         public void set_change_scroll(int _scroll_time, double _changed_scroll_speed,int _scroll_start=-1)
         {
             scroll_start = _scroll_start;
@@ -438,10 +448,10 @@ namespace CommonPart {
                 #region player attack skill - translate point into life
                 if (player.attack_mode)
                 {
-                    if (Map.scoreOfskilltoEnemy / 10000 >= 1)
+                    if (Map.scoreOfskilltoEnemy / scorePerLifePiece >= 1)
                     {
-                        player.life += Map.scoreOfskilltoEnemy / 10000;
-                        Map.scoreOfskilltoEnemy %= 10000;
+                        player.life += Map.scoreOfskilltoEnemy / scorePerLifePiece;
+                        Map.scoreOfskilltoEnemy %= scorePerLifePiece;
                     }
                 }
                 #endregion

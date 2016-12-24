@@ -23,7 +23,7 @@ namespace CommonPart
             body_max_index = 1;//funnelsNumber is not index,-1
             bodys = new Enemy[body_max_index+1];
             bodys_pos = new Vector[body_max_index + 1];
-            maxLife = 24000;
+            maxLife = 20000;
             life = maxLife;
             bodys_pos[0] = new Vector(-90, -100);
             bodys_pos[1] = new Vector(45, 40);
@@ -40,7 +40,7 @@ namespace CommonPart
                 setup_LoopSet(2, 3);
             }
             nowTime = -2 * 60;//
-            maxPhaseIndex = 4;
+            maxPhaseIndex = 3;
             minPhaseIndex = 1;
         }
 
@@ -105,19 +105,20 @@ namespace CommonPart
         public override void changePhase(int p = -1)
         {
             base.changePhase(p);
-            int n = 0;
-            setup_motion(motionLoopsStart[motionLoopIndex],0);
+            //setup_motion(motionLoopsStart[motionLoopIndex],0);
             #region switch phase
             switch (motionLoopIndex)
             {
                 #region phase 0
                 case 0:
                     nowTime = 2 * 60;
+                    moveToScreenPos_now(640, 240);
                     break;
                 #endregion
                 
                 default:
                     nowTime = 10*60;
+                    moveToScreenPos_now(640+Function.GetRandomInt(801)-400, 240+Function.GetRandomInt(241)-120);
                     break;
             }
             #endregion
