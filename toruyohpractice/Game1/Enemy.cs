@@ -510,7 +510,7 @@ namespace CommonPart
                                     {
                                         Bullet bullet1, bullet2;
                                         by = y - sd.space * j * j*Math.Pow(0.99,j)/2 + animation.Y / 2;
-                                        double bdx = sd.space * j*j/2 + sd.radius;
+                                        double bdx = sd.space * j*j + sd.radius;
                                         if (ws.sgl == SkillGenreL.UseSkilledBullet)
                                         {
                                             WaySkilledBulletsData wSs = (WaySkilledBulletsData)ws;
