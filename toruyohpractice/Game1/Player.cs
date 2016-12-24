@@ -184,7 +184,7 @@ namespace CommonPart
                         if (keymanager.IsKeyDown(KeyID.Left)) { x = x - speed; }
                         if (avoid_mode == false)
                         {//回避中に速度が小さくならないように
-                            if (keymanager.IsKeyDown(KeyID.Slow) == true) { speed = 2; } else { speed = default_speed; }//テスト用数値
+                            if (keymanager.IsKeyDown(KeyID.Slow) == true) { speed = default_speed/2; } else { speed = default_speed; }//テスト用数値
                         }
                     }
                     #endregion
