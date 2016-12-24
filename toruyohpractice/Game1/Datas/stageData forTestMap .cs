@@ -26,8 +26,8 @@ namespace CommonPart
                     playBGM(bgmIDs[0]);//最初のBGMを流す。
                     Map.boss_mode = false;
                     break;
-                case 10:
-                    Map.create_enemy(360, 0, "E3-1");
+                //case 10:
+                    //Map.create_enemy(360, 0, "E3-1");
                     //Map.enemys.Last().add_skill("ransya-3");
                     //Map.enemys.Last().add_skill("ransya-3^-1");
                     Map.enemys.Last().set_skill_coolDown(1, 45);
@@ -51,14 +51,14 @@ namespace CommonPart
                         //Map.enemys.Last().add_skill("createzyuzi-0");
                         break*/
 
-                    /*case 4700:
+                    case 80:
                         Map.boss_mode = true;
                         Map.EngagingTrueBoss();
                         break;
-                    case 4720:
+                    case 90:
                         playBGM(bgmIDs[1]);//BGMを流す。
-                        Map.create_boss1(360, 10, "boss1");
-                        break;*/
+                        Map.create_boss2(360, 640, "boss2");
+                        break;
             }
             #endregion
         }
