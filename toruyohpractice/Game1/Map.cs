@@ -64,7 +64,7 @@ namespace CommonPart {
         /// <summary>
         /// デフォルトのmapのスクロールの速度
         /// </summary>
-        const double defaultspeed_x = 0,defaultspeed_y = 1;
+        public static double defaultspeed_x = 0,defaultspeed_y = 1;
         #endregion
         #region map BackGround/textures variables
         static int total_BackGroundHeight = 0;
@@ -225,6 +225,7 @@ namespace CommonPart {
             #region about background 
             v.Clear(); background_names.Clear(); total_BackGroundHeight = 0;
             #endregion
+            defaultspeed_x = 0; defaultspeed_y = 1;
             textureNames.Clear();
             Map.pros.Clear();
         }
@@ -239,6 +240,11 @@ namespace CommonPart {
             return leftside < v.X + w || DataBase.WindowDefaultSizeX - leftside > v.X || topside < v.Y || topside + DataBase.WindowSlimSizeY > v.Y + h;
         }
 
+        public static void set_default_scroll_speed(double _speedx=0,double _speedy=1)
+        {
+            defaultspeed_x = _speedx;
+            defaultspeed_y = _speedy;
+        }
         public void set_change_scroll(int _scroll_time, double _changed_scroll_speed,int _scroll_start=-1)
         {
             scroll_start = _scroll_start;

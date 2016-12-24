@@ -404,7 +404,7 @@ namespace CommonPart
                     break;
                 case 7420:
                     playBGM(bgmIDs[1]);//BGMを流す。
-                    Map.create_boss3(360, 10, "boss3");
+                    Map.create_boss3(360, 0, "boss3");
                     break;
             }
             #endregion
@@ -540,7 +540,6 @@ namespace CommonPart
             background_names = new string[] { "background6" };
 
             commonSetup();
-            Map.scroll_speed = new Vector(0, 0);
         }
 
         public override void update()
@@ -549,6 +548,7 @@ namespace CommonPart
             switch (Map.step[0])
             {
                 case 0:
+                    Map.set_default_scroll_speed(0,0);
                     Map.boss_mode = false;
                     break;
                 case 50:

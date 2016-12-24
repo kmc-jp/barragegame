@@ -105,7 +105,6 @@ namespace CommonPart
         public override void changePhase(int p = -1)
         {
             base.changePhase(p);
-            int n = 0;
             setup_motion(motionLoopsStart[motionLoopIndex],0);
             #region switch phase
             switch (motionLoopIndex)

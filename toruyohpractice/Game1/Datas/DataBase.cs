@@ -309,7 +309,7 @@ namespace CommonPart {
 
             Motion rCircle = new Motion(MoveType.rightcircle, PointType.notused, new Vector(), low_speed1, 0, 60, Math.PI / 30);
             Motion rotateAndGoDirection = new Motion(MoveType.rotateAndGo, PointType.Direction, nv, low_speed1, 0, 0);
-
+            Motion syncCasterAndRotate = new Motion(MoveType.chase_enemy_target, PointType.Direction, nv, low_speed1, 0, 0);
             Motion rotateAndGoRandom = new Motion(MoveType.rotateAndGo, PointType.randomDirection, new Vector(tPI/4,0), low_speed1, 0, 0);
             Motion fire = new Motion(MoveType.rotateAndGo, PointType.randomDirection, new Vector(tPI / 24, 0), low_speed1, 0, 0);
             Motion chaseEnemy = new Motion(MoveType.chase_enemy_target, PointType.notused, nv, 0, 0, 0);
@@ -365,10 +365,10 @@ namespace CommonPart {
                 rshot0 = "boss3onfire-r", rshot1 = "boss3onfire-r^-1", yanagi = "boss3onfire-yanagi", hakkyou = "boss3onfire-hakkyo";
             addSkillData(new WaySkilledBulletsData("boss3onfire-shot", Condition.hPp + ">=50"+and+rs+"=1", SkillGenreS.wayshot, null, middle_cd2, goStraightWithDirection, 0, 0, SelfAngle, 0, 0, big_radius, new string[] { "firesmall", "firelarge", "firemiddle" }, 1, high_cd1 * 5 + 1));
             addSkillData(new WaySkilledBulletsData("boss3onfire-breath", Condition.hPp + ">=50"+and + rs + "=3", SkillGenreS.wayshot, null, low_cd3, goStraightWithDirection, 0, 0, SelfAngle, 0, 0, big_radius, new string[] { "firesmall", "firelarge", "firemiddle" }, 1, 100));
-            addSkillData(new WaySkilledBulletsData("boss3onfire-longbreath", Condition.hPp + "<50" + and + rs + "=3", SkillGenreS.wayshot, null, 1000, goStraightWithDirection, 0, 0, SelfAngle, 0, 0, big_radius, new string[] { "firesmall2", "firelarge2", "firemiddle2" }, 1, 10000));
-            addSkillData(new WaySkilledBulletsData("boss3onfire-hakkyo", Condition.hPp+"<=20" + and + rs + "=2", SkillGenreS.wayshot, null, 60, rotateAndGoDirection, 0, 0, lowangle2, Math.PI / 360, 0, small_radius, new string[] { "boss3onfire-rotate" }, 1, 1000));
-            addSkillData(new WaySkilledBulletsData("boss3onfire-r", Condition.hPp + ">20" + and + rs + "=2", SkillGenreS.wayshot, null, 1000, rotateAndGoDirection, 0, 0, lowangle2, Math.PI / 45, 0, small_radius, new string[] { "boss3onfire-rotate2" }, 1, 1000));
-            addSkillData(new WaySkilledBulletsData("boss3onfire-r^-1", Condition.hPp + ">20" + and + rs + "=2", SkillGenreS.wayshot, null, 1000, rotateAndGoDirection, 0, 0, lowangle2, -Math.PI / 45, 0, small_radius, new string[] { "boss3onfire-rotate2" }, 1, 1000));//上の弾幕と同時使用
+            addSkillData(new WaySkilledBulletsData("boss3onfire-longbreath", Condition.hPp + "<50" + and + rs + "=3", SkillGenreS.wayshot, null, 600, goStraightWithDirection, 0, 0, SelfAngle, 0, 0, big_radius, new string[] { "firesmall2", "firelarge2", "firemiddle2" }, 1, 10000));
+            addSkillData(new WaySkilledBulletsData("boss3onfire-hakkyo", Condition.hPp+"<=20" + and + rs + "=2", SkillGenreS.wayshot, null, 60, syncCasterAndRotate, 0, 0, lowangle2, Math.PI / 360, 0, small_radius, new string[] { "boss3onfire-rotate" }, 1, 1000));
+            addSkillData(new WaySkilledBulletsData("boss3onfire-r", Condition.hPp + ">20" + and + rs + "=2", SkillGenreS.wayshot, null, 600, rotateAndGoDirection, 0, 0, lowangle2, Math.PI / 45, 0, small_radius, new string[] { "boss3onfire-rotate2" }, 1, 1000));
+            addSkillData(new WaySkilledBulletsData("boss3onfire-r^-1", Condition.hPp + ">20" + and + rs + "=2", SkillGenreS.wayshot, null, 600, rotateAndGoDirection, 0, 0, lowangle2, -Math.PI / 45, 0, small_radius, new string[] { "boss3onfire-rotate2" }, 1, 1000));//上の弾幕と同時使用
             addSkillData(new WaySkilledBulletsData("boss3onfire-yanagi", Condition.hPp + "<50" + and + rs + "=1", SkillGenreS.wayshot, null, middle_cd2, goStraightWithDirection, 0, 0, AngleToPlayer, 0, 0, big_radius, new string[] { "boss3onfire-yanagi0", "ransya-3-boss3" }, 1, high_cd2 * 3 + 1));
 
             #region forboss3
@@ -580,8 +580,13 @@ namespace CommonPart {
             tda("タイトル画面NF");
             */
             #endregion
+            tda("background6");
+            tda("1200x480-boss3");
             setupSkillData();
             addAniD(new AnimationDataAdvanced("bulletDL" + defaultAnimationNameAddOn,5, 1, 4, "100x100_B15", false));
+            AnimationAdDataDictionary.Remove("boss3" + defaultAnimationNameAddOn);
+            addAniD(new AnimationDataAdvanced("boss3" + defaultAnimationNameAddOn, new int[] { 16,13,10}, 0, "1200x480-boss3", true));
+            #region addAniD in program
             /*
             addAniD(new AnimationDataAdvanced("stageSelectButton"+defaultAnimationNameAddOn,14,4,0,"150x150Mapアイコン",true));
             addAniD(new AnimationDataAdvanced("stageSelectButton" + aniNameAddOn_spell, 14, 4, 4, "150x150Mapアイコン", true));
@@ -598,8 +603,8 @@ namespace CommonPart {
             addAniD(new AnimationDataAdvanced(bossLifeBar_default_aniName+defaultAnimationNameAddOn,10,1,bossLifeBar_default_aniName));
             addAniD(new AnimationDataAdvanced(bossLifeBar_default_aniName + aniNameAddOn_spell, 10, 4,2, bossLifeBar_default_aniName));
             getAniD(bossLifeBar_default_aniName + aniNameAddOn_spell).assignAnimationName(bossLifeBar_default_aniName + defaultAnimationNameAddOn, true);
+            
             */
-            #region addAniD in program
             /*
             addAniD( new AnimationDataAdvanced("boss1" + defaultAnimationNameAddOn,
                 10, 3, "90 270-boss1", true));

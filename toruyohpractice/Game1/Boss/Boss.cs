@@ -576,7 +576,7 @@ namespace CommonPart
             
             for (int o = 1; o < 4; o++) 
             {
-                setup_LoopSet(0, 0);
+                setup_LoopSet(1, 1);
             }
             nowTime = -2 * 60;//
             maxPhaseIndex = 3;
@@ -620,6 +620,7 @@ namespace CommonPart
             {
                 bodys[j].life = life;
             }
+            if (life < maxLife /5) { Console.Write("t"); setup_LoopSet(2, 5, 2); Console.Write(motionLoopsEnd[2]); }
         }
 
         /// <summary>
@@ -629,6 +630,8 @@ namespace CommonPart
         public override void changePhase(int p = -1)
         {
             base.changePhase(p);
+            setup_motion(motionLoopsStart[motionLoopIndex], 0);
+            
             #region switch phase
             switch (motionLoopIndex)
             {
@@ -643,6 +646,22 @@ namespace CommonPart
                     break;
             }
             #endregion
+        }
+
+        public override void draw(Drawing d)
+        {
+            if (!texRotate)
+            {
+                animation.Draw(d, new Vector((x - animation.X / 2), (y - animation.Y / 2-22)), DepthID.Enemy);
+            }
+            for (int i = body_max_index; i >= 0; i--)
+            {
+                bodys[i].draw(d);
+            }
+            for (int i = 0; i < bullets.Count; i++)
+            {
+                bullets[i].draw(d);
+            }
         }
     }
 }
