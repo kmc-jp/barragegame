@@ -75,7 +75,6 @@ namespace CommonPart {
                 nx=430; ny = 180;
                 window.AddColoum(new Button(nx, ny, "Go to next stage", "", Command.buttonPressed3, false));
                 #endregion
-
             }
             else if(!MapFulStop)
             {//gameOverに入っていないのでmapは更新する

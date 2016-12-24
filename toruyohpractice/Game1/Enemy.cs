@@ -292,6 +292,37 @@ namespace CommonPart
                     skills[index].coolDown = (int)(cd * Game1.enemySkills_update_fps / DataBase.basicFramePerSecond);
             }
         }
+        /// <summary>
+        /// 指定したスキルの現在CDを取得する、
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="absoluteFrame">true:絶対frame数=skillUpdate_framesで換算したCDを取得する。黙認ではfalse; falseでそのままの数値</param>
+        /// <returns></returns>
+        public int skillcd(int index, bool absoluteFrame=false) {
+            if (index >= skills.Count) { Console.Write("skillcd: Do not have "+index+"th skill."); return 0; }
+            else
+            {
+                if (absoluteFrame)
+                    return (int)(skills[index].coolDown * Game1.enemySkills_update_fps / DataBase.basicFramePerSecond);
+                else
+                    return skills[index].coolDown;
+            }
+        }
+        /// <summary>
+        /// 指定したスキルのCDを{すでに経過したframes}を使用して、あるCD後に使われるようにする. 
+        /// </summary>
+        /// <param name="index">スキルを指定に使う</param>
+        /// <param name="maxCD">指定したCD. {今から使われるまでの時間ではない}</param>
+        /// <param name="frames_passed">指定したCDに対して、実はこのframe数だけCDは経過した。</param>
+        /// <returns></returns>
+        public void sync_skill_coolDown(int index, int maxCD, int frames_passed)
+        {
+            if (index >= skills.Count) { Console.Write("skillcd: Do not have " + index + "th skill."); return; }
+            else
+            {
+                skills[index].coolDown = maxCD - (int)(frames_passed * Game1.enemySkills_update_fps / DataBase.basicFramePerSecond)%maxCD;
+            }
+        }
 
         public void delete_all_skills()
         {

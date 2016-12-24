@@ -53,7 +53,8 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Boss.cs" />
+    <Compile Include="Boss\Boss.cs" />
+    <Compile Include="Boss\Boss6.cs" />
     <Compile Include="Bullet.cs" />
     <Compile Include="Datas\BGMdata.cs" />
     <Compile Include="Datas\Condition.cs" />
