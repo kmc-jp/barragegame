@@ -571,6 +571,21 @@ namespace CommonPart {
             bossLifeBarTextureName = _bossLifeBarName;
             bossLifeBarAnime = new AnimationAdvanced(DataBase.getAniD(bossLifeBarTextureName + DataBase.defaultAnimationNameAddOn));
         }
+        public static void create_boss3(double _x, double _y, string _unitType_name, string _bossLifeBarName = DataBase.bossLifeBar_default_aniName)
+        {
+            enemys.Clear();
+            enemys_inside_window.Clear();
+            if (enemys.Count <= enemysIndexOfBoss)
+            {
+                enemys.Add(new Boss3(leftside + _x, _y, _unitType_name));
+            }
+            else
+            {
+                enemys.Insert(enemysIndexOfBoss, new Boss3(leftside + _x, _y, _unitType_name));
+            }
+            bossLifeBarTextureName = _bossLifeBarName;
+            bossLifeBarAnime = new AnimationAdvanced(DataBase.getAniD(bossLifeBarTextureName + DataBase.defaultAnimationNameAddOn));
+        }
         public static void bossDamaged()
         {
             bossLifeBarAnime = null;

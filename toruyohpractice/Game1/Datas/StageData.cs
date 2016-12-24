@@ -404,7 +404,7 @@ namespace CommonPart
                     break;
                 case 7420:
                     playBGM(bgmIDs[1]);//BGMを流す。
-                    Map.create_boss1(360, 10, "boss1");
+                    Map.create_boss1(360, 10, "boss3");
                     break;
             }
             #endregion
