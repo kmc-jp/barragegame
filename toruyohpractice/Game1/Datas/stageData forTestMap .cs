@@ -26,16 +26,15 @@ namespace CommonPart
                     playBGM(bgmIDs[0]);//最初のBGMを流す。
                     Map.boss_mode = false;
                     break;
-                case 5:
+                /*case 5:
                     Map.EngagingTrueBoss();
                     break;
                 case 60:
-                    Map.create_boss2(DataBase.WindowDefaultSizeX / 2, 0, "boss2");
-                    
-                   /*
+                    Map.create_boss2(DataBase.WindowDefaultSizeX / 2, 0, "boss2");*/                    
+                case 5:
                     Map.create_enemy(320, 0, "testE1");
-                    Map.enemys.Last().add_skill("boss3onfire-yanagi");
-                    //Map.enemys.Last().add_skill("boss3onfire-r^-1");
+                    Map.enemys.Last().add_skill("boss3onfire-longbless");
+                    //Map.enemys.Last().add_skill("1wayshot-2");
                     Map.enemys.
                         Last().set_skill_coolDown(0, 60);
                     //Map.enemys.Last().add_skill("ransya-3^-1");
