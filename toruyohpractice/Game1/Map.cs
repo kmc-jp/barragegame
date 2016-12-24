@@ -21,7 +21,7 @@ namespace CommonPart {
         /// <summary>
         /// プレイヤーの1残機をlifePerPiece等分する。基本ダメージは1残機削るが、得たスコアーによって残機が(このint)分の1で回復する。
         /// </summary>
-        public int lifesPerPiece = 3;
+        public static int lifesPerPiece = 3;
 
         protected AnimationAdvanced chargeBar;
         protected string chargeBar_animation_name;
@@ -39,6 +39,10 @@ namespace CommonPart {
         /// </summary>
         public Vector ougi_pos = new Vector(950,80);
         #endregion
+        /// <summary>
+        /// 連撃のスキルによって得た点数をライフピースに変換するに使う
+        /// </summary>
+        public int scorePerLifePiece { get { if (Game1.difficulty == 1) { return 15000; } else { return 10000; } } }
         #region player- clean bullets
         public static bool damageEnemys;
         public static int maxRadiusOfCleaningBullets;
@@ -194,7 +198,7 @@ namespace CommonPart {
             #endregion
             stagedata.update();
             scroll_speed = new Vector(defaultspeed_x, defaultspeed_y);
-            Map.player = new Player(DataBase.WindowDefaultSizeX/2, 500, 6, 10, 4*lifesPerPiece,DataBase.charaName);
+            Map.player = new Player(DataBase.WindowDefaultSizeX/2, 500, 6, 10, Game1.playerLife,DataBase.charaName);
 
             bossLifeGaugeSize.X=0;
             leftside = 280;
@@ -444,10 +448,10 @@ namespace CommonPart {
                 #region player attack skill - translate point into life
                 if (player.attack_mode)
                 {
-                    if (Map.scoreOfskilltoEnemy / 15000 >= 1)
+                    if (Map.scoreOfskilltoEnemy / scorePerLifePiece >= 1)
                     {
-                        player.life += Map.scoreOfskilltoEnemy / 15000;
-                        Map.scoreOfskilltoEnemy %= 15000;
+                        player.life += Map.scoreOfskilltoEnemy / scorePerLifePiece;
+                        Map.scoreOfskilltoEnemy %= scorePerLifePiece;
                     }
                 }
                 #endregion
