@@ -404,7 +404,7 @@ namespace CommonPart
                     break;
                 case 7420:
                     playBGM(bgmIDs[1]);//BGMを流す。
-                    Map.create_boss1(360, 10, "boss3");
+                    Map.create_boss3(360, 10, "boss3");
                     break;
             }
             #endregion
@@ -555,7 +555,7 @@ namespace CommonPart
                     break;
                 case 125:
                     playBGM(bgmIDs[0]);//最初のBGMを流す。
-                    Map.create_boss6(360, 10, "boss6");
+                    Map.create_boss6(360, 160, "boss6");
                     break;
             }
             #endregion
