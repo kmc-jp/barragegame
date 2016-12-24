@@ -32,11 +32,12 @@ namespace CommonPart
             new BGMdata("Content/stage1_way.wav",BGMID.Stage1onWay,85,"埃をかぶった風"),
             new BGMdata("Content/iseki.wav",BGMID.Stage1Boss,80,"Metalworms",6479,232083),
             new BGMdata("Content/maten_game.wav",BGMID.Stage2onWay,85,"the Paradox City"),
-            new BGMdata("Content/Stage2_Boss.wav",BGMID.Stage2Boss,85,"蹂躙と幻想ノ狭間ニ"), //ファイル名が曲名になる
-            new BGMdata("Content/stage3_way.wav",BGMID.Stage3onWay,300,"1000度と踊る場所"),
+            new BGMdata("Content/Stage2_Boss.wav",BGMID.Stage2Boss,85,"蹂躙と幻想ノ狭間ニ",6283,146362), //ファイル名が曲名になる
+            new BGMdata("Content/stage3_way.wav",BGMID.Stage3onWay,300,"1000度と踊る場所",24288,80294),
             new BGMdata("Content/stage3_boss.wav",BGMID.Stage3Boss,80,"Magma Drive",47340,207970),
-            new BGMdata("Content/Stage4_Journey_short.wav",BGMID.Stage4onWay,80,"雪解けの春"),
-            new BGMdata("Content/stage４ボス.wav",BGMID.Stage4Boss,85,"花弁",47340,207970),
+            new BGMdata("Content/lastboss_shiden.wav",BGMID.Stage6boss,80,"科学仕掛けの死神(タナトス)-Uncompleted-",0,229337),
+            new BGMdata("Content/Stage4_Journey_short.wav",BGMID.Stage4onWay,80,"未使用曲１(雪解けの春)"),
+            new BGMdata("Content/stage４ボス.wav",BGMID.Stage4Boss,85,"未使用曲２(花弁)",47340,207970),
         };
 
 

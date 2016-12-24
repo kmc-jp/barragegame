@@ -19,14 +19,14 @@ namespace CommonPart
         public const string route_set = "-rs";
         public const string duration = "-dr";
         public const string hP = "-hp";
-        public const string hPp = "-hpp";
+        public const string hPp = "-hPp";
         #region static
         /// <summary>
         /// 構文解析時にこれらの文字列は対応した番号の引数を意味する,今は"-rs"は0番目の引数の値を意味する
         /// </summary>
         static readonly string[] label = new string[]
         {
-            route_set, duration, hP,hPp,
+           route_set,duration, hP,hPp,
         };
         
         #endregion
@@ -66,6 +66,7 @@ namespace CommonPart
             bool ans=false;
             if(conditions==null)
                 return true;
+            int nowValue = 0;
             int nowIndex = 0;//今、比較に使われるはずのints[]の引数番号. これはlabelからの指定の時だけ修正するのがいいでしょう。
             while (pos < conditions.Length)
             {
@@ -106,13 +107,12 @@ namespace CommonPart
                         addPos();
                         if (pos < conditions.Length && conditions[pos]=='='){
                             addPos();
-
-                            ans = compareIntsWithInt(ints[nowIndex], smallerOrEqaul);
+                            ans = compareIntsWithInt(nowValue, smallerOrEqaul);
                             //Console.WriteLine("##" + ans + "##");
                         }
                         else
                         {
-                            ans = compareIntsWithInt(ints[nowIndex], smallerThan);
+                            ans = compareIntsWithInt(nowValue, smallerThan);
                             //Console.WriteLine("##smaller Than" + ans + "##");
                         }
                         break;
@@ -121,16 +121,16 @@ namespace CommonPart
                         if (pos + 1 < conditions.Length && conditions[pos] == '=')
                         {
                             addPos();
-                            ans = compareIntsWithInt(ints[nowIndex], biggerOrEqaul);
+                            ans = compareIntsWithInt(nowValue, biggerOrEqaul);
                         }
                         else
                         {
-                            ans = compareIntsWithInt(ints[nowIndex], biggerThan);
+                            ans = compareIntsWithInt(nowValue, biggerThan);
                         }
                         break;
                     case '=':
                         addPos();
-                        ans = compareIntsWithInt(ints[nowIndex], equalWith);
+                        ans = compareIntsWithInt(nowValue, equalWith);
                         //Console.WriteLine("## Equal" + ans + "##");
                         break;
                     
@@ -144,8 +144,10 @@ namespace CommonPart
                             }
                         }
                         //ここでnowIndexを修正するといいでしょう.
-                        if (nowIndex < 0) nowIndex = 0;
-                        else if (nowIndex >= ints.Length) nowIndex = ints.Length - 1;
+                        if (ints==null || nowIndex < 0) nowIndex = 0;
+                        else if (ints!=null && nowIndex >= ints.Length) nowIndex = ints.Length - 1;
+
+                        if (ints != null) { nowValue = ints[nowIndex]; }
                         //Console.Write(ints[nowIndex]);
                         break;
                 }

@@ -16,7 +16,7 @@ namespace CommonPart
         public int score;
         public int sword;
         public bool lasered;
-        public int atk = 1;
+        public const int atk = 3;
 
         /// <summary>
         /// 目標物体がある場合に使う
@@ -25,7 +25,7 @@ namespace CommonPart
         /// <param name="_radian">初期角度、意味がない場合もある</param>
         public Bullet(double _x, double _y, MoveType _move_type, double _speed, double _acceleration, string _anime, Unit _target,
             double _radian, double _omega, double _radius, int _sword, int _life = 1, int _score = 0, int _zoom_rate = 100)
-            : base(_x, _y, _move_type, _anime, _target, _speed, _acceleration, _radian, _zoom_rate)
+            : base(_x, _y, _move_type, _anime, _target, _speed, _acceleration, _radian,_omega, _zoom_rate)
         {
             radius = _radius;
             maxLife = _life;
@@ -42,7 +42,7 @@ namespace CommonPart
         /// <param name="_radian">初期角度、意味がない場合もある</param>
         public Bullet(double _x,double _y, MoveType _move_type,double _speed,double _acceleration,string _anime,Vector _target_pos,PointType _pt,int _time,
             double _radian, double _omega, double _radius,int _sword, int _life=1,int _score=0, int _zoom_rate=100)
-            :base(_x,_y,_move_type, _anime, _target_pos,_pt,_time,_speed, _acceleration,_radian,_zoom_rate)
+            :base(_x,_y,_move_type, _anime, _target_pos,_pt,_time,_speed, _acceleration,_radian,_omega,_zoom_rate)
         {
             radius = _radius;
             maxLife = _life;
@@ -56,7 +56,7 @@ namespace CommonPart
         /// </summary>
         public Bullet(double _x, double _y, MoveType _move_type, double _speed, double _acceleration, string _anime, double _radian,double _omega,
             double _radius,  int _sword, int _life=1, int _score=0, int _zoom_rate=100)
-            : base(_x, _y, _move_type, _anime,_speed, _acceleration,_radian, _zoom_rate)
+            : base(_x, _y, _move_type, _anime,_speed, _acceleration,_radian,_omega, _zoom_rate)
         {
             radius = _radius;
             life = _life;
@@ -66,9 +66,12 @@ namespace CommonPart
             lasered = false;
         }
 
-        public virtual void update(Player player,bool bulletMove=true)
+        public virtual void update(Player player,bool bulletMove=true,bool skillsUpdate=false)
         {
             base.update(bulletMove);
+
+
+
             if (x < Map.leftside- animation.X / 2 || x > Map.rightside + animation.X / 2
                 || y > DataBase.WindowSlimSizeY + animation.Y / 2 || y < 0 - animation.Y / 2)
             {
@@ -100,10 +103,11 @@ namespace CommonPart
             return Function.hitcircle(x, y, radius, px, py, p_radius);
         }
         public virtual void damage(int d) {
-            life -= d;
+            if(!animation.dataIsNull())
+                life -= d;
             if (life <= 0) { life = 0; remove(Unit_state.dead); }
         }
-        protected virtual void dead()
+        public virtual void dead()
         {
             delete = true;
             //Map.make_chargePro(x, y, sword, Map.caculateBulletScore(sword));

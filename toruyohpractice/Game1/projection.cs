@@ -9,7 +9,6 @@ namespace CommonPart
     class Projection:Unit
     {
         public double speed;
-        public double speed_x, speed_y;
         public double acceleration;
         public double acceleration_x, acceleration_y;
         /// <summary>
@@ -19,8 +18,8 @@ namespace CommonPart
         /// <summary>
         /// x,yを持つenemyかplayer
         /// </summary>
-        public Vector target_pos;
         public Unit target;
+        public Vector target_pos;
         public AnimationAdvanced animation = null;
         public MoveType move_type;
         public int motionTime=1; public int nowMotionTime = 0;
@@ -61,7 +60,7 @@ namespace CommonPart
         /// <param name="_move_type"></param>
         /// <param name="_anime"></param>
         /// <param name="_zoom_rate"></param>
-        public Projection(double _x, double _y,MoveType _move_type, string _anime, double _speed=0,double _acceleration=0,double _radian=Math.PI/2,int _zoom_rate=100)
+        public Projection(double _x, double _y,MoveType _move_type, string _anime, double _speed=0,double _acceleration=0,double _radian=Math.PI/2,double _omega=0,int _zoom_rate=100)
             :base(_x,_y)
         {
             x = _x;
@@ -69,80 +68,23 @@ namespace CommonPart
             target = null;
             move_type = _move_type;
             animation = new AnimationAdvanced(DataBase.getAniD(_anime));
-            speed = _speed;      acceleration = _acceleration;      radian = _radian;
+            speed = _speed;      acceleration = _acceleration;      radian = _radian;  omega = _omega;
             zoom_rate = _zoom_rate;
             set_speed_and_acceleration_from_radian();
         }
         /// <summary>
         /// 点に向かって移動.MoveType,PointTypeとposから向きの角度がわかる場合_radianは意味を持ちません
         /// </summary>
-        /// <param name="_pt">_target_posをどのように使用を決める</param>
+        /// <param name="_point_type">_target_posをどのように使用を決める</param>
         /// <param name="_target_pos">このMoveTypeに使用する点</param>
-        public Projection(double _x, double _y, MoveType _move_type, string _anime, Vector _target_pos, PointType _pt,int _time,double _speed=0,double _acceleration=0, double _radian=0,int _zoom_rate=100)
-            : this(_x, _y, _move_type, _anime,_speed,_acceleration,_radian, _zoom_rate)
+        public Projection(double _x, double _y, MoveType _move_type, string _anime, Vector _target_pos, PointType _point_type,int _time,double _speed=0,double _acceleration=0, double _radian=0,double _omega=0,int _zoom_rate=100)
+            : this(_x, _y, _move_type, _anime,_speed,_acceleration,_radian,_omega, _zoom_rate)
         {
-            point_type = _pt;
+            point_type = _point_type;
             motionTime = _time;
-            target_pos.X = Motion.from_PointType_getPosX(_target_pos.X, _target_pos.Y, point_type, motionTime, speed,radian,move_type);
+            target_pos.X = Motion.from_PointType_getPosX(_target_pos.X, _target_pos.Y, point_type, motionTime, speed, radian, move_type);
             target_pos.Y = Motion.from_PointType_getPosY(_target_pos.X, _target_pos.Y, point_type, motionTime, speed, radian, move_type);
-            #region screen_point_target
-            if (move_type == MoveType.screen_point_target && motionTime > 0)
-            {
-                if (Motion.Is_a_Point(point_type))
-                {
-                    speed = Math.Sqrt((target_pos.X - x) * (target_pos.X - x) + (target_pos.Y - y) * (target_pos.Y - y)) / motionTime;
-                }
-                else if (Motion.Is_a_Direction(point_type))
-                {
-                    speed = Math.Sqrt(target_pos.X * target_pos.X + target_pos.Y * target_pos.Y) / motionTime;
-                }
-            }
-            #endregion
-            #region go_straight
-            else if (move_type == MoveType.go_straight)
-            {
-                #region is a point
-                if (Motion.Is_a_Point(point_type))
-                {
-                    if (motionTime > 0)
-                    {
-                        speed_x = (target_pos.X - x) / motionTime;
-                        speed_y = (target_pos.Y - y) / motionTime;
-                        double e = Math.Sqrt(speed_x * speed_x + speed_y * speed_y);
-                        acceleration_x = speed_x * acceleration / e;
-                        acceleration_y = speed_y * acceleration / e;
-                    }
-                    else
-                    {
-                        double distance = Math.Sqrt(Function.distance(target_pos.X, target_pos.Y, x, y));
-                        speed_x = (target_pos.X - x) * speed / distance;
-                        speed_y = (target_pos.Y - y) * speed / distance;
-                        acceleration_x = speed_x * acceleration / speed;
-                        acceleration_y = speed_y * acceleration / speed;
-                    }
-                }
-                #endregion
-                else
-                {
-                    if (motionTime > 0)
-                    {
-                        speed_x = target_pos.X / motionTime;
-                        speed_y = target_pos.Y / motionTime;
-                        double e = Math.Sqrt(speed_x * speed_x + speed_y * speed_y);
-                        acceleration_x = speed_x * acceleration / e;
-                        acceleration_y = speed_y * acceleration / e;
-                    }
-                    else
-                    {
-                        double distance = target_pos.GetLength();
-                        speed_x = target_pos.X * speed / distance;
-                        speed_y = target_pos.Y * speed / distance;
-                        acceleration_x = speed_x * acceleration / speed;
-                        acceleration_y = speed_y * acceleration / speed;
-                    }
-                }
-            }
-            #endregion
+            set_from_moveTypeAndPointType_2();
         }
         /// <summary>
         /// Unitに向かって移動する。MoveTypeによって、_radianは意味をなさないことがある
@@ -153,8 +95,8 @@ namespace CommonPart
         /// <param name="_target">class Unitの目標</param>
         /// <param name="_acceleration">加速度</param>
         /// <param name="_radian">向き。MoveTypeによって、無意味になることもある</param>
-        public Projection(double _x, double _y, MoveType _move_type, string _anime, Unit _target, double _speed,double _acceleration, double _radian = 0, int _zoom_rate = 100)
-            : this(_x, _y, _move_type, _anime, _speed,_acceleration,_radian,_zoom_rate)
+        public Projection(double _x, double _y, MoveType _move_type, string _anime, Unit _target, double _speed,double _acceleration, double _radian = 0, double _omega=0,int _zoom_rate = 100)
+            : this(_x, _y, _move_type, _anime, _speed,_acceleration,_radian,_omega,_zoom_rate)
         {
             target = _target;
             switch (move_type)
@@ -224,8 +166,8 @@ namespace CommonPart
                         {
                             speed += acceleration;
                             double eu = Math.Sqrt(Function.distance(x, y, target.x, target.y));
-                            speed_x = (target.x - x) * speed / eu;
-                            speed_y = (target.y - y) * speed / eu;
+                            double speed_x = (target.x - x) * speed / eu;
+                            double speed_y = (target.y - y) * speed / eu;
                             x += speed_x;
                             y += speed_y;
                         }
@@ -233,6 +175,7 @@ namespace CommonPart
                     case MoveType.chase_player_target:
                         if (!Function.hitcircle(x, y, 0, target.x, target.y, speed / 2))//target=null
                         {
+                            speed += acceleration;
                             radian = Function.towardValue(radian, Math.Atan2(target.y - y, target.x - x), omega);
                             x += speed * Math.Cos(radian);
                             y += speed * Math.Sin(radian);
@@ -244,24 +187,37 @@ namespace CommonPart
                         {
                             speed += acceleration;
                             double ep = Math.Sqrt(Function.distance(x, y, target_pos.X, target_pos.Y));
-                            speed_x = speed * (target_pos.X - x) / ep;
-                            speed_y = speed * (target_pos.Y - y) / ep;
+                            double speed_x = speed * (target_pos.X - x) / ep;
+                            double speed_y = speed * (target_pos.Y - y) / ep;
                             x += speed_x;
                             y += speed_y;
                         }
                         break;
                     case MoveType.go_straight: //角度変化がない前提である。
-                        speed += acceleration;
-                        speed_x += acceleration_x;
-                        speed_y += acceleration_y;
-                        x += speed_x;
-                        y += speed_y;
+                        speed += acceleration; 
+                        target_pos.X += acceleration_x;
+                        target_pos.Y += acceleration_y;
+                        x += target_pos.X;
+                        y += target_pos.Y;
                         break;
                     #endregion
                     case MoveType.rightcircle:
-                        Vector displacement2 = MotionCalculation.rightcircleDisplacement(speed,motionTime,nowMotionTime, radian);
-                        x += displacement2.X;
-                        y += displacement2.Y;
+                        speed += acceleration;
+                        Vector displacement2r = MotionCalculation.rightcircleDisplacement(speed,motionTime,nowMotionTime, radian);
+                        x += displacement2r.X;
+                        y += displacement2r.Y;
+                        break;
+                    case MoveType.leftcircle:
+                        speed += acceleration;
+                        Vector displacement2l = MotionCalculation.leftcircleDisplacement(speed, motionTime, nowMotionTime, radian);
+                        x += displacement2l.X;
+                        y += displacement2l.Y;
+                        break;
+                    case MoveType.mugen:
+                        speed += acceleration;
+                        Vector displacement3 = MotionCalculation.mugenDisplacement(speed, motionTime, nowMotionTime);
+                        x += displacement3.X;
+                        y += displacement3.Y;
                         break;
                     case MoveType.rotateAndGo:
                         speed += acceleration;
@@ -308,6 +264,69 @@ namespace CommonPart
             exist_times[exist_times_length-1] =_ets;
         }
 
+
+        protected void set_from_moveTypeAndPointType_2()
+        {
+            #region screen_point_target
+            if (move_type == MoveType.screen_point_target && motionTime > 0)
+            {
+                if (Motion.Is_a_Point(point_type))
+                {
+                    speed = Math.Sqrt((target_pos.X - x) * (target_pos.X - x) + (target_pos.Y - y) * (target_pos.Y - y)) / motionTime;
+                }
+                else if (Motion.Is_a_Direction(point_type))
+                {
+                    speed = Math.Sqrt(target_pos.X * target_pos.X + target_pos.Y * target_pos.Y) / motionTime;
+                }
+            }
+            #endregion
+            #region go_straight
+            else if (move_type == MoveType.go_straight)
+            {
+                #region is a point
+                if (Motion.Is_a_Point(point_type))
+                {
+                    if (motionTime > 0)
+                    {
+                        target_pos.X = (target_pos.X - x) / motionTime;
+                        target_pos.Y = (target_pos.Y - y) / motionTime;
+                    }
+                    else
+                    {
+                        double distance = Math.Sqrt(Function.distance(target_pos.X, target_pos.Y, x, y));
+                        target_pos.X = (target_pos.X - x) * speed / distance;
+                        target_pos.Y = (target_pos.Y - y) * speed / distance;
+                    }
+                }
+                #endregion
+                #region is a displacement
+                else if (Motion.Is_a_Displacement(point_type))
+                {
+                    if (motionTime > 0)
+                    {
+                        target_pos.X /= motionTime;
+                        target_pos.Y /= motionTime;
+                    }
+                    else
+                    {
+                        double distance = target_pos.GetLength();
+                        target_pos.X = target_pos.X * speed / distance;
+                        target_pos.Y = target_pos.Y * speed / distance;
+                    }
+                }
+                #endregion
+                // is a direction ではspeedはそのまま
+                double dis = target_pos.GetLength();
+                if (dis != 0)
+                {
+                    acceleration_x = acceleration * target_pos.X / dis;
+                    acceleration_y = acceleration * target_pos.Y / dis;
+                }
+            }
+            #endregion
+            //Console.Write("bullet:" + speed +" " +target_pos);
+        }
+
         /// <summary>
         /// radianが正しく記録されなければならない。
         /// </summary>
@@ -315,8 +334,7 @@ namespace CommonPart
         {
             if (speed != 0)
             {
-                speed_x = speed * Math.Cos(radian);
-                speed_y = speed * Math.Sin(radian);
+                
             }
             if (acceleration != 0)
             {

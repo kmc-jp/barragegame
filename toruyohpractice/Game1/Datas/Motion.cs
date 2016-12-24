@@ -42,16 +42,25 @@ namespace CommonPart
             }
         }
 
-        public static double getAngleFromPointType(PointType _pt,double _angle,double px,double sx=0,double sy=0)
+        public static double getAngleFromPointType(PointType _pt,double _angle,double px,double sx=0,double sy=0,double self_angle=0)
         {
+            if (_angle == DataBase.AngleToPlayer)
+            {
+                _angle = Math.Atan2(Map.player.y - sy, Map.player.x - sx);
+                //Console.Write(_angle);
+            }
+            else if (_angle == DataBase.SelfAngle)
+                _angle = self_angle;
             switch (_pt)
             {
                 case PointType.Direction:
-                    if (_angle == DataBase.AngleToPlayer)
-                        _angle = Math.Atan2(Map.player.y-sy,Map.player.x-sx);
                     return _angle;
                 case PointType.randomDirection:
                     return _angle + Function.GetRandomDouble(px * 2) - px;
+                case PointType.selfDirection:
+                    return _angle + self_angle;
+                case PointType.player_pos:
+                    return Math.Atan2(Map.player.y - sy, Map.player.x - sx);// +_angle;
                 default:
                     return _angle;
             }
@@ -85,6 +94,7 @@ namespace CommonPart
             {
                 case PointType.Direction:
                 case PointType.randomDirection:
+                case PointType.selfDirection:
                     return true;
                 default:
                     return false;
@@ -105,10 +115,11 @@ namespace CommonPart
 
 
         /// <summary>
-        /// 渡された(x,y)とPointTypeで適切なyを返す.player_posの時player.yを返す
+        /// 渡された(x,y)とPointTypeで適切なyを返す.player_posの時player.yを返す.この時点でrandomRangeが計算されるが、directionを使うものはすでに計算したangleを渡すべき。
         /// </summary>
         /// <param name="pos"></param>
         /// <param name="_pt"></param>
+        /// <param name="_angle">directionを使うものはすでに計算したangleを渡す</param>
         public static double from_PointType_getPosY(double px, double py, PointType _pt, int t = 1, double _speed = 1, double _angle = Math.PI / 2, MoveType _mt = MoveType.noMotion)
         {
             switch (_pt)
@@ -122,6 +133,7 @@ namespace CommonPart
                 case PointType.displacement:
                     return py;
                 case PointType.randomDirection:
+                case PointType.selfDirection:
                 case PointType.Direction:
                     return _speed * Math.Sin(_angle);
                 default:
@@ -129,10 +141,11 @@ namespace CommonPart
             }
         }
         /// <summary>
-        /// 渡された(x,y)とPointTypeで適切なxを返す.player_posはこの時点のplayer.xを返す。
+        /// 渡された(x,y)とPointTypeで適切なxを返す.player_posはこの時点のplayer.xを返す。この時点でrandomRangeが計算されるが、directionを使うものはすでに計算したangleを渡すべき。
         /// </summary>
         /// <param name="pos"></param>
         /// <param name="_pt"></param>
+        /// <param name="_angle">directionを使うものはすでに計算したangleを渡す</param>
         public static double from_PointType_getPosX(double px, double py, PointType _pt, int t = 1, double _speed=1, double _angle=Math.PI/2, MoveType _mt = MoveType.noMotion)
         {
             switch (_pt)
@@ -155,6 +168,7 @@ namespace CommonPart
                 case PointType.pos_on_screen:
                     return px + Map.leftside;
                 case PointType.randomDirection:
+                case PointType.selfDirection:
                 case PointType.Direction:
                     return _speed * Math.Cos(_angle);
                 default:
