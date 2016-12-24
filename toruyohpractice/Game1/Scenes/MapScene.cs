@@ -73,7 +73,7 @@ namespace CommonPart {
                 nx = 0; ny = 0;
                 window.AddRichText("toal score : " + Map.score, new Vector(nx, ny));
                 nx=430; ny = 180;
-                window.AddColoum(new Button(nx, ny, "Go to next stage", "", Command.buttonPressed3, false));
+                window.AddColoum(new Button(nx, ny, "Go to next stage", "", Command.buttonPressed4, false));
                 #endregion
             }
             else if(!MapFulStop)
@@ -94,7 +94,35 @@ namespace CommonPart {
                         break;
                     case Command.buttonPressed3:
                         close();
-                        new StageSelectScene(scenem);
+                        if (Game1.play_mode == -1)
+                        {
+                            new MapScene(scenem, stage);
+                        }
+                        else if(Game1.play_mode==1)
+                        {
+                            new StageSelectScene(scenem);
+                        }
+                        SoundManager.Music.PlayBGM(BGMID.None, true);
+                        break;
+                    case Command.buttonPressed4:
+                        close();
+                        if (Game1.play_mode == -1)
+                        {
+                            if (stage < 3)
+                            {
+                                new MapScene(scenem, stage + 1);
+                            }else if (stage == 3)//応急処置 stage4,5がないため
+                            {
+                                new MapScene(scenem, 6);
+                            }else
+                            {
+                                new TitleSceneWithWindows(scenem);
+                            }
+                        }
+                        else if(Game1.play_mode==1)
+                        {
+                            new StageSelectScene(scenem);
+                        }
                         SoundManager.Music.PlayBGM(BGMID.None, true);
                         break;
                 }
