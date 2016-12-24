@@ -24,7 +24,7 @@ namespace CommonPart
 
         public static double enemySkills_update_fps = 60;
         public static double enemyBullets_update_fps = 60;
-        public static double fps = 60;
+        public static double fps = 30;
         public const int WindowSizeX = 1280;
         public const int WindowSizeY = 960;
         internal static readonly Vector WindowSize = new Vector(WindowSizeX, WindowSizeY);

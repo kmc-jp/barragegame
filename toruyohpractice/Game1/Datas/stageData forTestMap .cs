@@ -27,10 +27,10 @@ namespace CommonPart
                     Map.boss_mode = false;
                     break;
                     
-                case 50:
+                case 5:
                     Map.EngagingTrueBoss();
                     break;
-                case 125:
+                case 60:
                     playBGM(bgmIDs[0]);//最初のBGMを流す。
                     Map.create_boss6(640, 0, "boss6");
                     break;

@@ -151,10 +151,16 @@ namespace CommonPart {
                 }
                 else
                 {
+#if DEBUG
                     Console.WriteLine("tda:Exist in Dictionary: " + name);
+#endif
                 }
             }
-            catch { Console.WriteLine("tda: load error" + name); return; }
+            catch {
+#if DEBUG
+                Console.WriteLine("tda: load error" + name);
+#endif
+                return; }
 
         }
         /// <summary>
@@ -196,10 +202,12 @@ namespace CommonPart {
             FileStream aniD_file = File.Open(aniDFileName, FileMode.OpenOrCreate,FileAccess.Read);
             aniD_file.Position = 0;
             BinaryReader aniD_br = new BinaryReader(aniD_file);
+#if DEBUG
             Console.WriteLine("in setup_Animation");
             Console.WriteLine(Directory.GetCurrentDirectory());
             Console.WriteLine("file exits?: "+File.Exists(aniDFileName));
             Console.WriteLine("Filelength:"+aniD_br.BaseStream.Length);
+#endif
             while (aniD_br.BaseStream.Position < aniD_br.BaseStream.Length)
             {
                 try
@@ -236,7 +244,9 @@ namespace CommonPart {
                 }
                 catch (EndOfStreamException e) { Console.WriteLine("setup animation: EndOfStream"); break; }
             }
+#if DEBUG
             Console.WriteLine(aniD_br.BaseStream.Position);
+#endif
             //Console.WriteLine("AnimationDataAdvanced setup finished.");
             aniD_br.Close(); aniD_file.Close();
 
@@ -516,7 +526,9 @@ namespace CommonPart {
         {
             Content = c;
             goToFolderDatas();
+#if DEBUG
             Console.WriteLine(Directory.GetCurrentDirectory());
+#endif
             #region textures
             FileStream texD_file = File.Open(texDFileName, FileMode.OpenOrCreate, FileAccess.Read);
             texD_file.Position = 0;
@@ -648,9 +660,14 @@ namespace CommonPart {
         #region Unload And Save
         public void Dispose()
         {
+#if DEBUG
             Console.WriteLine("DisposeDataBase");
+#endif
             goToFolderDatas();
+
+#if DEBUG
             Console.WriteLine(Directory.GetCurrentDirectory());
+#endif
             ut_file.Close();
             #region texture
             FileStream texD_file = File.Open(texDFileName, FileMode.Create, FileAccess.Write);
@@ -686,7 +703,9 @@ namespace CommonPart {
                 if (!Directory.Exists("Datas")) { Directory.CreateDirectory("Datas"); }
                 Directory.SetCurrentDirectory("Datas");
             }
+#if DEBUG
             Console.WriteLine(Directory.GetCurrentDirectory());
+#endif
             ut_file = File.Open(utFileName, FileMode.OpenOrCreate, FileAccess.ReadWrite);
             BinaryReader ut_br = new BinaryReader(ut_file);
             utDataBase = new UnitTypeDataBase(ut_br);
@@ -771,7 +790,9 @@ namespace CommonPart {
             //Console.WriteLine(ad.animationDataName);
             if (AnimationAdDataDictionary.ContainsKey(ad.animationDataName))
             {
+#if DEBUG
                 Console.WriteLine("addAniD: " + ad.animationDataName + " exists.");
+#endif
             }
             else
             {
@@ -872,25 +893,31 @@ namespace CommonPart {
             texture = tex;
             texName = name;
             int r = 0;//nameのstringとしての位置　変数。
+            bool need_w_h_single = true;
             while (r < name.Length)
             {
-                if (!char.IsNumber(name[r])) { r++; }
+                if (!char.IsNumber(name[r])) { r++;
+                    if (r >= 6) { need_w_h_single = false; }
+                }
                 else { break; }
             }//最初の数字のところまで行く。
-            while (r < name.Length)
+            if (need_w_h_single)
             {
-                if (char.IsNumber(name[r])) { w_single = w_single * 10 + (int)name[r] - (int)'0'; r++; }
-                else { r++; break; }
-            }//widthを読む
-            while (r < name.Length)
-            {
-                if (char.IsNumber(name[r])) { h_single = h_single * 10 + (int)name[r] - (int)'0'; r++; }
-                else { break; }
-            }//heightを読む
+                while (r < name.Length)
+                {
+                    if (char.IsNumber(name[r])) { w_single = w_single * 10 + (int)name[r] - (int)'0'; r++; }
+                    else { r++; break; }
+                }//widthを読む
+                while (r < name.Length)
+                {
+                    if (char.IsNumber(name[r])) { h_single = h_single * 10 + (int)name[r] - (int)'0'; r++; }
+                    else { break; }
+                }//heightを読む
+            }
             if (w_single <= 6) { w_single = texture.Width; }
             if (h_single <= 6) { h_single = texture.Height; }
-            x_max = texture.Width / w_single;
-            y_max = texture.Height / h_single;
+            x_max = (texture.Width+w_single-1) / w_single;
+            y_max = (texture.Height+h_single-1) / h_single;
             if (x_max == 0) { Console.WriteLine("Texture2Ddata: x_max=0 Error! : "+texName); }
             if (y_max == 0) { Console.WriteLine("Texture2Ddata: y_max=0 Error! : " + texName); }
         }

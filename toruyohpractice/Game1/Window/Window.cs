@@ -121,6 +121,7 @@ namespace CommonPart
         #region Method
         public bool PosInside(Vector pos)
         {
+            //Console.WriteLine("pos inside:" + pos.X + " " + pos.Y + " in " + x + "+" + w + " " + y + "+" + h);
             if(pos.X<x+w && pos.X > x && pos.Y<y+h && pos.Y>y) { return true; }
             return false;
         }

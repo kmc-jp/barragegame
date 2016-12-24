@@ -94,6 +94,7 @@ namespace CommonPart
             }
             #endregion
 
+            
         }//SceneUpdate() end
     }//class SceneWithWindows end
 

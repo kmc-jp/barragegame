@@ -630,11 +630,14 @@ namespace CommonPart {
         {
             if (player.isAlive())
             {
-                now_radiusOfCleaningBullets = _nowRadius;
-                frames_CleaningBullets = _frames;
-                maxRadiusOfCleaningBullets = _maxRadius;
-                speed_radiusOfCleaningBullets = (_maxRadius * 2 - now_radiusOfCleaningBullets)/frames_CleaningBullets;
-                damageEnemys = _cleanEnemys;
+                if (_maxRadius > maxRadiusOfCleaningBullets)
+                {
+                    now_radiusOfCleaningBullets = _nowRadius;
+                    frames_CleaningBullets = _frames;
+                    maxRadiusOfCleaningBullets = _maxRadius;
+                    speed_radiusOfCleaningBullets = (_maxRadius * 2 - now_radiusOfCleaningBullets) / frames_CleaningBullets;
+                    damageEnemys = _cleanEnemys;
+                }
             }
         }
         #endregion
