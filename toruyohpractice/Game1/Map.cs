@@ -57,7 +57,7 @@ namespace CommonPart {
         public static double pro_acceleration = 1;
         #endregion
         #region map scroll variable
-        Vector scroll_speed;
+        public static Vector scroll_speed;
         int scroll_start;
         int scroll_time;
         double changed_scroll_speed;
@@ -194,7 +194,7 @@ namespace CommonPart {
             #endregion
             stagedata.update();
             scroll_speed = new Vector(defaultspeed_x, defaultspeed_y);
-            Map.player = new Player(DataBase.WindowDefaultSizeX/2, 500, 6, 10, 3*lifesPerPiece,DataBase.charaName);
+            Map.player = new Player(DataBase.WindowDefaultSizeX/2, 500, 6, 10, 4*lifesPerPiece,DataBase.charaName);
 
             bossLifeGaugeSize.X=0;
             leftside = 280;
@@ -672,7 +672,7 @@ namespace CommonPart {
             {
                 textureNames.Add(_textureName);
             }
-            Console.WriteLine("ssd"+textureNames.Count);
+            //Console.WriteLine("ssd"+textureNames.Count);
         }
         
         private void chargeBarChange(string name,string addOn=null) {

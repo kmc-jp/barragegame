@@ -34,6 +34,7 @@ namespace CommonPart {
         player_pos, //プレイヤーの座標を指す。
         randomRange,//ベクトルがx方向の正負変位,yの正負変位を表しているが、値はその変位内の乱数
         randomDirection,//ベクトルは意味を持たない?初期角度にランダム角度足した方向へ移動する
+        selfDirection,//スキルを使うものの角度
         Direction,//決まった方向
     }
     public enum Command
@@ -399,8 +400,10 @@ namespace CommonPart {
             addSkillData(new WaySkilledBulletsData("boss1ransha-0", hppOverFifty, SkillGenreS.wayshot, "bulletglass", low_cd6, chaseEnemy, small_radius, "boss1preransha", 1, 60));
             addSkillData(new WaySkilledBulletsData("boss1ransha-1", hppBelowFifty, SkillGenreS.wayshot, "bulletmoon", low_cd6, chaseEnemy, small_radius, "boss1preransha", 1, 60));
             addSkillData(new WaySkilledBulletsData("boss1preransha", null, SkillGenreS.wayshot, null, high_cd1, goStraightWithDirection, 0, 0, SelfAngle, 0, 0, big_radius, new string[] { "1wayshotofsmall", "1wayshotoflarge", }, 1, high_cd1 * 3 + 1));
-            addSkillData(new WayShotSkillData("boss1downshot-0",hppOverFifty, SkillGenreS.wayshot, "bulletLL", low_cd1, goStraightWithDirection, middle_speed1, 0.0, lowangle1, 0, 0, small_radius));
-            addSkillData(new WayShotSkillData("boss1downshot-1", hppOverFifty, SkillGenreS.wayshot, "bulletLL", low_cd1, goStraightWithDirection, middle_speed1, 0.0, lowangle1+Math.PI, 0, 0, small_radius));
+
+            addSkillData(new WayShotSkillData("boss1downshot-0",hppOverFifty, SkillGenreS.wayshot, "bulletLL", low_cd1, MoveType.go_straight, PointType.selfDirection, nv, 0, middle_speed1, 0.0, lowangle1, 0,  small_radius));
+            addSkillData(new WayShotSkillData("boss1downshot-1", hppOverFifty, SkillGenreS.wayshot, "bulletLL", low_cd1, MoveType.go_straight, PointType.selfDirection, nv, 0, middle_speed1, 0.0, lowangle1+Math.PI, 0, small_radius));
+
             addSkillData(new WayShotSkillData("boss1laser-0", hppBelowFifty, SkillGenreS.laser, "bulletsmall", low_cd6, MoveType.chase_player_target, PointType.player_pos, new Vector(), 0, high_speed1, 0, lowangle1, 0.003, small_radius, Color.Chocolate, 1, 0, 140));
             #endregion
 
@@ -633,7 +636,6 @@ namespace CommonPart {
 
             
         }
-
 
         #region Unload And Save
         public void Dispose()

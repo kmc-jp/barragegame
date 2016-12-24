@@ -25,9 +25,8 @@ namespace CommonPart
             bodys_pos = new Vector[body_max_index + 1];
             maxLife = 24000;
             life = maxLife;
-            setup_LoopSet(0, 0);
-            bodys_pos[0] = new Vector(-90, -92);
-            bodys_pos[1] = new Vector(50, 28);
+            bodys_pos[0] = new Vector(-90, -100);
+            bodys_pos[1] = new Vector(45, 40);
             bodys[0] = new Enemy(x + bodys_pos[0].X, y + bodys_pos[0].Y, "boss6 up ball");
             bodys[1] = new Enemy(x + bodys_pos[1].X, y + bodys_pos[1].Y, "boss6 down ball");
             for (int j = 0; j <= body_max_index; j++)
@@ -35,9 +34,10 @@ namespace CommonPart
                 bodys[j].maxLife = maxLife;
                 bodys[j].life = life;
             }
+            setup_LoopSet(0, 1);
             for (int o = 1; o < 6; o++) // 0 - 5番目のLoopSetを作る
             {
-                setup_LoopSet(0, 0);
+                setup_LoopSet(2, 3);
             }
             nowTime = -2 * 60;//
             maxPhaseIndex = 4;
@@ -47,7 +47,6 @@ namespace CommonPart
         public override void update(Player player)
         {
             base.update(player);
-
             #region bodys move, update
             for (int i = 0; i <= body_max_index; i++)
             {
@@ -107,6 +106,7 @@ namespace CommonPart
         {
             base.changePhase(p);
             int n = 0;
+            setup_motion(motionLoopsStart[motionLoopIndex],0);
             #region switch phase
             switch (motionLoopIndex)
             {
@@ -115,7 +115,7 @@ namespace CommonPart
                     nowTime = 2 * 60;
                     break;
                 #endregion
-
+                
                 default:
                     nowTime = 10*60;
                     break;
