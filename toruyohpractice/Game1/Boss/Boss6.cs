@@ -26,8 +26,8 @@ namespace CommonPart
             maxLife = 24000;
             life = maxLife;
             setup_LoopSet(0, 0);
-            bodys_pos[0] = new Vector(-100, -100);
-            bodys_pos[1] = new Vector(100, 100);
+            bodys_pos[0] = new Vector(-90, -92);
+            bodys_pos[1] = new Vector(50, 28);
             bodys[0] = new Enemy(x + bodys_pos[0].X, y + bodys_pos[0].Y, "boss6 up ball");
             bodys[1] = new Enemy(x + bodys_pos[1].X, y + bodys_pos[1].Y, "boss6 down ball");
             for (int j = 0; j <= body_max_index; j++)
@@ -52,9 +52,10 @@ namespace CommonPart
             for (int i = 0; i <= body_max_index; i++)
             {
                 bodys[i].bulletsMove = bulletsMove;
+                bodys[i].skillsUpdate = skillsUpdate;
                 bodys[i].update(player);
-               
-                bodys[i].moveToScreenPos_now(x, y); bodys[i].update(player);
+                
+                bodys[i].moveToScreenPos_now(x+bodys_pos[i].X, y+bodys_pos[i].Y); 
             }
             #endregion
 
@@ -69,12 +70,20 @@ namespace CommonPart
                 case 0:
                     if (nowTime == 0)
                     {
+                        for(int j = 0; j < 2; j++)
+                        {
+                            for(int k=0;k< bodys[j].bullets.Count; k++)
+                            {
+                                bodys[j].bullets[k].dead();
+                            }
+                        }
                         changePhase();
                     }
                     break;
                 #endregion
                 default:
-                    changePhase(0);
+                    if(nowTime==0)
+                        changePhase(0);
                     break;
             }
         }
@@ -106,35 +115,17 @@ namespace CommonPart
                     nowTime = 2 * 60;
                     break;
                 #endregion
-                #region phase 1
-                case 1:
-                    nowTime = 120;
-                    break;
-                #endregion
+
                 default:
-                    nowTime = 6*60;
+                    nowTime = 10*60;
                     break;
             }
             #endregion
             for(int j = 0; j < 2; j++)
             {
-                bodys[j].motion_index = motion_index;
+                bodys[j].motionLoopIndex = motionLoopIndex;
             }
         }
-        public override void draw(Drawing d)
-        {
-            if (!texRotate)
-            {
-                animation.Draw(d, new Vector((x - animation.X / 2), (y - animation.Y / 2)), DepthID.Enemy);
-            }
-            for (int i = body_max_index; i >= 0; i--)
-            {
-                bodys[i].draw(d);
-            }
-            for (int i = 0; i < bullets.Count; i++)
-            {
-                bullets[i].draw(d);
-            }
-        }
+        
     }
 }

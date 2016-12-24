@@ -72,7 +72,7 @@ namespace CommonPart
             }
         }
 
-        protected override void dead()
+        public override void dead()
         {
             base.dead();
             shot(Map.player);
