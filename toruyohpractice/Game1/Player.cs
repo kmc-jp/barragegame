@@ -184,7 +184,7 @@ namespace CommonPart
                         if (keymanager.IsKeyDown(KeyID.Left)) { x = x - speed; }
                         if (avoid_mode == false)
                         {//回避中に速度が小さくならないように
-                            if (keymanager.IsKeyDown(KeyID.Slow) == true) { speed = 2; } else { speed = default_speed; }//テスト用数値
+                            if (keymanager.IsKeyDown(KeyID.Slow) == true) { speed = default_speed/2; } else { speed = default_speed; }//テスト用数値
                         }
                     }
                     #endregion
@@ -692,7 +692,7 @@ namespace CommonPart
             ad = new AnimationAdvanced(DataBase.getAniD(animationDataKey, addOn));
         }
         #region bool 各種状態を返す
-        public bool Invincible() { return true ||InForcedRoute || muteki_time > 0 || attack_mode || avoid_mode; }
+        public bool Invincible() { return InForcedRoute || muteki_time > 0 || attack_mode || avoid_mode; }
         public bool canUseSkilltoBoss()
         {
             return stop_time <= 0 && !attack_mode && sword >= sword_condition;

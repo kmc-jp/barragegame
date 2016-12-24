@@ -79,7 +79,7 @@ namespace CommonPart
         }
         public override void update(Player player,bool bulletMove,bool skillsUpdate)
         {
-            base.update(player,bulletMove);
+            base.update(player, animation.dataIsNull() || bulletMove); // アニメーションのないskill bulletはbulletsMoveに拘束されない
             if (skillsUpdate)
             {
                 for (int i = 0; i < skills.Count; i++)

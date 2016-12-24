@@ -12,11 +12,15 @@ namespace CommonPart
         public Enemy[] bodys;
         protected Vector[] bodys_pos;
         protected double height_percent;
+        /// <summary>
+        /// motionLoopIndexをphaseの代わりに使っている、大抵 0 を中継のphaseとして利用する.　そのphaseを経過したかを記録するリスト
+        /// </summary>
         protected List<bool> phasesAlready;
         /// <summary>
-        /// random時とり得るphaseの設定
+        /// random時とり得るphaseの設定. motionLoopIndexをphaseの代わりに使っている、大抵 0 を中継のphaseとして利用する.
         /// </summary>
         protected int maxPhaseIndex,minPhaseIndex;
+        protected int nowTime = 0;//0であれば、パターンの終了を意味する。
         public Boss(double _x,double _y,string _unitType_name):base(_x,_y,_unitType_name)
         {   }
 
@@ -48,7 +52,7 @@ namespace CommonPart
         {
             int p;
             bool hasleft=false;
-            for(int j = 0; j < phasesAlready.Count; j++)
+            for(int j = minPhaseIndex; j <=maxPhaseIndex ; j++)
             {
                 if(!phasesAlready[j])
                     hasleft = true;
@@ -62,7 +66,7 @@ namespace CommonPart
             while (true)
             {
                 p = minPhaseIndex + Function.GetRandomInt(maxPhaseIndex + 1 - minPhaseIndex);
-                if (p != motionLoopIndex && phasesAlready.Count<p && !phasesAlready[p])
+                if (p != motionLoopIndex &&( phasesAlready.Count<p || !phasesAlready[p]))
                 {
                     if (phasesAlready.Count > p)
                     {
@@ -207,7 +211,7 @@ namespace CommonPart
         protected double head_rotatePercentY = 1;
         private bool funnelsOut = true;
         private int funnelsNumber = 6;
-        private int nowTime=0;//0であれば、パターンの終了を意味する。
+
         private bool phaseSixUsed=false;
         public Boss2(double _x, double _y, string _unitType_name) : base(_x, _y, _unitType_name)
         {
