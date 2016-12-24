@@ -8,7 +8,7 @@ namespace CommonPart
 {
     class TitleSceneWithWindows:SceneWithWindows
     {
-        private string titleWindowBackGroundNames = "タイトル画面NF";
+        private string titleWindowBackGroundNames = "タイトル画面C91";
         string _difficulty, _play_mode;
         public TitleSceneWithWindows(SceneManager scene) : base(scene) {
             setup_windows();

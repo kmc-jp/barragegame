@@ -438,10 +438,10 @@ namespace CommonPart {
                 #region player attack skill - translate point into life
                 if (player.attack_mode)
                 {
-                    if (Map.scoreOfskilltoEnemy / 10000 >= 1)
+                    if (Map.scoreOfskilltoEnemy / 15000 >= 1)
                     {
-                        player.life += Map.scoreOfskilltoEnemy / 10000;
-                        Map.scoreOfskilltoEnemy %= 10000;
+                        player.life += Map.scoreOfskilltoEnemy / 15000;
+                        Map.scoreOfskilltoEnemy %= 15000;
                     }
                 }
                 #endregion
