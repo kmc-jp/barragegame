@@ -175,7 +175,7 @@ namespace CommonPart
         /// </summary>
         public bool keyResponseToWindow = true, mouseResponseToWindow = true;
 
-        protected List<Coloum> coloums = new List<Coloum>();
+        public List<Coloum> coloums = new List<Coloum>();
         public Window_WithColoum(int _x, int _y, int _w, int _h) : base(_x, _y, _w, _h)
         { }
 

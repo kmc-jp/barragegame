@@ -145,8 +145,15 @@ namespace CommonPart {
             for(int i = 0; i <= _max_index - _min_index; i++)
             {
                 Console.Write("frame "+i +" : ");
-                while (!(int.TryParse(Console.ReadLine(), out _frames[i])) )
-                { }
+                while (true)
+                {
+                    if( !(int.TryParse(Console.ReadLine(), out _frames[i]))  ){
+                        if (_frames[i] <= 0)
+                        {
+                            Console.Write(" is invaild.");
+                        }else { break; }
+                    }
+                }
             }
             #endregion
             string _repeat_str;

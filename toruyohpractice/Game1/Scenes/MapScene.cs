@@ -69,11 +69,22 @@ namespace CommonPart {
                 window = new Window_WithColoum(90, 220, 1100, 270);
                 window.assignBackgroundImage("1100x270メッセージウィンドゥ");
                 int nx = 430, ny = 80;
-                window.AddRichText("STAGE CLEAR", new Vector(nx, ny));
-                nx = 0; ny = 0;
-                window.AddRichText("toal score : " + Map.score, new Vector(nx, ny));
-                nx=430; ny = 180;
-                window.AddColoum(new Button(nx, ny, "Go to next stage", "", Command.buttonPressed3, false));
+                if ((stage == 6||stage==5)&&Game1.play_mode==-1)
+                {
+                    window.AddRichText("ALL CLEAR", new Vector(nx, ny));
+                    nx = 0; ny = 0;
+                    window.AddRichText("toal score : " + Map.score, new Vector(nx, ny));
+                    nx = 430; ny = 180;
+                    window.AddColoum(new Button(nx, ny, "THANK YOU FOR PLAYING!", "", Command.buttonPressed4, false));
+                }
+                else
+                {
+                    window.AddRichText(stage+"STAGE CLEAR", new Vector(nx, ny));
+                    nx = 0; ny = 0;
+                    window.AddRichText("toal score : " + Map.score, new Vector(nx, ny));
+                    nx = 430; ny = 180;
+                    window.AddColoum(new Button(nx, ny, "Go to next stage...Press Z key", "", Command.buttonPressed4, false));
+                }
                 #endregion
             }
             else if(!MapFulStop)
@@ -94,7 +105,35 @@ namespace CommonPart {
                         break;
                     case Command.buttonPressed3:
                         close();
-                        new StageSelectScene(scenem);
+                        if (Game1.play_mode == -1)
+                        {
+                            new MapScene(scenem, stage);
+                        }
+                        else if(Game1.play_mode==1)
+                        {
+                            new StageSelectScene(scenem);
+                        }
+                        SoundManager.Music.PlayBGM(BGMID.None, true);
+                        break;
+                    case Command.buttonPressed4:
+                        close();
+                        if (Game1.play_mode == -1)
+                        {
+                            if (stage < 3)
+                            {
+                                new MapScene(scenem, stage + 1);
+                            }else if (stage == 3)//応急処置 stage4,5がないため
+                            {
+                                new MapScene(scenem, 6);
+                            }else
+                            {
+                                new TitleSceneWithWindows(scenem);
+                            }
+                        }
+                        else if(Game1.play_mode==1)
+                        {
+                            new StageSelectScene(scenem);
+                        }
                         SoundManager.Music.PlayBGM(BGMID.None, true);
                         break;
                 }
