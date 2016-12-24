@@ -387,12 +387,12 @@ namespace CommonPart {
             #endregion
 
             #region boss1
-            addSkillData(new WayShotSkillData("boss11wayshot-0", hppBelowFifty, SkillGenreS.wayshot, MoveType.go_straight, "bulletlight", high_cd4, high_speed1, 0, 0, big_radius,1));
-            addSkillData(new WayShotSkillData("boss11wayshot-1", hppBelowFifty, SkillGenreS.wayshot, MoveType.go_straight, "bulletlight", high_cd4, high_speed1, 0, 0, big_radius,1));
+            addSkillData(new WayShotSkillData("boss11wayshot-0", hppBelowFifty, SkillGenreS.wayshot, MoveType.go_straight, "bulletlight", middle_cd2, high_speed1, 0, 0, big_radius,1));
+            addSkillData(new WayShotSkillData("boss11wayshot-1", hppBelowFifty, SkillGenreS.wayshot, MoveType.go_straight, "bulletlight", middle_cd2, high_speed1, 0, 0, big_radius,1));
             addSkillData(new WayShotSkillData("boss11wayshot-2", hppBelowFifty, SkillGenreS.wayshot, MoveType.go_straight, "bulletsmall", high_cd4, high_speed1, 0, 0, small_radius,1));
             addSkillData(new WayShotSkillData("boss11wayshot-3", hppBelowFifty, SkillGenreS.wayshot, MoveType.go_straight, "bulletLL", low_cd1, high_speed2, 0, 0, big_radius,1));
-            addSkillData(new WaySkilledBulletsData("boss1ransha-0", hppOverFifty, SkillGenreS.wayshot, "bulletglass", low_cd6, chaseEnemy, small_radius, "boss1preransha", 1, 100));
-            addSkillData(new WaySkilledBulletsData("boss1ransha-1", hppBelowFifty, SkillGenreS.wayshot, "bulletmoon", low_cd3, chaseEnemy, small_radius, "boss1preransha", 1, 100));
+            addSkillData(new WaySkilledBulletsData("boss1ransha-0", hppOverFifty, SkillGenreS.wayshot, "bulletglass", low_cd6, chaseEnemy, small_radius, "boss1preransha", 1, 60));
+            addSkillData(new WaySkilledBulletsData("boss1ransha-1", hppBelowFifty, SkillGenreS.wayshot, "bulletmoon", low_cd6, chaseEnemy, small_radius, "boss1preransha", 1, 60));
             addSkillData(new WaySkilledBulletsData("boss1preransha", null, SkillGenreS.wayshot, null, high_cd1, goStraightWithDirection, 0, 0, SelfAngle, 0, 0, big_radius, new string[] { "1wayshotofsmall", "1wayshotoflarge", }, 1, high_cd1 * 3 + 1));
             addSkillData(new WayShotSkillData("boss1downshot-0",hppOverFifty, SkillGenreS.wayshot, "bulletLL", low_cd1, goStraightWithDirection, middle_speed1, 0.0, lowangle1, 0, 0, small_radius));
             addSkillData(new WayShotSkillData("boss1downshot-1", hppOverFifty, SkillGenreS.wayshot, "bulletLL", low_cd1, goStraightWithDirection, middle_speed1, 0.0, lowangle1+Math.PI, 0, 0, small_radius));
@@ -404,7 +404,7 @@ namespace CommonPart {
             addSkillData(new WayShotSkillData("b2-1wayshot-0.75", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletmiddle", middle_cd1, high_speed1, 0, 0, small_radius, 1));
             addSkillData(new WayShotSkillData("b2-2wayshot-0.75", null, SkillGenreS.wayshot, MoveType.go_straight, "bulletlightblue-green", middle_cd1, high_speed1, 0, 0, small_radius, 1));
             addSkillData(new WaySkilledBulletsData("b2-x2shot-1",null,SkillGenreS.wayshot,null,60, goStraightWithDownDirection,small_radius,"b2-sub-1wayshot-1",2, 15 ,Math.PI));
-            addSkillData(new WayShotSkillData("b2-laserDown1-1",null,SkillGenreL.generation,SkillGenreS.laser,"bulletsmall",600,goStraightWithDownDirection,small_radius,Color.Goldenrod,1,0,600));
+            addSkillData(new WayShotSkillData("b2-laserDown1-1",null,SkillGenreL.generation,SkillGenreS.laser,"bulletsmall",600,goStraightWithDownDirection,small_radius*2,Color.Goldenrod,1,0,600));
             addSkillData(new WayShotSkillData("b2-1wayDown-0.5",null,SkillGenreS.wayshot,"bullethalf",high_cd4,goStraightWithDownDirection,small_radius));
             addSkillData(new WayShotSkillData("b2-blaserDown1", null, SkillGenreL.generation, SkillGenreS.laser, "bulletlightred-yellow", 700, goStraightWithDownDirection,big_radius*2, Color.Goldenrod, 1, 0, 480));
             addSkillData(new WayShotSkillData("b2-laser-1", null,  SkillGenreS.laser, "bulletsmall", 600, MoveType.go_straight,PointType.pos_on_screen,new Vector(640,550),0,middle_speed1,0,0,0,big_radius, Color.Goldenrod, 1, 0, 600));
