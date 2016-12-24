@@ -29,8 +29,15 @@ namespace CommonPart
         public const int WindowSizeY = 960;
         internal static readonly Vector WindowSize = new Vector(WindowSizeX, WindowSizeY);
 
-        public static int difficulty = -1;//-1がnomal、1がhard
-        public static int play_mode = -1;//-1がarcade、1がpractice
+        /// <summary>
+        /// -1がnomal、1がhard
+        /// </summary>
+        public static int difficulty = -1;
+        /// <summary>
+        /// -1がarcade、1がpractice
+        /// </summary>
+        public static int play_mode = -1;
+        public static int playerLife =5*Map.lifesPerPiece; //最初がnormalだったら 5* にする
 
         //倍率込みのサイズ　ふつうは扱わなくてよい　staticなのは苦しまぎれ
         public static int _WindowSizeX;

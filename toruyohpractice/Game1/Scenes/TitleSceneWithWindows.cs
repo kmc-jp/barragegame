@@ -39,12 +39,12 @@ namespace CommonPart
             windows[0].assignBackgroundImage(titleWindowBackGroundNames);
             //windows[0].AddColoum(new Coloum(nx, ny, "version: " + DataBase.ThisSystemVersionNumber.ToString(), Command.nothing));
             nx = 5; ny += dy;
-            windows[0].AddColoum(new Button(nx, ny, "open MapEditor", "", Command.openMapEditor, false));
+            //windows[0].AddColoum(new Button(nx, ny, "open MapEditor", "", Command.openMapEditor, false));
             ny += 2 * dy; nx += dx;
             nx = 100;
             ny += 0 * dy;
-	        windows[0].AddColoum(new AnimationButton(nx, ny, "TestMap", DataBase.getAniD("NewGame-selected"), Command.buttonPressed3, 80, 0));
-            ny += 2 * dy;
+	        //windows[0].AddColoum(new AnimationButton(nx, ny, "TestMap", DataBase.getAniD("NewGame-selected"), Command.buttonPressed3, 80, 0));
+            ny += 1 * dy;
             windows[0].AddColoum(new AnimationButton(nx, ny, /*"ＨＡＲＤ"*/"", DataBase.getAniD("NewGame-selected"), Command.buttonPressed1,0,0));
             ny += 2*dy;
             windows[0].AddColoum(new Button(nx, ny, "難易度変更", _difficulty, Command.buttonPressed2, false,80));
@@ -82,11 +82,13 @@ namespace CommonPart
                     {
                         Game1.enemyBullets_update_fps = 60;
                         Game1.enemySkills_update_fps = 60;
+                        Game1.playerLife = 4 * Map.lifesPerPiece;
                     }
                     else if (Game1.difficulty == -1)
                     {
                         Game1.enemyBullets_update_fps = 45;
                         Game1.enemySkills_update_fps = 40;
+                        Game1.playerLife = 5 * Map.lifesPerPiece;
                     }
 
                     #endregion

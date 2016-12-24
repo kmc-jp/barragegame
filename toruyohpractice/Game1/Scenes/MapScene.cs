@@ -78,7 +78,8 @@ namespace CommonPart {
                 SoundManager.Music.PlayBGM(BGMID.None, true);
             } else if (!MapFulStop && Map.mapState.Contains(Map.backToStageSelection) && Map.stop_time == DataBase.motion_inftyTime && Map.readyToStop_time <= 0)
             {
-                #region win 
+                #region win
+                Game1.playerLife = Map.player.life;
                 MapFulStop = true;
                 window = null;
                 window = new Window_WithColoum(90, 220, 1100, 270);
@@ -149,6 +150,11 @@ namespace CommonPart {
                         }
                         else if(Game1.play_mode==1)
                         {
+                            if (Game1.difficulty==1)
+                            {
+                                Game1.playerLife = 4 * Map.lifesPerPiece;
+                            }
+                            else { Game1.playerLife = 5 * Map.lifesPerPiece; }
                             new StageSelectScene(scenem);
                         }
                         SoundManager.Music.PlayBGM(BGMID.None, true);
