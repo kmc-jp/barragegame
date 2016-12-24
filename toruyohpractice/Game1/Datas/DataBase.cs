@@ -98,6 +98,7 @@ namespace CommonPart {
         #region about player character / boss character / map stage / enemy motion 
         public const string Boss2phase6Texture = "stage2boss用グレー画像";
 
+
         public const int basicFramePerSecond = 60; 
         public static string charaName = "chara1";
         public static string charaCutInTexName = "カットインfin";
