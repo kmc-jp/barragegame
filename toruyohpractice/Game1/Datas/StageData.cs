@@ -248,14 +248,18 @@ namespace CommonPart
                 case 300:
                     Map.create_enemy(100, 720, "3E7a");
                     Map.enemys.Last().add_skill("1shotfrom2point");
+                    Map.enemys.Last().sync_skill_coolDown(0, 60, 60);
                     Map.create_enemy(620, 720, "3E7b");
                     Map.enemys.Last().add_skill("1shotfrom2point");
+                    Map.enemys.Last().sync_skill_coolDown(0, 60, 60);
                     break;
                 case 360:
                     Map.create_enemy(100, 720, "3E7a");
                     Map.enemys.Last().add_skill("1shotfrom2point");
+                    Map.enemys.Last().sync_skill_coolDown(0, 60, 120);
                     Map.create_enemy(620, 720, "3E7b");
                     Map.enemys.Last().add_skill("1shotfrom2point");
+                    Map.enemys.Last().sync_skill_coolDown(0, 60, 120);
                     break;
                 case 780:
                     Map.create_enemy(190, 0, "3E1a");
@@ -292,22 +296,27 @@ namespace CommonPart
                 case 2650:
                     Map.create_enemy(0, 620, "3E7c");
                     Map.enemys.Last().add_skill("1wayshot-1");
+                    Map.enemys.Last().sync_skill_coolDown(0, 30, 30);
                     break;
                 case 2680:
                     Map.create_enemy(0, 620, "3E7c");
                     Map.enemys.Last().add_skill("1wayshot-1");
+                    Map.enemys.Last().sync_skill_coolDown(0, 30, 60);
                     break;
                 case 2710:
                     Map.create_enemy(0, 620, "3E7c");
                     Map.enemys.Last().add_skill("1wayshot-1");
+                    Map.enemys.Last().sync_skill_coolDown(0, 30, 90);
                     break;
                 case 2740:
                     Map.create_enemy(0, 620, "3E7c");
                     Map.enemys.Last().add_skill("1wayshot-1");
+                    Map.enemys.Last().sync_skill_coolDown(0, 30, 120);
                     break;
                 case 2770:
                     Map.create_enemy(0, 620, "3E7c");
                     Map.enemys.Last().add_skill("1wayshot-1");
+                    Map.enemys.Last().sync_skill_coolDown(0, 30, 150);
                     break;
                 case 3000:
                     Map.create_enemy(400, 0, "3E3-1a");
@@ -378,7 +387,7 @@ namespace CommonPart
                     break;
                 case 7220:
                     playBGM(bgmIDs[1]);//BGMを流す。
-                    Map.create_boss1(360, 10, "boss3");
+                    Map.create_boss1(360, 10, "boss1");
                     break;
             }
             #endregion
