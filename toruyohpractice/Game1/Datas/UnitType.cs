@@ -209,6 +209,15 @@ namespace CommonPart
             UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
 
             #endregion
+
+            #region Boss3
+            UnitTypeList.Add(new ActiveAniSkiedUnitType("boss3", "boss3", "boss"));
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(5, 0, 0, 0, normalOmega, 1000, 0);
+            lastUT.add_MoveTypeDataSet(MoveType.go_straight, 60, new Vector(DataBase.WindowDefaultSizeX / 2, 180), PointType.pos_on_screen);
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.noMotion, 0, new Vector());
+            UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
+            #endregion
+
             #region test
 
             UnitTypeList.Add(new ActiveAniSkiedUnitType("testE1", "E1", "enemy"));
