@@ -17,16 +17,16 @@ namespace CommonPart {
         /// </summary>
         protected override void setup_windows() {
             int nx = 0;int ny = 0;
-            int dx = 40;int dy = 30; 
+            int dx = 40;int dy = 44; 
             //windows[0] starts
             windows.Add(new Window_WithColoum(0, 0, DataBase.WindowDefaultSizeX, DataBase.WindowDefaultSizeY));
             windows[0].AddColoum(new Coloum(nx, ny, "version: "+DataBase.ThisSystemVersionNumber.ToString(), Command.nothing));
             nx = 5; ny += dy;
             windows[0].AddColoum(new Button(nx, ny, "close MusicGallery","", Command.closeThis, false));
-            ny += 2*dy; nx += dx;
+            ny += 3*dy/2; nx += dx;
             windows[0].AddRichText("BGMの名前をクリックすると再生されます。ループする曲はループし続けます", new Vector(nx, ny));
             //windows[0].AddColoum(new Coloum(nx, ny, "BGMの名前をクリックすると再生されます。\nループする曲はループし続けます", Command.nothing));
-            ny += 2*dy;
+            ny += dy;
             windows[0].AddColoum(new Button(nx, ny, "stop", "", Command.buttonPressed1, false));
             ny += dy;
             int i = 0;
