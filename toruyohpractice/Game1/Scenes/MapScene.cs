@@ -69,11 +69,22 @@ namespace CommonPart {
                 window = new Window_WithColoum(90, 220, 1100, 270);
                 window.assignBackgroundImage("1100x270メッセージウィンドゥ");
                 int nx = 430, ny = 80;
-                window.AddRichText("STAGE CLEAR", new Vector(nx, ny));
-                nx = 0; ny = 0;
-                window.AddRichText("toal score : " + Map.score, new Vector(nx, ny));
-                nx=430; ny = 180;
-                window.AddColoum(new Button(nx, ny, "Go to next stage", "", Command.buttonPressed4, false));
+                if ((stage == 6||stage==5)&&Game1.play_mode==-1)
+                {
+                    window.AddRichText("ALL CLEAR", new Vector(nx, ny));
+                    nx = 0; ny = 0;
+                    window.AddRichText("toal score : " + Map.score, new Vector(nx, ny));
+                    nx = 430; ny = 180;
+                    window.AddColoum(new Button(nx, ny, "THANK YOU FOR PLAYING!", "", Command.buttonPressed4, false));
+                }
+                else
+                {
+                    window.AddRichText(stage+"STAGE CLEAR", new Vector(nx, ny));
+                    nx = 0; ny = 0;
+                    window.AddRichText("toal score : " + Map.score, new Vector(nx, ny));
+                    nx = 430; ny = 180;
+                    window.AddColoum(new Button(nx, ny, "Go to next stage...Press Z key", "", Command.buttonPressed4, false));
+                }
                 #endregion
             }
             else if(!MapFulStop)
