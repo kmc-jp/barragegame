@@ -211,10 +211,18 @@ namespace CommonPart
             #endregion
 
             #region Boss3
+            string shot = "boss3onfire-shot", breath = "boss3onfire-breath", hibreath = "boss3onfire-longbreath",
+    rshot0 = "boss3onfire-r", rshot1 = "boss3onfire-r^-1", yanagi = "boss3onfire-yanagi", hakkyou = "boss3onfire-hakkyo";
             UnitTypeList.Add(new ActiveAniSkiedUnitType("boss3", "boss3", "boss"));
             ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).setup_standard(5, 0, 0, 0, normalOmega, 1000, 0);
-            lastUT.add_MoveTypeDataSet(MoveType.go_straight, 60, new Vector(DataBase.WindowDefaultSizeX / 2, 180), PointType.pos_on_screen);
-            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_MoveTypeDataSet(MoveType.noMotion, 0, new Vector());
+            lastUT.add_MoveTypeDataSet(MoveType.noMotion, 0, new Vector());
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames(shot);
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames(breath);
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames(hibreath);
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames(rshot0);
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames(rshot1);
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames(yanagi);
+            ((ActiveAniSkiedUnitType)UnitTypeList[UnitTypeList.Count - 1]).add_skillnames(hakkyou);
             UnitTypeDictionary.Add(UnitTypeList[UnitTypeList.Count - 1].typename, UnitTypeList[UnitTypeList.Count - 1]);
             #endregion
 
