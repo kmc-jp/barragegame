@@ -42,11 +42,11 @@ namespace CommonPart
             windows[0].AddColoum(new Button(nx, ny, "open MapEditor", "", Command.openMapEditor, false));
             ny += 2 * dy; nx += dx;
             nx = 100;
-            ny += 2 * dy;
+            ny += 0 * dy;
 	    windows[0].AddColoum(new AnimationButton(nx, ny, "TestMap", DataBase.getAniD("NewGame-selected"), Command.buttonPressed3, 80, 0));
             ny += 2 * dy;
             windows[0].AddColoum(new AnimationButton(nx, ny, /*"ＨＡＲＤ"*/"", DataBase.getAniD("NewGame-selected"), Command.buttonPressed1,0,0));
-            ny += dy;
+            ny += 2*dy;
             windows[0].AddColoum(new Button(nx, ny, "難易度変更", _difficulty, Command.buttonPressed2, false,80));
             ny += dy;
             windows[0].AddColoum(new Button(nx, ny, "プレイモード変更", _play_mode, Command.buttonPressed4, false,100));
@@ -55,7 +55,7 @@ namespace CommonPart
              */
             //ny += dy;
             //windows[0].AddColoum(new AnimationButton(nx, ny, "", DataBase.getAniD("LoadGame-selected"), Command.buttonPressed2,0,0));
-            ny += dy;
+            ny += 3*dy/2;
             windows[0].AddColoum(new AnimationButton(nx, ny, "", DataBase.getAniD("Gallery-selected"), Command.openMusicGallery, 0, 0));
             ny += 2*dy;
             windows[0].AddColoum(new AnimationButton(nx, ny, "", DataBase.getAniD("Exit-selected"), Command.exit,0,0));
