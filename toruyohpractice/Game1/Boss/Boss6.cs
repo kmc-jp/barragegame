@@ -40,7 +40,7 @@ namespace CommonPart
                 setup_LoopSet(2, 3);
             }
             nowTime = -2 * 60;//
-            maxPhaseIndex = 4;
+            maxPhaseIndex = 3;
             minPhaseIndex = 1;
         }
 
@@ -105,19 +105,20 @@ namespace CommonPart
         public override void changePhase(int p = -1)
         {
             base.changePhase(p);
-            int n = 0;
-            setup_motion(motionLoopsStart[motionLoopIndex],0);
+            //setup_motion(motionLoopsStart[motionLoopIndex],0);
             #region switch phase
             switch (motionLoopIndex)
             {
                 #region phase 0
                 case 0:
                     nowTime = 2 * 60;
+                    moveToScreenPos_now(640, 240);
                     break;
                 #endregion
                 
                 default:
                     nowTime = 10*60;
+                    moveToScreenPos_now(640+Function.GetRandomInt(801)-400, 240+Function.GetRandomInt(241)-120);
                     break;
             }
             #endregion

@@ -46,7 +46,22 @@ namespace CommonPart {
         }
         public override void SceneUpdate() {
             base.SceneUpdate();
-            if (Input.IsKeyDown(KeyID.Escape)) { Delete = true; new StageSelectScene(scenem); }
+            if (Input.IsKeyDownOnce(KeyID.Escape)) {
+                if (MapFulStop)
+                {
+                    MapFulStop = false; window = null;
+                    SoundManager.Music.ResumeBGM();
+                }
+                else
+                {
+                    MapFulStop = true; window = new Window_WithColoum(480,300,380,150);
+                    window.AddRichText("Pause", new Vector(20, 20));
+                    window.AddRichText("ESCボタン/パッドのボタン5 で再開する",new Vector(0,10));
+                    window.AddColoum(new Button(20, 90, "タイトルに戻る", "", Command.buttonPressed2, false));
+                    SoundManager.Music.PauseBGM();
+                }
+            }
+            #region !MapFulStop   gameover, game win, update map
             if (!MapFulStop && Map.mapState.Contains(Map.gameOver) && Map.stop_time == DataBase.motion_inftyTime && Map.readyToStop_time <= 0)
             {// gameOverに入ったので、準備をして、mapはもう更新しなくする
                 #region gameOver starts as Map Scene. Create Window
@@ -90,7 +105,9 @@ namespace CommonPart {
             else if(!MapFulStop)
             {//gameOverに入っていないのでmapは更新する
                 nMap.update(Input);
-            }else if(window!=null)
+            }
+            #endregion
+            else if (window!=null)
             {// この時はwindowだけを操作する
                 #region window update as GameIsOver
                 window.update((KeyManager)Input, mouse);
@@ -122,9 +139,9 @@ namespace CommonPart {
                             if (stage < 3)
                             {
                                 new MapScene(scenem, stage + 1);
-                            }else if (stage == 3)//応急処置 stage4,5がないため
+                            }else if (stage >= 3)//応急処置 stage4,5がないため
                             {
-                                new MapScene(scenem, 6);
+                                nMap=new Map(6);
                             }else
                             {
                                 new TitleSceneWithWindows(scenem);

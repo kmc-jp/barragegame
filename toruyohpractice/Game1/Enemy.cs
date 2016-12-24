@@ -181,6 +181,7 @@ namespace CommonPart
                     {
                         bullets[i].x = x;
                         bullets[i].y = y;
+                        bullets[i].radian += bullets[i].omega;
                     }
                     #endregion
                 }

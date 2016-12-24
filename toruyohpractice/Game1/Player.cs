@@ -692,7 +692,9 @@ namespace CommonPart
             ad = new AnimationAdvanced(DataBase.getAniD(animationDataKey, addOn));
         }
         #region bool 各種状態を返す
-        public bool Invincible() { return true||InForcedRoute || muteki_time > 0 || attack_mode || avoid_mode; }
+
+        public bool Invincible() { return /*true ||*/ InForcedRoute || muteki_time > 0 || attack_mode || avoid_mode; }
+
         public bool canUseSkilltoBoss()
         {
             return stop_time <= 0 && !attack_mode && sword >= sword_condition;
