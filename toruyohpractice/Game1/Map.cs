@@ -422,9 +422,9 @@ namespace CommonPart {
                             }
                         }
                         if(damageEnemys)
-                            if (Map.enemys_inside_window[jj].hit_jugde(player.x, player.y, now_radiusOfCleaningBullets))
+                            if (Map.enemys[jj].hit_jugde(player.x, player.y, now_radiusOfCleaningBullets))
                             {
-                                Map.enemys_inside_window[jj].damage(player.atk / frames_CleaningBullets);
+                                Map.enemys[jj].damage(player.atk / frames_CleaningBullets);
                             }
                     }
                     #endregion
