@@ -83,7 +83,7 @@ namespace CommonPart
         /// <summary>
         /// 敵のどれくらいしたまで移動するか
         /// </summary>
-        public double enemy_below = 50;
+        public double enemy_below = 40;
         /// <summary>
         /// 刀エネルギーが最大になっている時
         /// </summary>
@@ -347,7 +347,7 @@ namespace CommonPart
                         #region reached Enemy and attack
                         if (skill_attackStandby < 0)
                         {
-                            if (Function.hitcircle(x, y, skill_speed / 2, enemyAsTarget.x, enemyAsTarget.y + enemy_below, enemyAsTarget.radius))
+                            if (Function.hitcircle(x, y, skill_speed / 2 +5, enemyAsTarget.x, enemyAsTarget.y + enemy_below, enemyAsTarget.radius))
                             {
                                 enemyAsTarget.stop_time = skill_max_attckStandby;
                                 skill_attackStandby = skill_max_attckStandby;

@@ -152,9 +152,9 @@ namespace CommonPart {
                         {
                             if (Game1.difficulty==1)
                             {
-                                Game1.playerLife = 4 * Map.lifesPerPiece;
+                                Game1.playerLife = 3 * Map.lifesPerPiece;
                             }
-                            else { Game1.playerLife = 5 * Map.lifesPerPiece; }
+                            else { Game1.playerLife = 4 * Map.lifesPerPiece; }
                             new StageSelectScene(scenem);
                         }
                         SoundManager.Music.PlayBGM(BGMID.None, true);

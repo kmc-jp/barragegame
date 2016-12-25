@@ -86,13 +86,13 @@ namespace CommonPart
                     {
                         Game1.enemyBullets_update_fps = 60;
                         Game1.enemySkills_update_fps = 60;
-                        Game1.playerLife = 4 * Map.lifesPerPiece;
+                        Game1.playerLife = 3 * Map.lifesPerPiece;
                     }
                     else if (Game1.difficulty == -1)
                     {
                         Game1.enemyBullets_update_fps = 45;
                         Game1.enemySkills_update_fps = 40;
-                        Game1.playerLife = 5 * Map.lifesPerPiece;
+                        Game1.playerLife = 4 * Map.lifesPerPiece;
                     }
 
                     #endregion
