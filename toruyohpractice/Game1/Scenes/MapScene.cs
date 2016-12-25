@@ -95,7 +95,7 @@ namespace CommonPart {
                 }
                 else
                 {
-                    window.AddRichText(stage+"STAGE CLEAR", new Vector(nx, ny));
+                    window.AddRichText("STAGE CLEAR", new Vector(nx, ny));
                     nx = 0; ny = 0;
                     window.AddRichText("toal score : " + Map.score, new Vector(nx, ny));
                     nx = 430; ny = 180;
@@ -152,9 +152,9 @@ namespace CommonPart {
                         {
                             if (Game1.difficulty==1)
                             {
-                                Game1.playerLife = 4 * Map.lifesPerPiece;
+                                Game1.playerLife = 3 * Map.lifesPerPiece;
                             }
-                            else { Game1.playerLife = 5 * Map.lifesPerPiece; }
+                            else { Game1.playerLife = 4 * Map.lifesPerPiece; }
                             new StageSelectScene(scenem);
                         }
                         SoundManager.Music.PlayBGM(BGMID.None, true);
