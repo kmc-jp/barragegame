@@ -95,7 +95,7 @@ namespace CommonPart {
                 }
                 else
                 {
-                    window.AddRichText(stage+"STAGE CLEAR", new Vector(nx, ny));
+                    window.AddRichText("STAGE CLEAR", new Vector(nx, ny));
                     nx = 0; ny = 0;
                     window.AddRichText("toal score : " + Map.score, new Vector(nx, ny));
                     nx = 430; ny = 180;
