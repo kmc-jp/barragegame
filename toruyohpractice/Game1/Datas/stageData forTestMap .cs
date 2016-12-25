@@ -12,7 +12,7 @@ namespace CommonPart
         {
             bgmIDs = new BGMID[] { BGMID.Stage1onWay, BGMID.Stage1Boss }; //一応こうした、いつでも{}の中身を変更できる。
                                                                           //ただし、MusicPlayer2.cs 30行から登録済でないと流れません。
-            background_names = new string[] { "background3" };
+            background_names = new string[] { "background1" };
 
             setupAllbackgroundWithNames();//背景を用意する。
         }
@@ -26,26 +26,15 @@ namespace CommonPart
                     playBGM(bgmIDs[0]);//最初のBGMを流す。
                     Map.boss_mode = false;
                     break;
-                case 5:
-                    Map.create_enemy(320, 0, "testE1");
-                    Map.enemys.Last().add_skill("boss6-hakkyo2");
-                    //Map.enemys.Last().add_skill("boss6-createzyuzi");
-
-                    break;
-                //case 60:
-                    //Map.create_enemy(400, 50, "testE1");
-                    //Map.enemys.Last().add_skill("1wayshot-2");
-                    //Map.enemys.Last().add_skill("createzyuzi-0");
-                    //break;
                     
-                /*case 4700:
-                    Map.boss_mode = true;
+                case 5:
                     Map.EngagingTrueBoss();
                     break;
-                case 4720:
-                    playBGM(bgmIDs[1]);//BGMを流す。
-                    Map.create_boss1(360, 10, "boss1");
-                    break;*/
+                case 60:
+                    playBGM(bgmIDs[0]);//最初のBGMを流す。
+                    Map.create_boss6(640, 0, "boss6");
+                    break;
+                    
             }
             #endregion
         }

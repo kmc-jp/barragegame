@@ -9,7 +9,6 @@ namespace CommonPart
     class Projection:Unit
     {
         public double speed;
-        public double speed_x, speed_y;
         public double acceleration;
         public double acceleration_x, acceleration_y;
         /// <summary>
@@ -167,8 +166,8 @@ namespace CommonPart
                         {
                             speed += acceleration;
                             double eu = Math.Sqrt(Function.distance(x, y, target.x, target.y));
-                            speed_x = (target.x - x) * speed / eu;
-                            speed_y = (target.y - y) * speed / eu;
+                            double speed_x = (target.x - x) * speed / eu;
+                            double speed_y = (target.y - y) * speed / eu;
                             x += speed_x;
                             y += speed_y;
                         }
@@ -188,8 +187,8 @@ namespace CommonPart
                         {
                             speed += acceleration;
                             double ep = Math.Sqrt(Function.distance(x, y, target_pos.X, target_pos.Y));
-                            speed_x = speed * (target_pos.X - x) / ep;
-                            speed_y = speed * (target_pos.Y - y) / ep;
+                            double speed_x = speed * (target_pos.X - x) / ep;
+                            double speed_y = speed * (target_pos.Y - y) / ep;
                             x += speed_x;
                             y += speed_y;
                         }
@@ -335,8 +334,7 @@ namespace CommonPart
         {
             if (speed != 0)
             {
-                speed_x = speed * Math.Cos(radian);
-                speed_y = speed * Math.Sin(radian);
+                
             }
             if (acceleration != 0)
             {

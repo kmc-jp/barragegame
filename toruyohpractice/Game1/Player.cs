@@ -66,7 +66,7 @@ namespace CommonPart
         /// 攻撃スキルを使って敵を切った後そこにとどまる時間
         /// </summary>
         public int skill_stop_time = 14;
-        public int skill_max_attckStandby = 15, skill_attackStandby=0;
+        public int skill_max_attckStandby = 18, skill_attackStandby=0;
         public int skill_speed = 15;
         /// <summary>
         /// 1回目のskill消費
@@ -94,6 +94,7 @@ namespace CommonPart
         const int prosToBoss_dash_maximum=40;
         const int prosToBoss_slash_maximum = 18;
         protected int nowProsIndex = -1;
+        protected int prosToBoss_dashNum;
         protected double radianForPros=0;
         /// <summary>
         /// skillToBossに使われる切り付けのエフェクト。
@@ -163,6 +164,7 @@ namespace CommonPart
             radius = _radius;
             life = _life;
             animationDataKey = a_n;
+            
             ad = new AnimationAdvanced(DataBase.getAniD(animationDataKey, DataBase.defaultAnimationNameAddOn));
         }
 
@@ -183,7 +185,7 @@ namespace CommonPart
                         if (keymanager.IsKeyDown(KeyID.Left)) { x = x - speed; }
                         if (avoid_mode == false)
                         {//回避中に速度が小さくならないように
-                            if (keymanager.IsKeyDown(KeyID.Slow) == true) { speed = 2; } else { speed = default_speed; }//テスト用数値
+                            if (keymanager.IsKeyDown(KeyID.Slow) == true) { speed = default_speed/2; } else { speed = default_speed; }//テスト用数値
                         }
                     }
                     #endregion
@@ -307,10 +309,13 @@ namespace CommonPart
         public void cast_skilltoEnemy()
         {
             search_OldestEnemy();
-            attack_mode = true;
-            add_attack_mode = false;
-            skill_attackStandby = -1;
-            playAnimation(DataBase.defaultAnimationNameAddOn);
+            if (enemyAsTarget != null)
+            {
+                attack_mode = true;
+                add_attack_mode = false;
+                skill_attackStandby = -1;
+                playAnimation(DataBase.defaultAnimationNameAddOn);
+            }
         }
         public void skilltoEnemy(InputManager input)
         {
@@ -331,7 +336,7 @@ namespace CommonPart
                     if (enemyAsTarget != null && enemyAsTarget.selectable())
                     {
                         #region approaching the EnemyTarget
-                        if (!Function.hitcircle(x, y, skill_speed / 2, enemyAsTarget.x, enemyAsTarget.y + enemy_below, enemyAsTarget.radius))
+                        if (!Function.hitcircle(x, y, skill_speed / 2+2, enemyAsTarget.x, enemyAsTarget.y + enemy_below, enemyAsTarget.radius))
                         {
                             double e = Math.Sqrt(Function.distance(x, y, enemyAsTarget.x, enemyAsTarget.y + enemy_below));
                             double v = skill_speed / e;
@@ -428,6 +433,7 @@ namespace CommonPart
                 attack_time = 120;
                 nowProsIndex = -1;
                 skill_attackStandby = -1;
+                prosToBoss_dashNum = -1;
                 Map.CutInTexture(DataBase.charaCutInTexName, -400, 100, 100, 100, 60, 10);
                 Map.stopUpdating(50, 0);
             }
@@ -448,22 +454,26 @@ namespace CommonPart
                     else
                     {
                         #region projections 更新
-                        if (nowProsIndex < prosToBoss_dash_maximum)
+                        if (nowProsIndex+1 < prosToBoss_dash_maximum && prosToBoss_dashNum==-1)
                         {
                             for (int j = 0; j <= nowProsIndex; j++)
                             {
                                 prosToBoss[j].update();
                             }
                             nowProsIndex++;
-                            prosToBoss[nowProsIndex] = new Projection(x, y, MoveType.noMotion, "swordSkilltoBossDash");
+                            prosToBoss[nowProsIndex] = new Projection(x-enemy_below*1.5, y-enemy_below, MoveType.noMotion, "swordSkilltoBossDash");
                             prosToBoss[nowProsIndex].texRotate = true;
                             prosToBoss[nowProsIndex].radian = radianForPros;
                         }
+                        //int _nowProsIndexOrNum = prosToBoss_dashNum == -1 ? nowProsIndex : prosToBoss_dashNum - 1;
                         for (int i = 0; i < nowProsIndex; i++)
                         {
+                            if (prosToBoss_dashNum != -1) break; //これはダッシュの時に使う、以降使わない
                             int nex = i + 1;
+                            double s;
                             //Console.WriteLine(i+":"+Math.Sqrt(Function.distance(prosToBoss[nex].x, prosToBoss[nex].y, prosToBoss[i].x, prosToBoss[i].y)));
-                            double s = Math.Sqrt(Function.distance(prosToBoss[i + 1].x, prosToBoss[nex].y, prosToBoss[i].x, prosToBoss[i].y)) - (prosToBoss[nex].animation.Y + prosToBoss[i].animation.Y )/2+2 ;
+                            
+                            s = Math.Sqrt(Function.distance(prosToBoss[i + 1].x, prosToBoss[nex].y, prosToBoss[i].x, prosToBoss[i].y)) - (prosToBoss[nex].animation.Y + prosToBoss[i].animation.Y) / 2 + 1.5;
                             if (s > 0.01)
                             {
                                 double e = Math.Sqrt(Function.distance(prosToBoss[i].x, prosToBoss[i].y, prosToBoss[nex].x, prosToBoss[nex].y));
@@ -475,16 +485,20 @@ namespace CommonPart
                             }
                         }
                         int idF = nowProsIndex;
-                        double s1 = Math.Sqrt(Function.distance(x, y, prosToBoss[idF].x, prosToBoss[idF].y)) - (prosToBoss[idF].animation.Y + prosToBoss[idF].animation.Y)/2+1  ;
-                        if (s1 > 0.01)
+                        if (prosToBoss_dashNum==-1)
                         {
-                            double e = Math.Sqrt(Function.distance(prosToBoss[idF].x, prosToBoss[idF].y, x, y));
-                            double speed_x = (x-enemy_below - prosToBoss[idF].x) * s1 / e;
-                            double speed_y = (y-enemy_below - prosToBoss[idF].y) * s1 / e;
-                            prosToBoss[idF].x += speed_x;
-                            prosToBoss[idF].y += speed_y;
-                            //prosToBoss[idF].radian = Math.Atan2(speed_y, speed_x);
+                            double s1 = Math.Sqrt(Function.distance(x, y, prosToBoss[idF].x, prosToBoss[idF].y)) - (prosToBoss[idF].animation.Y + prosToBoss[idF].animation.Y) / 2 + 1;
+                            if (s1 > 0.01)
+                            {
+                                double e = Math.Sqrt(Function.distance(prosToBoss[idF].x, prosToBoss[idF].y, x, y));
+                                double speed_x = (x - enemy_below - prosToBoss[idF].x) * s1 / e;
+                                double speed_y = (y - enemy_below - prosToBoss[idF].y) * s1 / e;
+                                prosToBoss[idF].x += speed_x;
+                                prosToBoss[idF].y += speed_y;
+                                //prosToBoss[idF].radian = Math.Atan2(speed_y, speed_x);
+                            }
                         }
+                        
                         #endregion
                         //----------above  prosToBoss[];        ----------------------------##  ##   ##
                         //----                             --------------------------------------###
@@ -500,24 +514,48 @@ namespace CommonPart
                         #endregion
                         if (skill_attackStandby < 0)
                         {
-                            if (Function.hitcircle(x, y, skill_speed / 2, enemyAsTarget.x, enemyAsTarget.y + enemy_below, enemyAsTarget.radius))
+                            if (Function.hitcircle(x, y, skill_speed /2 +2, enemyAsTarget.x, enemyAsTarget.y + enemy_below, enemyAsTarget.radius))
                             {
                                 enemyAsTarget.stop_time = skill_max_attckStandby;
-                                skill_attackStandby = 18;
+                                skill_attackStandby = skill_max_attckStandby;
+                                prosToBoss_dashNum = nowProsIndex + 1;
+                                double _dx = -140 * Math.Cos(radianForPros + Math.PI / 2);
+                                double _dy = -140 * Math.Sin(radianForPros + Math.PI / 2);
+                                //Console.Write(nowProsIndex+" "+prosToBoss_dashNum);
+                                for(int j = 0; j < prosToBoss_slash_maximum; j++)
+                                {
+                                    nowProsIndex++;
+                                    prosToBoss[nowProsIndex] = new Projection(x+_dx, y+_dy, MoveType.noMotion, "swordSkilltoBossSlash");
+                                    #region sync animation
+                                    for(int k = 0; k < j; k++) {
+                                        prosToBoss[nowProsIndex].animation.Update();
+                                    }
+                                    #endregion
+                                    prosToBoss[nowProsIndex].texRotate = true;
+                                    prosToBoss[nowProsIndex].radian = radianForPros+Math.PI;
+                                    prosToBoss[nowProsIndex].target_pos.X = 22 * Math.Cos(prosToBoss[nowProsIndex].radian - Math.PI / 2);
+                                    prosToBoss[nowProsIndex].target_pos.Y = 22 * Math.Sin(prosToBoss[nowProsIndex].radian - Math.PI / 2);
+                                }
                                 playAnimation(DataBase.aniNameAddOn_spell);
                             }
                         }
                         else if (skill_attackStandby > 0) {
                             skill_attackStandby--;
+                            for (int j = 0; j <= skill_attackStandby-skill_max_attckStandby+18; j++)
+                            {
+                                int ni = prosToBoss_dashNum + prosToBoss_slash_maximum - j - 1;
+                                prosToBoss[ni].x += prosToBoss[ni].target_pos.X;
+                                prosToBoss[ni].y += prosToBoss[ni].target_pos.Y;
+                            }
                         }
                         else
                         {
                             enemyAsTarget.damage(swordSkillDamage);
                             if (sword == sword_max)
                             {
-                                //SoundManager.PlaySE(SoundEffectID.player100gauge);
+                                SoundManager.PlaySE(SoundEffectID.player100gauge);
                                 enemyAsTarget.damage(bonusDamage);
-                            }else { //SoundManager.PlaySE(SoundEffectID.player50gauge); 
+                            }else { SoundManager.PlaySE(SoundEffectID.player50gauge); 
                             }
                             sword = 0;
                             enemyAsTarget = null;
@@ -554,7 +592,7 @@ namespace CommonPart
                 avoid_mode = true;
                 avoid_InPlusAcceleration = true;
                 speed = 0;
-                //SoundManager.PlaySE(avoid_SEid);
+                SoundManager.PlaySE(avoid_SEid);
 
                 #region old evasion
                 /*
@@ -688,7 +726,9 @@ namespace CommonPart
             ad = new AnimationAdvanced(DataBase.getAniD(animationDataKey, addOn));
         }
         #region bool 各種状態を返す
-        public bool Invincible() { return InForcedRoute || muteki_time > 0 || attack_mode || avoid_mode; }
+
+        public bool Invincible() { return /*true ||*/ InForcedRoute || muteki_time > 0 || attack_mode || avoid_mode; }
+
         public bool canUseSkilltoBoss()
         {
             return stop_time <= 0 && !attack_mode && sword >= sword_condition;

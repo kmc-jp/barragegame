@@ -12,16 +12,16 @@ namespace CommonPart {
 
         public int stage;        protected StageData stagedata;
 
-        public Vector score_pos = new Vector(1100, 180);
+        public Vector score_pos = new Vector(1100, 220);
 
         public static Window window=null;
 
         #region player and Life Piece and chargeBar
-        public string life_tex_name = "17x31バッテリーアイコン";
+        public string life_tex_name = "24x44バッテリーアイコン";
         /// <summary>
         /// プレイヤーの1残機をlifePerPiece等分する。基本ダメージは1残機削るが、得たスコアーによって残機が(このint)分の1で回復する。
         /// </summary>
-        public int lifesPerPiece = 3;
+        public static int lifesPerPiece = 3;
 
         protected AnimationAdvanced chargeBar;
         protected string chargeBar_animation_name;
@@ -34,7 +34,15 @@ namespace CommonPart {
         /// 残機表示の左上の座標
         /// </summary>
         public Vector life_pos = new Vector(1070, 120);
+        /// <summary>
+        /// 扇の描画位置
+        /// </summary>
+        public Vector ougi_pos = new Vector(950,80);
         #endregion
+        /// <summary>
+        /// 連撃のスキルによって得た点数をライフピースに変換するに使う
+        /// </summary>
+        public int scorePerLifePiece { get { if (Game1.difficulty == 1) { return 15000; } else { return 10000; } } }
         #region player- clean bullets
         public static bool damageEnemys;
         public static int maxRadiusOfCleaningBullets;
@@ -53,14 +61,14 @@ namespace CommonPart {
         public static double pro_acceleration = 1;
         #endregion
         #region map scroll variable
-        Vector scroll_speed;
+        public static Vector scroll_speed;
         int scroll_start;
         int scroll_time;
         double changed_scroll_speed;
         /// <summary>
         /// デフォルトのmapのスクロールの速度
         /// </summary>
-        const double defaultspeed_x = 0,defaultspeed_y = 1;
+        public static double defaultspeed_x = 0,defaultspeed_y = 1;
         #endregion
         #region map BackGround/textures variables
         static int total_BackGroundHeight = 0;
@@ -142,7 +150,7 @@ namespace CommonPart {
         public static int topside = 0;
         static protected int leftsideTo = 280; // bothSideMoveの時、左辺がどこに行くのかを決める
         static protected int rightsideTo = 1000; // bothSideMoveの時、右辺がどこに行くのかを決める
-        static protected int sideMoveSpeed = 4; // 両サイドが動くときの速度
+        static protected int sideMoveSpeed = 10; // 両サイドが動くときの速度
         #endregion
 
 
@@ -166,11 +174,11 @@ namespace CommonPart {
                 case 2:
                     stagedata = new Stage2Data("stage2");
                     break;
-                case 4:
-                    stagedata = new Stage4Data("stage4");
-                    break;
                 case 3:
                     stagedata = new Stage3Data("stage3");
+                    break;
+                case 4:
+                    stagedata = new Stage6Data("stage6");
                     break;
                 case 5:
                     stagedata = new Stage6Data("stage6");
@@ -188,8 +196,9 @@ namespace CommonPart {
                     break;
             }
             #endregion
+            stagedata.update();
             scroll_speed = new Vector(defaultspeed_x, defaultspeed_y);
-            Map.player = new Player(DataBase.WindowDefaultSizeX/2, 500, 6, 13, 11*lifesPerPiece,DataBase.charaName);
+            Map.player = new Player(DataBase.WindowDefaultSizeX/2, 500, 6, 10, Game1.playerLife,DataBase.charaName);
 
             bossLifeGaugeSize.X=0;
             leftside = 280;
@@ -220,6 +229,7 @@ namespace CommonPart {
             #region about background 
             v.Clear(); background_names.Clear(); total_BackGroundHeight = 0;
             #endregion
+            defaultspeed_x = 0; defaultspeed_y = 1;
             textureNames.Clear();
             Map.pros.Clear();
         }
@@ -234,6 +244,11 @@ namespace CommonPart {
             return leftside < v.X + w || DataBase.WindowDefaultSizeX - leftside > v.X || topside < v.Y || topside + DataBase.WindowSlimSizeY > v.Y + h;
         }
 
+        public static void set_default_scroll_speed(double _speedx=0,double _speedy=1)
+        {
+            defaultspeed_x = _speedx;
+            defaultspeed_y = _speedy;
+        }
         public void set_change_scroll(int _scroll_time, double _changed_scroll_speed,int _scroll_start=-1)
         {
             scroll_start = _scroll_start;
@@ -422,9 +437,9 @@ namespace CommonPart {
                             }
                         }
                         if(damageEnemys)
-                            if (Map.enemys_inside_window[jj].hit_jugde(player.x, player.y, now_radiusOfCleaningBullets))
+                            if (Map.enemys[jj].hit_jugde(player.x, player.y, now_radiusOfCleaningBullets))
                             {
-                                Map.enemys_inside_window[jj].damage(player.atk / frames_CleaningBullets);
+                                Map.enemys[jj].damage(player.atk / frames_CleaningBullets);
                             }
                     }
                     #endregion
@@ -433,10 +448,10 @@ namespace CommonPart {
                 #region player attack skill - translate point into life
                 if (player.attack_mode)
                 {
-                    if (Map.scoreOfskilltoEnemy / 10000 >= 1)
+                    if (Map.scoreOfskilltoEnemy / scorePerLifePiece >= 1)
                     {
-                        player.life += Map.scoreOfskilltoEnemy / 10000;
-                        Map.scoreOfskilltoEnemy %= 10000;
+                        player.life += Map.scoreOfskilltoEnemy / scorePerLifePiece;
+                        Map.scoreOfskilltoEnemy %= scorePerLifePiece;
                     }
                 }
                 #endregion
@@ -536,6 +551,11 @@ namespace CommonPart {
         {
             enemys.Add(new Enemy(leftside + _x, _y, _unitType_name));
         }
+        public static void prepare_to_create_boss()
+        {
+            enemys.Clear();
+            enemys_inside_window.Clear();
+        }
         public static void create_boss1(double _x, double _y, string _unitType_name, string _bossLifeBarName = DataBase.bossLifeBar_default_aniName)
         {
             enemys.Clear();
@@ -566,8 +586,41 @@ namespace CommonPart {
             bossLifeBarTextureName = _bossLifeBarName;
             bossLifeBarAnime = new AnimationAdvanced(DataBase.getAniD(bossLifeBarTextureName + DataBase.defaultAnimationNameAddOn));
         }
+
+        public static void create_boss3(double _x, double _y, string _unitType_name, string _bossLifeBarName = DataBase.bossLifeBar_default_aniName)
+        {
+            enemys.Clear();
+            enemys_inside_window.Clear();
+            if (enemys.Count <= enemysIndexOfBoss)
+            {
+                enemys.Add(new Boss3(leftside + _x, _y, _unitType_name));
+            }
+            else
+            {
+                enemys.Insert(enemysIndexOfBoss, new Boss3(leftside + _x, _y, _unitType_name));
+            }
+            bossLifeBarTextureName = _bossLifeBarName;
+            bossLifeBarAnime = new AnimationAdvanced(DataBase.getAniD(bossLifeBarTextureName + DataBase.defaultAnimationNameAddOn));
+        }
+
+        public static void create_boss6(double _x, double _y, string _unitType_name, string _bossLifeBarName = DataBase.bossLifeBar_default_aniName)
+        {
+            prepare_to_create_boss();
+            if (enemys.Count <= enemysIndexOfBoss)
+            {
+                enemys.Add(new Boss6(leftside + _x, _y, _unitType_name));
+            }
+            else
+            {
+                enemys.Insert(enemysIndexOfBoss, new Boss6(leftside + _x, _y, _unitType_name));
+            }
+            bossLifeBarTextureName = _bossLifeBarName;
+            bossLifeBarAnime = new AnimationAdvanced(DataBase.getAniD(bossLifeBarTextureName + DataBase.defaultAnimationNameAddOn));
+        }
+
         public static void bossDamaged()
         {
+            bossLifeBarAnime = null;
             bossLifeBarAnime = new AnimationAdvanced(DataBase.getAniD(bossLifeBarTextureName+DataBase.aniNameAddOn_spell));
             
         }
@@ -577,11 +630,14 @@ namespace CommonPart {
         {
             if (player.isAlive())
             {
-                now_radiusOfCleaningBullets = _nowRadius;
-                frames_CleaningBullets = _frames;
-                maxRadiusOfCleaningBullets = _maxRadius;
-                speed_radiusOfCleaningBullets = (_maxRadius * 2 - now_radiusOfCleaningBullets)/frames_CleaningBullets;
-                damageEnemys = _cleanEnemys;
+                if (_maxRadius > maxRadiusOfCleaningBullets)
+                {
+                    now_radiusOfCleaningBullets = _nowRadius;
+                    frames_CleaningBullets = _frames;
+                    maxRadiusOfCleaningBullets = _maxRadius;
+                    speed_radiusOfCleaningBullets = (_maxRadius * 2 - now_radiusOfCleaningBullets) / frames_CleaningBullets;
+                    damageEnemys = _cleanEnemys;
+                }
             }
         }
         #endregion
@@ -629,7 +685,7 @@ namespace CommonPart {
             {
                 textureNames.Add(_textureName);
             }
-            Console.WriteLine("ssd"+textureNames.Count);
+            //Console.WriteLine("ssd"+textureNames.Count);
         }
         
         private void chargeBarChange(string name,string addOn=null) {
@@ -714,7 +770,12 @@ namespace CommonPart {
                 }
             }
             #endregion
-
+            #region ougi draw
+            if (boss_mode == true)
+            {
+                d.Draw(ougi_pos, DataBase.getTex("ougi"), DepthID.StateFront);
+            }
+            #endregion
             #region draw sword gauge
             if (player.sword < player.sword_max / 2)
             {

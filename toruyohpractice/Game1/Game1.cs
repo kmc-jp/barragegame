@@ -24,10 +24,20 @@ namespace CommonPart
 
         public static double enemySkills_update_fps = 60;
         public static double enemyBullets_update_fps = 60;
-        public static double fps = 60;
+        public static double fps = 30;
         public const int WindowSizeX = 1280;
         public const int WindowSizeY = 960;
         internal static readonly Vector WindowSize = new Vector(WindowSizeX, WindowSizeY);
+
+        /// <summary>
+        /// -1がnomal、1がhard
+        /// </summary>
+        public static int difficulty = -1;
+        /// <summary>
+        /// -1がarcade、1がpractice
+        /// </summary>
+        public static int play_mode = -1;
+        public static int playerLife =5*Map.lifesPerPiece; //最初がnormalだったら 5* にする
 
         //倍率込みのサイズ　ふつうは扱わなくてよい　staticなのは苦しまぎれ
         public static int _WindowSizeX;

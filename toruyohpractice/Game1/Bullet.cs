@@ -66,9 +66,10 @@ namespace CommonPart
             lasered = false;
         }
 
-        public virtual void update(Player player,bool bulletMove=true)
+        public virtual void update(Player player,bool bulletMove=true,bool skillsUpdate=false)
         {
             base.update(bulletMove);
+
             if (x < Map.leftside- animation.X / 2 || x > Map.rightside + animation.X / 2
                 || y > DataBase.WindowSlimSizeY + animation.Y / 2 || y < 0 - animation.Y / 2)
             {
@@ -100,10 +101,11 @@ namespace CommonPart
             return Function.hitcircle(x, y, radius, px, py, p_radius);
         }
         public virtual void damage(int d) {
-            life -= d;
+            if(!animation.dataIsNull())
+                life -= d;
             if (life <= 0) { life = 0; remove(Unit_state.dead); }
         }
-        protected virtual void dead()
+        public virtual void dead()
         {
             delete = true;
             //Map.make_chargePro(x, y, sword, Map.caculateBulletScore(sword));

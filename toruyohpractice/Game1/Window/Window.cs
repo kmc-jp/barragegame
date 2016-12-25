@@ -121,6 +121,7 @@ namespace CommonPart
         #region Method
         public bool PosInside(Vector pos)
         {
+            //Console.WriteLine("pos inside:" + pos.X + " " + pos.Y + " in " + x + "+" + w + " " + y + "+" + h);
             if(pos.X<x+w && pos.X > x && pos.Y<y+h && pos.Y>y) { return true; }
             return false;
         }
@@ -175,7 +176,7 @@ namespace CommonPart
         /// </summary>
         public bool keyResponseToWindow = true, mouseResponseToWindow = true;
 
-        protected List<Coloum> coloums = new List<Coloum>();
+        public List<Coloum> coloums = new List<Coloum>();
         public Window_WithColoum(int _x, int _y, int _w, int _h) : base(_x, _y, _w, _h)
         { }
 

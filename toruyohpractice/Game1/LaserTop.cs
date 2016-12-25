@@ -13,7 +13,10 @@ namespace CommonPart
         public double length = 0;
         protected Color color;
         protected Unit enemy;
-
+        /// <summary>
+        /// laser's sum of dx, sum of dy;
+        /// </summary>
+        protected double sdx=0,sdy=0;
         /// <summary>
         /// 目標がない場合に使う
         /// </summary>
@@ -44,7 +47,7 @@ namespace CommonPart
             omega = _omega;
             enemy = _enemy;
             color = _color;
-
+            
         }
 
         /// <summary>
@@ -65,7 +68,7 @@ namespace CommonPart
         }
 
 
-        public override void update(Player player,bool bulletMove)
+        public override void update(Player player,bool bulletMove,bool skillsUpdate=false)
         {
             update(bulletMove);
             #region Laser Motion: length is not changed here!
@@ -74,43 +77,31 @@ namespace CommonPart
                 case MoveType.chase_player_target:
                     speed += acceleration;
                     radian = Function.towardValue(radian, Math.Atan2(target.y-enemy.y,target.x-enemy.x), omega);
-                    /*int fix;
-                    if (Math.Abs(x - enemy.x) < 0.01)
-                    {
-                        fix = y > enemy.y ? 1 : -1;
-                        if (target.x > x)
-                        {
-                            radian -= omega*fix;
-                        }
-                        else
-                        {
-                            radian += omega*fix;
-                        }
-                    }
-                    else
-                    {
-                        double k = (y - enemy.y) / (x - enemy.x);
-                        fix = x > enemy.x ? 1 : -1;
-
-                        if ((k * (target.x - enemy.x) + enemy.y > target.y))
-                        {
-                            radian -= omega*fix;
-                        }
-                        else
-                        {
-                            radian += omega*fix;
-                        }
-                    }*/
-
-                    x = enemy.x+length * Math.Cos(radian);
-                    y = enemy.y+length * Math.Sin(radian);
+                    sdx+= speed * Math.Cos(radian);
+                    sdy+= speed *Math.Sin(radian);
+                    x = enemy.x + sdx;
+                    y = enemy.y + sdy;
+                    break;
+                case MoveType.player_target:
+                    speed += acceleration;
+                    double eu = Math.Sqrt(Function.distance(x, y, target.x, target.y));
+                    double speed_x = (target.x - x) * speed / eu;
+                    double speed_y = (target.y - y) * speed / eu;
+                    sdx += speed_x;
+                    sdy += speed_y;
+                    x = enemy.x + sdx;
+                    y = enemy.y + sdy;
                     break;
                 case MoveType.go_straight: //これはBulletのgo_straightを上書きする
+                    target_pos.X += acceleration_x;
+                    target_pos.Y += acceleration_y;
                     speed += acceleration;
-                    radian += omega;
-                    x = enemy.x+ length * Math.Cos(radian);
-                    y = enemy.y+ length * Math.Sin(radian);
+                    sdx += target_pos.X;
+                    sdy += target_pos.Y;
+                    x = enemy.x + sdx;
+                    y = enemy.y + sdy;
                     break;
+                
             }
             #endregion
             if (bulletMove)
@@ -133,13 +124,16 @@ namespace CommonPart
                     player.damage(atk);
                     //レーザーはキャラクターにダメージを与えても消えない。
                 }else { //レーザーが回避中のプレイヤーに当たる
-                    length = 0;
+                    damage(player.atk);
                 }
             }
         }
         public override void damage(int d)
         {
             length = 0;
+            x = enemy.x; y = enemy.y;
+            sdx = 0;sdy = 0;
+            Map.make_chargePro(x, y, sword, Map.caculateBulletScore(sword));
             //laserはダメージを受けない
         }
         public override bool hit_jugde(double px, double py, double p_radius = 0)
@@ -228,12 +222,12 @@ namespace CommonPart
             dx = (radius) * Math.Cos(radian - Math.PI / 2)/2;
             dy = (radius) * Math.Sin(radian - Math.PI / 2) / 2;
             d.DrawLine(new Vector(enemy.x + dx, enemy.y + dy), new Vector(x + dx, y+dy), (float)radius, new Color(color,(int)(color.A*0.3)), DepthID.Player);
-            dx = (radius*2/3) * Math.Cos(radian - Math.PI / 2) / 2;
-            dy = (radius*2 /3) * Math.Sin(radian - Math.PI / 2) / 2;
+            dx = (radius*3/4) * Math.Cos(radian - Math.PI / 2) / 2;
+            dy = (radius*3 /4) * Math.Sin(radian - Math.PI / 2) / 2;
 
             d.DrawLine(new Vector(enemy.x+dx, enemy.y+dy), new Vector(x+dx, y+dy), (float)radius*2/3, new Color(color, (int)(color.A * 0.6)), DepthID.Player);
-            dx = (radius / 4) * Math.Cos(radian - Math.PI / 2) / 2;
-            dy = (radius / 4) * Math.Sin(radian - Math.PI / 2) / 2;
+            dx = (radius / 2) * Math.Cos(radian - Math.PI / 2) / 2;
+            dy = (radius / 2) * Math.Sin(radian - Math.PI / 2) / 2;
             d.DrawLine(new Vector(enemy.x+dx, enemy.y+dy), new Vector(x+dx, y+dy), (float)radius/4, color, DepthID.Player);
         }
     }
@@ -287,6 +281,18 @@ namespace CommonPart
             foreach (string _skillName in _skillNames)
             {
                 skills.Add(new Skill(_skillName));
+            }
+        }
+
+        public override void update(Player player, bool bulletMove, bool skillsUpdate = false)
+        {
+            base.update(player, bulletMove, false);
+            if (skillsUpdate)
+            {
+                for (int i = 0; i < skills.Count; i++)
+                {
+                    skills[i].update();
+                }
             }
         }
     }

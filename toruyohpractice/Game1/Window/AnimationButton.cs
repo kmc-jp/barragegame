@@ -29,7 +29,7 @@ namespace CommonPart
         }
         public override void is_selected()
         {
-            Console.WriteLine(content);
+            //Console.WriteLine(content);
             play();
             base.is_selected();
         }

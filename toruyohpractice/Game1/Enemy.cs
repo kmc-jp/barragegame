@@ -12,7 +12,7 @@ namespace CommonPart
 {
     class Enemy:Unit
     {
-        const int MaximumOfBullets = 500;
+        const int MaximumOfBullets = 400;
         #region const labels
         public const string unitLabel_FadeOut = "fadeout";
         #endregion
@@ -57,7 +57,7 @@ namespace CommonPart
         /// これがfalseでは、motionのループはそもそも考えない
         /// </summary>
         protected bool motionLooped = false;
-        protected int motionLoopIndex;
+        public int motionLoopIndex;
         /// <summary>
         /// これらはmotionLoopSetUp()が呼ばれた時に作られる.ループの始点と終点を意味する.
         /// </summary>
@@ -71,6 +71,7 @@ namespace CommonPart
             playAnimation(DataBase.defaultAnimationNameAddOn);
             motion_index[0] = 0;
             motion_index[1] = -1;
+            motionLoopIndex = 0;
             times[0] =0;
             speed = unitType.speed;
             omega = unitType.omega;
@@ -153,7 +154,7 @@ namespace CommonPart
                         //times[0]フレームだけ停止する
                         break;
                     case MoveType.noMotion:
-                        times[0] = DataBase.motion_inftyTime;
+                        times[0] = -1;
                         break;
                     default:
                         break;
@@ -174,7 +175,15 @@ namespace CommonPart
                 #region bulletのupdate
                 for (int i = bullets.Count-1; i >= 0; i--)//update 専用
                 {
-                    bullets[i].update(player,bulletsMove);
+                    bullets[i].update(player,bulletsMove,skillsUpdate);
+                    #region chase enemyのみ
+                    if (bullets[i].move_type == MoveType.chase_enemy_target)
+                    {
+                        bullets[i].x = x;
+                        bullets[i].y = y;
+                        bullets[i].radian += bullets[i].omega;
+                    }
+                    #endregion
                 }
                 for (int i = bullets.Count - 1; i >= 0; i--)//update 専用
                 {
@@ -256,13 +265,16 @@ namespace CommonPart
         {
             skills[index].coolDown += (int)(reduceByPercent * DataBase.getSkillData(skills[index].skillName).cooldownFps);
         }
-        public void set_skill_coolDown(string _skillName, int cd)
+        public void set_skill_coolDown(string _skillName, int cd,bool absoluteFrame=false)
         {
             foreach (Skill sk in skills)
             {
                 if (sk.skillName == _skillName)
                 {
-                    sk.coolDown = cd;
+                    if (!absoluteFrame)
+                        sk.coolDown = cd;
+                    else
+                        sk.coolDown =(int)(cd * Game1.enemySkills_update_fps / DataBase.basicFramePerSecond);
                 }
             }
         }
@@ -271,10 +283,52 @@ namespace CommonPart
         /// </summary>
         /// <param name="index">インデックスは常に0から始まている</param>
         /// <param name="cd"></param>
-        public void set_skill_coolDown(int index, int cd)
+        public void set_skill_coolDown(int index, int cd, bool absoluteFrame=false)
         {
             if (index >= skills.Count) { return; }
-            else { skills[index].coolDown = cd; }
+            else {
+                if (!absoluteFrame)
+                    skills[index].coolDown = cd;
+                else
+                    skills[index].coolDown = (int)(cd * Game1.enemySkills_update_fps / DataBase.basicFramePerSecond);
+            }
+        }
+        /// <summary>
+        /// 指定したスキルの現在CDを取得する、
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="absoluteFrame">true:絶対frame数=skillUpdate_framesで換算したCDを取得する。黙認ではfalse; falseでそのままの数値</param>
+        /// <returns></returns>
+        public int skillcd(int index, bool absoluteFrame=false) {
+            if (index >= skills.Count) { Console.Write("skillcd: Do not have "+index+"th skill."); return 0; }
+            else
+            {
+                if (absoluteFrame)
+                    return (int)(skills[index].coolDown * Game1.enemySkills_update_fps / DataBase.basicFramePerSecond);
+                else
+                    return skills[index].coolDown;
+            }
+        }
+        /// <summary>
+        /// 指定したスキルのCDを{すでに経過したframes}を使用して、あるCD後に使われるようにする. 
+        /// </summary>
+        /// <param name="index">スキルを指定に使う</param>
+        /// <param name="maxCD">指定したCD. {今から使われるまでの時間ではない}</param>
+        /// <param name="frames_passed">指定したCDに対して、実はこのframe数だけCDは経過した。</param>
+        /// <returns></returns>
+        public void sync_skill_coolDown(int index, int maxCD, int frames_passed)
+        {
+            if (index >= skills.Count) { Console.Write("skillcd: Do not have " + index + "th skill."); return; }
+            else
+            {
+                skills[index].coolDown = maxCD - (int)(frames_passed * Game1.enemySkills_update_fps / DataBase.basicFramePerSecond)%maxCD;
+            }
+        }
+
+        public void delete_all_skills()
+        {
+            skills.Clear();
+            
         }
         #endregion
 
@@ -286,7 +340,7 @@ namespace CommonPart
         /// <param name="_pt"></param>
         /// <param name="_alltime">その動きにかかる時間、不要なら埋めなくてよい</param>
         /// <param name="_pos">その動きに必要な点、不要なら適当に</param>
-        protected void setup_extra_motion(MoveType _mt,PointType _pt,Vector _pos, int _alltime=DataBase.motion_inftyTime)
+        public virtual void setup_extra_motion(MoveType _mt,PointType _pt,Vector _pos, int _alltime=DataBase.motion_inftyTime)
         {
             backup_Motion_into_1();
             alltime = _alltime;
@@ -294,20 +348,24 @@ namespace CommonPart
             mt = _mt;
             pt = _pt;
             setup_default_pos(_pos);
+            set_from_moveTypeAndPointType_2();
         }
         /// <summary>
         /// times[0]は変更されず、motion_index[0],mt,alltime,default_posを設置する
         /// </summary>
         /// <param name="i"></param>
-        protected void setup_motion(int i) {
+        public virtual void setup_motion(int i,int _time=-2) {
             if (i < unitType.moveTypes.Count) {
-                motion_index[0] = i; mt =unitType.moveTypes[i]; alltime = unitType.times[i];
+                motion_index[0] = i; mt =unitType.moveTypes[i];
+                alltime = unitType.times[i];
                 pt = unitType.pointTypes[i];
                 default_pos = unitType.default_poses[i];
                 setup_default_pos(i);
                 speed = unitType.speed;
                 set_from_moveTypeAndPointType_2();
-                Console.WriteLine(default_pos+" "+mt);
+                if (_time != -2)
+                    times[0] = _time;
+                //Console.WriteLine(default_pos+" "+mt+" t:"+alltime);
             }
             else { Console.Write("setup_motion:Invaild Motion-" + unitType_name + "- i is" + i); }
         }
@@ -370,7 +428,7 @@ namespace CommonPart
         protected void update_motion_index() {
             if (motion_index[1] >= 0)
             {//例外が設置された。
-                if ( DataBase.timeExceedMaxDuration(times[0],alltime) )
+                if (DataBase.timeExceedMaxDuration(times[0], alltime))
                 {//例外のmotionから脱出して、元に戻る。
                     get_Motion_from_1();
                     setup_motion(motion_index[0]);
@@ -379,14 +437,21 @@ namespace CommonPart
             }
             else
             {
-                if (DataBase.timeExceedMaxDuration(times[0],alltime))
+                if (DataBase.timeExceedMaxDuration(times[0], alltime))
                 {
-                    if (motion_index[0] < unitType.moveTypes.Count - 1)
+                    // motion loops
+                    if (motionLooped &&  
+                            motion_index[0] == motionLoopsEnd[motionLoopIndex])
                     {
-                        motion_index[0]++;   
+                        motion_index[0] = motionLoopsStart[motionLoopIndex];
+                        
+                    }
+                    // not yet motion looped 
+                    else if (motion_index[0] < unitType.moveTypes.Count - 1){
+                        motion_index[0]++;
                     }
                     else { motion_index[0] = 0; }
-                    times[0] = 0;//times[0]を0にする,下の関数には組み込めていない。
+                    times[0] = 0;//times[0]を0にする,下の関数にはこれは実行していない。
                     setup_motion(motion_index[0]);// motion_index[0]に従ってmotionを設置するが、これだけだとtimes[0]が0にならない
                 }
             }
@@ -427,7 +492,39 @@ namespace CommonPart
             default_pos.X = Motion.from_PointType_getPosX(pos.X, pos.Y, pt, alltime, speed, angle,mt);
             default_pos.Y = Motion.from_PointType_getPosY(pos.X, pos.Y, pt,alltime, speed, angle,mt);
         }
+        public virtual void setup_LoopSet(int _loopStart, int _loopEnd, int _loopIndex = -1)
+        {
+            if (!motionLooped)
+            {
+                motionLooped = true;
+                motionLoopsEnd = new List<int>();
+                motionLoopsStart = new List<int>();
+                motionLoopIndex = 0;
+            }
+            if (_loopIndex >= 0) // index 指定
+            {
+                if (motionLoopsStart.Count <= _loopIndex)
+                {
+                    for (int i = 0; i < _loopIndex + 1 - motionLoopsStart.Count; i++)
+                        motionLoopsStart.Add(0);
+                    Console.Write("motionLoopsStart: 0 added due to outOfIndex");
+                }
+                if (motionLoopsEnd.Count <= _loopIndex)
+                {
+                    for (int i = 0; i < _loopIndex + 1 - motionLoopsEnd.Count; i++)
+                        motionLoopsEnd.Add(0);
+                    Console.Write("motionLoopsEnd: 0 added due to outOfIndex");
+                }
+                motionLoopsStart[_loopIndex] = _loopStart;
+                motionLoopsEnd[_loopIndex] = _loopEnd;
 
+            }
+            else
+            {
+                motionLoopsStart.Add(_loopStart);
+                motionLoopsEnd.Add(_loopEnd);
+            }
+        }
         #endregion
 
         public void FadeOut()
@@ -439,6 +536,7 @@ namespace CommonPart
 
             }
         }
+
         public void shot(Player player)
         {
             for (int i = 0; i < skills.Count; i++)
@@ -447,42 +545,47 @@ namespace CommonPart
                 {
                     BarrageUsedSkillData sd= (BarrageUsedSkillData)DataBase.SkillDatasDictionary[skills[i].skillName];
                     
-                    if (!skills[i].used(alltime, motionLoopIndex, life, maxLife)) { continue; }
+                    if (!skills[i].used(alltime, motionLoopIndex, life, maxLife)) {  continue; }
                     switch (sd.sgl) {
                         case SkillGenreL.generation:
                         case SkillGenreL.UseSkilledBullet:
                             WayShotSkillData ws = (WayShotSkillData)sd;
+                            double by;
                             #region ジャンルの小さい分類
                             switch (sd.sgs)
                             {
                                 #region genre small yanagi
                                 case SkillGenreS.yanagi:
                                     #region yanagi setting
-                                    for (int j = 1; j <= ws.way + 1; j++)
+                                    for (int j = 1; j <= ws.way/2 + 1; j++)
                                     {
                                         Bullet bullet1, bullet2;
+                                        by = y - sd.space * j * j*Math.Pow(0.99,j)/2 + animation.Y / 2;
+                                        double bdx = sd.space * j*j + sd.radius;
                                         if (ws.sgl == SkillGenreL.UseSkilledBullet)
                                         {
                                             WaySkilledBulletsData wSs = (WaySkilledBulletsData)ws;
-                                            bullet1 = new SkilledBullet(x + sd.space * j + sd.radius, y - sd.space * j * j * 2 + 4 + animation.Y / 2, sd.moveType,
+                                            bullet1 = new SkilledBullet(x + bdx, by, sd.moveType,
                                                 sd.speed, sd.acceleration, sd.aniDName, sd.angle, sd.radius, wSs.BulletSkillNames, this, sd.sword, sd.life, sd.score);
-                                            bullet2 = new SkilledBullet(x - sd.space * j - sd.radius, y - sd.space * j * j * 2 + 4 + animation.Y / 2, sd.moveType,
+                                            bullet2 = new SkilledBullet(x - bdx, by, sd.moveType,
                                                 sd.speed, sd.acceleration, sd.aniDName, sd.angle, sd.radius, wSs.BulletSkillNames, this, sd.sword, sd.life, sd.score);
                                         }
                                         else
                                         {
-                                            bullet2 = new Bullet(x - sd.space * j - sd.radius, y - sd.space * j * j * 2 + 4 + animation.Y / 2, sd.moveType,
+                                            bullet2 = new Bullet(x - bdx, by, sd.moveType,
                                             sd.speed, sd.acceleration, sd.aniDName, sd.angle, sd.radius, sd.sword, sd.life, sd.score);
-                                            bullet1 = new Bullet(x + sd.space * j + sd.radius, y - sd.space * j * j * 2 + 4 + animation.Y / 2, sd.moveType,
+                                            bullet1 = new Bullet(x + bdx, by, sd.moveType,
                                                 sd.speed, sd.acceleration, sd.aniDName, sd.angle, sd.radius, sd.sword, sd.life, sd.score);
                                         }
-                                        bullet1.speed_x = sd.speed * (j - 1) * 0.25;
-                                        bullet1.speed_y = -sd.speed + 0.1 * (sd.space * j);
+                                        double bspeedX = sd.speed * (j - 1) * 0.01;
+                                        double bspeedY = -sd.speed;// + 0.01 * (sd.space * j); -by+y+animation.Y/2
+                                        bullet1.target_pos.X = bspeedX;
+                                        bullet1.target_pos.Y = bspeedY;
                                         bullet1.acceleration_x = +sd.acceleration * j * j / 120;
                                         bullet1.acceleration_y = sd.acceleration;
                                         bullets.Add(bullet1);
-                                        bullet2.speed_x = -sd.speed * (j - 1) * 0.25;
-                                        bullet2.speed_y = -sd.speed + 0.1 * (sd.space * j);
+                                        bullet2.target_pos.X = -bspeedX;
+                                        bullet2.target_pos.Y = bspeedY;
                                         bullet2.acceleration_x = -sd.acceleration * j * j / 120;
                                         bullet2.acceleration_y = sd.acceleration;
                                         bullets.Add(bullet2);
@@ -492,7 +595,7 @@ namespace CommonPart
                                 #endregion
                                 default:
                                     #region bulletsAdd
-                                    double bx = x; double by = y;
+                                    double bx = x; by = y;
                                     double _angle = Motion.getAngleFromPointType(ws.pointType, ws.angle, ws.vec.X,x,y,angle);
                                     //Console.WriteLine("in Enemy: " + ws.skillName + " ws.angle:" + ws.angle +" angle:"+_angle+" way:"+ws.way+ "#");
 
@@ -615,7 +718,7 @@ namespace CommonPart
         }
         public virtual void damage(int atk)
         {
-            if (!animation.dataIsNull())
+            if(!animation.dataIsNull())
                 life -= atk;
             if (life <= 0)
             {
@@ -648,7 +751,7 @@ namespace CommonPart
             skills.Clear();
         }
 
-        public bool selectable()
+        public virtual bool selectable()
         {
             if (delete || fadeout||animation.dataIsNull()||!Map.inside_window(this))
             {

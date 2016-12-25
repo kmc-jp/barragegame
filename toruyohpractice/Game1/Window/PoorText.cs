@@ -98,7 +98,7 @@ namespace CommonPart
             }// modify end
             int k = 0;
             int l = 0; bool inchanging = false;// ");[,%"が発生したならtrueになり、その後"?_{@"が発生したらfalseになる
-            while (k < str.Length) {
+            while (k+4 < str.Length) {
                 if (str[k] == ')'){
                     if (str[k + 1] == ';') {
                         if (str[k + 2] == '[' && str[k + 3] == ',' && str[k + 4] == '%'){
@@ -124,7 +124,7 @@ namespace CommonPart
                 if (l >= _max_number_of_chars) { l = 0; str = str.Insert(k, "\n"); }
                 k++;
             }// count char and add \n end
-            if(str[k-1] == '\n') { str.Remove(k - 1, 1); }// the last \n is Removed.
+            if(str[str.Length-1] == '\n') { str.Remove(str.Length-1, 1); }// the last \n is Removed.
         }//constructor end
         public PoorString(string _ostr, PoorString pstr) : this(_ostr, pstr.max_number_of_chars,pstr.fontId, pstr.modified) { }
         public int getCharSizeX() { return fontId.GetDefaultFontSizeX(); }
