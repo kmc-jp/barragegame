@@ -336,7 +336,7 @@ namespace CommonPart
                     if (enemyAsTarget != null && enemyAsTarget.selectable())
                     {
                         #region approaching the EnemyTarget
-                        if (!Function.hitcircle(x, y, skill_speed / 2+2, enemyAsTarget.x, enemyAsTarget.y + enemy_below, enemyAsTarget.radius))
+                        if (!Function.hitcircle(x, y, skill_speed / 2+20, enemyAsTarget.x, enemyAsTarget.y + enemy_below, enemyAsTarget.radius))
                         {
                             double e = Math.Sqrt(Function.distance(x, y, enemyAsTarget.x, enemyAsTarget.y + enemy_below));
                             double v = skill_speed / e;
@@ -347,7 +347,7 @@ namespace CommonPart
                         #region reached Enemy and attack
                         if (skill_attackStandby < 0)
                         {
-                            if (Function.hitcircle(x, y, skill_speed / 2, enemyAsTarget.x, enemyAsTarget.y + enemy_below, enemyAsTarget.radius))
+                            if (Function.hitcircle(x, y, skill_speed / 2+20, enemyAsTarget.x, enemyAsTarget.y + enemy_below, enemyAsTarget.radius))
                             {
                                 enemyAsTarget.stop_time = skill_max_attckStandby;
                                 skill_attackStandby = skill_max_attckStandby;
